@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// The pill that floats near your cursor while you talk.
+/// The pill that floats near the cursor while the user talks.
 ///
 /// Design intent: this is the app's entire personality. It has to appear
 /// instantly (any lag reads as "did it hear me?"), show that audio is being
-/// received (the bars), and show words landing in real time (the text). Those
-/// three signals are what make dictation feel trustworthy instead of like
-/// shouting into a void.
+/// received (the bars), and show words landing in real time (the text).
+/// Those three signals are what make dictation feel trustworthy instead of
+/// like shouting into a void.
 struct OverlayView: View {
 
     enum Mode: Equatable {
@@ -29,7 +29,7 @@ struct OverlayView: View {
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(textColor)
                     .lineLimit(2)
-                    .truncationMode(.head)   // keep the END visible — that's the newest speech
+                    .truncationMode(.head)  // keep the END visible — that's the newest speech
                     .frame(maxWidth: 320, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .transition(.opacity)
@@ -38,8 +38,8 @@ struct OverlayView: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .background {
-            // Native vibrancy. This is what makes it look like part of macOS
-            // rather than a web page pretending to be a Mac app.
+            // Native vibrancy: what makes it look like part of macOS rather
+            // than a web page pretending to be a Mac app.
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(.ultraThinMaterial)
                 .overlay {
@@ -74,25 +74,25 @@ struct OverlayView: View {
 
     private var displayText: String {
         switch mode {
-        case .listening:      return text.isEmpty ? "Listening…" : text
-        case .polishing:      return text.isEmpty ? "Cleaning up…" : text
-        case .error(let msg): return msg
+        case .listening: text.isEmpty ? "Listening…" : text
+        case .polishing: text.isEmpty ? "Cleaning up…" : text
+        case .error(let message): message
         }
     }
 
     private var textColor: Color {
         switch mode {
-        case .listening:  return text.isEmpty ? .secondary : .primary
-        case .polishing:  return .secondary
-        case .error:      return .primary
+        case .listening: text.isEmpty ? .secondary : .primary
+        case .polishing: .secondary
+        case .error: .primary
         }
     }
 }
 
 /// A tiny live audio meter.
 ///
-/// Deliberately not a real FFT — users can't read a spectrum at this size.
-/// What they need is "the app can hear me", which amplitude bars convey
+/// Deliberately not a real FFT — nobody can read a spectrum at this size.
+/// What the user needs is "the app can hear me", which amplitude bars convey
 /// instantly and cheaply.
 struct Waveform: View {
     let levels: [Float]
@@ -113,7 +113,7 @@ struct Waveform: View {
     private func height(for index: Int) -> CGFloat {
         // Map the most recent samples onto the bars, newest on the right.
         let sampleIndex = levels.count - barCount + index
-        let level = (sampleIndex >= 0 && sampleIndex < levels.count) ? levels[sampleIndex] : 0
+        let level = levels.indices.contains(sampleIndex) ? levels[sampleIndex] : 0
 
         // Perceptual curve: raw RMS looks dead because quiet speech is a tiny
         // fraction of full scale. sqrt spreads the low end out visually.

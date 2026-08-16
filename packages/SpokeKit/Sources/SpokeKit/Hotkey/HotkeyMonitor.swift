@@ -1,27 +1,29 @@
 import AppKit
-import Foundation
+import ApplicationServices
 
-/// Hold-to-talk global hotkey.
+/// Hold-to-talk global hotkey, surfaced as an async stream of events.
 ///
-/// Default is right-Option: it's reachable by thumb, nothing else uses it,
+/// Right Option is the default: reachable by thumb, nothing else uses it,
 /// and holding a modifier avoids the "did I toggle it on?" confusion that
 /// makes toggle-style dictation feel unreliable.
 ///
 /// Requires Accessibility permission (System Settings › Privacy & Security ›
 /// Accessibility). Without it, global monitors silently receive nothing —
-/// which is the #1 "why is my app broken" moment for new macOS devs.
-@MainActor
+/// the #1 "why is my app broken" moment for new macOS developers.
 final class HotkeyMonitor {
 
-    /// Right Option. (Left Option is 58, right Command is 54, Fn is 63.)
-    private static let rightOptionKeyCode: UInt16 = 61
+    /// Press/release events, in order. Consuming this from a single task is
+    /// what serializes begin/end handling in `DictationController`.
+    let events: AsyncStream<HotkeyEvent>
 
-    var onPress: () -> Void = {}
-    var onRelease: () -> Void = {}
-
+    private let continuation: AsyncStream<HotkeyEvent>.Continuation
+    private var detector = HoldDetector()
     private var globalMonitor: Any?
     private var localMonitor: Any?
-    private var isHeld = false
+
+    init() {
+        (events, continuation) = AsyncStream.makeStream()
+    }
 
     /// Whether macOS has granted us permission to observe global input.
     static var hasAccessibilityPermission: Bool {
@@ -30,7 +32,10 @@ final class HotkeyMonitor {
 
     /// Prompts the user, showing the system dialog that deep-links to Settings.
     static func requestAccessibilityPermission() {
-        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+        // The literal spelling of `kAXTrustedCheckOptionPrompt`. The real
+        // symbol is a C global imported as a mutable `var`, which Swift 6
+        // correctly refuses to touch from isolated code.
+        let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
         AXIsProcessTrustedWithOptions(options)
     }
 
@@ -38,12 +43,13 @@ final class HotkeyMonitor {
         stop()
 
         // Global monitor: fires when other apps are focused (the normal case).
+        // AppKit delivers these on the main thread.
         globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
-            MainActor.assumeIsolated { self?.handle(event) }
+            self?.handle(event)
         }
 
-        // Local monitor: fires when our own window is focused. You need both,
-        // or the hotkey mysteriously dies while the Settings window is open.
+        // Local monitor: fires when our own window is focused. Both are
+        // needed, or the hotkey mysteriously dies while Settings is open.
         localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
             self?.handle(event)
             return event
@@ -55,27 +61,16 @@ final class HotkeyMonitor {
         if let localMonitor { NSEvent.removeMonitor(localMonitor) }
         globalMonitor = nil
         localMonitor = nil
-        isHeld = false
+        detector = HoldDetector()
     }
 
     private func handle(_ event: NSEvent) {
-        guard event.keyCode == Self.rightOptionKeyCode else { return }
-
-        // `.flagsChanged` tells us a modifier moved but not which direction,
-        // so we read the current flag state to decide press vs release.
-        let optionDown = event.modifierFlags.contains(.option)
-
-        if optionDown && !isHeld {
-            isHeld = true
-            onPress()
-        } else if !optionDown && isHeld {
-            isHeld = false
-            onRelease()
+        let transition = detector.transition(
+            keyCode: event.keyCode,
+            rawModifierFlags: event.modifierFlags.rawValue
+        )
+        if let transition {
+            continuation.yield(transition)
         }
-    }
-
-    deinit {
-        if let globalMonitor { NSEvent.removeMonitor(globalMonitor) }
-        if let localMonitor { NSEvent.removeMonitor(localMonitor) }
     }
 }
