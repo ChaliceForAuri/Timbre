@@ -1,3 +1,10 @@
+> **Historical document.** These are the original planning notes from Cowork,
+> kept for the learning material (especially the Flutter/RN → Swift mapping).
+> Two claims are superseded: `SpeechTranscriber(locale:preset:)` exists on
+> macOS 26 (not 27), and the Swift 5 recommendation is reversed by
+> [ADR-0001](../decisions/adr/0001-swift-6-language-mode.md). Setup steps are
+> superseded by the repo's [README](../../README.md).
+
 # Spoke — a free, local, native dictation app
 
 A Wispr Flow replacement built entirely on Apple's on-device stack. No account,
