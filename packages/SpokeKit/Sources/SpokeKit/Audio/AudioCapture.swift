@@ -48,7 +48,8 @@ final class AudioCapture {
         )
         self.processor = processor
 
-        input.installTap(onBus: 0, bufferSize: 4096, format: inputFormat) { @Sendable buffer, _ in
+        input.installTap(onBus: 0, bufferSize: 4096, format: inputFormat) {
+            @Sendable buffer, _ in
             processor.process(buffer)
         }
 
@@ -74,7 +75,8 @@ final class AudioCapture {
         var errorDescription: String? {
             switch self {
             case .noInputDevice:
-                return "No microphone input available. Check System Settings › Privacy & Security › Microphone."
+                return
+                    "No microphone input available. Check System Settings › Privacy & Security › Microphone."
             }
         }
     }
@@ -84,9 +86,9 @@ final class AudioCapture {
 /// yields it into the streams.
 ///
 /// `@unchecked Sendable` is justified because `AVAudioEngine` invokes the tap
-/// serially from a single real-time thread, and this object is referenced
-/// only by that tap and by `AudioCapture.stop()` — which never touches the
-/// converter, the only mutable state.
+/// serially from a single real-time thread, and `finish()` — the only other
+/// entry point — is called strictly after `removeTap` + `engine.stop()`,
+/// which is the happens-before that ends audio-thread access.
 private nonisolated final class AudioTapProcessor: @unchecked Sendable {
 
     private let converter = BufferConverter()
@@ -114,6 +116,11 @@ private nonisolated final class AudioTapProcessor: @unchecked Sendable {
     }
 
     func finish() {
+        // The converter can be holding the tail of the user's last word;
+        // flush it into the stream before closing.
+        if let tail = converter.drain(into: targetFormat) {
+            input.yield(AnalyzerInput(buffer: tail))
+        }
         input.finish()
         levels.finish()
     }

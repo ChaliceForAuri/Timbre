@@ -13,7 +13,10 @@ final class TextPolisher {
     /// generation, so the response can't come back malformed.
     @Generable
     nonisolated struct Polished {
-        @Guide(description: "The cleaned-up text, ready to paste. Never add commentary, quotes, or explanation.")
+        @Guide(
+            description:
+                "The cleaned-up text, ready to paste. Never add commentary, quotes, or explanation."
+        )
         var text: String
     }
 

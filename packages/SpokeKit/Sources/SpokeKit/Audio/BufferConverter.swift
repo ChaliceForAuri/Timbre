@@ -56,6 +56,33 @@ nonisolated final class BufferConverter {
         return output
     }
 
+    /// Flushes what the converter still holds and resets it for a new stream.
+    ///
+    /// The resampler consumes input in internal quanta and can be holding up
+    /// to ~100 ms of audio when a session stops — the tail of the user's last
+    /// word. Call this once at end of stream and feed the result onward;
+    /// skipping it silently clips the end of every utterance.
+    func drain(into targetFormat: AVAudioFormat) -> AVAudioPCMBuffer? {
+        guard let converter else { return nil }
+        defer {
+            self.converter = nil
+            lastInputFormat = nil
+        }
+
+        guard let output = AVAudioPCMBuffer(pcmFormat: targetFormat, frameCapacity: 8192) else {
+            return nil
+        }
+
+        var conversionError: NSError?
+        converter.convert(to: output, error: &conversionError) { _, statusPointer in
+            statusPointer.pointee = .endOfStream
+            return nil
+        }
+
+        guard conversionError == nil, output.frameLength > 0 else { return nil }
+        return output
+    }
+
     enum ConversionError: Error {
         case cannotCreateConverter
         case cannotAllocateBuffer
