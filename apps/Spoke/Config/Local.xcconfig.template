@@ -1,0 +1,9 @@
+// Copy this file to Local.xcconfig (gitignored) to sign with a real
+// development identity instead of the ad-hoc default. A stable identity is
+// what lets the Accessibility (TCC) grant survive rebuilds.
+//
+// Find your team ID in Xcode › Settings › Accounts after signing in with
+// your Apple ID (a free personal team works).
+
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+CODE_SIGN_IDENTITY = Apple Development

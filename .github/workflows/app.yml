@@ -1,0 +1,50 @@
+name: App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - ".swift-format"
+      - ".github/workflows/app.yml"
+  pull_request:
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - ".swift-format"
+      - ".github/workflows/app.yml"
+
+jobs:
+  test:
+    name: SpokeKit tests
+    # macOS 26 image required for the macOS 26 SDK (SpeechAnalyzer,
+    # FoundationModels). If the runner label lags GitHub's rollout, this is
+    # the first place to look.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: sudo xcode-select -s /Applications/Xcode_26.app
+
+      - name: Lint
+        run: xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
+
+      - name: Test SpokeKit
+        run: swift test --package-path packages/SpokeKit
+
+  build-app:
+    name: App build
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: sudo xcode-select -s /Applications/Xcode_26.app
+
+      - name: Build
+        run: >
+          xcodebuild -project apps/Spoke/Spoke.xcodeproj -scheme Spoke
+          -destination 'platform=macOS' build
+          CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=NO
