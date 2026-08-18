@@ -1,0 +1,136 @@
+# Field notes
+
+Things learned *building* Spoke, as opposed to things known before it started.
+[Spoke University](spoke-university.html) covers the durable domain knowledge —
+Swift, concurrency, audio, speech, on-device models. This file is the empirical
+record: what actually happened when the code met the hardware.
+
+Newest first. Append; don't rewrite history.
+
+---
+
+## 2026-08-18 — What the on-device model will and won't do
+
+Measured with `spoke-eval` (see [ADR-0004](../decisions/adr/0004-evaluation-harness-seam.md)),
+Apple's ~3B `SystemLanguageModel`, English, macOS 26.5.
+
+### A single run is not a measurement
+
+The most expensive lesson of the day, learned twice.
+
+A prompt edit made one corpus case pass. It scored **0 of 5** when repeated.
+Another edit was judged useless and reverted — comparing a one-run baseline
+against a three-run result, which is not a comparison at all. Re-measured
+properly it had nearly **doubled** the pass rate.
+
+The model's output varies materially between identical calls: capitalisation
+appears and disappears, punctuation comes and goes, whole clauses get reworded.
+`--repeat 5` is the floor for believing anything. A case passing 3 of 5 does not
+mean the instruction is *nearly* working; it means the instruction is
+underspecified and the model is guessing.
+
+### Some rules it will simply not follow
+
+Terminal punctuation was the clearest case. The model punctuated *between*
+sentences and left the last one open, on 5 of 5 runs for several inputs. It
+survived:
+
+1. An explicit instruction ("Every sentence ends with a full stop … including
+   the last sentence in the text")
+2. The same constraint repeated in the `@Guide` description
+
+Spoken formatting commands behaved the same way — "period" and "new paragraph"
+came back transcribed as words, capitalised into sentences of their own, 5 of 5.
+
+### The rule that came out of it
+
+> If a transformation is mechanical and has a right answer, do not ask the
+> model. Do it in code.
+
+Terminal punctuation moved to `SentenceTerminator`
+([ADR-0005](../decisions/adr/0005-deterministic-sentence-termination.md)):
+**87%** of runs passing, up from 47%. Structural commands moved to
+`SpokenCommands` ([GDR-0003](../decisions/gdr/0003-structural-spoken-commands-only.md)):
+**98%**.
+
+The corollary matters as much. Context is scarce on a small model, and an
+instruction it ignores is not free — it dilutes attention from the rules it
+*can* follow. Every rule moved into code made the remaining prompt better.
+
+### Where a constraint is stated changes how hard it lands
+
+`@Guide(description:)` sits at the generation site and binds tighter than the
+session `instructions`. It still wasn't enough for terminal punctuation, but
+the ordering is real and worth reaching for before giving up on a prompt.
+
+### Design deterministic passes as allowlists
+
+`SentenceTerminator` appends a full stop only when the deciding character is a
+letter or a digit. Written as a blocklist it would have needed to anticipate
+ellipses, clause marks, dashes, emoji, and closing brackets — and would have
+shipped "sounds good 👍." because nobody thinks of emoji up front. The
+allowlist never had to.
+
+### Ambiguity is a product decision, not a prompt problem
+
+"Period" is an ordinary English word. No prompt resolves *the Victorian period*
+versus *end this sentence*, and neither does a find-and-replace. The fix was to
+notice the feature was **redundant**: Apple's dictation needs spoken punctuation
+because it has no cleanup layer; Spoke has one. Dropping it removed the
+ambiguity entirely rather than managing it.
+
+---
+
+## 2026-08-18 — Real transcripts already have punctuation
+
+`SpeechTranscriber` output for clean speech comes back capitalised and
+punctuated:
+
+```
+Okay, so the build is failing on CI. It looks like a signing issue.
+I will take a look after lunch.
+```
+
+That is the **raw** transcript, before the polisher. The hand-written corpus
+assumed unpunctuated input and was therefore testing a situation that partly
+doesn't arise. Corpus inputs should be regenerated from real transcriber output
+rather than imagined. (Not yet done.)
+
+Caveat: that sample is synthesised speech via `say`. Real dictation with
+hesitation and trailing-off may well transcribe differently.
+
+---
+
+## 2026-08-18 — AVAudioFile fails at EOF instead of returning zero frames
+
+`read(into:frameCount:)` does **not** return a zero-length buffer when the read
+head reaches the end of the file. It fails — and fails without populating the
+error pointer, so Swift surfaces `Foundation._GenericObjCError.nilError`, which
+carries no information whatsoever.
+
+The fix is to bound the loop by `file.length` and never read at EOF:
+
+```swift
+while file.framePosition < file.length {
+    let wanted = AVAudioFrameCount(min(Int64(chunk), file.length - file.framePosition))
+    …
+}
+```
+
+Pinned by a regression test using a file whose length is deliberately not a
+whole number of chunks.
+
+---
+
+## 2026-08-18 — Continuity microphone and hold-to-talk
+
+The Mac Studio has **no built-in microphone**. An iPhone works as one over
+Continuity (Settings › General › AirPlay & Continuity › Continuity Camera; the
+phone must be nearby and locked). Continuity needs **Wi-Fi enabled even on a
+wired Mac** — easy to miss on a desktop plugged into Ethernet.
+
+The caveat for this app specifically: the link has a wake-up cost. Spoke starts
+`AVAudioEngine` on the hotkey press, so a cold Continuity device can clip the
+first word, or report a 0 sample rate and trip
+`AudioCaptureError.noInputDevice`. A USB cable, or a real USB microphone, avoids
+it. Worth remembering before debugging a bug that isn't in our code.

@@ -41,6 +41,10 @@ public struct DictationCase: Codable, Sendable, Identifiable {
     /// cases whose input is a run-on.
     public let requiresPunctuation: Bool
 
+    /// Whether the output must contain a line break. Set on cases exercising
+    /// spoken structural commands.
+    public let requiresLineBreak: Bool
+
     /// What this case is for, shown in the report.
     public let note: String?
 
@@ -52,6 +56,7 @@ public struct DictationCase: Codable, Sendable, Identifiable {
         forbidden: [String] = [],
         required: [String] = [],
         requiresPunctuation: Bool = false,
+        requiresLineBreak: Bool = false,
         note: String? = nil
     ) {
         self.id = id
@@ -61,6 +66,7 @@ public struct DictationCase: Codable, Sendable, Identifiable {
         self.forbidden = forbidden
         self.required = required
         self.requiresPunctuation = requiresPunctuation
+        self.requiresLineBreak = requiresLineBreak
         self.note = note
     }
 
@@ -77,6 +83,8 @@ public struct DictationCase: Codable, Sendable, Identifiable {
         required = try container.decodeIfPresent([String].self, forKey: .required) ?? []
         requiresPunctuation =
             try container.decodeIfPresent(Bool.self, forKey: .requiresPunctuation) ?? false
+        requiresLineBreak =
+            try container.decodeIfPresent(Bool.self, forKey: .requiresLineBreak) ?? false
         note = try container.decodeIfPresent(String.self, forKey: .note)
     }
 }
@@ -116,6 +124,9 @@ nonisolated public enum PolishChecks {
         }
         if testCase.requiresPunctuation, !trimmed.contains(where: { ".!?".contains($0) }) {
             failures.append("added no sentence punctuation")
+        }
+        if testCase.requiresLineBreak, !trimmed.contains("\n") {
+            failures.append("produced no line break")
         }
 
         return failures

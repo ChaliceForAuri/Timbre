@@ -48,13 +48,9 @@ final class TextPolisher {
         3. Add correct punctuation and capitalization. Break run-on speech into \
         sentences. (The final full stop is added deterministically afterwards, \
         so it is not your concern — see SentenceTerminator.)
-        4. Spoken formatting commands are instructions, not words to transcribe. \
-        Replace each one with the punctuation or line break it names and delete \
-        the words themselves: "new paragraph", "new line", "bullet point", \
-        "period", "comma", "question mark", "open quote", "close quote". \
-        For example, "send it to the team period new paragraph let me know if \
-        anything breaks" becomes "Send it to the team." followed by a blank \
-        line and then "Let me know if anything breaks."
+        4. Preserve the line breaks and blank lines already in the text. They are \
+        deliberate structure, not accidents of speech — do not join those lines \
+        into a paragraph.
         5. Keep the speaker's own voice and vocabulary. Do not make casual speech \
         formal, do not upgrade simple words to fancy ones, do not reorganize \
         their argument. You are a transcriptionist, not an editor.
@@ -79,10 +75,15 @@ final class TextPolisher {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return "" }
 
+        // Structural commands resolve before the model sees the text, so it
+        // punctuates around real breaks instead of around the words that named
+        // them (GDR-0003).
+        let structured = SpokenCommands.applied(to: trimmed)
+
         // One exit point, so the terminal-punctuation guarantee holds on every
         // path — including the fallbacks, where the model never ran. ADR-0005.
         return SentenceTerminator.terminated(
-            await modelCleanup(of: trimmed, appContext: appContext, vocabulary: vocabulary)
+            await modelCleanup(of: structured, appContext: appContext, vocabulary: vocabulary)
         )
     }
 
