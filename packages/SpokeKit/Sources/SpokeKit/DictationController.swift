@@ -37,6 +37,7 @@ public final class DictationController {
 
     private var capturedAppName: String?
     private var hotkeyLoop: Task<Void, Never>?
+    private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
 
     public init() {}
@@ -64,6 +65,9 @@ public final class DictationController {
         )
         if let message = StartupGate.blockingMessage(for: permissions) {
             status = .error(message)
+            if microphoneGranted, !accessibilityGranted {
+                watchForAccessibilityGrant()
+            }
             return
         }
 
@@ -102,6 +106,27 @@ public final class DictationController {
         }
 
         status = .idle
+    }
+
+    /// Retries startup once the user grants Accessibility, so they don't have
+    /// to quit and relaunch.
+    ///
+    /// Polls rather than observing: `AXIsProcessTrusted()` is a cheap local
+    /// check, and the notification that would replace this is undocumented.
+    /// If the trusted state turns out to be cached for the lifetime of the
+    /// process, this simply never fires and the user relaunches as before —
+    /// it cannot make things worse.
+    private func watchForAccessibilityGrant() {
+        accessibilityWatch?.cancel()
+        accessibilityWatch = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1))
+                guard HotkeyMonitor.hasAccessibilityPermission else { continue }
+                guard let self else { return }
+                await self.bootstrap()
+                return
+            }
+        }
     }
 
     // MARK: - Dictation

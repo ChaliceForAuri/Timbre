@@ -109,8 +109,14 @@ everything else is internal. Keep it that way.
   alone is not enough. Without it `requestAccess` returns false with no
   prompt and the app never appears in Privacy & Security › Microphone
 - `INFOPLIST_KEY_*` carries mic + speech strings and `LSUIElement`
-- Accessibility granted manually; **only read at launch** — restart the app
-  after granting
+- Accessibility is granted manually (System Settings, `+` button). Spoke
+  polls `AXIsProcessTrusted()` while blocked and retries startup on its own,
+  so a relaunch should not be needed — but if the trusted state turns out to
+  be cached per-process, relaunching is still the fallback
+- **TCC entries embed the bundle identifier.** Changing
+  `PRODUCT_BUNDLE_IDENTIFIER` orphans every existing grant: the toggle still
+  shows in System Settings but no longer matches the binary. Remove the stale
+  row with `-` and re-add
 
 ## Decision records
 
