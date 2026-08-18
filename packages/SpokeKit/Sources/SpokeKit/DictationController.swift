@@ -44,24 +44,30 @@ public final class DictationController {
     // MARK: - Lifecycle
 
     public func bootstrap() async {
-        // 1. Accessibility — needed for both the hotkey and the paste.
-        //    Only read at launch; the app must be relaunched after granting.
-        if !HotkeyMonitor.hasAccessibilityPermission {
-            HotkeyMonitor.requestAccessibilityPermission()
-            status = .error("Grant Accessibility access, then restart Spoke.")
-            return
-        }
-
-        // 2. Microphone.
+        // 1. Permissions. Microphone first and unconditionally: it is the one
+        //    macOS grants in place, and gating it behind Accessibility meant
+        //    the prompt never fired — leaving Spoke absent from Privacy &
+        //    Security › Microphone entirely, since an app is listed there only
+        //    once it has asked. StartupGate reports everything missing at once.
         let microphoneGranted = await withCheckedContinuation { continuation in
             AVCaptureDevice.requestAccess(for: .audio) { continuation.resume(returning: $0) }
         }
-        guard microphoneGranted else {
-            status = .error("Microphone access denied.")
+
+        let accessibilityGranted = HotkeyMonitor.hasAccessibilityPermission
+        if !accessibilityGranted {
+            HotkeyMonitor.requestAccessibilityPermission()
+        }
+
+        let permissions = StartupGate.Permissions(
+            microphone: microphoneGranted,
+            accessibility: accessibilityGranted
+        )
+        if let message = StartupGate.blockingMessage(for: permissions) {
+            status = .error(message)
             return
         }
 
-        // 3. Speech model — may download assets on first run.
+        // 2. Speech model — may download assets on first run.
         guard await Transcriber.isSupported() else {
             status = .error("On-device speech isn't available for \(Locale.current.identifier).")
             return
@@ -74,11 +80,11 @@ public final class DictationController {
             return
         }
 
-        // 4. Page the polisher's model weights in so the first dictation
+        // 3. Page the polisher's model weights in so the first dictation
         //    isn't the slow one.
         polisher.prewarm()
 
-        // 5. The hotkey loop. A single consumer of the event stream is what
+        // 4. The hotkey loop. A single consumer of the event stream is what
         //    serializes press/release handling: a release that arrives while
         //    beginListening() is still setting up waits its turn instead of
         //    racing it — the failure mode where a quick tap left the app
