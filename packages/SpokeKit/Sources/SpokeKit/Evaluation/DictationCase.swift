@@ -1,7 +1,7 @@
 import Foundation
 
 /// A corpus of dictation samples, loaded from JSON.
-public struct DictationCorpus: Codable, Sendable {
+nonisolated public struct DictationCorpus: Codable, Sendable {
     public let cases: [DictationCase]
 
     public init(cases: [DictationCase]) {
@@ -15,7 +15,7 @@ public struct DictationCorpus: Codable, Sendable {
 /// and phrase as it likes, so asserting an exact match would fail on harmless
 /// variation and teach us to ignore the suite. Properties survive rewording;
 /// exact strings don't.
-public struct DictationCase: Codable, Sendable, Identifiable {
+nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
 
     /// Stable identifier, used to line runs up when diffing.
     public let id: String
@@ -90,7 +90,7 @@ public struct DictationCase: Codable, Sendable, Identifiable {
 }
 
 /// What one case produced and how it scored.
-public struct CaseOutcome: Codable, Sendable, Identifiable {
+nonisolated public struct CaseOutcome: Codable, Sendable, Identifiable {
     public let id: String
     public let input: String
     public let output: String

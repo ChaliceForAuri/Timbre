@@ -27,6 +27,22 @@ public final class DictationController {
         vocabularyStore.terms
     }
 
+    /// Whether dictations are being saved locally as tuning fixtures.
+    /// Off unless the user turns it on — see GDR-0004.
+    public var isCapturingDictations: Bool {
+        get { dictationLog.isCapturing }
+        set { dictationLog.isCapturing = newValue }
+    }
+
+    /// Where captured dictations are written, for the settings screen.
+    public var captureFileURL: URL { dictationLog.fileURL }
+
+    /// How many dictations have been captured so far.
+    public func capturedDictationCount() -> Int { dictationLog.recordCount() }
+
+    /// Deletes every captured dictation.
+    public func deleteCapturedDictations() { dictationLog.deleteAll() }
+
     private let audio = AudioCapture()
     private let transcriber = Transcriber()
     private let polisher = TextPolisher()
@@ -34,6 +50,7 @@ public final class DictationController {
     private let hotkey = HotkeyMonitor()
     private let overlay = OverlayController()
     private let vocabularyStore = VocabularyStore()
+    private let dictationLog = DictationLog()
 
     private var capturedAppName: String?
     private var hotkeyLoop: Task<Void, Never>?
@@ -208,6 +225,18 @@ public final class DictationController {
             // it reads as a glitch even though nothing went wrong.
             overlay.hide()
             inserter.insert(cleaned)
+
+            // After the paste, never before: capturing a fixture must not sit
+            // between the user releasing the key and their text appearing.
+            dictationLog.append(
+                DictationRecord(
+                    id: UUID().uuidString,
+                    date: Date(),
+                    appContext: capturedAppName,
+                    transcript: raw,
+                    polished: cleaned
+                )
+            )
 
             lastInserted = cleaned
             becomeIdle()

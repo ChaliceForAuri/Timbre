@@ -38,6 +38,14 @@ cd packages/SpokeKit && swift run spoke-eval Fixtures/corpus.json --repeat 5
 # Regenerate audio fixtures (no microphone needed — uses `say`):
 tools/make-audio-fixtures.sh
 
+# Real dictation → corpus. Turn capture on in Settings first (GDR-0004),
+# dictate, then import. Checks are left empty for you to fill in.
+swift run spoke-eval --import ~/Library/Application\ Support/Spoke/dictations.jsonl \
+  --out Fixtures/real-corpus.json
+
+# See partial results arrive at microphone pace:
+swift run spoke-eval --stream Fixtures/audio/03-run-on.aiff
+
 # Lint (config in .swift-format, toolchain-bundled tool):
 xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
 
@@ -142,6 +150,9 @@ product. Records are immutable — supersede instead of editing.
 1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
    `spoke-eval` — see ADR-0004, and never trust a single run.
 2. Auto-learn vocabulary: diff user edits made shortly after insertion.
+   Note the transcriber can land far from the term ("SpokeKit" → "spell kid"),
+   so vocabulary may need to reach it via `SFCustomLanguageModelData` rather
+   than only the polisher's prompt.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode: select text + different hotkey → "make this shorter".
 5. Notarize and distribute directly; build out `web/`.

@@ -29,6 +29,11 @@ struct SpokeEval {
             return
         }
 
+        if let path = value(for: "--import", in: arguments) {
+            try runImport(path: path, output: value(for: "--out", in: arguments))
+            return
+        }
+
         if let path = value(for: "--stream", in: arguments) {
             try await runStream(path: path)
             return
@@ -214,6 +219,31 @@ struct SpokeEval {
         }
     }
 
+    /// Converts a captured dictation log into a corpus skeleton.
+    private static func runImport(path: String, output: String?) throws {
+        let contents = try String(contentsOf: URL(filePath: path), encoding: .utf8)
+        let records = CorpusImport.records(fromJSONLines: contents)
+        let corpus = CorpusImport.corpus(from: records)
+
+        guard !corpus.cases.isEmpty else {
+            printErr("no usable dictations in \(path)")
+            exit(1)
+        }
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        let data = try encoder.encode(corpus)
+
+        guard let output else {
+            print(String(decoding: data, as: UTF8.self))
+            return
+        }
+        try data.write(to: URL(filePath: output))
+        print("\(corpus.cases.count) cases → \(output)")
+        print("Now add `forbidden` and `required` to each: only you know which")
+        print("words had to survive and which filler had to go.")
+    }
+
     // MARK: - Plumbing
 
     private static let usage = """
@@ -224,6 +254,7 @@ struct SpokeEval {
           spoke-eval --audio <file.aiff>
           spoke-eval --audio-dir <dir>      one Transcriber, every file
           spoke-eval --stream <file.aiff>   microphone pace, timed snapshots
+          spoke-eval --import <log.jsonl> [--out corpus.json]
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.

@@ -4,6 +4,7 @@ import SwiftUI
 struct SettingsView: View {
     let controller: DictationController
     @State private var newTerm = ""
+    @State private var capturedCount = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -48,9 +49,66 @@ struct SettingsView: View {
             .frame(minHeight: 160)
 
             Spacer()
+
+            Divider()
+
+            captureSection
         }
         .padding(20)
-        .frame(width: 420, height: 460)
+        .frame(width: 420, height: 620)
+        .onAppear { capturedCount = controller.capturedDictationCount() }
+    }
+
+    /// Opt-in recording of real dictations, for tuning the polisher against
+    /// speech nobody had to write by hand. Deliberately explicit about what it
+    /// writes and where — see GDR-0004.
+    private var captureSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle("Save my dictations for tuning", isOn: capture)
+                .font(.headline)
+
+            Text(
+                """
+                Writes what you say, and what Spoke pasted, to a file on this \
+                Mac. Nothing is uploaded. Useful for improving the cleanup; \
+                leave it off if you'd rather Spoke kept no record.
+                """
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            if controller.isCapturingDictations || capturedCount > 0 {
+                HStack {
+                    Text("\(capturedCount) saved")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
+
+                    Button("Show in Finder") {
+                        NSWorkspace.shared.activateFileViewerSelecting([controller.captureFileURL])
+                    }
+                    .disabled(capturedCount == 0)
+
+                    Button("Delete All", role: .destructive) {
+                        controller.deleteCapturedDictations()
+                        capturedCount = 0
+                    }
+                    .disabled(capturedCount == 0)
+                }
+                .buttonStyle(.link)
+            }
+        }
+    }
+
+    private var capture: Binding<Bool> {
+        Binding(
+            get: { controller.isCapturingDictations },
+            set: { newValue in
+                controller.isCapturingDictations = newValue
+                capturedCount = controller.capturedDictationCount()
+            }
+        )
     }
 
     private func addTerm() {

@@ -39,3 +39,4 @@ Two kinds of records live here. The boundary rule:
 | [0001](gdr/0001-local-only-free-no-account.md) | Local-only, free, no account | Accepted |
 | [0002](gdr/0002-english-first-macos-only.md) | English-first, macOS-only | Accepted |
 | [0003](gdr/0003-structural-spoken-commands-only.md) | Spoken commands: structure only, never punctuation | Accepted |
+| [0004](gdr/0004-opt-in-local-dictation-capture.md) | Dictation capture is opt-in, local, and deletable | Accepted |

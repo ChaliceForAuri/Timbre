@@ -19,7 +19,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA0000000000000000000008 /* Sources */ = {isa = PBXFileSystemSynchronizedRootGroup; path = Sources; sourceTree = "<group>"; };
+		AA0000000000000000000008 /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Sources;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +162,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AA0000000000000000000007 /* Spoke.xcconfig */;
 			buildSettings = {
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Spoke listens when you hold the dictation key.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Spoke transcribes your speech on-device.";
+				PRODUCT_BUNDLE_IDENTIFIER = dev.hugopretorius.Spoke;
 			};
 			name = Debug;
 		};
@@ -165,26 +174,31 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AA0000000000000000000007 /* Spoke.xcconfig */;
 			buildSettings = {
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Spoke listens when you hold the dictation key.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Spoke transcribes your speech on-device.";
+				PRODUCT_BUNDLE_IDENTIFIER = dev.hugopretorius.Spoke;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA0000000000000000000012 /* Build configuration list for PBXProject "Spoke" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AA0000000000000000000014 /* Debug */,
-				AA0000000000000000000015 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		AA000000000000000000000E /* Build configuration list for PBXNativeTarget "Spoke" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA0000000000000000000016 /* Debug */,
 				AA0000000000000000000017 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000012 /* Build configuration list for PBXProject "Spoke" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000014 /* Debug */,
+				AA0000000000000000000015 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
