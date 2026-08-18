@@ -1,7 +1,7 @@
 // Target-level settings for the Spoke app.
 
 PRODUCT_NAME = $(TARGET_NAME)
-PRODUCT_BUNDLE_IDENTIFIER = com.hugopretorius.Spoke
+PRODUCT_BUNDLE_IDENTIFIER = dev.hugopretorius.Spoke
 
 // The Info.plist is generated from these keys — no plist file to drift.
 GENERATE_INFOPLIST_FILE = YES
@@ -17,6 +17,10 @@ INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = Spoke transcribes your speec
 // costs nothing in development.
 ENABLE_APP_SANDBOX = NO
 ENABLE_HARDENED_RUNTIME = YES
+
+// The hardened runtime gates the microphone behind an entitlement; the
+// Info.plist usage string alone is not enough. See Spoke.entitlements.
+CODE_SIGN_ENTITLEMENTS = Spoke.entitlements
 
 LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks
 COMBINE_HIDPI_IMAGES = YES

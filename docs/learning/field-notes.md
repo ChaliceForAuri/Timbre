@@ -9,6 +9,44 @@ Newest first. Append; don't rewrite history.
 
 ---
 
+## 2026-08-18 — The hardened runtime gates the microphone, silently
+
+Symptom: no microphone prompt, and Spoke absent from System Settings ›
+Privacy & Security › Microphone entirely — not listed and switched off,
+*absent*. No TCC log entries either.
+
+Two separate causes, found in order:
+
+**1. One permission hiding another.** `bootstrap()` checked Accessibility
+first and returned early, so `AVCaptureDevice.requestAccess(for: .audio)` was
+never reached. macOS lists an app in that pane only once it has asked, so an
+app that never asks is invisible there. Fixed by requesting the microphone
+unconditionally and reporting all missing permissions together
+(`StartupGate`).
+
+**2. The missing entitlement.** With `ENABLE_HARDENED_RUNTIME = YES` and no
+entitlements file, the app was signed with only `get-task-allow`. The
+hardened runtime blocks microphone access unless
+**`com.apple.security.device.audio-input`** is present — and it blocks it
+*before TCC is consulted*, so `requestAccess` returns `false` immediately with
+no prompt, no pane entry, and nothing in the TCC log.
+
+`NSMicrophoneUsageDescription` in Info.plist is **necessary but not
+sufficient**. The usage string controls what the prompt says; the entitlement
+controls whether there is a prompt at all. Sandbox-off does not exempt you —
+this is the hardened runtime, which is a separate mechanism.
+
+Diagnostic worth remembering:
+
+```bash
+codesign -d --entitlements - --xml YourApp.app | plutil -p -
+```
+
+If the only entry is `get-task-allow`, the app has no resource entitlements at
+all, whatever the Info.plist says.
+
+---
+
 ## 2026-08-18 — What the on-device model will and won't do
 
 Measured with `spoke-eval` (see [ADR-0004](../decisions/adr/0004-evaluation-harness-seam.md)),

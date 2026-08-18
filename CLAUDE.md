@@ -104,6 +104,10 @@ everything else is internal. Keep it that way.
 ## Permissions (already configured in xcconfig)
 
 - App Sandbox **off** (blocks synthetic ⌘V — ADR-0003); hardened runtime on
+- **`Spoke.entitlements` carries `com.apple.security.device.audio-input`.**
+  The hardened runtime gates the mic behind it; the Info.plist usage string
+  alone is not enough. Without it `requestAccess` returns false with no
+  prompt and the app never appears in Privacy & Security › Microphone
 - `INFOPLIST_KEY_*` carries mic + speech strings and `LSUIElement`
 - Accessibility granted manually; **only read at launch** — restart the app
   after granting
