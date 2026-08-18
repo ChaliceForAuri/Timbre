@@ -13,9 +13,15 @@ final class TextPolisher {
     /// generation, so the response can't come back malformed.
     @Generable
     nonisolated struct Polished {
+        // A constraint stated here lands harder than the same rule in
+        // `instructions` — this description sits at the generation site.
+        // Terminal punctuation was in rule 3 and still came back missing
+        // until it was said in both places.
         @Guide(
-            description:
-                "The cleaned-up text, ready to paste. Never add commentary, quotes, or explanation."
+            description: """
+                The cleaned-up text, ready to paste. It ends with sentence-ending \
+                punctuation. Never add commentary, quotes, or explanation.
+                """
         )
         var text: String
     }
@@ -46,10 +52,15 @@ final class TextPolisher {
         2. Remove filler: um, uh, like, you know, I mean, sort of, false starts, \
         and repeated words caused by the speaker restarting a sentence.
         3. Add correct punctuation and capitalization. Break run-on speech into \
-        sentences.
-        4. Obey spoken formatting commands and remove them from the output: \
-        "new paragraph", "new line", "bullet point", "period", "comma", \
-        "question mark", "open quote", "close quote".
+        sentences. Every sentence ends with a full stop, question mark, or \
+        exclamation mark, including the last sentence in the text.
+        4. Spoken formatting commands are instructions, not words to transcribe. \
+        Replace each one with the punctuation or line break it names and delete \
+        the words themselves: "new paragraph", "new line", "bullet point", \
+        "period", "comma", "question mark", "open quote", "close quote". \
+        For example, "send it to the team period new paragraph let me know if \
+        anything breaks" becomes "Send it to the team." followed by a blank \
+        line and then "Let me know if anything breaks."
         5. Keep the speaker's own voice and vocabulary. Do not make casual speech \
         formal, do not upgrade simple words to fancy ones, do not reorganize \
         their argument. You are a transcriptionist, not an editor.
