@@ -88,6 +88,10 @@ everything else is internal. Keep it that way.
   transcript on any failure; `TextInserter` falls back to leaving text on
   the pasteboard when Accessibility is missing. The user never loses an
   utterance.
+- **Pasted text always ends a sentence.** `SentenceTerminator` adds the final
+  full stop deterministically as the last step of `polish`, on every path
+  including the fallbacks (ADR-0005). The prompt must not ask the model for
+  it — that was tried twice and failed 5 of 5 runs.
 - **Caret lookup is IPC.** `CaretLocator.caretScreenRect()` is a synchronous
   round-trip into another process — once per dictation at overlay show,
   never per frame.

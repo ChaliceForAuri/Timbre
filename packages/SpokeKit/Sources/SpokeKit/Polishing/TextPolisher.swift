@@ -13,15 +13,9 @@ final class TextPolisher {
     /// generation, so the response can't come back malformed.
     @Generable
     nonisolated struct Polished {
-        // A constraint stated here lands harder than the same rule in
-        // `instructions` — this description sits at the generation site.
-        // Terminal punctuation was in rule 3 and still came back missing
-        // until it was said in both places.
         @Guide(
-            description: """
-                The cleaned-up text, ready to paste. It ends with sentence-ending \
-                punctuation. Never add commentary, quotes, or explanation.
-                """
+            description:
+                "The cleaned-up text, ready to paste. Never add commentary, quotes, or explanation."
         )
         var text: String
     }
@@ -52,8 +46,8 @@ final class TextPolisher {
         2. Remove filler: um, uh, like, you know, I mean, sort of, false starts, \
         and repeated words caused by the speaker restarting a sentence.
         3. Add correct punctuation and capitalization. Break run-on speech into \
-        sentences. Every sentence ends with a full stop, question mark, or \
-        exclamation mark, including the last sentence in the text.
+        sentences. (The final full stop is added deterministically afterwards, \
+        so it is not your concern — see SentenceTerminator.)
         4. Spoken formatting commands are instructions, not words to transcribe. \
         Replace each one with the punctuation or line break it names and delete \
         the words themselves: "new paragraph", "new line", "bullet point", \
@@ -84,6 +78,22 @@ final class TextPolisher {
     func polish(_ raw: String, appContext: String? = nil, vocabulary: [String] = []) async -> String {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return "" }
+
+        // One exit point, so the terminal-punctuation guarantee holds on every
+        // path — including the fallbacks, where the model never ran. ADR-0005.
+        return SentenceTerminator.terminated(
+            await modelCleanup(of: trimmed, appContext: appContext, vocabulary: vocabulary)
+        )
+    }
+
+    /// The model half of `polish`. Returns `trimmed` unchanged whenever the
+    /// model is unavailable, errors, or produces something the guardrail
+    /// rejects — the user never loses an utterance to cleverness.
+    private func modelCleanup(
+        of trimmed: String,
+        appContext: String?,
+        vocabulary: [String]
+    ) async -> String {
         guard Self.availability.isReady else { return trimmed }
 
         let prompt = Self.makePrompt(transcript: trimmed, appContext: appContext, vocabulary: vocabulary)

@@ -29,6 +29,7 @@ Two kinds of records live here. The boundary rule:
 | [0002](adr/0002-package-plus-shell-monorepo.md) | Monorepo: SpokeKit package + thin Xcode shell, no generator tooling | Accepted |
 | [0003](adr/0003-insertion-via-pasteboard-paste.md) | Text insertion via pasteboard + synthetic ⌘V | Accepted |
 | [0004](adr/0004-evaluation-harness-seam.md) | A second public seam for the evaluation harness | Accepted |
+| [0005](adr/0005-deterministic-sentence-termination.md) | Terminal punctuation is deterministic, not the model's job | Accepted |
 
 ### GDRs
 
