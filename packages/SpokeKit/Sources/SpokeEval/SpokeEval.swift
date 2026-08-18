@@ -1,0 +1,185 @@
+import Foundation
+import SpokeKit
+
+/// Runs dictation samples through the real polisher and reports which
+/// properties held.
+///
+/// This exists because polisher tuning is otherwise unmeasurable: with live
+/// speech the input changes every take, so you can never tell whether a prompt
+/// edit helped or you just spoke more clearly. A fixed corpus makes the change
+/// the only variable.
+@main
+struct SpokeEval {
+
+    static func main() async {
+        do {
+            try await run(arguments: Array(CommandLine.arguments.dropFirst()))
+        } catch {
+            printErr("spoke-eval: \(error.localizedDescription)")
+            printErr("  detail: \(error)")
+            exit(1)
+        }
+    }
+
+    // MARK: - Dispatch
+
+    private static func run(arguments: [String]) async throws {
+        if arguments.contains("--help") || arguments.isEmpty {
+            print(usage)
+            return
+        }
+
+        if let path = value(for: "--audio", in: arguments) {
+            try await runAudio(path: path)
+            return
+        }
+
+        guard let corpusPath = arguments.first(where: { !$0.hasPrefix("--") }) else {
+            print(usage)
+            return
+        }
+        try await runCorpus(
+            path: corpusPath,
+            jsonOutput: value(for: "--json", in: arguments),
+            repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1
+        )
+    }
+
+    // MARK: - Corpus mode
+
+    private static func runCorpus(path: String, jsonOutput: String?, repeats: Int) async throws {
+        let corpus = try JSONDecoder().decode(
+            DictationCorpus.self,
+            from: try Data(contentsOf: URL(filePath: path))
+        )
+
+        let availability = SpokeEvaluation.polisherAvailability
+        print("spoke-eval — \(corpus.cases.count) cases")
+        print("model: \(availability.reason ?? "available")")
+        if !availability.isReady {
+            // Without the model, polish() returns its input unchanged. Every
+            // case would "run" and report meaningless results, so stop.
+            printErr("\nThe on-device model is unavailable, so nothing would be polished.")
+            exit(2)
+        }
+        print("")
+
+        var allRuns: [CaseOutcome] = []
+        var solidCases = 0
+
+        for testCase in corpus.cases {
+            var runs: [CaseOutcome] = []
+            for _ in 0..<repeats {
+                let output = await SpokeEvaluation.polish(
+                    testCase.transcript,
+                    appContext: testCase.appContext,
+                    vocabulary: testCase.vocabulary
+                )
+                runs.append(
+                    CaseOutcome(
+                        id: testCase.id,
+                        input: testCase.transcript,
+                        output: output,
+                        failures: PolishChecks.failures(for: testCase, output: output)
+                    )
+                )
+            }
+            allRuns.append(contentsOf: runs)
+            if runs.allSatisfy(\.passed) { solidCases += 1 }
+            report(testCase: testCase, runs: runs)
+        }
+
+        let passedRuns = allRuns.count(where: \.passed)
+        print("cases passing every run: \(solidCases)/\(corpus.cases.count)")
+        print("individual runs passing: \(passedRuns)/\(allRuns.count)")
+        let passed = solidCases
+        let outcomes = corpus.cases
+
+        if let jsonOutput {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            try encoder.encode(allRuns).write(to: URL(filePath: jsonOutput))
+            print("wrote \(jsonOutput)")
+        }
+
+        if passed != outcomes.count { exit(1) }
+    }
+
+    /// Prints one case, folding its repeats together. Distinct outputs are
+    /// listed separately: seeing the model disagree with itself across runs is
+    /// the signal that a prompt is underspecified rather than wrong.
+    private static func report(testCase: DictationCase, runs: [CaseOutcome]) {
+        let passes = runs.count(where: \.passed)
+        let mark = passes == runs.count ? "✓" : "✗"
+        print("\(mark) \(testCase.id)  \(passes)/\(runs.count)")
+        if let note = testCase.note { print("     \(note)") }
+        print("  in   \(testCase.transcript)")
+
+        for output in Set(runs.map(\.output)).sorted() {
+            print("  out  \(singleLine(output))")
+        }
+
+        var tally: [String: Int] = [:]
+        for run in runs {
+            for failure in run.failures { tally[failure, default: 0] += 1 }
+        }
+        for (failure, count) in tally.sorted(by: { $0.key < $1.key }) {
+            let suffix = runs.count > 1 ? "  (\(count) of \(runs.count))" : ""
+            print("  ·    \(failure)\(suffix)")
+        }
+        print("")
+    }
+
+    /// Keeps a multi-line polish from wrecking the report's alignment.
+    private static func singleLine(_ text: String) -> String {
+        text.split(separator: "\n", omittingEmptySubsequences: false)
+            .joined(separator: " ⏎ ")
+    }
+
+    // MARK: - Audio mode
+
+    private static func runAudio(path: String) async throws {
+        let url = URL(filePath: path)
+        print("transcribing \(url.lastPathComponent)…")
+
+        let transcript = try await SpokeEvaluation.transcribe(audioFileAt: url)
+        print("  transcript  \(transcript)")
+
+        guard SpokeEvaluation.polisherAvailability.isReady else {
+            printErr("  (model unavailable — transcript not polished)")
+            return
+        }
+        print("  polished    \(await SpokeEvaluation.polish(transcript))")
+    }
+
+    // MARK: - Plumbing
+
+    private static let usage = """
+        spoke-eval — measure Spoke's cleanup against a fixed corpus
+
+        USAGE
+          spoke-eval <corpus.json> [--repeat <n>] [--json <out.json>]
+          spoke-eval --audio <file.aiff>
+
+        Exits non-zero when a case fails, so it can gate CI once the model is
+        available on the runner.
+
+        The model is stochastic, so a single run is not a measurement. Use
+        --repeat 3 or more before believing a prompt change helped: a case that
+        passes 2 of 3 has an underspecified instruction, not a fixed one.
+
+        Tuning loop: run it, edit the instructions in TextPolisher, run it
+        again. Use --json on both runs and diff them to see what moved.
+        """
+
+    private static func value(for flag: String, in arguments: [String]) -> String? {
+        guard let index = arguments.firstIndex(of: flag), index + 1 < arguments.count else {
+            return nil
+        }
+        return arguments[index + 1]
+    }
+
+    private static func printErr(_ message: String) {
+        FileHandle.standardError.write(Data("\(message)\n".utf8))
+    }
+}

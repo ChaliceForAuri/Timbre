@@ -31,6 +31,13 @@ web/                 Website placeholder. Toolchain must stay inside web/.
 # Fast loop — the package is where the logic lives:
 swift test --package-path packages/SpokeKit
 
+# Measure the polisher against the fixed corpus (ADR-0004). The model is
+# stochastic: never judge a prompt change on a single run.
+cd packages/SpokeKit && swift run spoke-eval Fixtures/corpus.json --repeat 5
+
+# Regenerate audio fixtures (no microphone needed — uses `say`):
+tools/make-audio-fixtures.sh
+
 # Lint (config in .swift-format, toolchain-bundled tool):
 xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
 
@@ -112,7 +119,8 @@ product. Records are immutable — supersede instead of editing.
 
 ## Roadmap
 
-1. Tune the `TextPolisher` instructions against real dictation. Highest leverage.
+1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
+   `spoke-eval` — see ADR-0004, and never trust a single run.
 2. Auto-learn vocabulary: diff user edits made shortly after insertion.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode: select text + different hotkey → "make this shorter".

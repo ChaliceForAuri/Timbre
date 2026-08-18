@@ -17,3 +17,4 @@ apps/Spoke/Config/Local.xcconfig
 # Web (toolchain lives entirely under web/)
 web/node_modules/
 web/dist/
+packages/SpokeKit/Fixtures/audio/

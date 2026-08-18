@@ -28,6 +28,7 @@ Two kinds of records live here. The boundary rule:
 | [0001](adr/0001-swift-6-language-mode.md) | Swift 6 language mode with default MainActor isolation | Accepted |
 | [0002](adr/0002-package-plus-shell-monorepo.md) | Monorepo: SpokeKit package + thin Xcode shell, no generator tooling | Accepted |
 | [0003](adr/0003-insertion-via-pasteboard-paste.md) | Text insertion via pasteboard + synthetic ⌘V | Accepted |
+| [0004](adr/0004-evaluation-harness-seam.md) | A second public seam for the evaluation harness | Accepted |
 
 ### GDRs
 

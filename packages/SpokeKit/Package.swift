@@ -13,11 +13,17 @@ let package = Package(
     name: "SpokeKit",
     platforms: [.macOS(.v26)],
     products: [
-        .library(name: "SpokeKit", targets: ["SpokeKit"])
+        .library(name: "SpokeKit", targets: ["SpokeKit"]),
+        .executable(name: "spoke-eval", targets: ["SpokeEval"]),
     ],
     targets: [
         .target(
             name: "SpokeKit",
+            swiftSettings: concurrencySettings
+        ),
+        .executableTarget(
+            name: "SpokeEval",
+            dependencies: ["SpokeKit"],
             swiftSettings: concurrencySettings
         ),
         .testTarget(
