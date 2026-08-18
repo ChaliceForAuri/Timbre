@@ -1,0 +1,22 @@
+Copyright (c) 2026 Hugo Pretorius. All rights reserved.
+
+This source code is made available for reference. No licence to use, copy,
+modify, distribute, or create derivative works is granted at this time.
+
+WHY IT IS WRITTEN THIS WAY
+--------------------------
+
+Licensing is one of the few decisions in this repository that cannot be
+undone. Code released under a permissive licence stays released under it:
+that commit can be forked, rebranded, and sold, forever, with no recourse.
+Restrictive terms can always be loosened later. The reverse is impossible.
+
+So the terms start closed and deliberately un-final, to be settled before the
+first public release rather than by accident on the first push.
+
+Note that this says nothing about what Spoke costs its users. The product is
+free, runs entirely on-device, and requires no account (GDR-0001). That is a
+promise about price and privacy, not about source licensing, and the two are
+independent.
+
+See docs/decisions/gdr/0005-licensing-preserves-optionality.md.
