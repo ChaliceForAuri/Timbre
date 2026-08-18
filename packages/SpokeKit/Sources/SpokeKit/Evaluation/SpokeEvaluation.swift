@@ -42,6 +42,31 @@ public enum SpokeEvaluation {
         return try await transcriber.finishDictation()
     }
 
+    /// Transcribes several files through **one** `Transcriber`, the way the
+    /// app reuses it across dictations.
+    ///
+    /// This is the regression harness for ADR-0006: a single-use analyzer that
+    /// is not rebuilt per session transcribes the first file and returns empty
+    /// for every one after it, silently. One file passing proves nothing.
+    public static func transcribeAll(audioFilesAt urls: [URL]) async throws -> [(
+        name: String, transcript: String
+    )] {
+        let transcriber = Transcriber()
+        try await transcriber.prepare()
+
+        guard let format = await transcriber.analyzerFormat else {
+            throw EvaluationError.analyzerFormatUnavailable
+        }
+
+        var results: [(name: String, transcript: String)] = []
+        for url in urls {
+            let input = try AudioFileInput.stream(contentsOf: url, to: format)
+            _ = try await transcriber.startDictation(consuming: input)
+            results.append((url.lastPathComponent, try await transcriber.finishDictation()))
+        }
+        return results
+    }
+
     public enum EvaluationError: LocalizedError {
         case analyzerFormatUnavailable
 

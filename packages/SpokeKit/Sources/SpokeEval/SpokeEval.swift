@@ -29,6 +29,11 @@ struct SpokeEval {
             return
         }
 
+        if let directory = value(for: "--audio-dir", in: arguments) {
+            try await runAudioDirectory(path: directory)
+            return
+        }
+
         if let path = value(for: "--audio", in: arguments) {
             try await runAudio(path: path)
             return
@@ -152,6 +157,33 @@ struct SpokeEval {
         print("  polished    \(await SpokeEvaluation.polish(transcript))")
     }
 
+    /// Transcribes every fixture in a directory through one Transcriber —
+    /// the reuse the app depends on and that a single file cannot exercise.
+    private static func runAudioDirectory(path: String) async throws {
+        let directory = URL(filePath: path)
+        let files = try FileManager.default
+            .contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { ["aiff", "aif", "wav", "caf", "m4a"].contains($0.pathExtension.lowercased()) }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+
+        guard !files.isEmpty else {
+            printErr("no audio files in \(path)")
+            exit(1)
+        }
+        print("transcribing \(files.count) files through one Transcriber\n")
+
+        var empty = 0
+        for (name, transcript) in try await SpokeEvaluation.transcribeAll(audioFilesAt: files) {
+            let ok = !transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            if !ok { empty += 1 }
+            print("\(ok ? "✓" : "✗") \(name)")
+            print("   \(transcript.isEmpty ? "(empty)" : transcript)\n")
+        }
+
+        print("\(files.count - empty)/\(files.count) produced a transcript")
+        if empty > 0 { exit(1) }
+    }
+
     // MARK: - Plumbing
 
     private static let usage = """
@@ -160,6 +192,7 @@ struct SpokeEval {
         USAGE
           spoke-eval <corpus.json> [--repeat <n>] [--json <out.json>]
           spoke-eval --audio <file.aiff>
+          spoke-eval --audio-dir <dir>      one Transcriber, every file
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.

@@ -6,10 +6,26 @@ import Speech
 ///
 /// An `actor` because its state is touched from wherever the analyzer's
 /// result stream resumes; the compiler serializes access for us.
+///
+/// **A `SpeechAnalyzer` is single-use.** `finalizeAndFinishThroughEndOfInput()`
+/// ends it permanently — that is what the `AndFinish` in the name means, and
+/// the API offers a plain `finalize(through:)` for the case where you want to
+/// keep going. The module's `results` sequence terminates along with it. So an
+/// analyzer reused for a second dictation accepts the input, produces nothing,
+/// and reports no error: the user holds the key, sees the overlay, speaks, and
+/// gets silence. Every dictation therefore builds a fresh analyzer *and* a
+/// fresh transcriber module. See ADR-0006.
 actor Transcriber {
 
-    private var analyzer: SpeechAnalyzer?
-    private var transcriber: SpeechTranscriber?
+    /// One dictation's worth of speech machinery. Both halves are single-use.
+    private struct Session {
+        let analyzer: SpeechAnalyzer
+        let transcriber: SpeechTranscriber
+    }
+
+    private var locale: Locale?
+    private var ready: Session?
+    private var active: Session?
     private var resultsTask: Task<Void, Never>?
     private var accumulator = TranscriptAccumulator()
 
@@ -23,48 +39,62 @@ actor Transcriber {
         await SpeechTranscriber.supportedLocale(equivalentTo: locale) != nil
     }
 
-    /// Downloads the language model if needed and boots the analyzer.
-    /// Call once at launch, not on the hotkey press — the first run may pull
-    /// down model assets.
-    func prepare(locale: Locale = .current) async throws {
+    /// Resolves the locale, installs model assets, and builds the first
+    /// session. Call once at launch: asset installation may download, which is
+    /// not something to do on a hotkey press.
+    func prepare(locale requested: Locale = .current) async throws {
         // Resolve to a locale the model actually ships, rather than passing
         // Locale.current blindly (en_GB vs en_US style mismatches fail quietly).
-        guard let resolved = await SpeechTranscriber.supportedLocale(equivalentTo: locale) else {
-            throw TranscriberError.localeUnsupported(locale.identifier)
+        guard let resolved = await SpeechTranscriber.supportedLocale(equivalentTo: requested) else {
+            throw TranscriberError.localeUnsupported(requested.identifier)
         }
+        locale = resolved
 
-        // `.progressiveTranscription` = stream volatile results as the user
-        // speaks, firming them up as the model gains confidence.
-        let transcriber = SpeechTranscriber(locale: resolved, preset: .progressiveTranscription)
-        self.transcriber = transcriber
+        let session = Self.makeSession(locale: resolved)
 
         // Model assets are downloaded on demand, per language.
-        if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
+        if let request = try await AssetInventory.assetInstallationRequest(
+            supporting: [session.transcriber]
+        ) {
             try await request.downloadAndInstall()
         }
 
-        analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber])
-        analyzer = SpeechAnalyzer(modules: [transcriber])
+        analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(
+            compatibleWith: [session.transcriber]
+        )
+        ready = session
+    }
+
+    /// `.progressiveTranscription` streams volatile results as the user
+    /// speaks, firming them up as the model gains confidence.
+    private static func makeSession(locale: Locale) -> Session {
+        let transcriber = SpeechTranscriber(locale: locale, preset: .progressiveTranscription)
+        return Session(analyzer: SpeechAnalyzer(modules: [transcriber]), transcriber: transcriber)
     }
 
     // MARK: - Dictation lifecycle
 
-    /// Begins a dictation session consuming model-ready audio, and returns a
-    /// stream of transcript snapshots for live display. The snapshot stream
-    /// finishes when the session does.
-    func startDictation(consuming input: AsyncStream<AnalyzerInput>) async throws -> AsyncStream<String> {
-        guard let analyzer, let transcriber else {
-            throw TranscriberError.notPrepared
-        }
+    /// Begins a dictation consuming model-ready audio, and returns a stream of
+    /// transcript snapshots for live display. The snapshot stream finishes
+    /// when the session does.
+    func startDictation(consuming input: AsyncStream<AnalyzerInput>) async throws -> AsyncStream<
+        String
+    > {
+        guard let locale else { throw TranscriberError.notPrepared }
 
+        // Normally already built — by prepare(), or by the previous
+        // finishDictation() — so the key press pays nothing for it.
+        let session = ready ?? Self.makeSession(locale: locale)
+        ready = nil
+        active = session
         accumulator = TranscriptAccumulator()
 
-        try await analyzer.start(inputSequence: input)
+        try await session.analyzer.start(inputSequence: input)
 
         let (snapshots, continuation) = AsyncStream<String>.makeStream()
         resultsTask = Task {
             do {
-                for try await result in transcriber.results {
+                for try await result in session.transcriber.results {
                     accumulator.apply(String(result.text.characters), isFinal: result.isFinal)
                     continuation.yield(accumulator.currentText)
                 }
@@ -81,18 +111,25 @@ actor Transcriber {
     /// Ends the session and returns the complete transcript. The audio input
     /// stream must already be finished (i.e. `AudioCapture.stop()` first).
     func finishDictation() async throws -> String {
-        // Flushes any audio still in the model's buffer, so the last word or
-        // two isn't lost.
-        try await analyzer?.finalizeAndFinishThroughEndOfInput()
+        guard let session = active else { return "" }
 
-        // The results sequence terminates once the analyzer finishes; await
-        // it so the final result is applied before we read the transcript.
+        // Flushes audio still in the model's buffer, so the last word or two
+        // isn't lost — and finishes this analyzer for good.
+        try await session.analyzer.finalizeAndFinishThroughEndOfInput()
+
+        // The results sequence terminates once the analyzer finishes; await it
+        // so the final result is applied before we read the transcript.
         // Cancelling instead could drop the tail of the utterance.
         await resultsTask?.value
         resultsTask = nil
+        active = nil
 
         let text = accumulator.currentText
         accumulator = TranscriptAccumulator()
+
+        // Build the next one now rather than on the next key press.
+        if let locale { ready = Self.makeSession(locale: locale) }
+
         return text
     }
 

@@ -9,6 +9,55 @@ Newest first. Append; don't rewrite history.
 
 ---
 
+## 2026-08-18 — A SpeechAnalyzer is single-use, and says nothing about it
+
+Symptom: the first dictation worked. Every one after it showed the overlay,
+metered the microphone, and produced no text — no error anywhere.
+
+`finalizeAndFinishThroughEndOfInput()` ends the analyzer **permanently**. The
+`AndFinish` is not decoration; the API offers `finalize(through:)` for the
+case where you want to keep going:
+
+```
+func finalize(through:)                      // finalize, keep going
+func finalizeAndFinishThroughEndOfInput()    // finalize and finish
+```
+
+A finished analyzer still accepts `start(inputSequence:)` without throwing. It
+simply never emits a result, and the module's `results` sequence has already
+terminated, so the consuming loop exits instantly. Every failure path is
+silent.
+
+Fix: rebuild the analyzer *and* its transcriber module per dictation, keeping
+only asset installation and format resolution in `prepare()`. Build the next
+session at the end of the previous one so the key press pays nothing.
+
+**The general lesson is about the test, not the fix.** A test that transcribes
+one file passes against the broken code. The bug only exists on the *second*
+use, so the harness had to reuse one `Transcriber` across many files —
+`spoke-eval --audio-dir`. When a bug is about reuse, exercising the thing once
+is not a test.
+
+### Bonus: what real transcripts actually look like
+
+Running the whole fixture set through confirmed the earlier finding and added
+detail. `SpeechTranscriber` output is already punctuated and capitalised, and
+it makes its own choices the polisher then inherits:
+
+| spoken | transcribed |
+|---|---|
+| "second option" | "2nd option" |
+| "SpokeKit" | "spell kid" |
+| "The Victorian period…" | "Victorian period…" (dropped the article) |
+
+"spell kid" is worth noting: the vocabulary feature assumes the polisher can
+recover a known term from a near-miss, but the transcriber can land far enough
+away that there is nothing recognisable to correct. Vocabulary may need to
+reach the *transcriber* (via `SFCustomLanguageModelData`) rather than only the
+polisher's prompt.
+
+---
+
 ## 2026-08-18 — The hardened runtime gates the microphone, silently
 
 Symptom: no microphone prompt, and Spoke absent from System Settings ›

@@ -30,6 +30,7 @@ Two kinds of records live here. The boundary rule:
 | [0003](adr/0003-insertion-via-pasteboard-paste.md) | Text insertion via pasteboard + synthetic ⌘V | Accepted |
 | [0004](adr/0004-evaluation-harness-seam.md) | A second public seam for the evaluation harness | Accepted |
 | [0005](adr/0005-deterministic-sentence-termination.md) | Terminal punctuation is deterministic, not the model's job | Accepted |
+| [0006](adr/0006-speech-sessions-are-single-use.md) | A speech session is single-use; rebuild it per dictation | Accepted |
 
 ### GDRs
 

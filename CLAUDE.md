@@ -92,6 +92,12 @@ everything else is internal. Keep it that way.
   full stop deterministically as the last step of `polish`, on every path
   including the fallbacks (ADR-0005). The prompt must not ask the model for
   it — that was tried twice and failed 5 of 5 runs.
+- **A speech session is single-use** (ADR-0006).
+  `finalizeAndFinishThroughEndOfInput()` ends the `SpeechAnalyzer` for good
+  and terminates the module's `results` sequence. `Transcriber` rebuilds both
+  per dictation. Reusing them makes only the *first* dictation work, silently.
+  Verify with `swift run spoke-eval --audio-dir Fixtures/audio` — one file
+  passes against the broken code.
 - **Caret lookup is IPC.** `CaretLocator.caretScreenRect()` is a synchronous
   round-trip into another process — once per dictation at overlay show,
   never per frame.
