@@ -25,6 +25,16 @@ final class OverlayController {
     /// must never happen per text update or per audio level.
     private var caretAnchor: NSRect?
 
+    /// Where the pill's bottom-left corner was placed on first layout. Kept
+    /// fixed as the transcript grows: re-deriving it from the new width would
+    /// slide the pill left on every word, which is far more distracting than
+    /// one that simply extends rightward.
+    private var anchorOrigin: NSPoint?
+
+    /// Last size actually applied to the panel, so an unchanged layout doesn't
+    /// re-set the frame.
+    private var appliedSize: NSSize = .zero
+
     // MARK: - Public API
 
     func show(mode: OverlayView.Mode) {
@@ -35,6 +45,8 @@ final class OverlayController {
         text = ""
         levels = Array(repeating: 0, count: Self.waveformWindow)
         caretAnchor = CaretLocator.caretScreenRect()
+        anchorOrigin = nil
+        appliedSize = .zero
 
         let panel = panel ?? makePanel()
         self.panel = panel
@@ -59,12 +71,18 @@ final class OverlayController {
     }
 
     /// Push a new audio level (0...1) into the rolling waveform window.
+    ///
+    /// Redraws without touching the panel's frame. The waveform has a fixed
+    /// size, so levels can never change the layout — and re-setting the frame
+    /// on every buffer (roughly ten times a second) was sampling `fittingSize`
+    /// mid-animation, which both flickered and could shrink the panel around
+    /// the waveform, clipping the live transcript out of view.
     func pushLevel(_ level: Float) {
         levels.append(level)
         if levels.count > Self.waveformWindow {
             levels.removeFirst(levels.count - Self.waveformWindow)
         }
-        render()
+        hostingView?.rootView = currentRootView()
     }
 
     func hide(after delay: Duration = .zero) {
@@ -140,18 +158,41 @@ final class OverlayController {
 
     private func render() {
         hostingView?.rootView = currentRootView()
-        if let panel, panel.isVisible || panel.alphaValue == 0 {
-            position(panel)
-        }
+        resizeIfNeeded()
     }
 
     // MARK: - Positioning
 
-    private func position(_ panel: NSPanel) {
+    /// Applies a new panel size only when the layout genuinely changed.
+    private func resizeIfNeeded() {
+        guard let panel else { return }
+
         panel.layoutIfNeeded()
-        let size = panel.contentView?.fittingSize ?? NSSize(width: 260, height: 44)
+        guard let size = panel.contentView?.fittingSize, size.width > 0, size.height > 0 else {
+            return
+        }
+        guard
+            abs(size.width - appliedSize.width) > 0.5 || abs(size.height - appliedSize.height) > 0.5
+        else { return }
+
+        appliedSize = size
         panel.setContentSize(size)
-        panel.setFrameOrigin(preferredOrigin(for: size))
+
+        // Placed once, then held: the transcript grows rightward from a fixed
+        // corner rather than re-centring under the caret on every word.
+        let origin = anchorOrigin ?? preferredOrigin(for: size)
+        anchorOrigin = origin
+        panel.setFrameOrigin(clampedToScreen(origin, for: size))
+    }
+
+    /// Keeps a frame fully on the active screen, whatever the pill grew to.
+    private func clampedToScreen(_ origin: NSPoint, for size: NSSize) -> NSPoint {
+        let visible = (NSScreen.main ?? NSScreen.screens[0]).visibleFrame
+        let margin: CGFloat = 12
+        return NSPoint(
+            x: min(max(origin.x, visible.minX + margin), visible.maxX - size.width - margin),
+            y: min(max(origin.y, visible.minY + margin), visible.maxY - size.height - margin)
+        )
     }
 
     /// Prefer just below the caret; fall back to above the mouse; clamp to

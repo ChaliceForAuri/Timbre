@@ -67,6 +67,32 @@ public enum SpokeEvaluation {
         return results
     }
 
+    /// Transcribes a file at microphone pace, reporting every intermediate
+    /// snapshot. This is how to tell whether the model streams partial results
+    /// or only reports once at the end — the difference between a live overlay
+    /// and one that stays blank until the user lets go.
+    public static func streamTranscribe(
+        audioFileAt url: URL,
+        onSnapshot: @escaping @Sendable (String) -> Void
+    ) async throws -> String {
+        let transcriber = Transcriber()
+        try await transcriber.prepare()
+
+        guard let format = await transcriber.analyzerFormat else {
+            throw EvaluationError.analyzerFormatUnavailable
+        }
+
+        let input = try AudioFileInput.stream(contentsOf: url, to: format, pacing: .realTime)
+        let snapshots = try await transcriber.startDictation(consuming: input)
+
+        let observer = Task {
+            for await snapshot in snapshots { onSnapshot(snapshot) }
+        }
+        defer { observer.cancel() }
+
+        return try await transcriber.finishDictation()
+    }
+
     public enum EvaluationError: LocalizedError {
         case analyzerFormatUnavailable
 

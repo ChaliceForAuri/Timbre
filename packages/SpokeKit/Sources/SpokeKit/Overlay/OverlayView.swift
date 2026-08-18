@@ -32,7 +32,6 @@ struct OverlayView: View {
                     .truncationMode(.head)  // keep the END visible — that's the newest speech
                     .frame(maxWidth: 320, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
-                    .transition(.opacity)
             }
         }
         .padding(.horizontal, 14)
@@ -48,7 +47,10 @@ struct OverlayView: View {
                 }
                 .shadow(color: .black.opacity(0.25), radius: 12, y: 4)
         }
-        .animation(.smooth(duration: 0.18), value: displayText)
+        // Deliberately no animation on the text. Partial results arrive in
+        // bursts — 31 of them in five seconds is typical — so animating each
+        // one leaves overlapping layout animations permanently in flight, and
+        // the panel samples its size in the middle of them.
         .animation(.smooth(duration: 0.2), value: mode)
     }
 

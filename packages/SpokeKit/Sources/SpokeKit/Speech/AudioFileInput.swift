@@ -15,9 +15,21 @@ import Speech
 /// own isolation story for no benefit at this size.
 nonisolated enum AudioFileInput {
 
+    /// How fast to hand the file to the analyzer.
+    enum Pacing {
+        /// Everything at once. Fine for checking *what* was transcribed.
+        case immediate
+        /// One chunk per chunk-duration, imitating a microphone. Required to
+        /// observe *when* results arrive: fed eagerly, the analyzer can finish
+        /// before it ever emits a volatile result, which makes streaming look
+        /// broken when it isn't.
+        case realTime
+    }
+
     static func stream(
         contentsOf url: URL,
         to analyzerFormat: AVAudioFormat,
+        pacing: Pacing = .immediate,
         chunkFrames: AVAudioFrameCount = 4096
     ) throws -> AsyncStream<AnalyzerInput> {
         let file = try AVAudioFile(forReading: url)
@@ -48,11 +60,30 @@ nonisolated enum AudioFileInput {
             inputs.append(AnalyzerInput(buffer: tail))
         }
 
-        return AsyncStream { continuation in
-            for input in inputs {
-                continuation.yield(input)
+        guard case .realTime = pacing else {
+            return AsyncStream { continuation in
+                for input in inputs {
+                    continuation.yield(input)
+                }
+                continuation.finish()
             }
-            continuation.finish()
+        }
+
+        // Bound immutably before capture: a mutable local crossing into an
+        // escaping closure is exactly what strict concurrency refuses.
+        let paced = inputs
+        let sampleRate = analyzerFormat.sampleRate
+
+        return AsyncStream { continuation in
+            let task = Task { [paced] in
+                for input in paced {
+                    continuation.yield(input)
+                    let seconds = Double(input.buffer.frameLength) / sampleRate
+                    try? await Task.sleep(for: .seconds(seconds))
+                }
+                continuation.finish()
+            }
+            continuation.onTermination = { [task] _ in task.cancel() }
         }
     }
 

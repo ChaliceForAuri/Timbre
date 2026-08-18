@@ -29,6 +29,11 @@ struct SpokeEval {
             return
         }
 
+        if let path = value(for: "--stream", in: arguments) {
+            try await runStream(path: path)
+            return
+        }
+
         if let directory = value(for: "--audio-dir", in: arguments) {
             try await runAudioDirectory(path: directory)
             return
@@ -184,6 +189,31 @@ struct SpokeEval {
         if empty > 0 { exit(1) }
     }
 
+    /// Feeds one file at microphone pace and prints each snapshot as it lands,
+    /// so the arrival *timing* of partial results is visible.
+    private static func runStream(path: String) async throws {
+        let url = URL(filePath: path)
+        print("streaming \(url.lastPathComponent) at microphone pace\n")
+
+        let start = ContinuousClock.now
+        let counter = SnapshotCounter()
+
+        let final = try await SpokeEvaluation.streamTranscribe(audioFileAt: url) { snapshot in
+            let elapsed = ContinuousClock.now - start
+            let milliseconds =
+                elapsed.components.seconds * 1000
+                + elapsed.components.attoseconds / 1_000_000_000_000_000
+            counter.increment()
+            print(String(format: "  %6d ms  %@", milliseconds, snapshot))
+        }
+
+        print("\n\(counter.count) snapshots before finish")
+        print("final: \(final)")
+        if counter.count <= 1 {
+            print("\nOnly one snapshot — the model is not streaming partial results here.")
+        }
+    }
+
     // MARK: - Plumbing
 
     private static let usage = """
@@ -193,6 +223,7 @@ struct SpokeEval {
           spoke-eval <corpus.json> [--repeat <n>] [--json <out.json>]
           spoke-eval --audio <file.aiff>
           spoke-eval --audio-dir <dir>      one Transcriber, every file
+          spoke-eval --stream <file.aiff>   microphone pace, timed snapshots
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.
@@ -214,5 +245,24 @@ struct SpokeEval {
 
     private static func printErr(_ message: String) {
         FileHandle.standardError.write(Data("\(message)\n".utf8))
+    }
+}
+
+/// Counts snapshots arriving from the transcriber's callback, which is
+/// `@Sendable` and fires off the main actor.
+///
+/// `@unchecked Sendable` is justified by the lock: `value` is only ever read
+/// or written inside `lock.withLock`, so there is no unsynchronised access to
+/// mutable state.
+private nonisolated final class SnapshotCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = 0
+
+    var count: Int {
+        lock.withLock { value }
+    }
+
+    func increment() {
+        lock.withLock { value += 1 }
     }
 }
