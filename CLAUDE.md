@@ -22,7 +22,10 @@ packages/SpokeKit/   The entire pipeline + tests. Work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
 docs/learning/       Spoke University + historical planning notes.
-web/                 Website placeholder. Toolchain must stay inside web/.
+web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
+                     (GDR-0007, docs/design/backstage.md). Node toolchain
+                     must stay inside web/. The app NEVER phones home —
+                     data flows dev side → lab only (GDR-0006).
 ```
 
 ## Build and test
@@ -161,4 +164,5 @@ product. Records are immutable — supersede instead of editing.
    than only the polisher's prompt.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode: select text + different hotkey → "make this shorter".
-5. Notarize and distribute directly; build out `web/`.
+5. Notarize and distribute directly; build Backstage per
+   `docs/design/backstage.md` (phases 1-6, University ships first).
