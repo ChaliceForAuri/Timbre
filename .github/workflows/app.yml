@@ -25,8 +25,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode 26
-        run: sudo xcode-select -s /Applications/Xcode_26.app
+      - name: Select newest Xcode 26
+        # The image names Xcode with point versions (Xcode_26.1.app), so a
+        # hardcoded path fails on every runner. Pick the newest 26.x and say
+        # which one, so a version drift is visible in the log.
+        run: |
+          XCODE="$(find /Applications -maxdepth 1 -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          if [ -z "$XCODE" ]; then
+            echo "No Xcode 26 on this image:"; ls /Applications | grep -i xcode || true
+            exit 1
+          fi
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
 
       - name: Lint
         run: xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
@@ -40,8 +50,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode 26
-        run: sudo xcode-select -s /Applications/Xcode_26.app
+      - name: Select newest Xcode 26
+        # The image names Xcode with point versions (Xcode_26.1.app), so a
+        # hardcoded path fails on every runner. Pick the newest 26.x and say
+        # which one, so a version drift is visible in the log.
+        run: |
+          XCODE="$(find /Applications -maxdepth 1 -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          if [ -z "$XCODE" ]; then
+            echo "No Xcode 26 on this image:"; ls /Applications | grep -i xcode || true
+            exit 1
+          fi
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
 
       - name: Build
         run: >
