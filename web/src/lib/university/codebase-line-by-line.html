@@ -2,36 +2,36 @@
 
 <h3><span class="file-tag">SpokeApp.swift</span></h3>
 <p>App entry point. <code>@main</code> (macro), <code>App</code> and <code>Scene</code> protocols, <code>MenuBarExtra</code> and <code>Settings</code> scenes, <code>@State</code> ownership of the controller, and an availability gate so the app shows a clear message rather than failing to launch on older macOS.</p>
-<p><em>Concepts:</em> <a href="#m2-macro">macros</a>, <a href="#m4-scene">scenes</a>, <a href="#m4-state">state ownership</a>.</p>
+<p><em>Concepts:</em> <a href="/university/swift-the-language#m2-macro">macros</a>, <a href="/university/swiftui#m4-scene">scenes</a>, <a href="/university/swiftui#m4-state">state ownership</a>.</p>
 
 <h3><span class="file-tag">DictationController.swift</span></h3>
 <p>The orchestrator, and the first file to read. An <code>@Observable</code> <code>@MainActor</code> class holding a state enum with an error payload. Wires the hotkey to the pipeline, sequences transcription → polish → insert, and drives the overlay. Note that the overlay appears <em>before</em> the model is ready — perceived latency beats actual latency — and hides <em>before</em> the paste fires, so the pill never flickers over the user's text.</p>
-<p><em>Concepts:</em> <a href="#m2-enum">enums with payloads</a>, <a href="#m3-main">@MainActor</a>, <a href="#m2-macro">@Observable</a>, <a href="#m3-task">Task</a>.</p>
+<p><em>Concepts:</em> <a href="/university/swift-the-language#m2-enum">enums with payloads</a>, <a href="/university/concurrency#m3-main">@MainActor</a>, <a href="/university/swift-the-language#m2-macro">@Observable</a>, <a href="/university/concurrency#m3-task">Task</a>.</p>
 
 <h3><span class="file-tag">AudioCapture.swift</span></h3>
 <p><code>AVAudioEngine</code> input tap, the sample-rate-zero permission check, RMS metering, and <code>BufferConverter</code> with its ratio-aware capacity and format-change detection.</p>
-<p><em>Concepts:</em> <a href="/university/digital-audio">digital audio</a> in full, <a href="#m2-err">error handling</a>, <a href="#m2-clo">closures</a>.</p>
+<p><em>Concepts:</em> <a href="/university/digital-audio">digital audio</a> in full, <a href="/university/swift-the-language#m2-err">error handling</a>, <a href="/university/swift-the-language#m2-clo">closures</a>.</p>
 
 <h3><span class="file-tag">Transcriber.swift</span></h3>
 <p>An <code>actor</code> wrapping <code>SpeechAnalyzer</code>. Locale resolution, asset installation, the <code>AsyncStream</code> feeding audio in, the results loop consuming text out, and the volatile-vs-final accumulation logic.</p>
-<p><em>Concepts:</em> <a href="#m3-actor">actors</a>, <a href="#m3-seq">AsyncStream</a>, <a href="/university/speech-recognition">streaming ASR</a>.</p>
+<p><em>Concepts:</em> <a href="/university/concurrency#m3-actor">actors</a>, <a href="/university/concurrency#m3-seq">AsyncStream</a>, <a href="/university/speech-recognition">streaming ASR</a>.</p>
 
 <h3><span class="file-tag">TextPolisher.swift</span></h3>
 <p>The product. <code>@Generable</code> guided generation, the instructions/prompt security boundary, availability handling with distinct user-facing reasons, and three layers of fallback so a failure never costs the user their words.</p>
-<p><em>Concepts:</em> <a href="/university/on-device-language-models">on-device LLMs</a> in full, <a href="#m2-macro">macros</a>.</p>
+<p><em>Concepts:</em> <a href="/university/on-device-language-models">on-device LLMs</a> in full, <a href="/university/swift-the-language#m2-macro">macros</a>.</p>
 
 <h3><span class="file-tag">HotkeyMonitor.swift</span></h3>
 <p>Global and local <code>NSEvent</code> monitors, <code>.flagsChanged</code> with manual press/release inference, hardware key codes, and the Accessibility permission check.</p>
-<p><em>Concepts:</em> <a href="#m5-event">events</a>, <a href="/university/permissions-security-distribution">TCC</a>.</p>
+<p><em>Concepts:</em> <a href="/university/appkit-and-the-platform#m5-event">events</a>, <a href="/university/permissions-security-distribution">TCC</a>.</p>
 
 <h3><span class="file-tag">TextInserter.swift</span></h3>
 <p>Pasteboard save → set → synthetic ⌘V → restore. <code>CGEvent</code> synthesis, and the 150 ms delay before restoring the clipboard — long enough for the paste to land, short enough that the user never notices their clipboard was borrowed.</p>
-<p><em>Concepts:</em> <a href="#m5-event">CGEvent</a>, <a href="/university/permissions-security-distribution">sandbox implications</a>.</p>
+<p><em>Concepts:</em> <a href="/university/appkit-and-the-platform#m5-event">CGEvent</a>, <a href="/university/permissions-security-distribution">sandbox implications</a>.</p>
 
 <h3><span class="file-tag">OverlayController.swift</span></h3>
 <p>The trickiest file. Non-activating <code>NSPanel</code> configuration, <code>orderFrontRegardless</code>, caret lookup through the Accessibility API with two fallbacks, and the top-left-to-bottom-left coordinate flip.</p>
-<p><em>Concepts:</em> <a href="#m5-win">windows &amp; panels</a>, <a href="#m5-ax">Accessibility API</a>, <a href="#m5-coord">coordinate systems</a>.</p>
+<p><em>Concepts:</em> <a href="/university/appkit-and-the-platform#m5-win">windows &amp; panels</a>, <a href="/university/appkit-and-the-platform#m5-ax">Accessibility API</a>, <a href="/university/appkit-and-the-platform#m5-coord">coordinate systems</a>.</p>
 
 <h3><span class="file-tag">OverlayView.swift</span></h3>
 <p>Pure SwiftUI. Materials for native vibrancy, a <code>ViewBuilder</code> switch over mode, the perceptual square-root curve on the waveform, and <code>.truncationMode(.head)</code> so the newest speech stays visible as text overflows.</p>
-<p><em>Concepts:</em> <a href="#m4-decl">declarative views</a>, <a href="#m4-mod">modifiers &amp; layout</a>.</p>
+<p><em>Concepts:</em> <a href="/university/swiftui#m4-decl">declarative views</a>, <a href="/university/swiftui#m4-mod">modifiers &amp; layout</a>.</p>

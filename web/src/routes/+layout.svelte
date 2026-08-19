@@ -1,6 +1,9 @@
 <script lang="ts">
 	import '../app.css';
 	import { page } from '$app/state';
+	import { site } from '$lib/site';
+
+	const canonical = $derived(site.origin + page.url.pathname);
 
 	let { children } = $props();
 
@@ -10,6 +13,14 @@
 		{ href: '/download', label: 'Download' }
 	];
 </script>
+
+<svelte:head>
+	<link rel="canonical" href={canonical} />
+	<meta property="og:url" content={canonical} />
+	<meta property="og:site_name" content={site.name} />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary" />
+</svelte:head>
 
 <div class="min-h-screen flex flex-col">
 	<header class="border-b border-line">
