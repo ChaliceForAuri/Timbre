@@ -1,0 +1,80 @@
+<h3 id="m4-decl">The declarative model</h3>
+
+<p>A <code>View</code> is a struct with a <code>body</code> property describing what should appear for the current state. You never mutate the UI; you change state and let SwiftUI recompute.</p>
+
+<pre><code><span class="c-key">struct</span> <span class="c-typ">Waveform</span>: <span class="c-typ">View</span> {
+    <span class="c-key">let</span> levels: [<span class="c-typ">Float</span>]
+
+    <span class="c-key">var</span> body: <span class="c-key">some</span> <span class="c-typ">View</span> {
+        <span class="c-typ">HStack</span>(spacing: <span class="c-num">2.5</span>) {
+            <span class="c-typ">ForEach</span>(<span class="c-num">0</span>..&lt;<span class="c-num">5</span>, id: \.<span class="c-key">self</span>) { index <span class="c-key">in</span>
+                <span class="c-typ">Capsule</span>().frame(width: <span class="c-num">3</span>, height: height(<span class="c-key">for</span>: index))
+            }
+        }
+    }
+}</code></pre>
+
+<p><code>some View</code> means "a specific concrete type I'm not going to spell out" — an opaque return type. It exists because SwiftUI's real types are absurd (<code>HStack&lt;TupleView&lt;(Capsule, Text)&gt;&gt;</code> and worse) and nobody should have to write them. Just write <code>some View</code>.</p>
+
+<p><strong>Views are cheap and disposable.</strong> SwiftUI creates and destroys them constantly — many times per second during animation. They are descriptions, not objects. This is why they can't hold mutable state directly, and why <code>@State</code> exists.</p>
+
+<h3 id="m4-state">State ownership</h3>
+
+<p>Choosing the right state tool is most of what makes SwiftUI feel good or awful. There are four you actually need.</p>
+
+<table>
+<tr><th>Tool</th><th>Meaning</th><th>Use when</th></tr>
+<tr><td><code>@State</code></td><td>This view owns this value</td><td>Local UI state — a text field's contents, a toggle</td></tr>
+<tr><td><code>@Binding</code></td><td>Read/write access to state owned elsewhere</td><td>A child needs to mutate the parent's value</td></tr>
+<tr><td><code>@Observable</code> class</td><td>Shared reference-type model</td><td>App logic, controllers, stores</td></tr>
+<tr><td><code>@Environment</code></td><td>Implicit dependency injection down the tree</td><td>Theme, locale, shared services</td></tr>
+</table>
+
+<p>The pattern in Spoke: <code>@State private var controller = ControllerBox()</code> at the app level creates and owns the controller for the app's lifetime. Views read <code>controller.state</code> and automatically re-render when it changes, because <code>@Observable</code> tracks the read.</p>
+
+<p><code>$</code> gets you a binding: <code>TextField("Add a term", text: $newTerm)</code> passes read/write access to <code>newTerm</code>, so the text field can mutate it.</p>
+
+<div class="box map">
+<p class="box-title">From Flutter/RN</p>
+<p><code>@State</code> is <code>useState</code>. <code>@Binding</code> is passing <code>[value, setValue]</code> down as props. <code>@Observable</code> is your store. <code>@Environment</code> is React Context or Flutter's <code>InheritedWidget</code>. The mapping is unusually clean.</p>
+</div>
+
+<h3 id="m4-mod">Modifiers and layout</h3>
+
+<p>Modifiers wrap a view in another view. <code>.padding()</code> doesn't set a property — it returns a <em>new view</em> containing the original with padding around it. Which means <strong>order matters</strong>:</p>
+
+<pre><code><span class="c-typ">Text</span>(<span class="c-str">"Hi"</span>).padding().background(.blue)   <span class="c-com">// blue includes the padding</span>
+<span class="c-typ">Text</span>(<span class="c-str">"Hi"</span>).background(.blue).padding()   <span class="c-com">// blue hugs the text only</span></code></pre>
+
+<p>SwiftUI's layout is a three-step negotiation, and internalising it removes almost all layout confusion:</p>
+
+<ol class="body">
+<li>The parent <strong>proposes</strong> a size to the child.</li>
+<li>The child <strong>chooses</strong> its own size — it is under no obligation to accept.</li>
+<li>The parent <strong>positions</strong> the child.</li>
+</ol>
+
+<p>Parents cannot force sizes. That's why <code>.frame()</code> is itself a view that proposes a fixed size to its child, rather than a property that sets one. And it's why <code>Spacer()</code> works: it's a view that greedily accepts all offered space.</p>
+
+<p>In <code>OverlayView</code>, <code>.frame(maxWidth: 320, alignment: .leading)</code> combined with <code>.fixedSize(horizontal: false, vertical: true)</code> says: cap my width at 320, but let me be as tall as I need. That's the standard incantation for text that wraps rather than truncates.</p>
+
+<h3 id="m4-scene">Scenes and app structure</h3>
+
+<p>A <code>Scene</code> is a container for UI at the OS level — a window, a settings panel, a menu bar item. <code>App</code> is a protocol whose <code>body</code> returns scenes.</p>
+
+<pre><code><span class="c-key">@main</span>
+<span class="c-key">struct</span> <span class="c-typ">SpokeApp</span>: <span class="c-typ">App</span> {
+    <span class="c-key">var</span> body: <span class="c-key">some</span> <span class="c-typ">Scene</span> {
+        <span class="c-typ">MenuBarExtra</span> {
+            <span class="c-typ">MenuContent</span>()
+        } label: {
+            <span class="c-typ">Image</span>(systemName: <span class="c-str">"mic"</span>)
+        }
+
+        <span class="c-typ">Settings</span> { <span class="c-typ">SettingsView</span>() }
+    }
+}</code></pre>
+
+<p><code>@main</code> is the entry point — no <code>main()</code>, no <code>runApp()</code>. The macro generates the bootstrap.</p>
+
+<p>Scene types you'll meet: <code>WindowGroup</code> (normal windows, user can open several), <code>Window</code> (exactly one), <code>Settings</code> (the standard ⌘, panel, free menu item included), and <code>MenuBarExtra</code> (a menu bar item). Spoke uses only the last two — it has no main window at all, which is what makes it feel like a utility rather than an app you have to manage.</p>

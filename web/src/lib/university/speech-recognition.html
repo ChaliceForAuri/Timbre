@@ -1,0 +1,69 @@
+<h3>How ASR works, conceptually</h3>
+
+<p>Modern speech recognition is a neural network that maps audio features to text tokens. The pipeline, simplified:</p>
+
+<ol class="body">
+<li><strong>Feature extraction.</strong> Raw samples become a spectrogram — energy across frequency bands over time. This is what the model actually consumes.</li>
+<li><strong>Acoustic modelling.</strong> A network (these days usually a transformer or conformer) maps spectrogram frames to a probability distribution over tokens.</li>
+<li><strong>Decoding.</strong> A search finds the most likely token sequence, often with a language model biasing toward plausible word sequences.</li>
+</ol>
+
+<p>Older systems had explicit phoneme dictionaries and hand-built pronunciation rules. Modern end-to-end models learn the mapping directly from audio-text pairs, which is why they handle accents and informal speech dramatically better.</p>
+
+<h3>Streaming vs batch</h3>
+
+<p>A <strong>batch</strong> model sees an entire recording and produces one transcript. Maximum accuracy, because it has full context in both directions — but you wait for the recording to end.</p>
+
+<p>A <strong>streaming</strong> model emits text as audio arrives. Necessary for dictation, but it must commit to words before hearing what follows, which occasionally produces a wrong guess that later context would have fixed.</p>
+
+<p>The reconciliation is <strong>volatile results</strong>. The model emits its best current guess, marked as provisional; later it either confirms that text as final or replaces it. You'll literally watch words change on screen as you keep talking — that's not a bug, it's the model incorporating new context.</p>
+
+<pre><code><span class="c-key">private func</span> apply(text: <span class="c-typ">String</span>, isFinal: <span class="c-typ">Bool</span>) {
+    <span class="c-key">if</span> isFinal {
+        finalizedText += text     <span class="c-com">// locked in, won't change</span>
+        volatileText = <span class="c-str">""</span>
+    } <span class="c-key">else</span> {
+        volatileText = text       <span class="c-com">// replaced wholesale next update</span>
+    }
+}</code></pre>
+
+<p>Note the asymmetry: finalized text <em>accumulates</em>, volatile text is <em>replaced</em>. Getting this backwards produces either duplicated words or a transcript that keeps erasing itself — and it's the most common bug when writing this integration by hand.</p>
+
+<h3>Apple's SpeechAnalyzer architecture</h3>
+
+<p>Introduced at WWDC25 for macOS 26, <code>SpeechAnalyzer</code> replaced the older <code>SFSpeechRecognizer</code>. It's meaningfully better: fully on-device, genuinely streaming, and no longer subject to the arbitrary duration limits that made the old API frustrating for dictation.</p>
+
+<p>The design is modular. An analyzer coordinates one or more <em>modules</em>; <code>SpeechTranscriber</code> is the speech-to-text one.</p>
+
+<pre><code><span class="c-key">let</span> transcriber = <span class="c-typ">SpeechTranscriber</span>(
+    locale: resolved,
+    transcriptionOptions: [],
+    reportingOptions: [.volatileResults],
+    attributeOptions: []
+)
+
+<span class="c-key">let</span> analyzer = <span class="c-typ">SpeechAnalyzer</span>(modules: [transcriber])
+<span class="c-key">try await</span> analyzer.start(inputSequence: stream)
+
+<span class="c-key">for try await</span> result <span class="c-key">in</span> transcriber.results { … }</code></pre>
+
+<p>Four things worth knowing about the surrounding lifecycle:</p>
+
+<p><strong>Model assets download on demand, per language.</strong> <code>AssetInventory.assetInstallationRequest(supporting:)</code> returns <code>nil</code> if the model is already installed, or a request you must download. Do this at launch, not on the first hotkey press — otherwise the user's first dictation stalls behind a download.</p>
+
+<p><strong>Locales must be resolved, not assumed.</strong> <code>SpeechTranscriber.supportedLocale(equivalentTo:)</code> maps <code>Locale.current</code> onto a locale the model actually ships. Passing <code>en_GB</code> when the model expects <code>en_US</code> fails quietly.</p>
+
+<p><strong>Ask the analyzer for its preferred audio format</strong> via <code>bestAvailableAudioFormat(compatibleWith:)</code>, rather than hardcoding 16 kHz. It's <code>async</code> but doesn't throw.</p>
+
+<p><strong>Finish properly.</strong> <code>finalizeAndFinishThroughEndOfInput()</code> flushes audio still sitting in the model's internal buffer. Skip it and you lose the last word or two of every utterance — a subtle bug that makes an app feel broken without users being able to say why.</p>
+
+<div class="box good">
+<p class="box-title">Why this matters commercially</p>
+<p>This entire module is what Wispr Flow runs in the cloud and bills for. Their reported latency is around 700 ms at p99, which includes a network round trip. On-device has no network leg at all — so a well-built local app can be <em>faster</em>, not merely cheaper. Latency is the thing users actually feel.</p>
+</div>
+
+<h3>Where local still loses</h3>
+
+<p>Be honest about this. Cloud models are larger, and it shows in three places: non-English languages, code-switching mid-sentence, and unusual proper nouns. Apple's on-device model is very good at conversational English and noticeably weaker outside it.</p>
+
+<p>The strategic answer isn't to close that gap — it's to not compete there. English-first, privacy-absolute, offline, free. That's a coherent product. "Slightly worse at 100 languages" is not.</p>

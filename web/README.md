@@ -1,15 +1,18 @@
-# Spoke website
+# web/
 
-Placeholder. The site starts when the app ships
-([roadmap item 5](../CLAUDE.md)): a single page — what it is, the privacy
-story, a download link, release notes.
+The Spoke website, the University, and (soon) Backstage — one SvelteKit app.
+Design and phases: `docs/design/backstage.md`; constraints: GDR-0006/0007.
 
-Ground rules when this becomes real:
+```bash
+pnpm install
+pnpm dev        # http://localhost:5173
+pnpm run check  # svelte-check
+pnpm run build  # production build (adapter-vercel)
+```
 
-- The entire toolchain lives under `web/`. Nothing at the repo root may
-  depend on Node or any web tooling.
-- CI for the site is path-filtered to `web/**` — a copy change here must
-  never trigger an Xcode build.
-- The privacy claims on the site are backed by
-  [GDR-0001](../docs/decisions/gdr/0001-local-only-free-no-account.md);
-  keep them in sync.
+The Node toolchain stays inside this directory. University content in
+`src/lib/university/` is extracted verbatim from
+`docs/learning/spoke-university.html`; new modules are written in mdsvex.
+
+Deploy: Vercel project with root directory `web/`. Every PR gets a preview
+deployment.

@@ -1,0 +1,129 @@
+<p>This is the module to read carefully. It's the largest genuine difference from what you know, it's where your first build errors will come from, and it's the part of Swift that most rewards understanding rather than pattern-matching.</p>
+
+<h3>The problem being solved</h3>
+
+<p>In JavaScript you have one thread. Concurrency bugs are mostly ordering bugs, and they're annoying but bounded. Dart is similar — isolates don't share memory, so races are structurally prevented.</p>
+
+<p>Swift is genuinely multi-threaded with shared memory. Two threads can write the same variable at the same time, which produces corruption that's non-deterministic and appalling to debug. Every mature language deals with this somehow; Swift's answer is to make the <em>compiler</em> prove your code is free of data races. That's why the rules feel strict — they're load-bearing.</p>
+
+<h3 id="m3-async">async / await</h3>
+
+<p>Mechanically identical to JavaScript. A function marked <code>async</code> can suspend; <code>await</code> marks the suspension point.</p>
+
+<pre><code><span class="c-key">func</span> prepare() <span class="c-key">async throws</span> {
+    <span class="c-key">let</span> request = <span class="c-key">try await</span> <span class="c-typ">AssetInventory</span>.assetInstallationRequest(supporting: [transcriber])
+    <span class="c-key">try await</span> request?.downloadAndInstall()
+}</code></pre>
+
+<p>The important mental model: <code>await</code> does not block a thread. It <em>suspends the function</em> and hands the thread back to the system to do other work. When the awaited operation completes, the function resumes — possibly on a completely different thread. That last part matters and is the source of most confusion.</p>
+
+<p>Note the ordering of keywords: <code>try await</code>, always in that order. And <code>async throws</code> in the declaration. Swift is picky about this and the error message when you get it backwards is unhelpful.</p>
+
+<h3 id="m3-task">Task and structured concurrency</h3>
+
+<p>You cannot call an <code>async</code> function from a synchronous one. <code>Task { }</code> is the bridge — it creates a new unit of asynchronous work and returns immediately.</p>
+
+<pre><code><span class="c-com">// Sync context (a button action, a callback)</span>
+hotkey.onPress = {
+    <span class="c-typ">Task</span> { <span class="c-key">await</span> controller.beginListening() }
+}</code></pre>
+
+<p>Tasks form a tree. A task created inside another task is a <em>child</em>, and this gives you two properties for free:</p>
+
+<ul>
+<li><strong>Cancellation propagates.</strong> Cancel a parent and every descendant is marked cancelled.</li>
+<li><strong>Parents wait for children.</strong> Structured tasks can't outlive their scope, so you can't leak work by accident.</li>
+</ul>
+
+<p>Cancellation is <em>cooperative</em> — a cancelled task isn't killed, it's flagged. Long-running loops should check:</p>
+
+<pre><code><span class="c-key">for</span> item <span class="c-key">in</span> hugeList {
+    <span class="c-key">try</span> <span class="c-typ">Task</span>.checkCancellation()   <span class="c-com">// throws CancellationError if cancelled</span>
+    process(item)
+}</code></pre>
+
+<p>Most Apple async APIs check cancellation for you, which is why <code>resultsTask?.cancel()</code> in Spoke's <code>Transcriber</code> is enough to shut the results loop down cleanly.</p>
+
+<h3 id="m3-actor">Actors</h3>
+
+<p>An <code>actor</code> is a reference type that guarantees only one task touches its mutable state at a time. It's a class with a built-in lock that the compiler knows about and enforces.</p>
+
+<pre><code><span class="c-key">actor</span> <span class="c-typ">Transcriber</span> {
+    <span class="c-key">private var</span> finalizedText = <span class="c-str">""</span>
+
+    <span class="c-key">func</span> append(_ text: <span class="c-typ">String</span>) {
+        finalizedText += text     <span class="c-com">// safe: only one caller at a time</span>
+    }
+}
+
+<span class="c-com">// From outside, every access must be awaited:</span>
+<span class="c-key">await</span> transcriber.append(<span class="c-str">"hello"</span>)</code></pre>
+
+<p>The <code>await</code> isn't because the work is slow — it's because your task may have to <em>queue</em> for access. Inside the actor, methods call each other without <code>await</code>, since they're already holding the lock. This is called <em>actor isolation</em>.</p>
+
+<p>Spoke uses an actor for <code>Transcriber</code> because audio buffers arrive on a real-time audio thread while transcription results arrive on some other thread, and both mutate the same text state. Without the actor that's a textbook data race. With it, it's a compile-time guarantee.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · actor reentrancy</p>
+<p>Actors guarantee no <em>simultaneous</em> access, not that a method runs atomically start to finish. At every <code>await</code> inside an actor method, the actor can service another call. So state you read before an <code>await</code> may have changed after it. Re-read state after awaiting rather than assuming it's stable. This one catches experienced developers.</p>
+</div>
+
+<h3 id="m3-main">@MainActor</h3>
+
+<p>All UI work must happen on the main thread. Every platform has this rule; Swift is unusual in enforcing it at compile time.</p>
+
+<p><code>@MainActor</code> is a <em>global actor</em> — a single actor representing the main thread. Marking something with it guarantees it runs there.</p>
+
+<pre><code><span class="c-key">@MainActor</span>
+<span class="c-key">final class</span> <span class="c-typ">OverlayController</span> {
+    <span class="c-key">func</span> show() { <span class="c-com">/* guaranteed main thread */</span> }
+}</code></pre>
+
+<p>When you're on a background thread and need the main one:</p>
+
+<pre><code>audio.start { buffer <span class="c-key">in</span>
+    <span class="c-com">// This closure runs on the real-time audio thread.</span>
+    <span class="c-typ">Task</span> { <span class="c-key">@MainActor</span> <span class="c-key">in</span>
+        overlay.pushLevel(level)   <span class="c-com">// now safely on main</span>
+    }
+}</code></pre>
+
+<p>The error message you'll meet most often is some variation of <em>"call to main actor-isolated method in a synchronous nonisolated context."</em> Translation: <em>you're on the wrong thread; wrap it in <code>Task { @MainActor in ... }</code>.</em> Once you can read that sentence fluently, this stops being a problem.</p>
+
+<h3 id="m3-send">Sendable</h3>
+
+<p><code>Sendable</code> is a protocol meaning "safe to pass between threads." Value types made of other Sendable things are automatically Sendable. Classes generally aren't, unless they're immutable or internally synchronised.</p>
+
+<p>The compiler checks this at every concurrency boundary. When you see an error about a type not conforming to <code>Sendable</code>, it's telling you that you're about to hand mutable shared state to another thread.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · AVAudioPCMBuffer is not Sendable</p>
+<p>This will be your first Swift 6 error in Spoke. Audio buffers are Objective-C objects with mutable internals, so the compiler refuses to let them cross threads — even though our usage is fine, because we hand each buffer off and never touch it again.</p>
+<p>While learning, set <strong>Swift Language Version → 5</strong> in build settings. You keep async/await and actors; you drop the hard errors. Revisit in Swift 6 mode later, when the concepts are automatic and you can solve it properly (usually by copying the samples into a Sendable value type at the boundary).</p>
+</div>
+
+<h3 id="m3-seq">AsyncSequence and AsyncStream</h3>
+
+<p>An <code>AsyncSequence</code> is a sequence whose elements arrive over time — conceptually an async iterator, or an Observable if you come from Rx.</p>
+
+<pre><code><span class="c-key">for try await</span> result <span class="c-key">in</span> transcriber.results {
+    <span class="c-key">let</span> text = <span class="c-typ">String</span>(result.text.characters)
+    apply(text: text, isFinal: result.isFinal)
+}</code></pre>
+
+<p>That loop suspends at the top of each iteration until the next result exists. It reads like a normal <code>for</code> loop and handles backpressure, cancellation, and errors correctly. It's one of the nicest things in modern Swift.</p>
+
+<p><code>AsyncStream</code> is how you build one from a callback-based source — which is exactly what we need, since audio arrives via a C-style callback:</p>
+
+<pre><code><span class="c-key">let</span> (stream, continuation) = <span class="c-typ">AsyncStream</span>&lt;<span class="c-typ">AnalyzerInput</span>&gt;.makeStream()
+
+<span class="c-com">// Producer side: push values in from anywhere</span>
+continuation.yield(<span class="c-typ">AnalyzerInput</span>(buffer: converted))
+
+<span class="c-com">// Consumer side: hand the stream to the speech analyzer</span>
+<span class="c-key">try await</span> analyzer.start(inputSequence: stream)
+
+<span class="c-com">// When dictation ends, close the stream</span>
+continuation.finish()</code></pre>
+
+<p>This adapter pattern — callback source in, AsyncSequence out — is worth memorising. You'll use it constantly when bridging older Apple APIs into modern Swift.</p>

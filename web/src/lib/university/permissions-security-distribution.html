@@ -1,0 +1,56 @@
+<p>Apple's security model is the part of macOS development with the least intuition transfer from web or mobile work, and the part most likely to make you think your code is broken when it isn't.</p>
+
+<h3>TCC — the consent database</h3>
+
+<p><strong>Transparency, Consent, and Control</strong> is the system that gates access to protected resources. Each capability is a separate grant, stored per-app, and the user can revoke any of them at any time.</p>
+
+<table>
+<tr><th>Capability</th><th>How it's requested</th><th>Timing</th></tr>
+<tr><td>Microphone</td><td><code>AVCaptureDevice.requestAccess(for: .audio)</code></td><td>Prompts on first use; checked live</td></tr>
+<tr><td>Speech Recognition</td><td>Declared in Info.plist</td><td>Prompts on first use</td></tr>
+<tr><td>Accessibility</td><td><code>AXIsProcessTrustedWithOptions</code></td><td><strong>Read at launch only</strong></td></tr>
+<tr><td>Input Monitoring</td><td>Implicit with event taps</td><td>Prompts on first use</td></tr>
+</table>
+
+<p>Any Info.plist key of the form <code>NS…UsageDescription</code> is a string shown to the user in the permission dialog. If you request a capability without declaring its usage string, <strong>the app crashes immediately</strong> — no warning, no recoverable error. It's a deliberate design choice to make undeclared access impossible.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · Accessibility needs a relaunch in practice</p>
+<p>Treat the Accessibility trusted state as unreliable after a live toggle. <code>AXIsProcessTrusted()</code> is known to return stale values when permission is granted while the app is running, and Apple's own developer-support guidance is to quit and relaunch for the change to take effect reliably. Sometimes it does flip live; you cannot depend on it.</p>
+<p>Symptomatically this is brutal, because nothing errors — the hotkey just stays dead and the paste silently fails. Assume a relaunch is required, and ship an explicit "Restart Spoke" button next to the permission prompt rather than making users work it out.</p>
+</div>
+
+<h3>The sandbox and entitlements</h3>
+
+<p>The <strong>App Sandbox</strong> restricts an app to its own container: no arbitrary filesystem access, no controlling other apps, no unrequested network. <strong>Entitlements</strong> are signed key-value pairs that punch specific holes in it.</p>
+
+<p>Spoke turns the sandbox off, and it's worth being clear about why rather than treating it as a shortcut. A dictation app's entire function is to send synthetic keystrokes into other applications. That is precisely what the sandbox exists to prevent, and there is no entitlement for it. Every app in this category — Wispr Flow included — ships unsandboxed.</p>
+<p>One distinction that a knowledgeable reader will hold you to: <strong>listening is allowed, posting is not</strong>. A sandboxed app granted Accessibility or Input Monitoring can install a <code>CGEventTap</code> and observe keystrokes. What it cannot do is <em>post</em> synthetic events with <code>CGEventPost</code>, or drive another app through <code>AXUIElementCreateApplication</code>. Spoke needs the posting half, so the sandbox has to go.</p>
+
+<p>The consequence: <strong>no Mac App Store</strong>. App Store distribution requires sandboxing. You distribute directly, which is entirely normal for Mac utilities and has the nice side effect of no 30% cut.</p>
+
+<h3>Code signing and notarization</h3>
+
+<p>Three distinct things that are easy to conflate:</p>
+
+<p><strong>Code signing</strong> attaches a cryptographic signature identifying you as the developer and proving the binary hasn't been modified. Xcode does this automatically during development with a local certificate.</p>
+
+<p><strong>The hardened runtime</strong> is a set of runtime protections — no code injection, no unsigned libraries, no debugger attachment. Required for notarization.</p>
+
+<p><strong>Notarization</strong> is Apple scanning your signed app for malware and issuing a ticket. Not review — it's automated, usually finishing in minutes. <strong>Stapling</strong> attaches that ticket to the app so it validates offline.</p>
+
+<p>Without notarization, <strong>Gatekeeper</strong> tells users your app "cannot be opened because Apple cannot check it for malicious software," with no obvious way forward. Most people quit there. Notarization is the difference between a project and a product.</p>
+
+<p>The distribution pipeline, once you're ready:</p>
+
+<ol class="body">
+<li>Join the Apple Developer Program (about $99/year — the only unavoidable cost of shipping this).</li>
+<li>Create a <strong>Developer ID Application</strong> certificate.</li>
+<li>Archive in Xcode: Product → Archive.</li>
+<li>Export with Developer ID signing.</li>
+<li>Submit with <code>xcrun notarytool submit --wait</code>.</li>
+<li>Staple with <code>xcrun stapler staple Spoke.app</code>.</li>
+<li>Ship a <code>.dmg</code> or <code>.zip</code>.</li>
+</ol>
+
+<p>Budget an afternoon the first time. It's fiddly and well-documented, and every subsequent release is a single script.</p>

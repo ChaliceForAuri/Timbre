@@ -1,0 +1,38 @@
+<p>You've shipped apps. You understand components, state, async, layout, builds. Roughly 70% of what you know transfers directly. The remaining 30% is where the friction lives, and it's worth naming precisely, because the difficulty is not that native development is harder — it's that it's differently shaped.</p>
+
+<h3>What transfers untouched</h3>
+
+<p>Declarative UI is declarative UI. SwiftUI's <code>View</code> is Flutter's <code>Widget</code> and React's function component, with the same core insight: describe what the UI should look like for a given state, let the framework figure out the diff. If you understand why you don't manually mutate the DOM in React, you already understand SwiftUI.</p>
+
+<p>Async is async. Swift's <code>async</code>/<code>await</code> is close enough to JavaScript's that you'll write it correctly on day one. Dart's <code>Future</code> maps cleanly too.</p>
+
+<p>Composition, state lifting, unidirectional data flow, the instinct to keep views dumb and logic testable — all of it applies.</p>
+
+<h3>What's genuinely new</h3>
+
+<p><strong>The compiler is an adversary that's on your side.</strong> This is the big one. In TypeScript or Dart, the type system is advisory and the runtime is forgiving; a race condition shows up as a weird bug at 2am. Swift moves an enormous amount of that into compile time. Data races, nil dereferences, and thread-safety violations become build errors. The first week feels like fighting the compiler. Then it flips, and you realise it's been catching things you'd otherwise ship.</p>
+
+<p><strong>Value types are the default.</strong> In JavaScript, objects are references and you develop a sixth sense for accidental mutation. Swift inverts this: <code>struct</code> is the default and it copies. This eliminates a whole category of bug and introduces a smaller, more tractable one (knowing when you actually need reference semantics).</p>
+
+<p><strong>The platform is a first-class API surface, not a plugin.</strong> In React Native, touching the microphone means finding a package, checking its maintenance status, and hoping. Here, <code>AVAudioEngine</code> is just there — documented, versioned with the OS, and considerably more capable than any bridge wrapper. Spoke has <em>zero</em> third-party dependencies. That's not asceticism; there's nothing worth adding.</p>
+
+<p><strong>Permissions are enforced by the OS, not by you.</strong> The user's mic, their keyboard events, their screen — each is gated by a system-level consent mechanism you cannot work around. This is genuinely more restrictive than the web and more restrictive than mobile in some ways. Module 9 covers it.</p>
+
+<p><strong>Hot reload is worse.</strong> Be honest with yourself about this one. Xcode Previews are decent for isolated views and useless for anything involving permissions, audio, or system events. You will rebuild. Builds are fast, but it's a real regression from Flutter's workflow and it's the thing you'll miss most.</p>
+
+<div class="box map">
+<p class="box-title">From Flutter/RN</p>
+<table style="margin-bottom:0">
+<tr><th>You know</th><th>Swift equivalent</th><th>Watch out</th></tr>
+<tr><td><code>Widget</code> / JSX component</td><td><code>struct V: View</code></td><td>Views are structs — recreated constantly, cheap to make, cannot hold mutable state directly</td></tr>
+<tr><td><code>setState</code> / <code>useState</code></td><td><code>@State</code></td><td>Must live in the view that owns the data</td></tr>
+<tr><td>Provider / Redux / Zustand</td><td><code>@Observable class</code></td><td>Finer-grained: tracks individual property reads</td></tr>
+<tr><td><code>Future</code> / <code>Promise</code></td><td><code>async</code>/<code>await</code></td><td>Nearly identical</td></tr>
+<tr><td>Calling async from sync</td><td><code>Task { }</code></td><td>You cannot <code>await</code> in a sync function</td></tr>
+<tr><td>(no equivalent)</td><td><code>@MainActor</code></td><td><strong>The genuinely new concept</strong></td></tr>
+<tr><td>Mutex / careful shared state</td><td><code>actor</code></td><td>Compiler-enforced serialisation</td></tr>
+<tr><td><code>null</code> / <code>undefined</code></td><td><code>Optional</code> (<code>T?</code>)</td><td>Stricter; must be unwrapped explicitly</td></tr>
+<tr><td><code>package.json</code></td><td>Swift Package Manager</td><td>You need zero packages for this project</td></tr>
+<tr><td>Hot reload</td><td><code>#Preview</code></td><td>Meaningfully worse. Accept it.</td></tr>
+</table>
+</div>
