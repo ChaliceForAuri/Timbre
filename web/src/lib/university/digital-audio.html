@@ -1,0 +1,75 @@
+<p>You don't need a DSP background, but you do need an accurate mental model of what a "buffer" is, because half of Spoke's plumbing moves them around.</p>
+
+<h3>Sound to numbers</h3>
+
+<p>Sound is air pressure varying over time. A microphone converts that to a varying voltage; an analog-to-digital converter measures that voltage many thousands of times per second. Each measurement is a <strong>sample</strong>.</p>
+
+<table>
+<tr><th>Term</th><th>Meaning</th><th>Typical value</th></tr>
+<tr><td>Sample rate</td><td>Measurements per second</td><td>48,000 Hz (Mac mics), 16,000 Hz (speech models)</td></tr>
+<tr><td>Bit depth / format</td><td>Precision of each measurement</td><td>32-bit float on Apple platforms</td></tr>
+<tr><td>Channels</td><td>Independent streams</td><td>1 (mono) for speech, 2 for stereo</td></tr>
+<tr><td>Frame</td><td>One sample across all channels</td><td>—</td></tr>
+<tr><td>Buffer</td><td>A chunk of consecutive frames</td><td>4,096 frames ≈ 85 ms at 48 kHz</td></tr>
+</table>
+
+<p>Audio is processed in buffers rather than sample-by-sample purely for efficiency — a callback per sample at 48 kHz would be 48,000 function calls per second. In Spoke, <code>bufferSize: 4096</code> means roughly 85 ms of audio arrives per callback. That's a real latency floor: no matter how fast everything downstream is, your first transcription cannot begin sooner than the first buffer.</p>
+
+<p><strong>Why 16 kHz for speech:</strong> the Nyquist theorem says you can represent frequencies up to half the sample rate. Human speech intelligibility lives almost entirely below 8 kHz, so 16 kHz captures everything that matters while carrying a third of the data. Speech models are trained at this rate, which is why conversion is mandatory rather than optional.</p>
+
+<h3>AVAudioEngine</h3>
+
+<p><code>AVAudioEngine</code> is a graph of audio nodes — sources, effects, mixers, outputs — connected together. Spoke uses the simplest possible configuration: just the input node, with a tap on it.</p>
+
+<pre><code><span class="c-key">let</span> input = engine.inputNode
+<span class="c-key">let</span> format = input.outputFormat(forBus: <span class="c-num">0</span>)
+
+input.installTap(onBus: <span class="c-num">0</span>, bufferSize: <span class="c-num">4096</span>, format: format) { buffer, time <span class="c-key">in</span>
+    <span class="c-com">// called ~12×/second on a real-time audio thread</span>
+}
+
+engine.prepare()
+<span class="c-key">try</span> engine.start()</code></pre>
+
+<p>A <strong>tap</strong> is a non-destructive observer on a node — audio still flows normally, you just get a copy. <code>prepare()</code> pre-allocates resources so <code>start()</code> doesn't glitch.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · silent capture failure</p>
+<p>Audio capture fails quietly in more than one way, and none of them throw. A sample rate of zero means there's no usable input device or the node isn't configured. Separately, if microphone permission was <em>denied</em>, the engine typically starts fine and delivers buffers full of <strong>zeroes</strong> — perfectly valid silence, forever, with no error anywhere.</p>
+<p>So check both things, and check them separately. Use <code>AVCaptureDevice.authorizationStatus(for: .audio)</code> for permission — never infer permission from the audio format. <code>AudioCapture</code>'s sample-rate guard catches the missing-device case; <code>DictationController</code> handles permission explicitly before capture ever starts.</p>
+</div>
+
+<div class="box warn">
+<p class="box-title">Trap · the real-time audio thread</p>
+<p>The tap callback runs on a thread with hard deadlines. Miss one and the user hears a click. Inside that closure: <strong>never</strong> allocate memory, take locks, do file or network I/O, or touch UI. Spoke does the absolute minimum — computes an RMS value and hands the buffer off — then hops to other threads with <code>Task</code>.</p>
+</div>
+
+<h3>Format conversion</h3>
+
+<p>The mic produces one format; the speech model wants another. <code>AVAudioConverter</code> bridges them, handling sample-rate conversion, channel mixing, and bit-depth changes.</p>
+
+<pre><code><span class="c-key">let</span> converter = <span class="c-typ">AVAudioConverter</span>(from: inputFormat, to: targetFormat)
+converter?.primeMethod = .none   <span class="c-com">// don't clip the start of speech</span></code></pre>
+
+<p>Two subtleties that cause silent, confusing failures:</p>
+
+<p><strong>Output capacity must account for the sample-rate ratio.</strong> Converting 48 kHz to 16 kHz produces a third as many frames; going the other way produces three times as many. Allocate an output buffer that's too small and the converter quietly truncates your audio. <code>BufferConverter</code> computes <code>ratio = targetRate / inputRate</code> and adds headroom.</p>
+
+<p><strong>Rebuild the converter when the input format changes.</strong> If the user switches from the built-in mic to AirPods mid-session, the format changes underneath you. Caching a converter forever means it starts producing garbage. That's why <code>BufferConverter</code> tracks <code>lastInputFormat</code>.</p>
+
+<h3>Measuring level: RMS vs peak</h3>
+
+<p>The waveform in the overlay needs a single number per buffer representing loudness.</p>
+
+<p><strong>Peak</strong> is the largest absolute sample value. It's easy but jumpy — a single consonant spike sends it to full scale, and the meter looks like a strobe light.</p>
+
+<p><strong>RMS</strong> (root mean square) squares every sample, averages, then takes the square root. Squaring makes negatives positive, and the average smooths out spikes. It correlates much better with perceived loudness.</p>
+
+<pre><code><span class="c-key">var</span> sumOfSquares: <span class="c-typ">Float</span> = <span class="c-num">0</span>
+<span class="c-key">for</span> index <span class="c-key">in</span> <span class="c-num">0</span>..&lt;frameLength {
+    <span class="c-key">let</span> sample = samples[index]
+    sumOfSquares += sample * sample
+}
+<span class="c-key">let</span> rms = sqrt(sumOfSquares / <span class="c-typ">Float</span>(frameLength))</code></pre>
+
+<p>One more adjustment matters for the visuals. Speech RMS typically sits between 0.01 and 0.2 on a 0–1 scale, so a linear meter barely moves. Spoke multiplies by 6 and clamps, then applies a square root curve in the view. That's not cheating — human loudness perception is roughly logarithmic, so a curved mapping is genuinely more honest than a linear one.</p>

@@ -1,0 +1,45 @@
+<h3>Project structure</h3>
+
+<table>
+<tr><th>Concept</th><th>What it is</th></tr>
+<tr><td><strong>Project</strong></td><td><code>.xcodeproj</code> — files, targets, settings</td></tr>
+<tr><td><strong>Target</strong></td><td>One buildable output (the app, a test bundle, an extension)</td></tr>
+<tr><td><strong>Scheme</strong></td><td>Which targets to build and how to run them</td></tr>
+<tr><td><strong>Configuration</strong></td><td>Debug vs Release — different optimisation and flags</td></tr>
+<tr><td><strong>Build settings</strong></td><td>Hundreds of knobs. Use the search field; never scroll.</td></tr>
+<tr><td><strong>Info.plist</strong></td><td>App metadata: version, permissions, <code>LSUIElement</code></td></tr>
+</table>
+
+<p>Modern Xcode keeps Info.plist values in the target's <strong>Info</strong> tab rather than a visible file. Both work; the tab is easier and is what the setup guide uses.</p>
+
+<h3>Debugging</h3>
+
+<p>Xcode's debugger is genuinely excellent and worth learning properly — it will save you far more time than an equivalent investment in anything else here.</p>
+
+<ul>
+<li><strong>Breakpoints:</strong> click a line number. Right-click to add a condition (<code>index == 5</code>) or an action that logs and continues automatically.</li>
+<li><strong>Symbolic breakpoints:</strong> break on a method name you don't have source for. Adding one on <code>-[NSWindow makeKeyAndOrderFront:]</code> is how you'd catch something stealing focus.</li>
+<li><strong>LLDB console:</strong> <code>po someVariable</code> prints an object; <code>p</code> prints a raw value. You can call methods on live objects while paused.</li>
+<li><strong>View hierarchy debugger:</strong> the 3D-looking icon. Explodes your UI into layers — indispensable when something is invisible or mispositioned.</li>
+<li><strong>Memory graph debugger:</strong> shows retain cycles visually.</li>
+</ul>
+
+<h3>Instruments</h3>
+
+<p>A separate profiling app (Product → Profile, or ⌘I). The templates worth knowing:</p>
+
+<ul>
+<li><strong>Time Profiler</strong> — where CPU time goes. Use this if dictation feels sluggish.</li>
+<li><strong>Allocations</strong> — memory growth over time. Run a hundred dictations and confirm memory returns to baseline.</li>
+<li><strong>Leaks</strong> — finds objects that can never be freed.</li>
+</ul>
+
+<p>Wispr Flow reportedly idles around 800 MB on Windows. Spoke should idle in the tens of megabytes. Measuring that and putting the number on your landing page is a legitimate competitive weapon.</p>
+
+<h3>Building without the IDE</h3>
+
+<pre><code>xcodebuild -scheme Spoke -destination <span class="c-str">'platform=macOS'</span> build</code></pre>
+
+<p>This is the command that makes agentic development viable on this project — it lets an assistant compile, read real compiler errors, and iterate without you relaying anything. It's the single most useful thing to know once you move to a repo.</p>
+
+<p>Two surfaces can run it, both on your own Mac and both using the same engine and the same <code>CLAUDE.md</code>: the <strong>Code tab</strong> in the Claude desktop app, or the standalone <code>claude</code> CLI in a terminal. The Code tab adds visual diff review, parallel sessions on automatic git worktrees, image attachments, and an integrated terminal. The CLI adds scripting (<code>--print</code>), CI pipelines, and agent teams. For building Spoke, the Code tab is the more comfortable choice; neither is more capable at the actual work.</p>

@@ -1,0 +1,194 @@
+<p>Swift is a statically typed, compiled, memory-safe language with strong functional leanings and an unusually expressive type system. It's closer to Rust or Kotlin than to JavaScript, but far friendlier than Rust about memory.</p>
+
+<h3 id="m2-value">Value types vs reference types</h3>
+
+<p>This is the foundational distinction and everything else builds on it.</p>
+
+<p>A <code>struct</code> is a <strong>value type</strong>. Assigning it copies it. Two variables holding the same struct are entirely independent.</p>
+
+<pre><code><span class="c-key">struct</span> <span class="c-typ">Point</span> { <span class="c-key">var</span> x: <span class="c-typ">Int</span>; <span class="c-key">var</span> y: <span class="c-typ">Int</span> }
+
+<span class="c-key">var</span> a = <span class="c-typ">Point</span>(x: <span class="c-num">1</span>, y: <span class="c-num">2</span>)
+<span class="c-key">var</span> b = a        <span class="c-com">// a full copy, not a shared reference</span>
+b.x = <span class="c-num">99</span>
+<span class="c-com">// a.x is still 1. In JavaScript, this would surprise you.</span></code></pre>
+
+<p>A <code>class</code> is a <strong>reference type</strong>. Assigning it shares the same underlying object, exactly like a JavaScript object.</p>
+
+<pre><code><span class="c-key">class</span> <span class="c-typ">Counter</span> { <span class="c-key">var</span> value = <span class="c-num">0</span> }
+
+<span class="c-key">let</span> x = <span class="c-typ">Counter</span>()
+<span class="c-key">let</span> y = x
+y.value = <span class="c-num">5</span>
+<span class="c-com">// x.value is now 5 — same object.</span></code></pre>
+
+<p><strong>When to use which:</strong> default to <code>struct</code>. Reach for <code>class</code> when you need shared mutable state (a controller, a store, a manager), when you need identity (two things that are "equal" but distinct), or when you're inheriting from an Apple class.</p>
+
+<p>In Spoke: <code>OverlayView</code> is a struct because it's a description of UI. <code>DictationController</code> is a class because every part of the app must see the same instance. <code>Transcriber</code> is an <code>actor</code> — a class with thread-safety guarantees, covered in Module 3.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · let vs var on structs</p>
+<p><code>let</code> on a struct makes the <em>entire value</em> immutable, including its properties. <code>let p = Point(x:1,y:2); p.x = 5</code> is a compile error. On a class, <code>let</code> only means "this variable can't point at a different object" — you can still mutate its properties. This trips up nearly everyone once.</p>
+</div>
+
+<h3 id="m2-opt">Optionals</h3>
+
+<p>Swift has no implicit null. A <code>String</code> is always a string. A <code>String?</code> is an <code>Optional&lt;String&gt;</code> — a box that either contains a string or is empty. You cannot use the value without opening the box, and the compiler enforces it.</p>
+
+<p>Four ways to unwrap, in rough order of how often you'll use them:</p>
+
+<pre><code><span class="c-com">// 1. guard let — the workhorse. Unwrap or bail out early.</span>
+<span class="c-key">func</span> greet(_ name: <span class="c-typ">String</span>?) {
+    <span class="c-key">guard let</span> name <span class="c-key">else</span> { <span class="c-key">return</span> }
+    <span class="c-com">// `name` is a non-optional String from here to the end of the function</span>
+    print(<span class="c-str">"Hello, \(name)"</span>)
+}
+
+<span class="c-com">// 2. if let — unwrap for a narrow scope.</span>
+<span class="c-key">if let</span> name { print(name) }
+
+<span class="c-com">// 3. ?? — supply a default.</span>
+<span class="c-key">let</span> display = name ?? <span class="c-str">"stranger"</span>
+
+<span class="c-com">// 4. ?. — optional chaining. The whole expression becomes optional.</span>
+<span class="c-key">let</span> length = name?.count   <span class="c-com">// Int?  — nil if name was nil</span></code></pre>
+
+<p><code>guard</code> deserves special attention because it's the idiom you'll type most. It says "this must be true to continue; otherwise leave now." Unlike <code>if</code>, the unwrapped value stays in scope <em>after</em> the guard, which keeps the happy path un-nested. It's the single biggest readability win in Swift.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · force unwrapping</p>
+<p><code>name!</code> forcibly opens the box and <strong>crashes the app</strong> if it's empty. It has legitimate uses (a resource you shipped in the bundle and know exists), but treat every <code>!</code> as a claim you're making to the compiler that you'd better be able to defend. In production code it's usually a bug waiting for a user to find.</p>
+</div>
+
+<h3 id="m2-clo">Closures and capture lists</h3>
+
+<p>Closures are anonymous functions that capture their surrounding scope — same as JavaScript arrow functions or Dart closures. Swift's syntax has one quirk worth internalising: <strong>trailing closure syntax</strong>.</p>
+
+<pre><code><span class="c-com">// These three are identical:</span>
+audio.start(onBuffer: { buffer <span class="c-key">in</span> handle(buffer) })
+audio.start { buffer <span class="c-key">in</span> handle(buffer) }
+audio.start { handle($0) }   <span class="c-com">// $0 is the first parameter</span></code></pre>
+
+<p>If the closure is the last parameter, it can move outside the parentheses. This is why SwiftUI reads the way it does — <code>Button("Save") { save() }</code> is just a function call with a trailing closure.</p>
+
+<p>The part that matters for correctness is the <strong>capture list</strong>: the <code>[weak self]</code> you see everywhere.</p>
+
+<pre><code>hotkey.onPress = { [<span class="c-key">weak self</span>] <span class="c-key">in</span>
+    <span class="c-typ">Task</span> { <span class="c-key">await</span> <span class="c-key">self</span>?.beginListening() }
+}</code></pre>
+
+<p>By default a closure holds a <strong>strong reference</strong> to everything it captures, keeping those objects alive. If an object holds a closure that captures that same object, neither can ever be freed — a <em>retain cycle</em>, which is Swift's version of a memory leak. <code>[weak self]</code> makes the capture non-owning, so <code>self</code> becomes an optional that turns nil if the object goes away.</p>
+
+<p><strong>Rule of thumb:</strong> if the closure is stored somewhere and called later (a callback, an event handler, a subscription), use <code>[weak self]</code>. If the closure runs immediately and is discarded (<code>map</code>, <code>filter</code>, <code>sort</code>), you don't need it.</p>
+
+<h3 id="m2-pro">Protocols and extensions</h3>
+
+<p>A <code>protocol</code> is an interface: a list of requirements a type promises to satisfy. If you know TypeScript interfaces or Dart abstract classes, you're most of the way there.</p>
+
+<pre><code><span class="c-key">protocol</span> <span class="c-typ">Describable</span> {
+    <span class="c-key">var</span> summary: <span class="c-typ">String</span> { <span class="c-key">get</span> }
+    <span class="c-key">func</span> reset()
+}
+
+<span class="c-key">struct</span> <span class="c-typ">Session</span>: <span class="c-typ">Describable</span> {
+    <span class="c-key">var</span> summary: <span class="c-typ">String</span> { <span class="c-str">"a session"</span> }
+    <span class="c-key">func</span> reset() { }
+}</code></pre>
+
+<p>What makes protocols more powerful than most interface systems is that you can add <em>default implementations</em> via extensions, and you can extend types you don't own:</p>
+
+<pre><code><span class="c-com">// Give every Describable a free implementation</span>
+<span class="c-key">extension</span> <span class="c-typ">Describable</span> {
+    <span class="c-key">func</span> reset() { print(<span class="c-str">"nothing to reset"</span>) }
+}
+
+<span class="c-com">// Add behaviour to a type from another module — even from Apple</span>
+<span class="c-key">extension</span> <span class="c-typ">String</span> {
+    <span class="c-key">var</span> isBlank: <span class="c-typ">Bool</span> { trimmingCharacters(<span class="c-key">in</span>: .whitespaces).isEmpty }
+}</code></pre>
+
+<p>This is why Swift codebases lean on protocols rather than inheritance. <code>View</code>, <code>App</code>, <code>Identifiable</code>, <code>Codable</code>, <code>Sendable</code> — the entire SwiftUI surface is protocols with default implementations.</p>
+
+<h3 id="m2-enum">Enums with associated values</h3>
+
+<p>Swift enums are not C enums. They can carry data, which makes them the natural way to model state.</p>
+
+<pre><code><span class="c-key">enum</span> <span class="c-typ">State</span>: <span class="c-typ">Equatable</span> {
+    <span class="c-key">case</span> settingUp
+    <span class="c-key">case</span> idle
+    <span class="c-key">case</span> listening
+    <span class="c-key">case</span> polishing
+    <span class="c-key">case</span> error(<span class="c-typ">String</span>)     <span class="c-com">// this case carries a message</span>
+}</code></pre>
+
+<p>Two properties make this powerful. First, <strong>illegal states become unrepresentable</strong> — you cannot be both <code>listening</code> and <code>polishing</code>, because it's one value. Compare that to three booleans, where four of the eight combinations are nonsense. Second, <code>switch</code> is <strong>exhaustive</strong>: add a case and every switch that doesn't handle it fails to compile. Refactoring becomes a conversation with the compiler instead of a hunt.</p>
+
+<pre><code><span class="c-key">switch</span> state {
+<span class="c-key">case</span> .settingUp:       <span class="c-key">return</span> <span class="c-str">"Setting up…"</span>
+<span class="c-key">case</span> .idle:            <span class="c-key">return</span> <span class="c-str">"Ready"</span>
+<span class="c-key">case</span> .listening:       <span class="c-key">return</span> <span class="c-str">"Listening…"</span>
+<span class="c-key">case</span> .polishing:       <span class="c-key">return</span> <span class="c-str">"Cleaning up…"</span>
+<span class="c-key">case</span> .error(<span class="c-key">let</span> msg):  <span class="c-key">return</span> msg   <span class="c-com">// bind the payload</span>
+}</code></pre>
+
+<h3 id="m2-err">Error handling</h3>
+
+<p>Swift uses typed, checked exceptions — but unlike Java, only at function boundaries you explicitly mark.</p>
+
+<pre><code><span class="c-key">enum</span> <span class="c-typ">CaptureError</span>: <span class="c-typ">LocalizedError</span> {
+    <span class="c-key">case</span> noInputDevice
+
+    <span class="c-key">var</span> errorDescription: <span class="c-typ">String</span>? {
+        <span class="c-key">switch self</span> {
+        <span class="c-key">case</span> .noInputDevice: <span class="c-key">return</span> <span class="c-str">"No microphone available."</span>
+        }
+    }
+}
+
+<span class="c-key">func</span> start() <span class="c-key">throws</span> {          <span class="c-com">// marked as able to throw</span>
+    <span class="c-key">guard</span> hasDevice <span class="c-key">else</span> { <span class="c-key">throw</span> <span class="c-typ">CaptureError</span>.noInputDevice }
+}
+
+<span class="c-key">do</span> {
+    <span class="c-key">try</span> start()               <span class="c-com">// `try` is mandatory and visible</span>
+} <span class="c-key">catch</span> {
+    print(error.localizedDescription)   <span class="c-com">// `error` is implicit</span>
+}</code></pre>
+
+<p>Three variants worth knowing: <code>try</code> propagates the error, <code>try?</code> converts it to an optional (nil on failure), and <code>try!</code> crashes on failure. The visible <code>try</code> at every call site is deliberate — you can scan a function and immediately see every place it can fail.</p>
+
+<p>Conforming to <code>LocalizedError</code> rather than plain <code>Error</code> is what makes <code>error.localizedDescription</code> produce your message instead of a useless generic one. Spoke does this everywhere, because those strings go straight into the overlay where users see them.</p>
+
+<h3 id="m2-macro">Property wrappers and macros</h3>
+
+<p>The <code>@</code> symbols everywhere are one of two things.</p>
+
+<p><strong>Property wrappers</strong> (<code>@State</code>, <code>@Binding</code>) wrap a property with extra behaviour. <code>@State var count = 0</code> isn't just an integer — it's a struct that stores the value outside the view and tells SwiftUI to re-render when it changes.</p>
+
+<p><strong>Macros</strong> (<code>@Observable</code>, <code>@Generable</code>, <code>@main</code>) generate code at compile time. This is genuinely new in Swift and worth understanding, because it explains behaviour that would otherwise look like magic.</p>
+
+<pre><code><span class="c-key">@Observable</span>
+<span class="c-key">final class</span> <span class="c-typ">DictationController</span> {
+    <span class="c-key">var</span> state: <span class="c-typ">State</span> = .idle
+}</code></pre>
+
+<p>At compile time, <code>@Observable</code> rewrites this class so every property has hidden access-tracking. When a SwiftUI view reads <code>controller.state</code> during rendering, the framework records that dependency; when <code>state</code> is written, only views that actually read it re-render. It's finer-grained than React's re-render-the-subtree default and you get it for free.</p>
+
+<p>In Xcode you can right-click any macro and choose <strong>Expand Macro</strong> to see the generated source. Do this once — it demystifies the whole system.</p>
+
+<h3 id="m2-arc">Memory and retain cycles</h3>
+
+<p>Swift uses <strong>ARC</strong> (Automatic Reference Counting), not a tracing garbage collector. Every reference-type instance carries a count of strong references to it; when that count hits zero, the object is deallocated immediately and deterministically.</p>
+
+<p>The upside: no GC pauses, predictable memory, immediate cleanup (<code>deinit</code> runs exactly when you'd expect). The downside: <strong>cycles are never collected</strong>. If A strongly references B and B strongly references A, both leak forever.</p>
+
+<p>Three reference strengths:</p>
+
+<table>
+<tr><th>Keyword</th><th>Keeps object alive?</th><th>Becomes nil?</th><th>Use for</th></tr>
+<tr><td><code>strong</code> (default)</td><td>Yes</td><td>No</td><td>Ownership</td></tr>
+<tr><td><code>weak</code></td><td>No</td><td>Yes — must be optional</td><td>Back-references, delegates, callbacks</td></tr>
+<tr><td><code>unowned</code></td><td>No</td><td>No — crashes if accessed after dealloc</td><td>When you're certain the target outlives you</td></tr>
+</table>
+
+<p>In practice: use <code>strong</code> by default, <code>weak</code> in stored closures and delegate properties, and avoid <code>unowned</code> until you have a specific reason. Xcode's Memory Graph Debugger (the little graph icon while running) will show you cycles visually if you suspect one.</p>

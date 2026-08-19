@@ -1,0 +1,67 @@
+[
+  {
+    "slug": "how-to-use-this",
+    "number": "0",
+    "title": "How to use this"
+  },
+  {
+    "slug": "mental-model-shift",
+    "number": "1",
+    "title": "The mental model shift"
+  },
+  {
+    "slug": "swift-the-language",
+    "number": "2",
+    "title": "Swift, the language"
+  },
+  {
+    "slug": "concurrency",
+    "number": "3",
+    "title": "Concurrency"
+  },
+  {
+    "slug": "swiftui",
+    "number": "4",
+    "title": "SwiftUI"
+  },
+  {
+    "slug": "appkit-and-the-platform",
+    "number": "5",
+    "title": "AppKit and the platform"
+  },
+  {
+    "slug": "digital-audio",
+    "number": "6",
+    "title": "Digital audio"
+  },
+  {
+    "slug": "speech-recognition",
+    "number": "7",
+    "title": "Speech recognition"
+  },
+  {
+    "slug": "on-device-language-models",
+    "number": "8",
+    "title": "On-device language models"
+  },
+  {
+    "slug": "permissions-security-distribution",
+    "number": "9",
+    "title": "Permissions, security, and distribution"
+  },
+  {
+    "slug": "xcode-and-tooling",
+    "number": "10",
+    "title": "Xcode and tooling"
+  },
+  {
+    "slug": "codebase-line-by-line",
+    "number": "11",
+    "title": "The codebase, line by line"
+  },
+  {
+    "slug": "glossary",
+    "number": "12",
+    "title": "Glossary"
+  }
+]

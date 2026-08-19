@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Spoke's palette: cool paper, petrol accent — the same identity as the
+   Backstage design doc, because the site and the lab are one product. */
+:root {
+  --paper: #f7f8f9;
+  --ink: #1b2226;
+  --muted: #5a6b71;
+  --line: #dbe3e5;
+  --accent: #0e7370;
+  --accent-ink: #0a5350;
+  --card: #ffffff;
+  --code-bg: #eef2f3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121719;
+    --ink: #e6edee;
+    --muted: #93a6ab;
+    --line: #27343a;
+    --accent: #41b8b1;
+    --accent-ink: #6bcfc8;
+    --card: #1a2225;
+    --code-bg: #1d282c;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-card: var(--card);
+  --color-code-bg: var(--code-bg);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
+/* University prose: extracted fragments carry the original tag structure;
+   these rules give them the site's voice. */
+.university-prose {
+  max-width: 68ch;
+  line-height: 1.65;
+}
+.university-prose h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 2em 0 0.6em;
+}
+.university-prose p { margin: 0 0 0.9em; }
+.university-prose a { color: var(--accent-ink); text-underline-offset: 3px; }
+.university-prose ul { padding-left: 1.2em; margin: 0 0 1em; list-style: disc; }
+.university-prose li { margin-bottom: 0.4em; }
+.university-prose li::marker { color: var(--accent); }
+.university-prose strong { font-weight: 600; }
+.university-prose pre {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin: 0 0 1.1em;
+}
+.university-prose code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.88em;
+}
+.university-prose p code, .university-prose li code, .university-prose td code {
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.university-prose table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.88rem;
+  margin: 0 0 1.2em;
+  display: block;
+  overflow-x: auto;
+}
+.university-prose th {
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.university-prose td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
