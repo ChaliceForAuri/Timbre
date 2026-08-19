@@ -41,3 +41,5 @@ Two kinds of records live here. The boundary rule:
 | [0003](gdr/0003-structural-spoken-commands-only.md) | Spoken commands: structure only, never punctuation | Accepted |
 | [0004](gdr/0004-opt-in-local-dictation-capture.md) | Dictation capture is opt-in, local, and deletable | Accepted |
 | [0005](gdr/0005-licensing-preserves-optionality.md) | Licensing starts closed to preserve optionality | Accepted |
+| [0006](gdr/0006-app-never-phones-home.md) | The app never phones home; privacy is never a paid tier | Accepted |
+| [0007](gdr/0007-backstage-web-lab.md) | Backstage: a web lab fed by dev-side artifacts | Accepted |
