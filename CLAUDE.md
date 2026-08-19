@@ -51,6 +51,12 @@ xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
 
 # Full app:
 xcodebuild -project apps/Spoke/Spoke.xcodeproj -scheme Spoke -destination 'platform=macOS' build
+
+# Daily driver: build Release and install to /Applications (grants carry over):
+tools/install.sh
+
+# Notarized zip for any Mac (one-time setup inside the script):
+tools/release.sh
 ```
 
 Or open `apps/Spoke/Spoke.xcodeproj` and ⌘R. Signing is ad-hoc by default;
