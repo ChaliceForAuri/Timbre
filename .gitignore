@@ -18,3 +18,6 @@ apps/Spoke/Config/Local.xcconfig
 web/node_modules/
 web/dist/
 packages/SpokeKit/Fixtures/audio/
+
+# Local build products (install.sh, release.sh)
+build/
