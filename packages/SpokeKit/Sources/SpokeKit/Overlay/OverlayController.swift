@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import os
 
 /// Owns the floating pill: showing it, hiding it, and placing it on screen.
 ///
@@ -8,6 +9,8 @@ import SwiftUI
 /// paste lands in the wrong place — or nowhere. Every setting in
 /// `makePanel()` exists to prevent that.
 final class OverlayController {
+
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Spoke", category: "overlay")
 
     /// How many recent audio levels the waveform shows.
     private static let waveformWindow = 5
@@ -182,7 +185,13 @@ final class OverlayController {
         // corner rather than re-centring under the caret on every word.
         let origin = anchorOrigin ?? preferredOrigin(for: size)
         anchorOrigin = origin
-        panel.setFrameOrigin(clampedToScreen(origin, for: size))
+        let clamped = clampedToScreen(origin, for: size)
+        if clamped != origin {
+            Self.logger.log(
+                "origin \(String(describing: origin)) clamped to \(String(describing: clamped)) — size \(String(describing: size)), caretAnchor \(String(describing: self.caretAnchor)), mouse \(String(describing: NSEvent.mouseLocation))"
+            )
+        }
+        panel.setFrameOrigin(clamped)
     }
 
     /// Keeps a frame fully on the active screen, whatever the pill grew to.

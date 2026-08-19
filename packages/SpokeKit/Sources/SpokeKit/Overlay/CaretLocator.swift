@@ -1,8 +1,11 @@
 import AppKit
 import ApplicationServices
+import os
 
 /// Finds the text insertion point on screen, in AppKit coordinates.
 enum CaretLocator {
+
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Spoke", category: "overlay")
 
     /// Asks the Accessibility API where the focused element's caret is.
     ///
@@ -54,7 +57,11 @@ enum CaretLocator {
         guard rect.width.isFinite, rect.height.isFinite else { return nil }
 
         guard let primary = NSScreen.screens.first else { return nil }
-        return convertFromAccessibility(rect, primaryScreenHeight: primary.frame.maxY)
+        let converted = convertFromAccessibility(rect, primaryScreenHeight: primary.frame.maxY)
+        logger.log(
+            "caret raw AX \(String(describing: rect)) → converted \(String(describing: converted)), primaryHeight \(primary.frame.maxY)"
+        )
+        return converted
     }
 
     /// Accessibility reports a top-left origin measured from the top of the

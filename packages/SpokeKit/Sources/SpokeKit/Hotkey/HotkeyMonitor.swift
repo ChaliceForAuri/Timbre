@@ -1,5 +1,6 @@
 import AppKit
 import ApplicationServices
+import os
 
 /// Hold-to-talk global hotkey, surfaced as an async stream of events.
 ///
@@ -17,7 +18,15 @@ final class HotkeyMonitor {
     let events: AsyncStream<HotkeyEvent>
 
     private let continuation: AsyncStream<HotkeyEvent>.Continuation
-    private var detector = HoldDetector()
+
+    /// Lock-wrapped rather than actor-isolated, and the reason is three
+    /// identical SIGBUS crash reports (2026-08-19): a MainActor-isolated
+    /// handler closure makes Swift compile a runtime executor check into
+    /// every monitor callback, and inside AppKit's Carbon-era event dispatch
+    /// that check read a stale executor pointer and crashed — Release builds
+    /// only. The event path must stay out of the concurrency runtime
+    /// entirely: no isolation, no dynamic check, nothing to crash. ADR-0007.
+    private nonisolated let detector = OSAllocatedUnfairLock(initialState: HoldDetector())
     private var globalMonitor: Any?
     private var localMonitor: Any?
 
@@ -42,17 +51,39 @@ final class HotkeyMonitor {
     func start() {
         stop()
 
+        // Explicitly @Sendable so the closures are nonisolated: a closure
+        // that inherits MainActor isolation here gets a dynamic executor
+        // check on every event, which is the exact machinery that crashed.
+        // They capture only Sendable values — the lock and the continuation —
+        // never self.
+        let detector = detector
+        let continuation = continuation
+
         // Global monitor: fires when other apps are focused (the normal case).
-        // AppKit delivers these on the main thread.
-        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
-            self?.handle(event)
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) {
+            @Sendable event in
+            Self.process(event, detector: detector, continuation: continuation)
         }
 
         // Local monitor: fires when our own window is focused. Both are
         // needed, or the hotkey mysteriously dies while Settings is open.
-        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
-            self?.handle(event)
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) {
+            @Sendable event in
+            Self.process(event, detector: detector, continuation: continuation)
             return event
+        }
+    }
+
+    private nonisolated static func process(
+        _ event: NSEvent,
+        detector: OSAllocatedUnfairLock<HoldDetector>,
+        continuation: AsyncStream<HotkeyEvent>.Continuation
+    ) {
+        let keyCode = event.keyCode
+        let rawFlags = event.modifierFlags.rawValue
+        let transition = detector.withLock { $0.transition(keyCode: keyCode, rawModifierFlags: rawFlags) }
+        if let transition {
+            continuation.yield(transition)
         }
     }
 
@@ -61,16 +92,7 @@ final class HotkeyMonitor {
         if let localMonitor { NSEvent.removeMonitor(localMonitor) }
         globalMonitor = nil
         localMonitor = nil
-        detector = HoldDetector()
+        detector.withLock { $0 = HoldDetector() }
     }
 
-    private func handle(_ event: NSEvent) {
-        let transition = detector.transition(
-            keyCode: event.keyCode,
-            rawModifierFlags: event.modifierFlags.rawValue
-        )
-        if let transition {
-            continuation.yield(transition)
-        }
-    }
 }
