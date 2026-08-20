@@ -19,6 +19,18 @@ truth for the app's version; a release tag must match it.
   (GDR-0004).
 
 ### Fixed
+- A Release-only crash (SIGBUS) in the hotkey event path: the monitor
+  closures inherited MainActor isolation, and the runtime executor check
+  Swift compiled into every key event dereferenced a stale pointer inside
+  AppKit's event dispatch. The event path now runs with no isolation
+  machinery at all (ADR-0007).
+- Dictating with no microphone connected hung forever at "Cleaning up…";
+  the finish path is now un-hangable (immediate refusal, silence detection,
+  and a watchdog around finalization).
+- The overlay could appear unpositioned in the bottom-left corner: a zero
+  first-pass layout size skipped placement entirely. It now always places —
+  under the caret when the app reveals it, otherwise as a bottom-center HUD.
+  The mouse fallback is gone; pointer position is unrelated to typing.
 - Speech sessions are rebuilt per dictation; previously only the first
   dictation produced any text (ADR-0006).
 - The microphone is requested unconditionally, and the hardened runtime's

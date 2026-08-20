@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import os
 
 /// Owns the floating pill: showing it, hiding it, and placing it on screen.
 ///
@@ -8,6 +9,8 @@ import SwiftUI
 /// paste lands in the wrong place — or nowhere. Every setting in
 /// `makePanel()` exists to prevent that.
 final class OverlayController {
+
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Spoke", category: "overlay")
 
     /// How many recent audio levels the waveform shows.
     private static let waveformWindow = 5
@@ -25,11 +28,23 @@ final class OverlayController {
     /// must never happen per text update or per audio level.
     private var caretAnchor: NSRect?
 
-    /// Where the pill's bottom-left corner was placed on first layout. Kept
-    /// fixed as the transcript grows: re-deriving it from the new width would
-    /// slide the pill left on every word, which is far more distracting than
-    /// one that simply extends rightward.
-    private var anchorOrigin: NSPoint?
+    /// How the pill is pinned to the screen, decided once per dictation at
+    /// first layout and then held while the transcript grows.
+    private enum Anchor {
+        /// Under a located caret: the bottom-left corner holds, so text
+        /// grows rightward — re-deriving from the new width would slide the
+        /// pill left on every word.
+        case corner(NSPoint)
+        /// Caret unknown: a HUD at bottom-center of the focused screen, like
+        /// the system's own dictation pill. The center holds and growth is
+        /// symmetric. Never the mouse — the pointer's position has nothing
+        /// to do with where the user is typing, and anchoring to it is what
+        /// used to jam the pill into whatever corner the cursor last slept
+        /// in.
+        case hudCenter(x: CGFloat, y: CGFloat)
+    }
+
+    private var anchor: Anchor?
 
     /// Last size actually applied to the panel, so an unchanged layout doesn't
     /// re-set the frame.
@@ -45,7 +60,7 @@ final class OverlayController {
         text = ""
         levels = Array(repeating: 0, count: Self.waveformWindow)
         caretAnchor = CaretLocator.caretScreenRect()
-        anchorOrigin = nil
+        anchor = nil
         appliedSize = .zero
 
         let panel = panel ?? makePanel()
@@ -163,25 +178,48 @@ final class OverlayController {
 
     // MARK: - Positioning
 
-    /// Applies a new panel size only when the layout genuinely changed.
+    /// A plausible pill size for the moment before SwiftUI has produced a
+    /// real one. Only the initial *placement* depends on it; the true size
+    /// corrects the frame on the next render.
+    private static let estimatedPillSize = NSSize(width: 260, height: 44)
+
+    /// Applies size and placement when the layout genuinely changed.
     private func resizeIfNeeded() {
         guard let panel else { return }
 
         panel.layoutIfNeeded()
-        guard let size = panel.contentView?.fittingSize, size.width > 0, size.height > 0 else {
-            return
-        }
+        let size = OverlayLayout.resolvedSize(
+            fitting: panel.contentView?.fittingSize ?? .zero,
+            applied: appliedSize,
+            estimate: Self.estimatedPillSize
+        )
+
+        // An unplaced AppKit window sits at its creation rect — (0,0), the
+        // bottom-left corner of the screen, flush against the edges. So an
+        // invalid first-pass size may never skip *placement*: show() runs
+        // before the panel is on screen, where fittingSize is still zero,
+        // and skipping here is exactly the bug that parked the pill in the
+        // corner. Skip only when the pill is already anchored AND unchanged.
         guard
-            abs(size.width - appliedSize.width) > 0.5 || abs(size.height - appliedSize.height) > 0.5
+            anchor == nil
+                || abs(size.width - appliedSize.width) > 0.5
+                || abs(size.height - appliedSize.height) > 0.5
         else { return }
 
         appliedSize = size
         panel.setContentSize(size)
 
-        // Placed once, then held: the transcript grows rightward from a fixed
-        // corner rather than re-centring under the caret on every word.
-        let origin = anchorOrigin ?? preferredOrigin(for: size)
-        anchorOrigin = origin
+        // Anchored once, then held while the transcript grows.
+        let anchor = self.anchor ?? makeAnchor(for: size)
+        self.anchor = anchor
+
+        let origin: NSPoint
+        switch anchor {
+        case .corner(let corner):
+            origin = corner
+        case .hudCenter(let x, let y):
+            origin = NSPoint(x: x - size.width / 2, y: y)
+        }
         panel.setFrameOrigin(clampedToScreen(origin, for: size))
     }
 
@@ -195,34 +233,30 @@ final class OverlayController {
         )
     }
 
-    /// Prefer just below the caret; fall back to above the mouse; clamp to
-    /// the visible screen either way.
-    private func preferredOrigin(for size: NSSize) -> NSPoint {
+    /// Prefer just below the caret; otherwise a HUD at bottom-center of the
+    /// focused screen. There is deliberately no mouse fallback (see Anchor).
+    private func makeAnchor(for size: NSSize) -> Anchor {
         let screen = NSScreen.main ?? NSScreen.screens[0]
         let visible = screen.visibleFrame
         let margin: CGFloat = 12
 
-        var origin: NSPoint
-
-        if let caret = caretAnchor {
-            // Centre horizontally on the caret, sit just underneath it.
-            origin = NSPoint(
-                x: caret.midX - size.width / 2,
-                y: caret.minY - size.height - margin
-            )
-            // If there's no room below (caret near the bottom), flip above.
-            if origin.y < visible.minY + margin {
-                origin.y = caret.maxY + margin
-            }
-        } else {
-            let mouse = NSEvent.mouseLocation
-            origin = NSPoint(x: mouse.x - size.width / 2, y: mouse.y + 24)
+        guard let caret = caretAnchor else {
+            Self.logger.log("no caret — HUD at bottom-center of \(screen.localizedName, privacy: .public)")
+            return .hudCenter(x: visible.midX, y: visible.minY + 96)
         }
 
-        // Clamp inside the visible screen so it never hangs off an edge.
-        origin.x = min(max(origin.x, visible.minX + margin), visible.maxX - size.width - margin)
-        origin.y = min(max(origin.y, visible.minY + margin), visible.maxY - size.height - margin)
-
-        return origin
+        // Centre horizontally on the caret, sit just underneath it; if
+        // there's no room below, flip above.
+        var origin = NSPoint(
+            x: caret.midX - size.width / 2,
+            y: caret.minY - size.height - margin
+        )
+        if origin.y < visible.minY + margin {
+            origin.y = caret.maxY + margin
+        }
+        Self.logger.log(
+            "caret \(String(describing: caret), privacy: .public) → corner \(String(describing: origin), privacy: .public)"
+        )
+        return .corner(origin)
     }
 }

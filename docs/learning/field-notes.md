@@ -9,6 +9,38 @@ Newest first. Append; don't rewrite history.
 
 ---
 
+## 2026-08-19 — "Completely against the edge" was the whole answer
+
+The overlay kept appearing in the bottom-left corner. Two theories were
+engineered before the bug was found by reading the file top-to-bottom:
+Electron coordinate systems (plausible, wrong) and the mouse fallback (a
+real design flaw, also not the bug). The actual cause: a guard added during
+the flicker fix skipped *placement* whenever SwiftUI hadn't produced a
+layout size yet — and an unplaced AppKit window sits at its creation origin,
+(0,0), the bottom-left corner.
+
+The user's report contained the discriminating detail from the start:
+"completely against the edge." Every positioning path clamps with a 12 pt
+margin; only a window that was never positioned sits flush. Taking the
+observation literally would have skipped both theories.
+
+Related finds from the same hunt:
+
+- **A window that is never explicitly placed appears at (0,0).** Corner-flush
+  placement is the signature of missing placement, not wrong placement.
+- **`NSHostingView.fittingSize` is zero before the first SwiftUI layout
+  pass**, which is exactly when a panel must first be placed. Resolve a
+  fallback size; never skip.
+- **Never anchor UI to the mouse while the user is typing.** The pointer
+  sits wherever it was abandoned. Caret if the app reveals it, deliberate
+  HUD otherwise.
+- **`log show` on this machine returns nothing for our subsystem — even for
+  a trivial test script.** Two rounds of os.Logger instrumentation were
+  unreadable flying blind. Verify the observation channel before trusting
+  what it fails to show.
+
+---
+
 ## 2026-08-18 — A SpeechAnalyzer is single-use, and says nothing about it
 
 Symptom: the first dictation worked. Every one after it showed the overlay,
