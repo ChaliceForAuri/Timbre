@@ -26,7 +26,10 @@ enum CaretLocator {
             ) == .success,
             let focusedRef,
             CFGetTypeID(focusedRef) == AXUIElementGetTypeID()
-        else { return nil }
+        else {
+            logger.log("caret: no focused element via AX")
+            return nil
+        }
         let focused = unsafeDowncast(focusedRef, to: AXUIElement.self)
 
         var rangeRef: CFTypeRef?
@@ -37,7 +40,10 @@ enum CaretLocator {
                 &rangeRef
             ) == .success,
             let rangeRef
-        else { return nil }
+        else {
+            logger.log("caret: focused element has no selected-text range")
+            return nil
+        }
 
         var boundsRef: CFTypeRef?
         guard
@@ -49,7 +55,10 @@ enum CaretLocator {
             ) == .success,
             let boundsRef,
             CFGetTypeID(boundsRef) == AXValueGetTypeID()
-        else { return nil }
+        else {
+            logger.log("caret: element rejected bounds-for-range (typical for Electron/web views)")
+            return nil
+        }
         let axValue = unsafeDowncast(boundsRef, to: AXValue.self)
 
         var rect = CGRect.zero
@@ -59,7 +68,7 @@ enum CaretLocator {
         guard let primary = NSScreen.screens.first else { return nil }
         let converted = convertFromAccessibility(rect, primaryScreenHeight: primary.frame.maxY)
         logger.log(
-            "caret raw AX \(String(describing: rect)) → converted \(String(describing: converted)), primaryHeight \(primary.frame.maxY)"
+            "caret raw AX \(String(describing: rect), privacy: .public) → converted \(String(describing: converted), privacy: .public)"
         )
         return converted
     }
