@@ -18,7 +18,17 @@ truth for the app's version; a release tag must match it.
 - Opt-in local dictation capture for building real evaluation fixtures
   (GDR-0004).
 
+### Added
+- Per-dictation timing records (mic start, first audio, transcript, polish)
+  in the capture log, so latency work is measured rather than felt.
+
 ### Fixed
+- Speaking immediately after the hotkey press lost the first words. The
+  microphone now opens before anything else on the press, the analyzer is
+  pre-warmed at launch and between dictations, and the pill says "Waking the
+  mic…" until the first non-silent buffer arrives — the flip to "Listening…"
+  is a true go signal. On Bluetooth headsets the wake itself remains
+  hardware-bound (issue #4).
 - A Release-only crash (SIGBUS) in the hotkey event path: the monitor
   closures inherited MainActor isolation, and the runtime executor check
   Swift compiled into every key event dereferenced a stale pointer inside
