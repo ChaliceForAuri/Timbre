@@ -8,6 +8,10 @@ truth for the app's version; a release tag must match it.
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-08-19
+
+First release. Everything below shipped between 2026-08-15 and today.
+
 ### Added
 - Dictation pipeline: hold right ⌥, speak, release — cleaned-up text is pasted
   into whatever app has focus. Transcription via `SpeechAnalyzer`, cleanup via
@@ -49,4 +53,5 @@ truth for the app's version; a release tag must match it.
 - The overlay no longer re-sets its own frame on every audio buffer, which
   flickered and could clip the live transcript out of view.
 
-[Unreleased]: https://github.com/ChaliceForAuri/Spoke
+[Unreleased]: https://github.com/ChaliceForAuri/Spoke/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/ChaliceForAuri/Spoke/releases/tag/v0.1.0
