@@ -8,6 +8,15 @@ truth for the app's version; a release tag must match it.
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-08-20
+
+### Fixed
+- "Settings…" did nothing: `SettingsLink` opens the window without
+  activating the app, and a menu-bar app is never active, so the window
+  appeared behind everything. The app now activates itself first. Found
+  within a day of running on three Macs — the first bug caught by
+  distribution.
+
 ## [0.1.0] — 2026-08-19
 
 First release. Everything below shipped between 2026-08-15 and today.
@@ -53,5 +62,6 @@ First release. Everything below shipped between 2026-08-15 and today.
 - The overlay no longer re-sets its own frame on every audio buffer, which
   flickered and could clip the live transcript out of view.
 
-[Unreleased]: https://github.com/ChaliceForAuri/Spoke/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/ChaliceForAuri/Spoke/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/ChaliceForAuri/Spoke/releases/tag/v0.1.1
 [0.1.0]: https://github.com/ChaliceForAuri/Spoke/releases/tag/v0.1.0
