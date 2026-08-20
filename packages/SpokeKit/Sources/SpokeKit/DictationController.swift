@@ -53,6 +53,9 @@ public final class DictationController {
     private let dictationLog = DictationLog()
 
     private var capturedAppName: String?
+    private var pressInstant: ContinuousClock.Instant?
+    private var microphoneStart: Duration?
+    private var firstAudio: Duration?
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
@@ -171,17 +174,30 @@ public final class DictationController {
         liveText = ""
         status = .listening
 
-        // Show the overlay immediately — before the model is even ready.
-        // Perceived latency is what users judge, and an instant pill that
-        // says "Listening…" feels faster than a correct one 200 ms later.
-        overlay.show(mode: .listening)
+        let clock = ContinuousClock()
+        let pressed = clock.now
+        pressInstant = pressed
+        microphoneStart = nil
+        firstAudio = nil
 
         do {
             guard let format = await transcriber.analyzerFormat else {
                 throw Transcriber.TranscriberError.notPrepared
             }
 
+            // The microphone opens FIRST — before the overlay, whose caret
+            // lookup is a synchronous IPC round-trip into another process.
+            // On a Bluetooth mic the headset takes hundreds of milliseconds
+            // to wake; every millisecond of our own work belongs inside that
+            // window, not in front of it. Issue #4.
             let streams = try audio.start(convertingTo: format)
+            microphoneStart = clock.now - pressed
+
+            // The pill must not say "Listening" yet: no audio is flowing,
+            // and inviting speech into dead air is the clipped-first-words
+            // bug. The level task below flips it the moment sound arrives.
+            overlay.show(mode: .warming)
+
             let snapshots = try await transcriber.startDictation(consuming: streams.input)
 
             displayTasks = [
@@ -193,8 +209,22 @@ public final class DictationController {
                     }
                 },
                 Task { [weak self] in
+                    var heardAudio = false
                     for await level in streams.levels {
-                        self?.overlay.pushLevel(level)
+                        guard let self else { return }
+                        // Strictly non-zero: a waking Bluetooth mic delivers
+                        // buffers of exact digital zeros immediately, so
+                        // "a buffer arrived" is not "the mic is alive". A
+                        // live capture always carries a noise floor; only a
+                        // dead route is perfectly silent. Flipping on the
+                        // first buffer made the pill say "Listening" into
+                        // dead air — the same lie, one level down.
+                        if !heardAudio, level > 0 {
+                            heardAudio = true
+                            self.firstAudio = clock.now - pressed
+                            self.overlay.update(mode: .listening)
+                        }
+                        self.overlay.pushLevel(level)
                     }
                 },
             ]
@@ -232,7 +262,10 @@ public final class DictationController {
         overlay.update(mode: .polishing)
 
         do {
+            let clock = ContinuousClock()
+            let released = clock.now
             let raw = try await transcriber.finishDictation()
+            let transcriptDuration = clock.now - released
             cancelDisplayTasks()
 
             guard !raw.isEmpty else {
@@ -241,11 +274,13 @@ public final class DictationController {
                 return
             }
 
+            let polishStarted = clock.now
             let cleaned = await polisher.polish(
                 raw,
                 appContext: capturedAppName,
                 vocabulary: vocabularyStore.terms
             )
+            let polishDuration = clock.now - polishStarted
 
             // Hide BEFORE pasting. If the overlay is still on screen when the
             // synthetic ⌘V fires, the pill flickers over the user's own text —
@@ -261,7 +296,13 @@ public final class DictationController {
                     date: Date(),
                     appContext: capturedAppName,
                     transcript: raw,
-                    polished: cleaned
+                    polished: cleaned,
+                    timings: DictationTimings(
+                        microphoneStartMs: (microphoneStart ?? .zero).wholeMilliseconds,
+                        firstAudioMs: (firstAudio ?? .zero).wholeMilliseconds,
+                        transcriptMs: transcriptDuration.wholeMilliseconds,
+                        polishMs: polishDuration.wholeMilliseconds
+                    )
                 )
             )
 

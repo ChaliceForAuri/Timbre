@@ -62,6 +62,12 @@ actor Transcriber {
         analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(
             compatibleWith: [session.transcriber]
         )
+
+        // Allocate the analyzer's resources now, at launch, rather than
+        // inside the first key press. Apple ships this API for exactly the
+        // warm-up complaint in issue #4. Failure is fine — analysis then
+        // prepares lazily, exactly as before.
+        try? await session.analyzer.prepareToAnalyze(in: analyzerFormat)
         ready = session
     }
 
@@ -141,8 +147,15 @@ actor Transcriber {
         let text = accumulator.currentText
         accumulator = TranscriptAccumulator()
 
-        // Build the next one now rather than on the next key press.
-        if let locale { ready = Self.makeSession(locale: locale) }
+        // Build the next one now rather than on the next key press, and warm
+        // it up off the hot path — this runs after the transcript is already
+        // on its way back to the user.
+        if let locale {
+            let next = Self.makeSession(locale: locale)
+            ready = next
+            let format = analyzerFormat
+            Task { try? await next.analyzer.prepareToAnalyze(in: format) }
+        }
 
         return text
     }

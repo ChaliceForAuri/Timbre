@@ -10,6 +10,10 @@ import SwiftUI
 struct OverlayView: View {
 
     enum Mode: Equatable {
+        /// The engine is starting and no audio has arrived yet. Saying
+        /// "Listening" here would be a lie that invites speech into dead
+        /// air — on a Bluetooth mic the wake can take half a second.
+        case warming
         case listening
         case polishing
         case error(String)
@@ -59,7 +63,7 @@ struct OverlayView: View {
     @ViewBuilder
     private var indicator: some View {
         switch mode {
-        case .listening:
+        case .warming, .listening:
             Waveform(levels: levels)
                 .frame(width: 34, height: 18)
         case .polishing:
@@ -76,6 +80,7 @@ struct OverlayView: View {
 
     private var displayText: String {
         switch mode {
+        case .warming: "Waking the mic…"
         case .listening: text.isEmpty ? "Listening…" : text
         case .polishing: text.isEmpty ? "Cleaning up…" : text
         case .error(let message): message
@@ -84,6 +89,7 @@ struct OverlayView: View {
 
     private var textColor: Color {
         switch mode {
+        case .warming: .secondary
         case .listening: text.isEmpty ? .secondary : .primary
         case .polishing: .secondary
         case .error: .primary
