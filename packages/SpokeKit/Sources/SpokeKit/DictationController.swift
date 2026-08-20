@@ -156,6 +156,15 @@ public final class DictationController {
         default: return
         }
 
+        // No input device — headphones off, no mic on a Mac Studio — must
+        // fail here, loudly, not four steps later. Without this, the engine
+        // starts cleanly, delivers nothing, and the finish path used to hang.
+        guard AVCaptureDevice.default(for: .audio) != nil else {
+            overlay.show(mode: .error("No microphone connected."))
+            overlay.hide(after: .seconds(2.5))
+            return
+        }
+
         // Capture the target app now — by the time we paste, focus is the
         // same, but reading it up front keeps the polish prompt honest.
         capturedAppName = TextInserter.frontmostAppName
@@ -198,9 +207,27 @@ public final class DictationController {
     private func endListening() async {
         guard status == .listening else { return }
 
+        // Read before stop() — stopping discards the tap processor that
+        // knows whether any buffers ever arrived.
+        let heardAudio = audio.hasDeliveredAudio
+
         // Finishing the audio streams first lets the analyzer flush through
         // end of input; the transcriber then reports the full utterance.
         audio.stop()
+
+        // A session that heard nothing (device vanished mid-hold, Bluetooth
+        // mic never woke) has nothing to finalize — and finalizing an
+        // analyzer that got no audio hangs. Tear it down instead.
+        guard heardAudio else {
+            _ = try? await transcriber.finishDictation()
+            cancelDisplayTasks()
+            overlay.update(mode: .error("The microphone didn't deliver any audio."))
+            overlay.hide(after: .seconds(2.5))
+            liveText = ""
+            status = .idle
+            return
+        }
+
         status = .polishing
         overlay.update(mode: .polishing)
 

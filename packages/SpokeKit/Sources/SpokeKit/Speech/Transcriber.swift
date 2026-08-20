@@ -115,7 +115,21 @@ actor Transcriber {
 
         // Flushes audio still in the model's buffer, so the last word or two
         // isn't lost — and finishes this analyzer for good.
-        try await session.analyzer.finalizeAndFinishThroughEndOfInput()
+        //
+        // The watchdog exists because finalize never returns when the
+        // analyzer received no audio at all (observed with no microphone
+        // connected: the engine starts cleanly and delivers nothing, and the
+        // release-key path then suspends forever). cancelAndFinishNow() is
+        // Apple's escape hatch for exactly this; the accumulated transcript —
+        // empty, in that case — still comes back below, so no utterance that
+        // did produce audio is ever lost to the timeout.
+        let watchdog = Task {
+            try? await Task.sleep(for: .seconds(5))
+            guard !Task.isCancelled else { return }
+            await session.analyzer.cancelAndFinishNow()
+        }
+        defer { watchdog.cancel() }
+        try? await session.analyzer.finalizeAndFinishThroughEndOfInput()
 
         // The results sequence terminates once the analyzer finishes; await it
         // so the final result is applied before we read the transcript.

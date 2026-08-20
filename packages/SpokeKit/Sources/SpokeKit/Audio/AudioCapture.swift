@@ -1,5 +1,6 @@
 import AVFoundation
 import Speech
+import os
 
 /// Captures microphone audio and exposes it as async streams.
 ///
@@ -19,6 +20,14 @@ final class AudioCapture {
     private let engine = AVAudioEngine()
     private var processor: AudioTapProcessor?
     private var isRunning = false
+
+    /// Whether the current/most recent capture delivered any buffers at all.
+    /// A running engine with a vanished device (Bluetooth headphones taken
+    /// off, no mic connected) starts cleanly and then delivers nothing —
+    /// callers need to tell that apart from a short utterance.
+    var hasDeliveredAudio: Bool {
+        processor?.hasDeliveredAudio ?? false
+    }
 
     /// Starts capture, converting every buffer to `format` before it leaves
     /// the audio thread. Both streams finish when `stop()` is called.
@@ -95,6 +104,11 @@ private nonisolated final class AudioTapProcessor: @unchecked Sendable {
     private let targetFormat: AVAudioFormat
     private let input: AsyncStream<AnalyzerInput>.Continuation
     private let levels: AsyncStream<Float>.Continuation
+    private let delivered = OSAllocatedUnfairLock(initialState: false)
+
+    var hasDeliveredAudio: Bool {
+        delivered.withLock { $0 }
+    }
 
     init(
         targetFormat: AVAudioFormat,
@@ -107,6 +121,7 @@ private nonisolated final class AudioTapProcessor: @unchecked Sendable {
     }
 
     func process(_ buffer: AVAudioPCMBuffer) {
+        delivered.withLock { $0 = true }
         levels.yield(AudioLevel.normalizedLevel(of: buffer))
 
         // Dropping a single unconvertible buffer is better than tearing down
