@@ -8,6 +8,8 @@ truth for the app's version; a release tag must match it.
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-08-21
+
 ### Changed
 - **The app is now called Timbre** (GDR-0009). "Spoke" read as bicycle
   hardware; the obvious replacements collided with Apple's own "Spoken
@@ -78,6 +80,7 @@ First release. Everything below shipped between 2026-08-15 and today.
 - The overlay no longer re-sets its own frame on every audio buffer, which
   flickered and could clip the live transcript out of view.
 
-[Unreleased]: https://github.com/ChaliceForAuri/Spoke/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/ChaliceForAuri/Spoke/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.2.0
 [0.1.1]: https://github.com/ChaliceForAuri/Spoke/releases/tag/v0.1.1
 [0.1.0]: https://github.com/ChaliceForAuri/Spoke/releases/tag/v0.1.0
