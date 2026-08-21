@@ -30,7 +30,7 @@
 <tr><td><code>@Environment</code></td><td>Implicit dependency injection down the tree</td><td>Theme, locale, shared services</td></tr>
 </table>
 
-<p>The pattern in Spoke: <code>@State private var controller = ControllerBox()</code> at the app level creates and owns the controller for the app's lifetime. Views read <code>controller.state</code> and automatically re-render when it changes, because <code>@Observable</code> tracks the read.</p>
+<p>The pattern in Timbre: <code>@State private var controller = ControllerBox()</code> at the app level creates and owns the controller for the app's lifetime. Views read <code>controller.state</code> and automatically re-render when it changes, because <code>@Observable</code> tracks the read.</p>
 
 <p><code>$</code> gets you a binding: <code>TextField("Add a term", text: $newTerm)</code> passes read/write access to <code>newTerm</code>, so the text field can mutate it.</p>
 
@@ -63,7 +63,7 @@
 <p>A <code>Scene</code> is a container for UI at the OS level — a window, a settings panel, a menu bar item. <code>App</code> is a protocol whose <code>body</code> returns scenes.</p>
 
 <pre><code><span class="c-key">@main</span>
-<span class="c-key">struct</span> <span class="c-typ">SpokeApp</span>: <span class="c-typ">App</span> {
+<span class="c-key">struct</span> <span class="c-typ">TimbreApp</span>: <span class="c-typ">App</span> {
     <span class="c-key">var</span> body: <span class="c-key">some</span> <span class="c-typ">Scene</span> {
         <span class="c-typ">MenuBarExtra</span> {
             <span class="c-typ">MenuContent</span>()
@@ -77,4 +77,4 @@
 
 <p><code>@main</code> is the entry point — no <code>main()</code>, no <code>runApp()</code>. The macro generates the bootstrap.</p>
 
-<p>Scene types you'll meet: <code>WindowGroup</code> (normal windows, user can open several), <code>Window</code> (exactly one), <code>Settings</code> (the standard ⌘, panel, free menu item included), and <code>MenuBarExtra</code> (a menu bar item). Spoke uses only the last two — it has no main window at all, which is what makes it feel like a utility rather than an app you have to manage.</p>
+<p>Scene types you'll meet: <code>WindowGroup</code> (normal windows, user can open several), <code>Window</code> (exactly one), <code>Settings</code> (the standard ⌘, panel, free menu item included), and <code>MenuBarExtra</code> (a menu bar item). Timbre uses only the last two — it has no main window at all, which is what makes it feel like a utility rather than an app you have to manage.</p>

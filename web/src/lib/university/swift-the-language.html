@@ -24,7 +24,7 @@ y.value = <span class="c-num">5</span>
 
 <p><strong>When to use which:</strong> default to <code>struct</code>. Reach for <code>class</code> when you need shared mutable state (a controller, a store, a manager), when you need identity (two things that are "equal" but distinct), or when you're inheriting from an Apple class.</p>
 
-<p>In Spoke: <code>OverlayView</code> is a struct because it's a description of UI. <code>DictationController</code> is a class because every part of the app must see the same instance. <code>Transcriber</code> is an <code>actor</code> — a class with thread-safety guarantees, covered in Module 3.</p>
+<p>In Timbre: <code>OverlayView</code> is a struct because it's a description of UI. <code>DictationController</code> is a class because every part of the app must see the same instance. <code>Transcriber</code> is an <code>actor</code> — a class with thread-safety guarantees, covered in Module 3.</p>
 
 <div class="box warn">
 <p class="box-title">Trap · let vs var on structs</p>
@@ -157,7 +157,7 @@ audio.start { handle($0) }   <span class="c-com">// $0 is the first parameter</s
 
 <p>Three variants worth knowing: <code>try</code> propagates the error, <code>try?</code> converts it to an optional (nil on failure), and <code>try!</code> crashes on failure. The visible <code>try</code> at every call site is deliberate — you can scan a function and immediately see every place it can fail.</p>
 
-<p>Conforming to <code>LocalizedError</code> rather than plain <code>Error</code> is what makes <code>error.localizedDescription</code> produce your message instead of a useless generic one. Spoke does this everywhere, because those strings go straight into the overlay where users see them.</p>
+<p>Conforming to <code>LocalizedError</code> rather than plain <code>Error</code> is what makes <code>error.localizedDescription</code> produce your message instead of a useless generic one. Timbre does this everywhere, because those strings go straight into the overlay where users see them.</p>
 
 <h3 id="m2-macro">Property wrappers and macros</h3>
 

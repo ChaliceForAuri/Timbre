@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Spoke's palette: cool paper, petrol accent — the same identity as the
+/* Timbre's palette: cool paper, petrol accent — the same identity as the
    Backstage design doc, because the site and the lab are one product. */
 :root {
   --paper: #f7f8f9;

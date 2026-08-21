@@ -42,7 +42,7 @@ hotkey.onPress = {
     process(item)
 }</code></pre>
 
-<p>Most Apple async APIs check cancellation for you, which is why <code>resultsTask?.cancel()</code> in Spoke's <code>Transcriber</code> is enough to shut the results loop down cleanly.</p>
+<p>Most Apple async APIs check cancellation for you, which is why <code>resultsTask?.cancel()</code> in Timbre's <code>Transcriber</code> is enough to shut the results loop down cleanly.</p>
 
 <h3 id="m3-actor">Actors</h3>
 
@@ -61,7 +61,7 @@ hotkey.onPress = {
 
 <p>The <code>await</code> isn't because the work is slow — it's because your task may have to <em>queue</em> for access. Inside the actor, methods call each other without <code>await</code>, since they're already holding the lock. This is called <em>actor isolation</em>.</p>
 
-<p>Spoke uses an actor for <code>Transcriber</code> because audio buffers arrive on a real-time audio thread while transcription results arrive on some other thread, and both mutate the same text state. Without the actor that's a textbook data race. With it, it's a compile-time guarantee.</p>
+<p>Timbre uses an actor for <code>Transcriber</code> because audio buffers arrive on a real-time audio thread while transcription results arrive on some other thread, and both mutate the same text state. Without the actor that's a textbook data race. With it, it's a compile-time guarantee.</p>
 
 <div class="box warn">
 <p class="box-title">Trap · actor reentrancy</p>
@@ -98,7 +98,7 @@ hotkey.onPress = {
 
 <div class="box warn">
 <p class="box-title">Trap · AVAudioPCMBuffer is not Sendable</p>
-<p>This will be your first Swift 6 error in Spoke. Audio buffers are Objective-C objects with mutable internals, so the compiler refuses to let them cross threads — even though our usage is fine, because we hand each buffer off and never touch it again.</p>
+<p>This will be your first Swift 6 error in Timbre. Audio buffers are Objective-C objects with mutable internals, so the compiler refuses to let them cross threads — even though our usage is fine, because we hand each buffer off and never touch it again.</p>
 <p>While learning, set <strong>Swift Language Version → 5</strong> in build settings. You keep async/await and actors; you drop the hard errors. Revisit in Swift 6 mode later, when the concepts are automatic and you can solve it properly (usually by copying the samples into a Sendable value type at the boundary).</p>
 </div>
 

@@ -7,6 +7,9 @@ record: what actually happened when the code met the hardware.
 
 Newest first. Append; don't rewrite history.
 
+> **Note:** entries before 2026-08-21 call the product *Spoke*; it was
+> renamed to *Timbre* (GDR-0009). Nothing else about them changed.
+
 ---
 
 ## 2026-08-19 — "Completely against the edge" was the whole answer

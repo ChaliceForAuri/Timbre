@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /backstage
 
-Sitemap: https://spoke.hugopretorius.dev/sitemap.xml
+Sitemap: https://timbre.hugopretorius.dev/sitemap.xml

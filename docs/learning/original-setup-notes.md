@@ -5,7 +5,7 @@
 > [ADR-0001](../decisions/adr/0001-swift-6-language-mode.md). Setup steps are
 > superseded by the repo's [README](../../README.md).
 
-# Spoke — a free, local, native dictation app
+# Timbre — a free, local, native dictation app
 
 A Wispr Flow replacement built entirely on Apple's on-device stack. No account,
 no subscription, no network. Transcription runs on `SpeechAnalyzer`, cleanup
@@ -36,18 +36,18 @@ changes (we'd swap in whisper.cpp locally) and I'll rewrite the two affected fil
    it install components.
 
 2. **New project:** Xcode → File → New → Project → macOS → **App**.
-   - Product Name: `Spoke`
+   - Product Name: `Timbre`
    - Interface: **SwiftUI**
    - Language: **Swift**
    - Uncheck Core Data / Tests.
 
 3. **Delete the two files Xcode generated** — `ContentView.swift` and its own
-   `SpokeApp.swift` (move to trash). Then **drag in all nine `.swift` files**
-   from the `Spoke/` folder, including our own `SpokeApp.swift` which replaces
+   `TimbreApp.swift` (move to trash). Then **drag in all nine `.swift` files**
+   from the `Timbre/` folder, including our own `TimbreApp.swift` which replaces
    the deleted one. Check "Copy items if needed".
 
 4. **Set the deployment target:** select the project in the sidebar → target
-   `Spoke` → General → Minimum Deployments → macOS **26.0**.
+   `Timbre` → General → Minimum Deployments → macOS **26.0**.
 
 5. **Turn off the sandbox.** Target → Signing & Capabilities → hover over
    "App Sandbox" → click the ⊗ to remove it.
@@ -59,8 +59,8 @@ changes (we'd swap in whisper.cpp locally) and I'll rewrite the two affected fil
 
    | Key | Value |
    |---|---|
-   | `NSMicrophoneUsageDescription` | `Spoke listens when you hold the dictation key.` |
-   | `NSSpeechRecognitionUsageDescription` | `Spoke transcribes your speech on-device.` |
+   | `NSMicrophoneUsageDescription` | `Timbre listens when you hold the dictation key.` |
+   | `NSSpeechRecognitionUsageDescription` | `Timbre transcribes your speech on-device.` |
    | `LSUIElement` | `YES` |
 
    `LSUIElement` is what makes it a menu bar app with no Dock icon.
@@ -79,7 +79,7 @@ changes (we'd swap in whisper.cpp locally) and I'll rewrite the two affected fil
 
 | File | Role | The interesting part |
 |---|---|---|
-| `SpokeApp.swift` | App shell, menu bar, settings | `MenuBarExtra` scene |
+| `TimbreApp.swift` | App shell, menu bar, settings | `MenuBarExtra` scene |
 | `DictationController.swift` | Orchestrates the pipeline | The whole flow in ~40 lines |
 | `AudioCapture.swift` | Mic → PCM buffers | Format conversion, where most apps break |
 | `Transcriber.swift` | Apple's streaming speech model | Replaces Wispr's cloud tier |
@@ -188,7 +188,7 @@ automatically, so it starts with full project context.
 Set up git first so you can undo experiments:
 
 ```bash
-git init && git add -A && git commit -m "Spoke: local dictation with live overlay"
+git init && git add -A && git commit -m "Timbre: local dictation with live overlay"
 ```
 
 The standalone `claude` CLI works identically if you prefer the terminal — same

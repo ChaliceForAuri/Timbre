@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.module.number} · {data.module.title} — Spoke University</title>
+	<title>{data.module.number} · {data.module.title} — Timbre University</title>
 </svelte:head>
 
 <article>

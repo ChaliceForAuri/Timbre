@@ -1,10 +1,10 @@
-<p>SwiftUI is the modern layer, but it's built on <strong>AppKit</strong> — the Objective-C framework that has run the Mac since NeXTSTEP in the late 1980s. Anything genuinely Mac-specific still lives there, which is why Spoke has more AppKit than a typical tutorial app.</p>
+<p>SwiftUI is the modern layer, but it's built on <strong>AppKit</strong> — the Objective-C framework that has run the Mac since NeXTSTEP in the late 1980s. Anything genuinely Mac-specific still lives there, which is why Timbre has more AppKit than a typical tutorial app.</p>
 
 <p>The naming convention gives it away: <code>NS</code> prefixes stand for NeXTSTEP. That's not legacy cruft; it's a remarkably durable API.</p>
 
 <h3 id="m5-win">Windows and panels</h3>
 
-<p><code>NSWindow</code> is a window. <code>NSPanel</code> is a subclass for auxiliary windows — palettes, inspectors, HUDs. Spoke's overlay is a panel because panels can do something windows can't: appear without stealing focus.</p>
+<p><code>NSWindow</code> is a window. <code>NSPanel</code> is a subclass for auxiliary windows — palettes, inspectors, HUDs. Timbre's overlay is a panel because panels can do something windows can't: appear without stealing focus.</p>
 
 <pre><code><span class="c-key">let</span> panel = <span class="c-typ">NSPanel</span>(
     contentRect: <span class="c-typ">NSRect</span>(x: <span class="c-num">0</span>, y: <span class="c-num">0</span>, width: <span class="c-num">400</span>, height: <span class="c-num">60</span>),
@@ -28,10 +28,10 @@
 <div class="box warn">
 <p class="box-title">Trap · orderFrontRegardless vs makeKeyAndOrderFront</p>
 <p><code>makeKeyAndOrderFront</code> shows the window <em>and makes it key</em>, activating your app. In a dictation app that's fatal: the text field the user was typing into stops being the active target, and the paste lands somewhere else or nowhere. Always <code>orderFrontRegardless()</code> for non-activating overlays. This is the single highest-consequence line in <code>OverlayController</code>.</p>
-<p>Precise semantics, since this is widely misstated: <code>.nonactivatingPanel</code> means the panel can become key <em>without activating the owning app</em> — it exists so palettes can receive keystrokes while another app stays frontmost. It does not by itself make a window non-interactive. Spoke additionally sets <code>ignoresMouseEvents = true</code> and never makes the panel key, because the overlay is purely a display.</p>
+<p>Precise semantics, since this is widely misstated: <code>.nonactivatingPanel</code> means the panel can become key <em>without activating the owning app</em> — it exists so palettes can receive keystrokes while another app stays frontmost. It does not by itself make a window non-interactive. Timbre additionally sets <code>ignoresMouseEvents = true</code> and never makes the panel key, because the overlay is purely a display.</p>
 </div>
 
-<p><strong>Bridging SwiftUI into AppKit:</strong> <code>NSHostingView</code> wraps a SwiftUI view so it can be an AppKit view. The reverse (<code>NSViewRepresentable</code>) wraps AppKit for use inside SwiftUI. You'll use both eventually; Spoke only needs the first.</p>
+<p><strong>Bridging SwiftUI into AppKit:</strong> <code>NSHostingView</code> wraps a SwiftUI view so it can be an AppKit view. The reverse (<code>NSViewRepresentable</code>) wraps AppKit for use inside SwiftUI. You'll use both eventually; Timbre only needs the first.</p>
 
 <h3 id="m5-event">Events and monitors</h3>
 
@@ -55,7 +55,7 @@
 keyDown?.flags = .maskCommand
 keyDown?.post(tap: .cgAnnotatedSessionEventTap)</code></pre>
 
-<p>That's a synthetic ⌘V, indistinguishable to the receiving app from a real keystroke. It requires Accessibility permission, and it's how Spoke gets text into apps that expose no other insertion point.</p>
+<p>That's a synthetic ⌘V, indistinguishable to the receiving app from a real keystroke. It requires Accessibility permission, and it's how Timbre gets text into apps that expose no other insertion point.</p>
 
 <h3 id="m5-ax">The Accessibility API</h3>
 
@@ -72,7 +72,7 @@ keyDown?.post(tap: .cgAnnotatedSessionEventTap)</code></pre>
 
 <p>The pattern is always: create an element reference, ask for an attribute by string name, get back an untyped <code>CFTypeRef</code> you must check and cast yourself. Every call can fail, and failure is normal — many apps simply don't implement these attributes.</p>
 
-<p>Spoke uses it to find the text caret so the overlay can appear next to it: get the focused element, ask for its selected text range, ask for the screen bounds of that range. Terminals, Electron apps, and some web views return nothing, which is why there's a mouse-position fallback. <strong>Design for this API failing.</strong></p>
+<p>Timbre uses it to find the text caret so the overlay can appear next to it: get the focused element, ask for its selected text range, ask for the screen bounds of that range. Terminals, Electron apps, and some web views return nothing, which is why there's a mouse-position fallback. <strong>Design for this API failing.</strong></p>
 
 <h3 id="m5-coord">Coordinate systems</h3>
 

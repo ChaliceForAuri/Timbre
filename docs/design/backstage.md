@@ -5,7 +5,7 @@ live in [GDR-0006](../decisions/gdr/0006-app-never-phones-home.md) and
 [GDR-0007](../decisions/gdr/0007-backstage-web-lab.md); this document is the
 working design and may evolve.*
 
-Backstage is Spoke's laboratory: a web app where every module of the product
+Backstage is Timbre's laboratory: a web app where every module of the product
 can be exercised, measured, and learned from — and, behind the same door, the
 website, the University, the feedback record, and eventually the customer
 list. It is also, explicitly, Hugo's AI-engineering curriculum: every layer is
@@ -18,14 +18,14 @@ Everything below hangs off a single boundary:
 
 ```
 ┌──────────────────────────┐        artifacts, one direction only        ┌─────────────────────────┐
-│  Spoke.app (macOS)       │  ─────────────────────────────────────────▶ │  Backstage (web)        │
+│  Timbre.app (macOS)       │  ─────────────────────────────────────────▶ │  Backstage (web)        │
 │  zero network I/O, ever  │   eval JSON · dictation exports (opt-in)    │  SvelteKit + Supabase   │
 │  GDR-0001, GDR-0006      │   GitHub issues · Stripe webhooks           │  Vercel + Langfuse      │
 └──────────────────────────┘                                             └─────────────────────────┘
 ```
 
 **The app never phones home. Nothing in this design changes that.** Data
-reaches Backstage only from the *development* side (spoke-eval, CI, imports
+reaches Backstage only from the *development* side (timbre-eval, CI, imports
 Hugo performs) or from *web* interactions (site visits, purchases, feedback
 forms in a browser). "Analytics on for all users" is off the table, and so is
 "pay to turn analytics off" — the reasoning is in GDR-0006, summarized in §9.
@@ -40,7 +40,7 @@ forms in a browser). "Analytics on for all users" is off the table, and so is
 | Vercel | Hosting, preview deploys | CI/CD where every PR gets a URL |
 | Langfuse | LLM observability | Traces, generations, scores, datasets — the eval vocabulary employers ask about |
 | mdsvex | University content | Markdown-as-components, content pipelines |
-| `spoke-eval --serve` | Local lab daemon | Service design; keeping one source of truth for logic |
+| `timbre-eval --serve` | Local lab daemon | Service design; keeping one source of truth for logic |
 
 Node toolchain lives entirely inside `web/` (pnpm, Node 22). Nothing outside
 `web/` gains a JS dependency.
@@ -81,13 +81,13 @@ learning-in-public artifact and the best marketing the site will have.
 
 ## 5. The module sandbox
 
-The trap to avoid: reimplementing SpokeKit's logic in TypeScript so the
+The trap to avoid: reimplementing TimbreKit's logic in TypeScript so the
 browser can run it. Two implementations of `SentenceTerminator` *will*
 diverge, and then the lab tests fiction — the same sin as the synthetic
 corpus, one layer up. Also impossible for the model modules: FoundationModels
 and SpeechAnalyzer only exist on macOS; a Vercel function cannot run them.
 
-So the lab keeps one source of truth: **`spoke-eval --serve`**, a local HTTP
+So the lab keeps one source of truth: **`timbre-eval --serve`**, a local HTTP
 daemon mode on the Mac (port 4242) exposing the real Swift modules:
 
 ```
@@ -97,7 +97,7 @@ POST /terminate                   → SentenceTerminator
 POST /spoken-commands             → SpokenCommands
 POST /guardrail                   → PolishGuardrail verdict
 POST /transcribe   (audio file)   → real Transcriber
-POST /eval-run     (corpus id)    → full spoke-eval run, results persisted
+POST /eval-run     (corpus id)    → full timbre-eval run, results persisted
 ```
 
 Backstage lab pages probe `localhost:4242`. Daemon up → live playground
@@ -111,7 +111,7 @@ always executes on-device — the same property the product itself has.
 
 ## 6. Evals in Backstage
 
-`spoke-eval` gains `--publish`: after a run, POST the results (corpus id, git
+`timbre-eval` gains `--publish`: after a run, POST the results (corpus id, git
 SHA, prompt hash, repeats, per-case outcomes) to `/api/evals` with a service
 token. Backstage renders:
 
@@ -148,7 +148,7 @@ University module 14 teaches the concepts against this live wiring.
 Feedback becomes a first-class record type, with GitHub issues as the
 canonical store (they already do threading, labels, state, and `gh` access):
 
-1. Something annoys you → dictate it (Spoke eating its own dog food) into
+1. Something annoys you → dictate it (Timbre eating its own dog food) into
    `gh issue create --label feedback`
 2. A sync route mirrors `feedback`-labeled issues into the `feedback` table
    so Backstage can browse, tag, and link them to eval cases and releases
@@ -166,7 +166,7 @@ GDR-0006):
 
 - **In-app analytics for all users** would make the app phone home. GDR-0001's
   "zero network requests" is a *falsifiable* claim — Little Snitch users will
-  check — and it is the entire competitive wedge. Breaking it converts Spoke
+  check — and it is the entire competitive wedge. Breaking it converts Timbre
   from "the one that never talks to the internet" into "another dictation app
   with telemetry."
 - **Charging to turn analytics off** prices privacy as a feature. In the one
@@ -231,7 +231,7 @@ New modules the growth plan already implies:
 | 1 | SvelteKit scaffold in `web/`, shadcn, University migrated with sidebar, Vercel deploy, `web.yml` CI | University readable at a real URL |
 | 2 | Supabase project, auth, `/backstage` shell, eval publishing + runs browser | 87%→98% arc visible as a chart |
 | 3 | Langfuse wiring + traces, University modules 13–14 | a polish trace inspectable end-to-end |
-| 4 | `spoke-eval --serve` + live module playgrounds | type into the browser, real Swift answers |
+| 4 | `timbre-eval --serve` + live module playgrounds | type into the browser, real Swift answers |
 | 5 | Feedback mirror + site feedback form | issue #1 visible in Backstage |
 | 6 | Stripe, customers, downloads page | first real licence sold |
 
@@ -242,7 +242,7 @@ toys.
 
 ## 14. Risks, named
 
-- **The lab outgrowing the product.** Backstage is infrastructure *for* Spoke;
+- **The lab outgrowing the product.** Backstage is infrastructure *for* Timbre;
   the roadmap's item 1 is still polisher quality. Time-box: if a phase
   doesn't serve shipping or learning, it waits.
 - **Single maintainer, two stacks.** Mitigated by the same review process,

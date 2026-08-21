@@ -12,14 +12,14 @@ DerivedData/
 .swiftpm/
 
 # Machine-specific build settings (signing team)
-apps/Spoke/Config/Local.xcconfig
+apps/Timbre/Config/Local.xcconfig
 
 # Web (toolchain lives entirely under web/)
 web/node_modules/
 web/.svelte-kit/
 web/.vercel/
 web/build/
-packages/SpokeKit/Fixtures/audio/
+packages/TimbreKit/Fixtures/audio/
 
 # Local build products (install.sh, release.sh)
 build/

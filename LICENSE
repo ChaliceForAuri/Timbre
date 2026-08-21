@@ -14,7 +14,7 @@ Restrictive terms can always be loosened later. The reverse is impossible.
 So the terms start closed and deliberately un-final, to be settled before the
 first public release rather than by accident on the first push.
 
-Note that this says nothing about what Spoke costs its users. The product is
+Note that this says nothing about what Timbre costs its users. The product is
 free, runs entirely on-device, and requires no account (GDR-0001). That is a
 promise about price and privacy, not about source licensing, and the two are
 independent.

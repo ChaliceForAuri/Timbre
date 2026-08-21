@@ -1,4 +1,4 @@
-<p>You don't need a DSP background, but you do need an accurate mental model of what a "buffer" is, because half of Spoke's plumbing moves them around.</p>
+<p>You don't need a DSP background, but you do need an accurate mental model of what a "buffer" is, because half of Timbre's plumbing moves them around.</p>
 
 <h3>Sound to numbers</h3>
 
@@ -13,13 +13,13 @@
 <tr><td>Buffer</td><td>A chunk of consecutive frames</td><td>4,096 frames ≈ 85 ms at 48 kHz</td></tr>
 </table>
 
-<p>Audio is processed in buffers rather than sample-by-sample purely for efficiency — a callback per sample at 48 kHz would be 48,000 function calls per second. In Spoke, <code>bufferSize: 4096</code> means roughly 85 ms of audio arrives per callback. That's a real latency floor: no matter how fast everything downstream is, your first transcription cannot begin sooner than the first buffer.</p>
+<p>Audio is processed in buffers rather than sample-by-sample purely for efficiency — a callback per sample at 48 kHz would be 48,000 function calls per second. In Timbre, <code>bufferSize: 4096</code> means roughly 85 ms of audio arrives per callback. That's a real latency floor: no matter how fast everything downstream is, your first transcription cannot begin sooner than the first buffer.</p>
 
 <p><strong>Why 16 kHz for speech:</strong> the Nyquist theorem says you can represent frequencies up to half the sample rate. Human speech intelligibility lives almost entirely below 8 kHz, so 16 kHz captures everything that matters while carrying a third of the data. Speech models are trained at this rate, which is why conversion is mandatory rather than optional.</p>
 
 <h3>AVAudioEngine</h3>
 
-<p><code>AVAudioEngine</code> is a graph of audio nodes — sources, effects, mixers, outputs — connected together. Spoke uses the simplest possible configuration: just the input node, with a tap on it.</p>
+<p><code>AVAudioEngine</code> is a graph of audio nodes — sources, effects, mixers, outputs — connected together. Timbre uses the simplest possible configuration: just the input node, with a tap on it.</p>
 
 <pre><code><span class="c-key">let</span> input = engine.inputNode
 <span class="c-key">let</span> format = input.outputFormat(forBus: <span class="c-num">0</span>)
@@ -41,7 +41,7 @@ engine.prepare()
 
 <div class="box warn">
 <p class="box-title">Trap · the real-time audio thread</p>
-<p>The tap callback runs on a thread with hard deadlines. Miss one and the user hears a click. Inside that closure: <strong>never</strong> allocate memory, take locks, do file or network I/O, or touch UI. Spoke does the absolute minimum — computes an RMS value and hands the buffer off — then hops to other threads with <code>Task</code>.</p>
+<p>The tap callback runs on a thread with hard deadlines. Miss one and the user hears a click. Inside that closure: <strong>never</strong> allocate memory, take locks, do file or network I/O, or touch UI. Timbre does the absolute minimum — computes an RMS value and hands the buffer off — then hops to other threads with <code>Task</code>.</p>
 </div>
 
 <h3>Format conversion</h3>
@@ -72,4 +72,4 @@ converter?.primeMethod = .none   <span class="c-com">// don't clip the start of 
 }
 <span class="c-key">let</span> rms = sqrt(sumOfSquares / <span class="c-typ">Float</span>(frameLength))</code></pre>
 
-<p>One more adjustment matters for the visuals. Speech RMS typically sits between 0.01 and 0.2 on a 0–1 scale, so a linear meter barely moves. Spoke multiplies by 6 and clamps, then applies a square root curve in the view. That's not cheating — human loudness perception is roughly logarithmic, so a curved mapping is genuinely more honest than a linear one.</p>
+<p>One more adjustment matters for the visuals. Speech RMS typically sits between 0.01 and 0.2 on a 0–1 scale, so a linear meter barely moves. Timbre multiplies by 6 and clamps, then applies a square root curve in the view. That's not cheating — human loudness perception is roughly logarithmic, so a curved mapping is genuinely more honest than a linear one.</p>

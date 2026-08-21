@@ -1,4 +1,4 @@
-# Spoke
+# Timbre
 
 A free, fully-local dictation app for macOS. Hold right-Option, speak,
 release — cleaned-up text appears in whatever app you're using. Everything
@@ -15,13 +15,13 @@ Monorepo (ADR-0002): the app logic is a Swift package; the Xcode target is a
 thin shell of scenes and glue views.
 
 ```
-apps/Spoke/          Xcode project. Config/*.xcconfig holds every build
+apps/Timbre/          Xcode project. Config/*.xcconfig holds every build
                      setting; the pbxproj uses synchronized folders and
                      should almost never change.
-packages/SpokeKit/   The entire pipeline + tests. Work happens here.
+packages/TimbreKit/   The entire pipeline + tests. Work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
-docs/learning/       Spoke University + historical planning notes.
+docs/learning/       Timbre University + historical planning notes.
 web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
                      (GDR-0007, docs/design/backstage.md). Node toolchain
                      must stay inside web/. The app NEVER phones home —
@@ -32,28 +32,28 @@ web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
 
 ```bash
 # Fast loop — the package is where the logic lives:
-swift test --package-path packages/SpokeKit
+swift test --package-path packages/TimbreKit
 
 # Measure the polisher against the fixed corpus (ADR-0004). The model is
 # stochastic: never judge a prompt change on a single run.
-cd packages/SpokeKit && swift run spoke-eval Fixtures/corpus.json --repeat 5
+cd packages/TimbreKit && swift run timbre-eval Fixtures/corpus.json --repeat 5
 
 # Regenerate audio fixtures (no microphone needed — uses `say`):
 tools/make-audio-fixtures.sh
 
 # Real dictation → corpus. Turn capture on in Settings first (GDR-0004),
 # dictate, then import. Checks are left empty for you to fill in.
-swift run spoke-eval --import ~/Library/Application\ Support/Spoke/dictations.jsonl \
+swift run timbre-eval --import ~/Library/Application\ Support/Timbre/dictations.jsonl \
   --out Fixtures/real-corpus.json
 
 # See partial results arrive at microphone pace:
-swift run spoke-eval --stream Fixtures/audio/03-run-on.aiff
+swift run timbre-eval --stream Fixtures/audio/03-run-on.aiff
 
 # Lint (config in .swift-format, toolchain-bundled tool):
-xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
+xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 
 # Full app:
-xcodebuild -project apps/Spoke/Spoke.xcodeproj -scheme Spoke -destination 'platform=macOS' build
+xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre -destination 'platform=macOS' build
 
 # Daily driver: build Release and install to /Applications (grants carry over):
 tools/install.sh
@@ -62,9 +62,9 @@ tools/install.sh
 tools/release.sh
 ```
 
-Or open `apps/Spoke/Spoke.xcodeproj` and ⌘R. Signing is ad-hoc by default;
+Or open `apps/Timbre/Timbre.xcodeproj` and ⌘R. Signing is ad-hoc by default;
 for a stable identity (keeps the Accessibility grant across rebuilds), copy
-`apps/Spoke/Config/Local.xcconfig.template` to `Local.xcconfig` and set your
+`apps/Timbre/Config/Local.xcconfig.template` to `Local.xcconfig` and set your
 team.
 
 ## Architecture
@@ -84,7 +84,7 @@ HotkeyMonitor          right ⌥ via device flag bit → AsyncStream<HotkeyEvent
         └─> TextInserter    pasteboard snapshot → set → synthetic ⌘V → restore
 ```
 
-Public API surface of SpokeKit is `DictationController` (+ its `Status`);
+Public API surface of TimbreKit is `DictationController` (+ its `Status`);
 everything else is internal. Keep it that way.
 
 ## Conventions
@@ -113,7 +113,7 @@ everything else is internal. Keep it that way.
   `finalizeAndFinishThroughEndOfInput()` ends the `SpeechAnalyzer` for good
   and terminates the module's `results` sequence. `Transcriber` rebuilds both
   per dictation. Reusing them makes only the *first* dictation work, silently.
-  Verify with `swift run spoke-eval --audio-dir Fixtures/audio` — one file
+  Verify with `swift run timbre-eval --audio-dir Fixtures/audio` — one file
   passes against the broken code.
 - **Caret lookup is IPC.** `CaretLocator.caretScreenRect()` is a synchronous
   round-trip into another process — once per dictation at overlay show,
@@ -127,12 +127,12 @@ everything else is internal. Keep it that way.
 ## Permissions (already configured in xcconfig)
 
 - App Sandbox **off** (blocks synthetic ⌘V — ADR-0003); hardened runtime on
-- **`Spoke.entitlements` carries `com.apple.security.device.audio-input`.**
+- **`Timbre.entitlements` carries `com.apple.security.device.audio-input`.**
   The hardened runtime gates the mic behind it; the Info.plist usage string
   alone is not enough. Without it `requestAccess` returns false with no
   prompt and the app never appears in Privacy & Security › Microphone
 - `INFOPLIST_KEY_*` carries mic + speech strings and `LSUIElement`
-- Accessibility is granted manually (System Settings, `+` button). Spoke
+- Accessibility is granted manually (System Settings, `+` button). Timbre
   polls `AXIsProcessTrusted()` while blocked and retries startup on its own,
   so a relaunch should not be needed — but if the trusted state turns out to
   be cached per-process, relaunching is still the fallback
@@ -157,9 +157,9 @@ product. Records are immutable — supersede instead of editing.
 ## Roadmap
 
 1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
-   `spoke-eval` — see ADR-0004, and never trust a single run.
+   `timbre-eval` — see ADR-0004, and never trust a single run.
 2. Auto-learn vocabulary: diff user edits made shortly after insertion.
-   Note the transcriber can land far from the term ("SpokeKit" → "spell kid"),
+   Note the transcriber can land far from the term ("TimbreKit" → "spell kid"),
    so vocabulary may need to reach it via `SFCustomLanguageModelData` rather
    than only the polisher's prompt.
 3. Per-app tone profiles (the app name is already passed to the polisher).
