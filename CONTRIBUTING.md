@@ -1,4 +1,4 @@
-# Working on Spoke
+# Working on Timbre
 
 Currently a one-person project, so this is mostly a contract with future-me.
 It is written down because the failure modes below were all paid for once
@@ -9,8 +9,8 @@ already.
 ```bash
 git checkout -b <kind>/<short-description>     # never commit to main
 # … work …
-swift test --package-path packages/SpokeKit
-xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
+swift test --package-path packages/TimbreKit
+xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 git push -u origin HEAD
 gh pr create
 ```
@@ -60,7 +60,7 @@ is safe.
 ## Things that are not negotiable
 
 - **No secrets in the repo.** Signing identity lives in the gitignored
-  `apps/Spoke/Config/Local.xcconfig`. Notarization credentials belong in
+  `apps/Timbre/Config/Local.xcconfig`. Notarization credentials belong in
   GitHub Secrets or the keychain, never a file.
 - **No third-party dependencies.** Apple frameworks and toolchain tools only.
 - **No network calls from the app.** GDR-0001 is the product. That includes
@@ -70,7 +70,7 @@ is safe.
 
 ## Releasing
 
-1. Bump `MARKETING_VERSION` in `apps/Spoke/Config/Shared.xcconfig`
+1. Bump `MARKETING_VERSION` in `apps/Timbre/Config/Shared.xcconfig`
 2. Move `CHANGELOG.md`'s Unreleased entries under the new version
 3. Merge to `main`, then tag `v<version>` — the tag must match the xcconfig
 4. Notarize and staple before distributing (needs a Developer ID Application

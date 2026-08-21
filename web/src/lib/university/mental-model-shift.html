@@ -14,7 +14,7 @@
 
 <p><strong>Value types are the default.</strong> In JavaScript, objects are references and you develop a sixth sense for accidental mutation. Swift inverts this: <code>struct</code> is the default and it copies. This eliminates a whole category of bug and introduces a smaller, more tractable one (knowing when you actually need reference semantics).</p>
 
-<p><strong>The platform is a first-class API surface, not a plugin.</strong> In React Native, touching the microphone means finding a package, checking its maintenance status, and hoping. Here, <code>AVAudioEngine</code> is just there — documented, versioned with the OS, and considerably more capable than any bridge wrapper. Spoke has <em>zero</em> third-party dependencies. That's not asceticism; there's nothing worth adding.</p>
+<p><strong>The platform is a first-class API surface, not a plugin.</strong> In React Native, touching the microphone means finding a package, checking its maintenance status, and hoping. Here, <code>AVAudioEngine</code> is just there — documented, versioned with the OS, and considerably more capable than any bridge wrapper. Timbre has <em>zero</em> third-party dependencies. That's not asceticism; there's nothing worth adding.</p>
 
 <p><strong>Permissions are enforced by the OS, not by you.</strong> The user's mic, their keyboard events, their screen — each is gated by a system-level consent mechanism you cannot work around. This is genuinely more restrictive than the web and more restrictive than mobile in some ways. Module 9 covers it.</p>
 

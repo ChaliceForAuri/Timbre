@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Build, sign with Developer ID, notarize, staple, and zip Spoke for
+# Build, sign with Developer ID, notarize, staple, and zip Timbre for
 # distribution to any Mac — yours or a customer's.
 #
 # One-time setup (both steps are yours to do, they involve credentials):
@@ -39,26 +39,26 @@ if ! xcrun notarytool history --keychain-profile SpokeNotary >/dev/null 2>&1; th
     exit 1
 fi
 
-VERSION="$(sed -n 's/^MARKETING_VERSION = //p' apps/Spoke/Config/Shared.xcconfig)"
-echo "Releasing Spoke $VERSION"
+VERSION="$(sed -n 's/^MARKETING_VERSION = //p' apps/Timbre/Config/Shared.xcconfig)"
+echo "Releasing Timbre $VERSION"
 
 # ---- Archive and export with Developer ID. ----------------------------------
 
-rm -rf build/Spoke.xcarchive build/export
-xcodebuild -project apps/Spoke/Spoke.xcodeproj -scheme Spoke \
-    -configuration Release archive -archivePath build/Spoke.xcarchive \
+rm -rf build/Timbre.xcarchive build/export
+xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre \
+    -configuration Release archive -archivePath build/Timbre.xcarchive \
     | grep -E '^\*\* ARCHIVE|error:' || true
-[ -d build/Spoke.xcarchive ] || { echo "Archive failed"; exit 1; }
+[ -d build/Timbre.xcarchive ] || { echo "Archive failed"; exit 1; }
 
-xcodebuild -exportArchive -archivePath build/Spoke.xcarchive \
+xcodebuild -exportArchive -archivePath build/Timbre.xcarchive \
     -exportOptionsPlist tools/ExportOptions.plist -exportPath build/export \
     | grep -E 'EXPORT|error:' || true
-APP="build/export/Spoke.app"
+APP="build/export/Timbre.app"
 [ -d "$APP" ] || { echo "Export failed"; exit 1; }
 
 # ---- Notarize and staple. ----------------------------------------------------
 
-ZIP="build/Spoke-$VERSION.zip"
+ZIP="build/Timbre-$VERSION.zip"
 ditto -c -k --keepParent "$APP" "$ZIP"
 
 echo "Submitting to Apple's notary service (typically 1–5 minutes)…"
@@ -71,4 +71,4 @@ ditto -c -k --keepParent "$APP" "$ZIP"
 
 echo
 echo "Ready: $ZIP"
-echo "Verify on another Mac: unzip, then  spctl -a -vv Spoke.app"
+echo "Verify on another Mac: unzip, then  spctl -a -vv Timbre.app"

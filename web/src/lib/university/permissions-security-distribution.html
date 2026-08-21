@@ -17,15 +17,15 @@
 <div class="box warn">
 <p class="box-title">Trap · Accessibility needs a relaunch in practice</p>
 <p>Treat the Accessibility trusted state as unreliable after a live toggle. <code>AXIsProcessTrusted()</code> is known to return stale values when permission is granted while the app is running, and Apple's own developer-support guidance is to quit and relaunch for the change to take effect reliably. Sometimes it does flip live; you cannot depend on it.</p>
-<p>Symptomatically this is brutal, because nothing errors — the hotkey just stays dead and the paste silently fails. Assume a relaunch is required, and ship an explicit "Restart Spoke" button next to the permission prompt rather than making users work it out.</p>
+<p>Symptomatically this is brutal, because nothing errors — the hotkey just stays dead and the paste silently fails. Assume a relaunch is required, and ship an explicit "Restart Timbre" button next to the permission prompt rather than making users work it out.</p>
 </div>
 
 <h3>The sandbox and entitlements</h3>
 
 <p>The <strong>App Sandbox</strong> restricts an app to its own container: no arbitrary filesystem access, no controlling other apps, no unrequested network. <strong>Entitlements</strong> are signed key-value pairs that punch specific holes in it.</p>
 
-<p>Spoke turns the sandbox off, and it's worth being clear about why rather than treating it as a shortcut. A dictation app's entire function is to send synthetic keystrokes into other applications. That is precisely what the sandbox exists to prevent, and there is no entitlement for it. Every app in this category — Wispr Flow included — ships unsandboxed.</p>
-<p>One distinction that a knowledgeable reader will hold you to: <strong>listening is allowed, posting is not</strong>. A sandboxed app granted Accessibility or Input Monitoring can install a <code>CGEventTap</code> and observe keystrokes. What it cannot do is <em>post</em> synthetic events with <code>CGEventPost</code>, or drive another app through <code>AXUIElementCreateApplication</code>. Spoke needs the posting half, so the sandbox has to go.</p>
+<p>Timbre turns the sandbox off, and it's worth being clear about why rather than treating it as a shortcut. A dictation app's entire function is to send synthetic keystrokes into other applications. That is precisely what the sandbox exists to prevent, and there is no entitlement for it. Every app in this category — Wispr Flow included — ships unsandboxed.</p>
+<p>One distinction that a knowledgeable reader will hold you to: <strong>listening is allowed, posting is not</strong>. A sandboxed app granted Accessibility or Input Monitoring can install a <code>CGEventTap</code> and observe keystrokes. What it cannot do is <em>post</em> synthetic events with <code>CGEventPost</code>, or drive another app through <code>AXUIElementCreateApplication</code>. Timbre needs the posting half, so the sandbox has to go.</p>
 
 <p>The consequence: <strong>no Mac App Store</strong>. App Store distribution requires sandboxing. You distribute directly, which is entirely normal for Mac utilities and has the nice side effect of no 30% cut.</p>
 
@@ -49,7 +49,7 @@
 <li>Archive in Xcode: Product → Archive.</li>
 <li>Export with Developer ID signing.</li>
 <li>Submit with <code>xcrun notarytool submit --wait</code>.</li>
-<li>Staple with <code>xcrun stapler staple Spoke.app</code>.</li>
+<li>Staple with <code>xcrun stapler staple Timbre.app</code>.</li>
 <li>Ship a <code>.dmg</code> or <code>.zip</code>.</li>
 </ol>
 

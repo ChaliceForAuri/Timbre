@@ -8,8 +8,8 @@ export type UniversityModule = {
 
 export const modules: UniversityModule[] = manifest;
 
-// Extracted verbatim from the original Spoke University document
-// (docs/learning/spoke-university.html) — one fragment per module. New
+// Extracted verbatim from the original Timbre University document
+// (docs/learning/timbre-university.html) — one fragment per module. New
 // modules are written in mdsvex instead; these stay faithful to the source.
 const fragments = import.meta.glob('./*.html', {
 	query: '?raw',

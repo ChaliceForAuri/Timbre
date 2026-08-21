@@ -9,7 +9,7 @@
 	<aside class="hidden w-64 shrink-0 md:block">
 		<nav class="sticky top-8">
 			<p class="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
-				Spoke University
+				Timbre University
 			</p>
 			<ul class="space-y-1 border-l border-line text-sm">
 				{#each modules as m (m.slug)}

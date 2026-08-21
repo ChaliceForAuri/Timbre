@@ -1,12 +1,28 @@
 # Changelog
 
-Notable changes to Spoke. Format follows [Keep a Changelog](https://keepachangelog.com);
+Notable changes to Timbre (called *Spoke* through v0.1.1). Format follows [Keep a Changelog](https://keepachangelog.com);
 versioning is [Semantic Versioning](https://semver.org).
 
 `MARKETING_VERSION` in `apps/Spoke/Config/Shared.xcconfig` is the source of
 truth for the app's version; a release tag must match it.
 
 ## [Unreleased]
+
+### Changed
+- **The app is now called Timbre** (GDR-0009). "Spoke" read as bicycle
+  hardware; the obvious replacements collided with Apple's own "Spoken
+  Content" feature and with existing Mac dictation apps. Timbre is the
+  character that makes a voice recognisably someone's own.
+  The bundle identifier changed, so **Microphone and Accessibility must be
+  granted again**, and captured dictations stay behind in
+  `~/Library/Application Support/Spoke/`.
+
+### Added
+- **Read aloud** (GDR-0008): select text anywhere and tap left Option to
+  hear it, tap again to speed up, hold to stop. On-device voices; Timbre
+  picks the best installed and flags in Settings when only basic ones exist.
+- Adaptive pre-roll so a cold Bluetooth audio route doesn't swallow the
+  first words, mirroring the microphone warm-up fix.
 
 ## [0.1.1] — 2026-08-20
 

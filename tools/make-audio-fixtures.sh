@@ -13,8 +13,8 @@
 
 set -euo pipefail
 
-CORPUS="${1:-packages/SpokeKit/Fixtures/corpus.json}"
-OUTPUT="${2:-packages/SpokeKit/Fixtures/audio}"
+CORPUS="${1:-packages/TimbreKit/Fixtures/corpus.json}"
+OUTPUT="${2:-packages/TimbreKit/Fixtures/audio}"
 VOICE="${SPOKE_VOICE:-Samantha}"
 
 mkdir -p "$OUTPUT"

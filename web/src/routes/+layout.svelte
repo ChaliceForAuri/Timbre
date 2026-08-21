@@ -8,7 +8,7 @@
 	let { children } = $props();
 
 	const nav = [
-		{ href: '/', label: 'Spoke' },
+		{ href: '/', label: 'Timbre' },
 		{ href: '/university', label: 'University' },
 		{ href: '/download', label: 'Download' }
 	];
@@ -25,7 +25,7 @@
 <div class="min-h-screen flex flex-col">
 	<header class="border-b border-line">
 		<nav class="mx-auto flex max-w-5xl items-center gap-6 px-6 py-4">
-			<a href="/" class="font-semibold tracking-tight">Spoke</a>
+			<a href="/" class="font-semibold tracking-tight">Timbre</a>
 			<div class="flex gap-5 text-sm text-muted">
 				{#each nav.slice(1) as item (item.href)}
 					<a
@@ -47,7 +47,7 @@
 
 	<footer class="border-t border-line">
 		<div class="mx-auto max-w-5xl px-6 py-6 text-xs text-muted">
-			Spoke never sends your voice, your text, or anything else off this Mac. Not a promise in a
+			Timbre never sends your voice, your text, or anything else off this Mac. Not a promise in a
 			privacy policy — a property of the binary.
 		</div>
 	</footer>

@@ -34,12 +34,12 @@
 <li><strong>Leaks</strong> — finds objects that can never be freed.</li>
 </ul>
 
-<p>Wispr Flow reportedly idles around 800 MB on Windows. Spoke should idle in the tens of megabytes. Measuring that and putting the number on your landing page is a legitimate competitive weapon.</p>
+<p>Wispr Flow reportedly idles around 800 MB on Windows. Timbre should idle in the tens of megabytes. Measuring that and putting the number on your landing page is a legitimate competitive weapon.</p>
 
 <h3>Building without the IDE</h3>
 
-<pre><code>xcodebuild -scheme Spoke -destination <span class="c-str">'platform=macOS'</span> build</code></pre>
+<pre><code>xcodebuild -scheme Timbre -destination <span class="c-str">'platform=macOS'</span> build</code></pre>
 
 <p>This is the command that makes agentic development viable on this project — it lets an assistant compile, read real compiler errors, and iterate without you relaying anything. It's the single most useful thing to know once you move to a repo.</p>
 
-<p>Two surfaces can run it, both on your own Mac and both using the same engine and the same <code>CLAUDE.md</code>: the <strong>Code tab</strong> in the Claude desktop app, or the standalone <code>claude</code> CLI in a terminal. The Code tab adds visual diff review, parallel sessions on automatic git worktrees, image attachments, and an integrated terminal. The CLI adds scripting (<code>--print</code>), CI pipelines, and agent teams. For building Spoke, the Code tab is the more comfortable choice; neither is more capable at the actual work.</p>
+<p>Two surfaces can run it, both on your own Mac and both using the same engine and the same <code>CLAUDE.md</code>: the <strong>Code tab</strong> in the Claude desktop app, or the standalone <code>claude</code> CLI in a terminal. The Code tab adds visual diff review, parallel sessions on automatic git worktrees, image attachments, and an integrated terminal. The CLI adds scripting (<code>--print</code>), CI pipelines, and agent teams. For building Timbre, the Code tab is the more comfortable choice; neither is more capable at the actual work.</p>

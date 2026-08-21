@@ -1,6 +1,6 @@
 <p><strong>Note (2026-08-18):</strong> written before the code existed. Measured findings about what this model actually does — and the two rules it would not follow at all — are recorded in <code>docs/learning/field-notes.md</code> in the repository.</p>
 
-<p>This is the module worth the most to you commercially, because <code>TextPolisher.swift</code> is where Spoke's quality actually comes from.</p>
+<p>This is the module worth the most to you commercially, because <code>TextPolisher.swift</code> is where Timbre's quality actually comes from.</p>
 
 <h3>What the model is</h3>
 
@@ -52,7 +52,7 @@
 
 <h3>Prompt engineering for this specific job</h3>
 
-<p>Spoke's instructions are worth studying because the failure modes they defend against are non-obvious. The full text is in <code>TextPolisher.swift</code>; the design principles:</p>
+<p>Timbre's instructions are worth studying because the failure modes they defend against are non-obvious. The full text is in <code>TextPolisher.swift</code>; the design principles:</p>
 
 <p><strong>Rank the rules explicitly.</strong> "In priority order" gives the model a tiebreaker when rules conflict. Without it, a small model resolves conflicts arbitrarily.</p>
 
@@ -64,7 +64,7 @@
 
 <h3>Guardrails and failure modes</h3>
 
-<p>Never trust the model unconditionally. Spoke wraps the call in three layers of defence:</p>
+<p>Never trust the model unconditionally. Timbre wraps the call in three layers of defence:</p>
 
 <pre><code><span class="c-com">// 1. Availability check — fall back to raw text if the model can't run</span>
 <span class="c-key">guard</span> <span class="c-typ">Self</span>.availability.isReady <span class="c-key">else</span> { <span class="c-key">return</span> trimmed }

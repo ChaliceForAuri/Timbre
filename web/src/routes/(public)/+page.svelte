@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Spoke — free, on-device dictation for macOS</title>
+	<title>Timbre — free, on-device dictation for macOS</title>
 	<meta
 		name="description"
 		content="Hold a key, speak, release. Cleaned-up text appears wherever you're typing. Runs entirely on your Mac."

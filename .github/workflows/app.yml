@@ -17,7 +17,7 @@ on:
 
 jobs:
   test:
-    name: SpokeKit tests
+    name: TimbreKit tests
     # macOS 26 image required for the macOS 26 SDK (SpeechAnalyzer,
     # FoundationModels). If the runner label lags GitHub's rollout, this is
     # the first place to look.
@@ -39,10 +39,10 @@ jobs:
           sudo xcode-select -s "$XCODE"
 
       - name: Lint
-        run: xcrun swift-format lint --strict --recursive packages apps/Spoke/Sources
+        run: xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 
-      - name: Test SpokeKit
-        run: swift test --package-path packages/SpokeKit
+      - name: Test TimbreKit
+        run: swift test --package-path packages/TimbreKit
 
   build-app:
     name: App build
@@ -65,6 +65,6 @@ jobs:
 
       - name: Build
         run: >
-          xcodebuild -project apps/Spoke/Spoke.xcodeproj -scheme Spoke
+          xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre
           -destination 'platform=macOS' build
           CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=NO

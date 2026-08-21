@@ -1,4 +1,4 @@
-# Spoke
+# Timbre
 
 A free, fully-local dictation app for macOS. Hold right-Option, speak,
 release — cleaned-up text appears in whatever app you're using.
@@ -18,13 +18,13 @@ for why that's the whole point.
 
 ```bash
 # The pipeline library + tests (fast, no app launch):
-cd packages/SpokeKit && swift test
+cd packages/TimbreKit && swift test
 
 # The app:
-xcodebuild -project apps/Spoke/Spoke.xcodeproj -scheme Spoke build
+xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre build
 ```
 
-Or open `apps/Spoke/Spoke.xcodeproj` in Xcode and ⌘R.
+Or open `apps/Timbre/Timbre.xcodeproj` in Xcode and ⌘R.
 
 First run: grant Microphone when prompted. For Accessibility, approve the
 app in System Settings › Privacy & Security › Accessibility, then **quit and
@@ -33,10 +33,10 @@ relaunch** — the trusted state is only read at launch.
 ## Repository map
 
 ```
-apps/Spoke/        Xcode app: scenes and glue views, nothing else
-packages/SpokeKit/ The pipeline: audio → transcription → polish → insertion
+apps/Timbre/        Xcode app: scenes and glue views, nothing else
+packages/TimbreKit/ The pipeline: audio → transcription → polish → insertion
 docs/decisions/    ADRs (architecture) and GDRs (product) — start here
-docs/learning/     Spoke University: macOS development from first principles
+docs/learning/     Timbre University: macOS development from first principles
 web/               Website (placeholder until the app ships)
 ```
 
