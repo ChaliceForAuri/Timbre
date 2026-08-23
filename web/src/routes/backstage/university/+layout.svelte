@@ -16,7 +16,7 @@
 					{@const active = page.params.slug === m.slug}
 					<li>
 						<a
-							href="/university/{m.slug}"
+							href="/backstage/university/{m.slug}"
 							class="-ml-px flex gap-2 border-l py-1 pl-4 hover:text-ink
 								{active
 								? 'border-accent font-medium text-accent-ink'

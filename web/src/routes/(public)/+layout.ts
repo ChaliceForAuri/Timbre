@@ -1,3 +1,3 @@
-// The public site is fully static — marketing pages and University fragments
-// are all known at build time — so prerender everything onto the CDN.
+// Marketing pages are identical for everyone, so they ship as static files
+// from the CDN. Backstage deliberately does not: it is per-user by nature.
 export const prerender = true;

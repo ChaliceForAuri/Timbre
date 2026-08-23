@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /backstage
+Disallow: /login
+Disallow: /auth
 
 Sitemap: https://timbre.hugopretorius.dev/sitemap.xml
