@@ -23,3 +23,6 @@ packages/TimbreKit/Fixtures/audio/
 
 # Local build products (install.sh, release.sh)
 build/
+
+# Local env (never committed; Vercel holds the real values)
+web/.env

@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect } from '@sveltejs/kit';
 import { building } from '$app/environment';
 import { env } from '$env/dynamic/public';
-import { isAllowed } from '$lib/auth';
+import { isAllowed } from '$lib/server/allowlist';
 
 /// Attaches a request-scoped Supabase client and resolves the session once,
 /// then guards Backstage.

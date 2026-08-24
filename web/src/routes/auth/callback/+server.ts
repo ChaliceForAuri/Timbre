@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { isAllowed } from '$lib/auth';
+import { isAllowed } from '$lib/server/allowlist';
 import type { RequestHandler } from './$types';
 
 /// Exchanges the magic-link code for a session cookie.
