@@ -15,7 +15,10 @@ git push -u origin HEAD
 gh pr create
 ```
 
-CI must be green. Merge with **squash** — one commit per change keeps `main`
+CI must be green — and it is now *enforced* on `main`, not merely expected:
+every pull request runs the TimbreKit tests, the app build, and the web
+check. Both workflows run unfiltered, because a required check that a path
+filter skips never reports, and the pull request then waits on it forever. Merge with **squash** — one commit per change keeps `main`
 readable and bisectable, and lets branch commits be as messy as they need to
 be.
 
