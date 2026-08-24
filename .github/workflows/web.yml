@@ -1,11 +1,15 @@
+# Runs on every pull request, deliberately unfiltered.
+#
+# Path filters were a private-repo economy: macOS runners bill at ten times
+# the rate. Public repositories get Actions free, so the filters now cost
+# more than they save — a required check that is skipped by a path filter
+# never reports, and the pull request waits on it forever.
 name: Web
 
 on:
   push:
     branches: [main]
-    paths: ["web/**", "supabase/**", ".github/workflows/web.yml"]
   pull_request:
-    paths: ["web/**", "supabase/**", ".github/workflows/web.yml"]
 
 jobs:
   check:
