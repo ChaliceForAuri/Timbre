@@ -1,103 +1,203 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-/* Timbre's palette: cool paper, petrol accent — the same identity as the
-   Backstage design doc, because the site and the lab are one product. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Timbre's identity: cool paper, petrol accent.
+   The neutrals carry a slight teal bias rather than being pure grey — the
+   ground and the accent belong to the same family, which is what stops a
+   utility app looking like a bootstrap template. */
 :root {
-  --paper: #f7f8f9;
-  --ink: #1b2226;
-  --muted: #5a6b71;
-  --line: #dbe3e5;
-  --accent: #0e7370;
-  --accent-ink: #0a5350;
-  --card: #ffffff;
-  --code-bg: #eef2f3;
+	--background: oklch(0.985 0.003 200);
+	--foreground: oklch(0.23 0.017 220);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.23 0.017 220);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.23 0.017 220);
+
+	/* Petrol — deep enough to carry white text, saturated enough to read as
+	   a choice rather than a default blue. */
+	--primary: oklch(0.47 0.077 190);
+	--primary-foreground: oklch(0.985 0.003 200);
+
+	--secondary: oklch(0.955 0.006 200);
+	--secondary-foreground: oklch(0.3 0.02 215);
+	--muted: oklch(0.955 0.006 200);
+	--muted-foreground: oklch(0.49 0.018 215);
+	--accent: oklch(0.945 0.014 195);
+	--accent-foreground: oklch(0.3 0.02 215);
+
+	--destructive: oklch(0.55 0.16 27);
+	--destructive-foreground: oklch(0.985 0.003 200);
+
+	--border: oklch(0.9 0.008 205);
+	--input: oklch(0.9 0.008 205);
+	--ring: oklch(0.47 0.077 190);
+
+	--radius: 0.625rem;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #121719;
-    --ink: #e6edee;
-    --muted: #93a6ab;
-    --line: #27343a;
-    --accent: #41b8b1;
-    --accent-ink: #6bcfc8;
-    --card: #1a2225;
-    --code-bg: #1d282c;
-  }
+
+.dark {
+	--background: oklch(0.19 0.014 220);
+	--foreground: oklch(0.93 0.008 200);
+	--card: oklch(0.23 0.016 220);
+	--card-foreground: oklch(0.93 0.008 200);
+	--popover: oklch(0.23 0.016 220);
+	--popover-foreground: oklch(0.93 0.008 200);
+
+	/* Lifted and desaturated for a dark ground: the light-mode petrol goes
+	   muddy against dark, so the accent shifts rather than simply inverting. */
+	--primary: oklch(0.72 0.096 187);
+	--primary-foreground: oklch(0.19 0.014 220);
+
+	--secondary: oklch(0.27 0.016 218);
+	--secondary-foreground: oklch(0.93 0.008 200);
+	--muted: oklch(0.27 0.016 218);
+	--muted-foreground: oklch(0.68 0.018 205);
+	--accent: oklch(0.3 0.022 200);
+	--accent-foreground: oklch(0.93 0.008 200);
+
+	--destructive: oklch(0.7 0.14 25);
+	--destructive-foreground: oklch(0.19 0.014 220);
+
+	--border: oklch(0.31 0.016 215);
+	--input: oklch(0.31 0.016 215);
+	--ring: oklch(0.72 0.096 187);
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-line: var(--line);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-card: var(--card);
-  --color-code-bg: var(--code-bg);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+
+	--font-sans:
+		"Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--font-serif: "Newsreader", Georgia, serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-feature-settings: "cv11", "ss01";
+		-webkit-font-smoothing: antialiased;
+	}
+	/* Headings carry the serif; it's the one place the page gets a voice. */
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-serif);
+		font-weight: 500;
+		text-wrap: balance;
+	}
 }
 
-/* University prose: extracted fragments carry the original tag structure;
-   these rules give them the site's voice. */
+/* University prose. The fragments are the original hand-written HTML, so
+   these rules give inherited markup the site's typography rather than
+   restyling every element at the source. */
 .university-prose {
-  max-width: 68ch;
-  line-height: 1.65;
+	max-width: 68ch;
+	line-height: 1.7;
 }
 .university-prose h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin: 2em 0 0.6em;
+	font-family: var(--font-sans);
+	font-size: 1.1rem;
+	font-weight: 600;
+	margin: 2.2em 0 0.6em;
+	letter-spacing: -0.01em;
 }
-.university-prose p { margin: 0 0 0.9em; }
-.university-prose a { color: var(--accent-ink); text-underline-offset: 3px; }
-.university-prose ul { padding-left: 1.2em; margin: 0 0 1em; list-style: disc; }
-.university-prose li { margin-bottom: 0.4em; }
-.university-prose li::marker { color: var(--accent); }
-.university-prose strong { font-weight: 600; }
+.university-prose p {
+	margin: 0 0 1em;
+}
+.university-prose a {
+	color: var(--primary);
+	text-underline-offset: 3px;
+	text-decoration: underline;
+	text-decoration-color: color-mix(in oklch, var(--primary) 35%, transparent);
+}
+.university-prose a:hover {
+	text-decoration-color: var(--primary);
+}
+.university-prose ul {
+	padding-left: 1.2em;
+	margin: 0 0 1em;
+	list-style: disc;
+}
+.university-prose li {
+	margin-bottom: 0.4em;
+}
+.university-prose li::marker {
+	color: var(--primary);
+}
+.university-prose strong {
+	font-weight: 600;
+}
 .university-prose pre {
-  background: var(--code-bg);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 14px 16px;
-  overflow-x: auto;
-  font-size: 0.82rem;
-  line-height: 1.55;
-  margin: 0 0 1.1em;
+	background: var(--muted);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 14px 16px;
+	overflow-x: auto;
+	font-family: var(--font-mono);
+	font-size: 0.8rem;
+	line-height: 1.6;
+	margin: 0 0 1.2em;
 }
 .university-prose code {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.88em;
+	font-family: var(--font-mono);
+	font-size: 0.875em;
 }
-.university-prose p code, .university-prose li code, .university-prose td code {
-  background: var(--code-bg);
-  border-radius: 4px;
-  padding: 1px 5px;
+.university-prose :not(pre) > code {
+	background: var(--muted);
+	border-radius: calc(var(--radius) - 4px);
+	padding: 0.1em 0.35em;
 }
 .university-prose table {
-  border-collapse: collapse;
-  width: 100%;
-  font-size: 0.88rem;
-  margin: 0 0 1.2em;
-  display: block;
-  overflow-x: auto;
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 0.9rem;
+	margin: 0 0 1.4em;
+	display: block;
+	overflow-x: auto;
 }
 .university-prose th {
-  text-align: left;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--line);
+	text-align: left;
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--muted-foreground);
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--border);
+	white-space: nowrap;
 }
 .university-prose td {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--line);
-  vertical-align: top;
+	padding: 9px 12px;
+	border-bottom: 1px solid var(--border);
+	vertical-align: top;
 }

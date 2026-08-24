@@ -3,52 +3,23 @@
 	import { page } from '$app/state';
 	import { site } from '$lib/site';
 
-	const canonical = $derived(site.origin + page.url.pathname);
-
 	let { children } = $props();
 
-	const nav = [
-		{ href: '/', label: 'Timbre' },
-		{ href: '/university', label: 'University' },
-		{ href: '/download', label: 'Download' }
-	];
+	const canonical = $derived(site.origin + page.url.pathname);
 </script>
 
 <svelte:head>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+	/>
 	<link rel="canonical" href={canonical} />
 	<meta property="og:url" content={canonical} />
 	<meta property="og:site_name" content={site.name} />
 	<meta property="og:type" content="website" />
-	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
-<div class="min-h-screen flex flex-col">
-	<header class="border-b border-line">
-		<nav class="mx-auto flex max-w-5xl items-center gap-6 px-6 py-4">
-			<a href="/" class="font-semibold tracking-tight">Timbre</a>
-			<div class="flex gap-5 text-sm text-muted">
-				{#each nav.slice(1) as item (item.href)}
-					<a
-						href={item.href}
-						class="hover:text-ink"
-						class:text-accent-ink={page.url.pathname.startsWith(item.href)}
-					>
-						{item.label}
-					</a>
-				{/each}
-			</div>
-			<span class="ml-auto text-xs text-muted">free · on-device · zero network requests</span>
-		</nav>
-	</header>
-
-	<main class="flex-1">
-		{@render children()}
-	</main>
-
-	<footer class="border-t border-line">
-		<div class="mx-auto max-w-5xl px-6 py-6 text-xs text-muted">
-			Timbre never sends your voice, your text, or anything else off this Mac. Not a promise in a
-			privacy policy — a property of the binary.
-		</div>
-	</footer>
-</div>
+{@render children()}
