@@ -60,6 +60,19 @@ reasoning is forgotten first. Records are immutable; supersede, never edit.
 in the codebase (`AudioTapProcessor`) and its comment explains exactly why it
 is safe.
 
+## Database changes
+
+Schema lives in `supabase/migrations/`, reviewed in a pull request and
+applied by Supabase's GitHub integration on merge. Never applied by hand in
+the dashboard — a hand-applied change is invisible to review and drifts from
+the repository silently.
+
+Every table enables RLS and grants nothing. The `anon` key is public by
+design; RLS is the only thing between a table and the internet. Backstage
+renders server-side with the service role, which bypasses RLS, so locked
+tables cost nothing. A table that needs direct client access needs a decision
+record, not a quietly added policy.
+
 ## Things that are not negotiable
 
 - **No secrets in the repo.** Signing identity lives in the gitignored
