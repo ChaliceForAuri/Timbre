@@ -34,3 +34,39 @@ and the signal was not worth the noise. Deleting the file restores them.
 Correctness is still gated: `Web check + build` runs `svelte-check` and a full
 production build on every pull request, and it is a required check on `main`.
 A site change that would fail to build cannot merge.
+
+## Environment
+
+Three variables, set by hand in Vercel (Project -> Settings -> Environment
+Variables) and in a local `.env` for development. See `.env.example`.
+
+| Variable | Secret? | What it is |
+|---|---|---|
+| `PUBLIC_SUPABASE_URL` | No | The project's API endpoint. Served in every page; there is nothing to hide |
+| `PUBLIC_SUPABASE_ANON_KEY` | No, by design | Identifies the project and the `anon` role. It ships in the browser and grants nothing on its own — **RLS is the security boundary, not this key** |
+| `BACKSTAGE_ALLOWLIST` | Not a credential, but private | Emails allowed into Backstage. Knowing it grants nothing (you still need the inbox), but it is personal data and stays server-side. **Unset means nobody**, deliberately |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Yes, absolutely** | Not needed yet. Bypasses RLS entirely — full read and write on every table. Never prefixed `PUBLIC_`, never committed, never logged |
+
+The `PUBLIC_` prefix is not decoration: SvelteKit ships those values to the
+browser and keeps everything else on the server. Prefixing the service role
+key would publish full database access to every visitor.
+
+The Supabase->Vercel integration is deliberately **not** used: it assumes one
+Vercel project per Supabase project and gets confused otherwise, and setting
+these by hand is auditable in a way that a sync you have to trust is not.
+
+### Supabase auth configuration
+
+Magic links fail silently unless their destination is allowlisted.
+Supabase -> Authentication -> URL Configuration:
+
+- **Site URL:** `https://timbre.hugopretorius.dev`
+- **Redirect URLs:** `https://timbre.hugopretorius.dev/auth/callback` and
+  `http://localhost:5173/auth/callback`
+
+### Database
+
+Schema lives in `supabase/migrations/`, applied by Supabase's GitHub
+integration on merge to `main` — "Deploy to production" on, "Automatic
+branching" off, because branching compute sits outside the org spend cap.
+Never write SQL in the dashboard editor; see `supabase/README.md`.
