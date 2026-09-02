@@ -47,6 +47,12 @@ Variables) and in a local `.env` for development. See `.env.example`.
 | `BACKSTAGE_ALLOWLIST` | Not a credential, but private | Emails allowed into Backstage. Knowing it grants nothing (you still need the inbox), but it is personal data and stays server-side. **Unset means nobody**, deliberately |
 | `SUPABASE_SERVICE_ROLE_KEY` | **Yes, absolutely** | Not needed yet. Bypasses RLS entirely — full read and write on every table. Never prefixed `PUBLIC_`, never committed, never logged |
 
+In Vercel, set the first three as **Config** and the service role key (when it
+arrives) as **Secret**. Vercel's Secret type is write-only — you can never read
+the value back — which is right for a key you only rotate and wrong for the
+allowlist, because an allowlist is a list you will edit. Losing the ability to
+read it means every future change is retyped from memory.
+
 The `PUBLIC_` prefix is not decoration: SvelteKit ships those values to the
 browser and keeps everything else on the server. Prefixing the service role
 key would publish full database access to every visitor.
