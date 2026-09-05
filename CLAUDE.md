@@ -152,7 +152,10 @@ product. Records are immutable — supersede instead of editing.
 
 - English-first: Apple's on-device model is weaker elsewhere; not chasing it
 - macOS-only: iOS can't replace system dictation
-- No sync: deliberate, it's the privacy story
+- No sync of dictations, ever. The personal dictionary (taught words,
+  acronyms) may sync via the user's own iCloud, opt-in and off by default
+  (GDR-0010). The binary still makes zero network requests; system daemons
+  do the syncing
 
 ## Roadmap
 
