@@ -29,7 +29,10 @@
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"esbuild"
-		]
+		],
+		"overrides": {
+			"@sveltejs/kit>cookie": "^0.7.2"
+		}
 	},
 	"dependencies": {
 		"@lucide/svelte": "^1.41.0",
