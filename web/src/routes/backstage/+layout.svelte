@@ -142,7 +142,8 @@
 	</Sidebar.Root>
 
 	<Sidebar.Inset>
-		<header class="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+		<!-- Sticky: in a long module the breadcrumb is the way back out. -->
+		<header class="bg-background/85 sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-md">
 			<Sidebar.Trigger class="-ml-1" />
 			<Separator orientation="vertical" class="mr-2 h-4" />
 			<Breadcrumb.Root>
