@@ -24,9 +24,16 @@ public enum TimbreEvaluation {
         await TextPolisher().polish(transcript, appContext: appContext, vocabulary: vocabulary)
     }
 
+    /// The taught terms that did not come back verbatim — the transcriber's
+    /// recall of the vocabulary it was given (ADR-0008).
+    public static func missingVocabulary(_ terms: [String], in transcript: String) -> [String] {
+        ContextualVocabulary.missingTerms(from: terms, in: transcript)
+    }
+
     /// Transcribes a recorded audio file through the same conversion and drain
-    /// path live microphone audio takes.
-    public static func transcribe(audioFileAt url: URL) async throws -> String {
+    /// path live microphone audio takes, with the taught vocabulary the app
+    /// would pass for it.
+    public static func transcribe(audioFileAt url: URL, vocabulary: [String] = []) async throws -> String {
         let transcriber = Transcriber()
         try await transcriber.prepare()
 
@@ -38,7 +45,7 @@ public enum TimbreEvaluation {
         // The snapshot stream is for live display; the harness only wants the
         // final transcript. AsyncStream buffers unboundedly, so dropping it
         // here can't stall the analyzer.
-        _ = try await transcriber.startDictation(consuming: input)
+        _ = try await transcriber.startDictation(consuming: input, vocabulary: vocabulary)
         return try await transcriber.finishDictation()
     }
 
@@ -51,6 +58,15 @@ public enum TimbreEvaluation {
     public static func transcribeAll(audioFilesAt urls: [URL]) async throws -> [(
         name: String, transcript: String
     )] {
+        try await transcribeAll(urls.map { (url: $0, vocabulary: []) })
+    }
+
+    /// As above, with a taught vocabulary per file — the corpus case's terms,
+    /// in the harness — so the contextual-strings bias can be measured file by
+    /// file rather than assumed.
+    public static func transcribeAll(
+        _ jobs: [(url: URL, vocabulary: [String])]
+    ) async throws -> [(name: String, transcript: String)] {
         let transcriber = Transcriber()
         try await transcriber.prepare()
 
@@ -59,10 +75,10 @@ public enum TimbreEvaluation {
         }
 
         var results: [(name: String, transcript: String)] = []
-        for url in urls {
-            let input = try AudioFileInput.stream(contentsOf: url, to: format)
-            _ = try await transcriber.startDictation(consuming: input)
-            results.append((url.lastPathComponent, try await transcriber.finishDictation()))
+        for job in jobs {
+            let input = try AudioFileInput.stream(contentsOf: job.url, to: format)
+            _ = try await transcriber.startDictation(consuming: input, vocabulary: job.vocabulary)
+            results.append((job.url.lastPathComponent, try await transcriber.finishDictation()))
         }
         return results
     }
@@ -73,6 +89,7 @@ public enum TimbreEvaluation {
     /// and one that stays blank until the user lets go.
     public static func streamTranscribe(
         audioFileAt url: URL,
+        vocabulary: [String] = [],
         onSnapshot: @escaping @Sendable (String) -> Void
     ) async throws -> String {
         let transcriber = Transcriber()
@@ -83,7 +100,7 @@ public enum TimbreEvaluation {
         }
 
         let input = try AudioFileInput.stream(contentsOf: url, to: format, pacing: .realTime)
-        let snapshots = try await transcriber.startDictation(consuming: input)
+        let snapshots = try await transcriber.startDictation(consuming: input, vocabulary: vocabulary)
 
         let observer = Task {
             for await snapshot in snapshots { onSnapshot(snapshot) }

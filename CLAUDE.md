@@ -41,6 +41,12 @@ cd packages/TimbreKit && swift run timbre-eval Fixtures/corpus.json --repeat 5
 # Regenerate audio fixtures (no microphone needed — uses `say`):
 tools/make-audio-fixtures.sh
 
+# Audio → transcript, every fixture through one Transcriber (ADR-0006), each
+# biased with its corpus case's taught vocabulary; reports how many taught
+# terms came back verbatim (ADR-0008). Fixtures are gitignored: generate them
+# first with tools/make-audio-fixtures.sh.
+swift run timbre-eval --audio-dir Fixtures/audio --corpus Fixtures/corpus.json
+
 # Real dictation → corpus. Turn capture on in Settings first (GDR-0004),
 # dictate, then import. Checks are left empty for you to fill in.
 swift run timbre-eval --import ~/Library/Application\ Support/Timbre/dictations.jsonl \
@@ -162,9 +168,10 @@ product. Records are immutable — supersede instead of editing.
 1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
    `timbre-eval` — see ADR-0004, and never trust a single run.
 2. Auto-learn vocabulary: diff user edits made shortly after insertion.
-   Note the transcriber can land far from the term ("TimbreKit" → "spell kid"),
-   so vocabulary may need to reach it via `SFCustomLanguageModelData` rather
-   than only the polisher's prompt.
+   The transcriber can land far from the term ("TimbreKit" → "timber kit"),
+   and it cannot be taught: `SpeechTranscriber` ignores contextual strings
+   and has no custom-model hook (ADR-0008, measured). Corrections belong in
+   the pipeline — a deterministic "heard → meant" table before the polisher.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode: select text + different hotkey → "make this shorter".
 5. Notarize and distribute directly; build Backstage per

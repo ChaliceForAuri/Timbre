@@ -34,18 +34,24 @@ struct TimbreEval {
             return
         }
 
+        let vocabulary = value(for: "--vocabulary", in: arguments).map(parseVocabulary)
+
         if let path = value(for: "--stream", in: arguments) {
-            try await runStream(path: path)
+            try await runStream(path: path, vocabulary: vocabulary ?? [])
             return
         }
 
         if let directory = value(for: "--audio-dir", in: arguments) {
-            try await runAudioDirectory(path: directory)
+            try await runAudioDirectory(
+                path: directory,
+                corpusPath: value(for: "--corpus", in: arguments),
+                vocabularyOverride: vocabulary
+            )
             return
         }
 
         if let path = value(for: "--audio", in: arguments) {
-            try await runAudio(path: path)
+            try await runAudio(path: path, vocabulary: vocabulary ?? [])
             return
         }
 
@@ -153,12 +159,15 @@ struct TimbreEval {
 
     // MARK: - Audio mode
 
-    private static func runAudio(path: String) async throws {
+    private static func runAudio(path: String, vocabulary: [String]) async throws {
         let url = URL(filePath: path)
         print("transcribing \(url.lastPathComponent)…")
 
-        let transcript = try await TimbreEvaluation.transcribe(audioFileAt: url)
+        let transcript = try await TimbreEvaluation.transcribe(audioFileAt: url, vocabulary: vocabulary)
         print("  transcript  \(transcript)")
+        for term in TimbreEvaluation.missingVocabulary(vocabulary, in: transcript) {
+            print("  ·    missed \"\(term)\"")
+        }
 
         guard TimbreEvaluation.polisherAvailability.isReady else {
             printErr("  (model unavailable — transcript not polished)")
@@ -169,7 +178,16 @@ struct TimbreEval {
 
     /// Transcribes every fixture in a directory through one Transcriber —
     /// the reuse the app depends on and that a single file cannot exercise.
-    private static func runAudioDirectory(path: String) async throws {
+    ///
+    /// With `--corpus`, each file is paired with the case of the same id and
+    /// transcribed with that case's taught vocabulary; the report then says
+    /// which taught terms came back verbatim. Run it with and without the
+    /// corpus to measure what the bias buys (ADR-0008).
+    private static func runAudioDirectory(
+        path: String,
+        corpusPath: String?,
+        vocabularyOverride: [String]?
+    ) async throws {
         let directory = URL(filePath: path)
         let files = try FileManager.default
             .contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
@@ -180,30 +198,55 @@ struct TimbreEval {
             printErr("no audio files in \(path)")
             exit(1)
         }
-        print("transcribing \(files.count) files through one Transcriber\n")
+
+        var casesByID: [String: DictationCase] = [:]
+        if let corpusPath {
+            let corpus = try JSONDecoder().decode(
+                DictationCorpus.self,
+                from: try Data(contentsOf: URL(filePath: corpusPath))
+            )
+            casesByID = Dictionary(corpus.cases.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        }
+        let jobs = files.map { url in
+            let caseID = url.deletingPathExtension().lastPathComponent
+            return (url: url, vocabulary: vocabularyOverride ?? casesByID[caseID]?.vocabulary ?? [])
+        }
+        let taught = jobs.reduce(0) { $0 + $1.vocabulary.count }
+        let suffix = taught > 0 ? ", \(taught) taught terms" : ""
+        print("transcribing \(files.count) files through one Transcriber\(suffix)\n")
 
         var empty = 0
-        for (name, transcript) in try await TimbreEvaluation.transcribeAll(audioFilesAt: files) {
+        var recalled = 0
+        for (job, result) in zip(jobs, try await TimbreEvaluation.transcribeAll(jobs)) {
+            let transcript = result.transcript
             let ok = !transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             if !ok { empty += 1 }
-            print("\(ok ? "✓" : "✗") \(name)")
-            print("   \(transcript.isEmpty ? "(empty)" : transcript)\n")
+            print("\(ok ? "✓" : "✗") \(result.name)")
+            print("   \(transcript.isEmpty ? "(empty)" : transcript)")
+
+            let missing = TimbreEvaluation.missingVocabulary(job.vocabulary, in: transcript)
+            recalled += job.vocabulary.count - missing.count
+            for term in missing { print("  ·    missed \"\(term)\"") }
+            print("")
         }
 
         print("\(files.count - empty)/\(files.count) produced a transcript")
+        if taught > 0 { print("taught terms recalled verbatim: \(recalled)/\(taught)") }
         if empty > 0 { exit(1) }
     }
 
     /// Feeds one file at microphone pace and prints each snapshot as it lands,
     /// so the arrival *timing* of partial results is visible.
-    private static func runStream(path: String) async throws {
+    private static func runStream(path: String, vocabulary: [String]) async throws {
         let url = URL(filePath: path)
         print("streaming \(url.lastPathComponent) at microphone pace\n")
 
         let start = ContinuousClock.now
         let counter = SnapshotCounter()
 
-        let final = try await TimbreEvaluation.streamTranscribe(audioFileAt: url) { snapshot in
+        let final = try await TimbreEvaluation.streamTranscribe(
+            audioFileAt: url, vocabulary: vocabulary
+        ) { snapshot in
             let elapsed = ContinuousClock.now - start
             let milliseconds =
                 elapsed.components.seconds * 1000
@@ -251,8 +294,11 @@ struct TimbreEval {
 
         USAGE
           timbre-eval <corpus.json> [--repeat <n>] [--json <out.json>]
-          timbre-eval --audio <file.aiff>
-          timbre-eval --audio-dir <dir>      one Transcriber, every file
+          timbre-eval --audio <file.aiff> [--vocabulary a,b,c]
+          timbre-eval --audio-dir <dir> [--corpus corpus.json] [--vocabulary a,b,c]
+                                             one Transcriber, every file; with a
+                                             corpus, each file is biased with its
+                                             case's vocabulary and recall is reported
           timbre-eval --stream <file.aiff>   microphone pace, timed snapshots
           timbre-eval --import <log.jsonl> [--out corpus.json]
 
@@ -266,6 +312,13 @@ struct TimbreEval {
         Tuning loop: run it, edit the instructions in TextPolisher, run it
         again. Use --json on both runs and diff them to see what moved.
         """
+
+    /// `--vocabulary "TimbreKit, Supabase"` → the taught terms, trimmed.
+    private static func parseVocabulary(_ list: String) -> [String] {
+        list.split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+    }
 
     private static func value(for flag: String, in arguments: [String]) -> String? {
         guard let index = arguments.firstIndex(of: flag), index + 1 < arguments.count else {
