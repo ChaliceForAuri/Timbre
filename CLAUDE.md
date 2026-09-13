@@ -86,7 +86,8 @@ HotkeyMonitor          right ⌥ via device flag bit → AsyncStream<HotkeyEvent
         ├─> Transcriber     actor; SpeechAnalyzer consumes the input stream,
         │                   returns a stream of transcript snapshots
         ├─> OverlayController  non-activating panel near the caret
-        ├─> TextPolisher    FoundationModels cleanup. Core product value.
+        ├─> TextPolisher    corrections → spoken commands → FoundationModels
+        │                   cleanup → terminator. Core product value.
         └─> TextInserter    pasteboard snapshot → set → synthetic ⌘V → restore
 ```
 
@@ -115,6 +116,11 @@ everything else is internal. Keep it that way.
   full stop deterministically as the last step of `polish`, on every path
   including the fallbacks (ADR-0005). The prompt must not ask the model for
   it — that was tried twice and failed 5 of 5 runs.
+- **Taught corrections run first, deterministically.** `CorrectionTable`
+  replaces each taught *heard* phrase with its *meant* text before spoken
+  commands and the model (GDR-0011): whole phrase, case ignored, verbatim,
+  never fuzzy. The polisher fixes "timbre kit" but not "timber kit" — one
+  letter of phonetic distance — so that class of error lives here.
 - **A speech session is single-use** (ADR-0006).
   `finalizeAndFinishThroughEndOfInput()` ends the `SpeechAnalyzer` for good
   and terminates the module's `results` sequence. `Transcriber` rebuilds both
@@ -167,11 +173,11 @@ product. Records are immutable — supersede instead of editing.
 
 1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
    `timbre-eval` — see ADR-0004, and never trust a single run.
-2. Auto-learn vocabulary: diff user edits made shortly after insertion.
-   The transcriber can land far from the term ("TimbreKit" → "timber kit"),
-   and it cannot be taught: `SpeechTranscriber` ignores contextual strings
-   and has no custom-model hook (ADR-0008, measured). Corrections belong in
-   the pipeline — a deterministic "heard → meant" table before the polisher.
+2. Auto-learn vocabulary: offer a correction from the user's own edits made
+   shortly after insertion. The transcriber cannot be taught — it ignores
+   contextual strings and has no custom-model hook (ADR-0008) — so stable
+   mis-hearings are fixed by the taught correction table (GDR-0011). What
+   remains is teaching it without opening Settings.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode: select text + different hotkey → "make this shorter".
 5. Notarize and distribute directly; build Backstage per

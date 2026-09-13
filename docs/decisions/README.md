@@ -2,7 +2,6 @@
 
 > Records written before 2026-08-21 call the product *Spoke*; it was renamed
 > to *Timbre* in [GDR-0009](gdr/0009-renamed-to-timbre.md). They are immutable
-| [0010](gdr/0010-optional-icloud-sync-of-personal-dictionary.md) | Optional iCloud sync of the personal dictionary (amends 0001's no-sync clause) | Accepted |
 > and were left as written.
 
 Two kinds of records live here. The boundary rule:
@@ -37,7 +36,7 @@ Two kinds of records live here. The boundary rule:
 | [0005](adr/0005-deterministic-sentence-termination.md) | Terminal punctuation is deterministic, not the model's job | Accepted |
 | [0006](adr/0006-speech-sessions-are-single-use.md) | A speech session is single-use; rebuild it per dictation | Accepted |
 | [0007](adr/0007-hotkey-path-avoids-concurrency-runtime.md) | The hotkey event path stays out of the concurrency runtime | Accepted |
-| [0008](adr/0008-taught-vocabulary-and-the-transcriber.md) | Taught vocabulary does not reach SpeechTranscriber; stay on it anyway | Proposed |
+| [0008](adr/0008-taught-vocabulary-and-the-transcriber.md) | Taught vocabulary does not reach SpeechTranscriber; stay on it anyway | Accepted |
 
 ### GDRs
 
@@ -52,3 +51,5 @@ Two kinds of records live here. The boundary rule:
 | [0007](gdr/0007-backstage-web-lab.md) | Backstage: a web lab fed by dev-side artifacts | Accepted |
 | [0008](gdr/0008-voice-in-and-out.md) | Timbre is a voice interface, not a dictation app | Accepted |
 | [0009](gdr/0009-renamed-to-timbre.md) | The product is called Timbre (was Timbre) | Accepted |
+| [0010](gdr/0010-optional-icloud-sync-of-personal-dictionary.md) | Optional iCloud sync of the personal dictionary (amends 0001's no-sync clause) | Accepted |
+| [0011](gdr/0011-taught-corrections-before-the-model.md) | Taught corrections: what Timbre heard becomes what you meant, before the model | Accepted |

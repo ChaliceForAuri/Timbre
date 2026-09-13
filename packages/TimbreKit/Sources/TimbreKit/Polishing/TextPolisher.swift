@@ -71,14 +71,23 @@ final class TextPolisher {
     /// Cleans a raw transcript. Falls back to the raw text on any failure —
     /// the user must always get something pasteable, even if the model is
     /// busy or unavailable.
-    func polish(_ raw: String, appContext: String? = nil, vocabulary: [String] = []) async -> String {
+    func polish(
+        _ raw: String,
+        appContext: String? = nil,
+        vocabulary: [String] = [],
+        corrections: [Correction] = []
+    ) async -> String {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return "" }
+
+        // Taught corrections first: what the transcriber heard becomes what
+        // the user meant before anything else looks at the text (GDR-0011).
+        let corrected = CorrectionTable.applied(corrections, to: trimmed)
 
         // Structural commands resolve before the model sees the text, so it
         // punctuates around real breaks instead of around the words that named
         // them (GDR-0003).
-        let structured = SpokenCommands.applied(to: trimmed)
+        let structured = SpokenCommands.applied(to: corrected)
 
         // One exit point, so the terminal-punctuation guarantee holds on every
         // path — including the fallbacks, where the model never ran. ADR-0005.

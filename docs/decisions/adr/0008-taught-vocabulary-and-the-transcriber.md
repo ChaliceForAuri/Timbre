@@ -1,6 +1,6 @@
 # 0008 — Taught vocabulary does not reach SpeechTranscriber; stay on it anyway
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-13
 
 ## Context

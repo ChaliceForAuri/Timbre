@@ -36,6 +36,9 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
     /// Terms the user has taught Timbre.
     public let vocabulary: [String]
 
+    /// Corrections the user has taught: applied before the model (GDR-0011).
+    public let corrections: [Correction]
+
     /// Phrases that must NOT survive cleanup — fillers, stutters, spoken
     /// formatting commands, or register the polisher shouldn't reach for.
     public let forbidden: [String]
@@ -60,6 +63,7 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         spoken: String? = nil,
         appContext: String? = nil,
         vocabulary: [String] = [],
+        corrections: [Correction] = [],
         forbidden: [String] = [],
         required: [String] = [],
         requiresPunctuation: Bool = false,
@@ -71,6 +75,7 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         self.spoken = spoken
         self.appContext = appContext
         self.vocabulary = vocabulary
+        self.corrections = corrections
         self.forbidden = forbidden
         self.required = required
         self.requiresPunctuation = requiresPunctuation
@@ -88,6 +93,7 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         spoken = try container.decodeIfPresent(String.self, forKey: .spoken)
         appContext = try container.decodeIfPresent(String.self, forKey: .appContext)
         vocabulary = try container.decodeIfPresent([String].self, forKey: .vocabulary) ?? []
+        corrections = try container.decodeIfPresent([Correction].self, forKey: .corrections) ?? []
         forbidden = try container.decodeIfPresent([String].self, forKey: .forbidden) ?? []
         required = try container.decodeIfPresent([String].self, forKey: .required) ?? []
         requiresPunctuation =
