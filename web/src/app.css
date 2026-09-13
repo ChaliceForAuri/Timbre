@@ -147,47 +147,54 @@
 	}
 }
 
-/* University prose. The fragments are the original hand-written HTML, so
-   these rules give inherited markup the site's typography rather than
-   restyling every element at the source. */
-.university-prose {
+/* Record prose: University modules and decision records. The fragments are
+   hand-written HTML or rendered markdown, so these rules give inherited
+   markup the site's typography rather than restyling every element. */
+.record-prose {
 	max-width: 68ch;
 	line-height: 1.7;
 }
-.university-prose h3 {
+.record-prose h2 {
+	font-family: var(--font-sans);
+	font-size: 1.2rem;
+	font-weight: 600;
+	margin: 2em 0 0.6em;
+	letter-spacing: -0.01em;
+}
+.record-prose h3 {
 	font-family: var(--font-sans);
 	font-size: 1.1rem;
 	font-weight: 600;
 	margin: 2.2em 0 0.6em;
 	letter-spacing: -0.01em;
 }
-.university-prose p {
+.record-prose p {
 	margin: 0 0 1em;
 }
-.university-prose a {
+.record-prose a {
 	color: var(--primary);
 	text-underline-offset: 3px;
 	text-decoration: underline;
 	text-decoration-color: color-mix(in oklch, var(--primary) 35%, transparent);
 }
-.university-prose a:hover {
+.record-prose a:hover {
 	text-decoration-color: var(--primary);
 }
-.university-prose ul {
+.record-prose ul {
 	padding-left: 1.2em;
 	margin: 0 0 1em;
 	list-style: disc;
 }
-.university-prose li {
+.record-prose li {
 	margin-bottom: 0.4em;
 }
-.university-prose li::marker {
+.record-prose li::marker {
 	color: var(--primary);
 }
-.university-prose strong {
+.record-prose strong {
 	font-weight: 600;
 }
-.university-prose pre {
+.record-prose pre {
 	background: var(--muted);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
@@ -198,16 +205,16 @@
 	line-height: 1.6;
 	margin: 0 0 1.2em;
 }
-.university-prose code {
+.record-prose code {
 	font-family: var(--font-mono);
 	font-size: 0.875em;
 }
-.university-prose :not(pre) > code {
+.record-prose :not(pre) > code {
 	background: var(--muted);
 	border-radius: calc(var(--radius) - 4px);
 	padding: 0.1em 0.35em;
 }
-.university-prose table {
+.record-prose table {
 	border-collapse: collapse;
 	width: 100%;
 	font-size: 0.9rem;
@@ -215,7 +222,7 @@
 	display: block;
 	overflow-x: auto;
 }
-.university-prose th {
+.record-prose th {
 	text-align: left;
 	font-family: var(--font-mono);
 	font-size: 0.7rem;
@@ -226,7 +233,7 @@
 	border-bottom: 1px solid var(--border);
 	white-space: nowrap;
 }
-.university-prose td {
+.record-prose td {
 	padding: 9px 12px;
 	border-bottom: 1px solid var(--border);
 	vertical-align: top;

@@ -1,7 +1,9 @@
 import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect } from '@sveltejs/kit';
-import { building } from '$app/environment';
+import { building, dev } from '$app/environment';
+import { env as privateEnv } from '$env/dynamic/private';
 import { env } from '$env/dynamic/public';
+import type { User } from '@supabase/supabase-js';
 import { isAllowed } from '$lib/server/allowlist';
 
 /// Attaches a request-scoped Supabase client and resolves the session once,
@@ -18,6 +20,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// after auth started working.
 	if (building) {
 		event.locals.user = null;
+		return resolve(event);
+	}
+
+	// Local preview of Backstage without a Supabase project: the dev server
+	// only, opted into explicitly, with a placeholder user so layouts render.
+	// `dev` is false in every build, so this cannot leak into a deployment.
+	if (dev && privateEnv.BACKSTAGE_LOCAL_PREVIEW === '1') {
+		event.locals.user = { id: 'local-preview', email: 'preview@localhost' } as User;
 		return resolve(event);
 	}
 

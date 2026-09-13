@@ -10,6 +10,7 @@
 	import MessageSquare from '@lucide/svelte/icons/message-square';
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 	import Users from '@lucide/svelte/icons/users';
+	import Scale from '@lucide/svelte/icons/scale';
 	import LogOut from '@lucide/svelte/icons/log-out';
 
 	let { children, data } = $props();
@@ -20,8 +21,20 @@
 
 	const live = [
 		{ href: '/backstage', label: 'Overview', icon: LayoutDashboard, exact: true },
+		{ href: '/backstage/decisions', label: 'Decisions', icon: Scale, exact: false },
 		{ href: '/backstage/university', label: 'University', icon: GraduationCap, exact: false }
 	];
+
+	// Breadcrumb: Backstage › section › leaf. A section is any live item
+	// below the overview; the leaf is whatever the section's page has open.
+	const section = $derived(live.find((item) => !item.exact && path.startsWith(item.href)));
+	const leaf = $derived(
+		currentModule
+			? `${currentModule.number} · ${currentModule.title}`
+			: path.startsWith('/backstage/decisions') && page.params.id
+				? page.params.id.toUpperCase()
+				: undefined
+	);
 
 	// From docs/design/backstage.md §13. Shown so the shape of the lab is
 	// visible before the rooms exist; disabled so nothing pretends to work.
@@ -149,26 +162,26 @@
 			<Breadcrumb.Root>
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
-						{#if path === '/backstage'}
-							<Breadcrumb.Page>Backstage</Breadcrumb.Page>
-						{:else}
+						{#if section}
 							<Breadcrumb.Link href="/backstage">Backstage</Breadcrumb.Link>
+						{:else}
+							<Breadcrumb.Page>Backstage</Breadcrumb.Page>
 						{/if}
 					</Breadcrumb.Item>
-					{#if inUniversity}
+					{#if section}
 						<Breadcrumb.Separator />
 						<Breadcrumb.Item>
-							{#if currentModule}
-								<Breadcrumb.Link href="/backstage/university">University</Breadcrumb.Link>
+							{#if leaf}
+								<Breadcrumb.Link href={section.href}>{section.label}</Breadcrumb.Link>
 							{:else}
-								<Breadcrumb.Page>University</Breadcrumb.Page>
+								<Breadcrumb.Page>{section.label}</Breadcrumb.Page>
 							{/if}
 						</Breadcrumb.Item>
 					{/if}
-					{#if currentModule}
+					{#if leaf}
 						<Breadcrumb.Separator />
 						<Breadcrumb.Item>
-							<Breadcrumb.Page>{currentModule.number} · {currentModule.title}</Breadcrumb.Page>
+							<Breadcrumb.Page>{leaf}</Breadcrumb.Page>
 						</Breadcrumb.Item>
 					{/if}
 				</Breadcrumb.List>
