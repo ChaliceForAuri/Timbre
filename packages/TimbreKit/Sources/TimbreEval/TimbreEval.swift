@@ -94,7 +94,8 @@ struct TimbreEval {
                 let output = await TimbreEvaluation.polish(
                     testCase.transcript,
                     appContext: testCase.appContext,
-                    vocabulary: testCase.vocabulary
+                    vocabulary: testCase.vocabulary,
+                    corrections: testCase.corrections
                 )
                 runs.append(
                     CaseOutcome(

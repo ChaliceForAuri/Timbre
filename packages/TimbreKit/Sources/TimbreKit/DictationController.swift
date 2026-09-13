@@ -27,6 +27,12 @@ public final class DictationController {
         vocabularyStore.terms
     }
 
+    /// Phrases the user has corrected: what Timbre heard, what they meant.
+    /// Applied to every transcript before the model (GDR-0011).
+    public var corrections: [Correction] {
+        vocabularyStore.corrections
+    }
+
     /// The voice read-aloud will use, and whether macOS has a better one
     /// available for download. Nil when no voice is installed at all.
     public var readingVoiceName: String? { VoiceCatalog.preferred()?.name }
@@ -305,7 +311,8 @@ public final class DictationController {
             let cleaned = await polisher.polish(
                 raw,
                 appContext: capturedAppName,
-                vocabulary: vocabularyStore.terms
+                vocabulary: vocabularyStore.terms,
+                corrections: vocabularyStore.corrections
             )
             let polishDuration = clock.now - polishStarted
 
@@ -421,6 +428,16 @@ public final class DictationController {
 
     public func removeFromVocabulary(_ term: String) {
         vocabularyStore.remove(term)
+    }
+
+    /// Teaches a correction; false when there was nothing to teach.
+    @discardableResult
+    public func teachCorrection(heard: String, meant: String) -> Bool {
+        vocabularyStore.teach(heard: heard, meant: meant)
+    }
+
+    public func forgetCorrection(_ correction: Correction) {
+        vocabularyStore.forget(correction)
     }
 
     // MARK: - Helpers

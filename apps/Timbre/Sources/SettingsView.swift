@@ -4,6 +4,8 @@ import TimbreKit
 struct SettingsView: View {
     let controller: DictationController
     @State private var newTerm = ""
+    @State private var newHeard = ""
+    @State private var newMeant = ""
     @State private var capturedCount = 0
 
     var body: some View {
@@ -46,7 +48,9 @@ struct SettingsView: View {
                     }
                 }
             }
-            .frame(minHeight: 160)
+            .frame(minHeight: 110)
+
+            correctionsSection
 
             Spacer()
 
@@ -59,7 +63,7 @@ struct SettingsView: View {
             captureSection
         }
         .padding(20)
-        .frame(width: 440, height: 760)
+        .frame(width: 460, height: 860)
         .onAppear { capturedCount = controller.capturedDictationCount() }
     }
 
@@ -168,6 +172,67 @@ struct SettingsView: View {
                 capturedCount = controller.capturedDictationCount()
             }
         )
+    }
+
+    /// The correction table (GDR-0011): a phrase Timbre keeps hearing wrong
+    /// and what was meant. Shown in full so nothing rewrites text in secret.
+    private var correctionsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Corrections")
+                .font(.headline)
+
+            Text(
+                "When Timbre keeps hearing a phrase wrong, teach it what you meant. "
+                    + "Applied to every dictation, exactly as written."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            HStack {
+                TextField("Timbre heard", text: $newHeard)
+                    .textFieldStyle(.roundedBorder)
+                    .onSubmit(teach)
+                Image(systemName: "arrow.right")
+                    .foregroundStyle(.secondary)
+                TextField("You meant", text: $newMeant)
+                    .textFieldStyle(.roundedBorder)
+                    .onSubmit(teach)
+                Button("Teach", action: teach)
+                    .disabled(!canTeach)
+            }
+
+            List {
+                ForEach(controller.corrections) { correction in
+                    HStack(spacing: 6) {
+                        Text(correction.heard)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "arrow.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                        Text(correction.meant)
+                        Spacer()
+                        Button {
+                            controller.forgetCorrection(correction)
+                        } label: {
+                            Image(systemName: "minus.circle")
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                }
+            }
+            .frame(minHeight: 100)
+        }
+    }
+
+    private var canTeach: Bool {
+        !newHeard.trimmingCharacters(in: .whitespaces).isEmpty
+            && !newMeant.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    private func teach() {
+        guard controller.teachCorrection(heard: newHeard, meant: newMeant) else { return }
+        newHeard = ""
+        newMeant = ""
     }
 
     private func addTerm() {

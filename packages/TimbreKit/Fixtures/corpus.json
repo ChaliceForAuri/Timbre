@@ -133,7 +133,7 @@
     },
     {
       "id": "11-hard-vocabulary",
-      "note": "ADR-0008 audio-path case: spoken is what the fixture says, transcript is what SpeechTranscriber emitted (biased or not), vocabulary is what --audio-dir --corpus biases with and scores recall on. No polisher checks: given the vocabulary the polisher fixes timbre kit (case 06) but not timber kit — one letter of phonetic distance is one too many.",
+      "note": "ADR-0008 + GDR-0011: spoken is what the fixture says; transcript is what SpeechTranscriber emitted; vocabulary is what --audio-dir --corpus biases with (recall 0/5 there — the point of ADR-0008); corrections are what the user taught after seeing it, and with them every term must survive the polisher.",
       "spoken": "So the TimbreKit package talks to Supabase and Langfuse, and Hugo Pretorius wants the SwiftUI settings to show the Backstage evals.",
       "transcript": "So the timber kit package talks to superbasin lang views, and Hugo Pretorius wants the Swift UI settings to show the backstage evils.",
       "vocabulary": [
@@ -143,8 +143,37 @@
         "SwiftUI",
         "evals"
       ],
-      "required": [],
-      "requiresPunctuation": true
+      "required": [
+        "TimbreKit",
+        "Supabase",
+        "Langfuse",
+        "SwiftUI",
+        "evals",
+        "Pretorius"
+      ],
+      "requiresPunctuation": true,
+      "corrections": [
+        {
+          "heard": "timber kit",
+          "meant": "TimbreKit"
+        },
+        {
+          "heard": "superbasin",
+          "meant": "Supabase and"
+        },
+        {
+          "heard": "lang views",
+          "meant": "Langfuse"
+        },
+        {
+          "heard": "Swift UI",
+          "meant": "SwiftUI"
+        },
+        {
+          "heard": "evils",
+          "meant": "evals"
+        }
+      ]
     }
   ]
 }

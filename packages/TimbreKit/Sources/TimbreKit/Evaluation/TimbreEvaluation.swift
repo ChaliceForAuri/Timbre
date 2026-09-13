@@ -19,9 +19,12 @@ public enum TimbreEvaluation {
     public static func polish(
         _ transcript: String,
         appContext: String? = nil,
-        vocabulary: [String] = []
+        vocabulary: [String] = [],
+        corrections: [Correction] = []
     ) async -> String {
-        await TextPolisher().polish(transcript, appContext: appContext, vocabulary: vocabulary)
+        await TextPolisher().polish(
+            transcript, appContext: appContext, vocabulary: vocabulary, corrections: corrections
+        )
     }
 
     /// The taught terms that did not come back verbatim — the transcriber's
