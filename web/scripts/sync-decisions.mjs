@@ -92,7 +92,10 @@ function parse(source, kind, number, slug, path) {
 		: /^proposed/i.test(status)
 			? 'proposed'
 			: 'accepted';
-	const statusNote = status.match(/\(([^)]+)\)/)?.[1] ?? null;
+	// A parenthetical note — "(implementation pending)" — read after links are
+	// reduced to their text, so a superseding link's target is not taken for one.
+	const statusNote =
+		status.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').match(/\(([^)]+)\)/)?.[1] ?? null;
 	const supersededBy = statusKind === 'superseded' ? (refsIn(status, kind)[0] ?? null) : null;
 
 	const relations = fields
