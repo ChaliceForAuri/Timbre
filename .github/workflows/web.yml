@@ -31,5 +31,13 @@ jobs:
           cache: pnpm
           cache-dependency-path: web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - name: Decisions data matches docs/decisions
+        # records.json is generated from the markdown and committed, so the
+        # deploy never reaches outside web/. If the docs changed without a
+        # re-sync, this is where it shows.
+        run: |
+          pnpm run sync:decisions
+          git diff --exit-code --stat -- src/lib/decisions/records.json \
+            || { echo "::error::docs/decisions changed — run 'pnpm run sync:decisions' in web/ and commit records.json"; exit 1; }
       - run: pnpm run check
       - run: pnpm run build

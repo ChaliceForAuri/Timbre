@@ -2,12 +2,19 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { modules } from '$lib/university';
+	import { records } from '$lib/decisions';
 
 	const panels = [
 		{
 			title: 'University',
 			body: `${modules.length} modules, from audio buffers to eval harnesses — written while building the thing they describe.`,
 			href: '/backstage/university',
+			status: 'ready'
+		},
+		{
+			title: 'Decisions',
+			body: `${records.length} records — every ADR and GDR, newest first. Filter by kind, open one in place, or have them read to you.`,
+			href: '/backstage/decisions',
 			status: 'ready'
 		},
 		{

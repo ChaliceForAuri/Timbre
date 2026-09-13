@@ -15,7 +15,7 @@
 	</h1>
 
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- our own extracted, static content -->
-	<div class="university-prose">{@html data.fragment}</div>
+	<div class="record-prose">{@html data.fragment}</div>
 
 	<nav class="mt-14 flex justify-between border-t border-line pt-6 text-sm">
 		{#if data.previous}

@@ -86,3 +86,12 @@ edit, but re-adding a component overwrites it. Re-apply these on purpose:
   `data-[active=true]:` rather than upstream's presence variant
   `data-active:`. Svelte renders `isActive={false}` as `data-active="false"`,
   and a presence variant matches that too, so every row lit up as active.
+
+## Decisions page
+
+`/backstage/decisions` renders every ADR and GDR from `docs/decisions`. The
+markdown stays the source of truth; `pnpm run sync:decisions` regenerates
+`src/lib/decisions/records.json` (HTML for the dialog, plain text for the
+reader, an excerpt for the card), which is committed. CI re-runs the script
+and fails on a diff, so a new record is: write the markdown, run the sync,
+commit both.
