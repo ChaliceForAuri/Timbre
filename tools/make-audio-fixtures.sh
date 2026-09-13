@@ -9,6 +9,10 @@
 # the polisher has something to remove. Good enough to catch pipeline
 # regressions; not a substitute for real recordings when tuning the prompt.
 #
+# A case may carry `spoken` — the sentence to synthesize — when its
+# `transcript` records what the model emitted rather than what was said.
+# Vocabulary cases are exactly that: the fixture says "TimbreKit".
+#
 # Usage: tools/make-audio-fixtures.sh [corpus.json] [output-dir]
 
 set -euo pipefail
@@ -20,7 +24,7 @@ VOICE="${SPOKE_VOICE:-Samantha}"
 mkdir -p "$OUTPUT"
 echo "voice: $VOICE"
 
-jq -r '.cases[] | "\(.id)\t\(.transcript)"' "$CORPUS" \
+jq -r '.cases[] | "\(.id)\t\(.spoken // .transcript)"' "$CORPUS" \
     | while IFS=$'\t' read -r id transcript; do
         say -v "$VOICE" -o "$OUTPUT/$id.aiff" "$transcript"
         echo "  $id.aiff"

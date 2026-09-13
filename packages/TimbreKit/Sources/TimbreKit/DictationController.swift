@@ -222,7 +222,10 @@ public final class DictationController {
             // bug. The level task below flips it the moment sound arrives.
             overlay.show(mode: .warming)
 
-            let snapshots = try await transcriber.startDictation(consuming: streams.input)
+            let snapshots = try await transcriber.startDictation(
+                consuming: streams.input,
+                vocabulary: vocabularyStore.terms
+            )
 
             displayTasks = [
                 Task { [weak self] in

@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import Speech
+import os
 
 /// Wraps Apple's on-device streaming speech model (macOS 26+).
 ///
@@ -17,6 +18,8 @@ import Speech
 /// fresh transcriber module. See ADR-0006.
 actor Transcriber {
 
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Timbre", category: "speech")
+
     /// One dictation's worth of speech machinery. Both halves are single-use.
     private struct Session {
         let analyzer: SpeechAnalyzer
@@ -27,6 +30,7 @@ actor Transcriber {
     private var ready: Session?
     private var active: Session?
     private var resultsTask: Task<Void, Never>?
+    private var warmup: Task<Void, Never>?
     private var accumulator = TranscriptAccumulator()
 
     /// The audio format the model wants. Nil until `prepare()` has run.
@@ -83,10 +87,25 @@ actor Transcriber {
     /// Begins a dictation consuming model-ready audio, and returns a stream of
     /// transcript snapshots for live display. The snapshot stream finishes
     /// when the session does.
-    func startDictation(consuming input: AsyncStream<AnalyzerInput>) async throws -> AsyncStream<
-        String
-    > {
+    ///
+    /// `vocabulary` is the user's taught terms, offered to the model as
+    /// contextual strings for this session — see the note below and ADR-0008
+    /// for why that is currently a no-op.
+    func startDictation(
+        consuming input: AsyncStream<AnalyzerInput>,
+        vocabulary: [String] = []
+    ) async throws -> AsyncStream<String> {
         guard let locale else { throw TranscriberError.notPrepared }
+
+        // The previous dictation left the next session warming up in the
+        // background. A key press that lands mid-warm-up waits for it rather
+        // than starting an analyzer that is still preparing — which accepts
+        // the audio and produces nothing, silently. In the app the wait is
+        // rarely more than a few milliseconds; in the eval harness, which
+        // starts the next file the instant the last one finishes, it is the
+        // difference between eleven transcripts and one.
+        await warmup?.value
+        warmup = nil
 
         // Normally already built — by prepare(), or by the previous
         // finishDictation() — so the key press pays nothing for it.
@@ -94,6 +113,25 @@ actor Transcriber {
         ready = nil
         active = session
         accumulator = TranscriptAccumulator()
+
+        // The documented hook for biasing the model towards taught words.
+        // Measured ineffective on SpeechTranscriber with the macOS 26.5 SDK —
+        // 0/6 terms, output byte-identical — and kept anyway: it costs
+        // nothing, and `timbre-eval --audio-dir … --corpus …` reports recall
+        // on every run, so an SDK that starts honouring it shows up as a
+        // number. ADR-0008 has the measurements. Best effort either way: a
+        // dictation without the bias is still a dictation, so a rejected
+        // context is logged, never thrown.
+        let strings = ContextualVocabulary.strings(from: vocabulary)
+        if !strings.isEmpty {
+            let context = AnalysisContext()
+            context.contextualStrings[.general] = strings
+            do {
+                try await session.analyzer.setContext(context)
+            } catch {
+                Self.logger.error("contextual vocabulary rejected: \(error.localizedDescription)")
+            }
+        }
 
         try await session.analyzer.start(inputSequence: input)
 
@@ -154,7 +192,7 @@ actor Transcriber {
             let next = Self.makeSession(locale: locale)
             ready = next
             let format = analyzerFormat
-            Task { try? await next.analyzer.prepareToAnalyze(in: format) }
+            warmup = Task { try? await next.analyzer.prepareToAnalyze(in: format) }
         }
 
         return text

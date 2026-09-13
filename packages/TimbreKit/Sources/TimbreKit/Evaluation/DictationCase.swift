@@ -24,6 +24,12 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
     /// fillers intact.
     public let transcript: String
 
+    /// What the audio fixture says, when that differs from `transcript`. For
+    /// vocabulary cases the two differ by definition: the fixture speaks
+    /// "TimbreKit", the transcript is whatever the model made of it.
+    /// `tools/make-audio-fixtures.sh` synthesizes this when present.
+    public let spoken: String?
+
     /// Frontmost app name to pass through, for cases testing tone.
     public let appContext: String?
 
@@ -51,6 +57,7 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
     public init(
         id: String,
         transcript: String,
+        spoken: String? = nil,
         appContext: String? = nil,
         vocabulary: [String] = [],
         forbidden: [String] = [],
@@ -61,6 +68,7 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
     ) {
         self.id = id
         self.transcript = transcript
+        self.spoken = spoken
         self.appContext = appContext
         self.vocabulary = vocabulary
         self.forbidden = forbidden
@@ -77,6 +85,7 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         transcript = try container.decode(String.self, forKey: .transcript)
+        spoken = try container.decodeIfPresent(String.self, forKey: .spoken)
         appContext = try container.decodeIfPresent(String.self, forKey: .appContext)
         vocabulary = try container.decodeIfPresent([String].self, forKey: .vocabulary) ?? []
         forbidden = try container.decodeIfPresent([String].self, forKey: .forbidden) ?? []

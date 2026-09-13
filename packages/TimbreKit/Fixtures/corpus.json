@@ -130,6 +130,21 @@
         "second chapter"
       ],
       "requiresPunctuation": true
+    },
+    {
+      "id": "11-hard-vocabulary",
+      "note": "ADR-0008 audio-path case: spoken is what the fixture says, transcript is what SpeechTranscriber emitted (biased or not), vocabulary is what --audio-dir --corpus biases with and scores recall on. No polisher checks: given the vocabulary the polisher fixes timbre kit (case 06) but not timber kit — one letter of phonetic distance is one too many.",
+      "spoken": "So the TimbreKit package talks to Supabase and Langfuse, and Hugo Pretorius wants the SwiftUI settings to show the Backstage evals.",
+      "transcript": "So the timber kit package talks to superbasin lang views, and Hugo Pretorius wants the Swift UI settings to show the backstage evils.",
+      "vocabulary": [
+        "TimbreKit",
+        "Supabase",
+        "Langfuse",
+        "SwiftUI",
+        "evals"
+      ],
+      "required": [],
+      "requiresPunctuation": true
     }
   ]
 }

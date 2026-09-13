@@ -37,6 +37,7 @@ Two kinds of records live here. The boundary rule:
 | [0005](adr/0005-deterministic-sentence-termination.md) | Terminal punctuation is deterministic, not the model's job | Accepted |
 | [0006](adr/0006-speech-sessions-are-single-use.md) | A speech session is single-use; rebuild it per dictation | Accepted |
 | [0007](adr/0007-hotkey-path-avoids-concurrency-runtime.md) | The hotkey event path stays out of the concurrency runtime | Accepted |
+| [0008](adr/0008-taught-vocabulary-and-the-transcriber.md) | Taught vocabulary does not reach SpeechTranscriber; stay on it anyway | Proposed |
 
 ### GDRs
 
