@@ -2,7 +2,8 @@ import AVFoundation
 import Foundation
 import Observation
 
-/// Ties everything together: hotkey → mic → speech model → cleanup → paste.
+/// Ties everything together: hotkey → mic → speech model → cleanup → paste,
+/// plus the two gestures that work on a selection — read aloud and command mode.
 ///
 /// This is the package's public surface. The app shell reads `status`,
 /// `liveText`, and the vocabulary API; everything else is internal to
@@ -31,6 +32,12 @@ public final class DictationController {
     /// Applied to every transcript before the model (GDR-0011).
     public var corrections: [Correction] {
         vocabularyStore.corrections
+    }
+
+    /// Terms the user has defined. They answer "explain" before the model
+    /// does (GDR-0012).
+    public var acronyms: [Acronym] {
+        vocabularyStore.acronyms
     }
 
     /// The voice read-aloud will use, and whether macOS has a better one
@@ -71,11 +78,21 @@ public final class DictationController {
     private let vocabularyStore = VocabularyStore()
     private let dictationLog = DictationLog()
     private let speech = SpeechReader()
+    private let transformer = TextTransformer()
 
     private var capturedAppName: String?
     private var pressInstant: ContinuousClock.Instant?
     private var readHoldTask: Task<Void, Never>?
     private var readHoldFired = false
+
+    /// Which hold owns the microphone. Dictation and command mode share the
+    /// capture path and the `.listening` status, so the release of one key
+    /// must never be allowed to finish the other's session.
+    private enum Gesture { case dictation, command }
+    private var gesture: Gesture?
+    private var commandArmTask: Task<Void, Never>?
+    private var commandSelection: String?
+    private var commandIsCapturing = false
     private var microphoneStart: Duration?
     private var firstAudio: Duration?
     private var hotkeyLoop: Task<Void, Never>?
@@ -143,10 +160,15 @@ public final class DictationController {
             for await event in events {
                 guard let self else { return }
                 switch event {
-                case .pressed: await self.beginListening()
+                case .pressed:
+                    self.cancelPendingCommand()
+                    await self.beginListening()
                 case .released: await self.endListening()
                 case .readKeyDown: self.readKeyWentDown()
                 case .readKeyUp: await self.readKeyWentUp()
+                case .commandKeyDown: self.commandKeyWentDown()
+                case .commandKeyUp: await self.commandKeyWentUp()
+                case .commandInterrupted: await self.commandWasInterrupted()
                 }
             }
         }
@@ -180,6 +202,7 @@ public final class DictationController {
     private func beginListening() async {
         // Starting from .error is deliberate: one transient failure must not
         // require a relaunch to make the hotkey work again.
+        guard gesture == nil else { return }
         switch status {
         case .idle, .error: break
         default: return
@@ -210,65 +233,81 @@ public final class DictationController {
         microphoneStart = nil
         firstAudio = nil
 
+        gesture = .dictation
         do {
-            guard let format = await transcriber.analyzerFormat else {
-                throw Transcriber.TranscriberError.notPrepared
-            }
-
-            // The microphone opens FIRST — before the overlay, whose caret
-            // lookup is a synchronous IPC round-trip into another process.
-            // On a Bluetooth mic the headset takes hundreds of milliseconds
-            // to wake; every millisecond of our own work belongs inside that
-            // window, not in front of it. Issue #4.
-            let streams = try audio.start(convertingTo: format)
-            microphoneStart = clock.now - pressed
-
-            // The pill must not say "Listening" yet: no audio is flowing,
-            // and inviting speech into dead air is the clipped-first-words
-            // bug. The level task below flips it the moment sound arrives.
-            overlay.show(mode: .warming)
-
-            let snapshots = try await transcriber.startDictation(
-                consuming: streams.input,
-                vocabulary: vocabularyStore.terms
+            try await startCapture(
+                listeningMode: .listening,
+                vocabulary: vocabularyStore.terms,
+                pressed: pressed
             )
-
-            displayTasks = [
-                Task { [weak self] in
-                    for await text in snapshots {
-                        guard let self else { return }
-                        self.liveText = text
-                        self.overlay.update(text: text)
-                    }
-                },
-                Task { [weak self] in
-                    var heardAudio = false
-                    for await level in streams.levels {
-                        guard let self else { return }
-                        // Strictly non-zero: a waking Bluetooth mic delivers
-                        // buffers of exact digital zeros immediately, so
-                        // "a buffer arrived" is not "the mic is alive". A
-                        // live capture always carries a noise floor; only a
-                        // dead route is perfectly silent. Flipping on the
-                        // first buffer made the pill say "Listening" into
-                        // dead air — the same lie, one level down.
-                        if !heardAudio, level > 0 {
-                            heardAudio = true
-                            self.firstAudio = clock.now - pressed
-                            self.overlay.update(mode: .listening)
-                        }
-                        self.overlay.pushLevel(level)
-                    }
-                },
-            ]
         } catch {
             audio.stop()
             showFailure(error)
         }
     }
 
+    /// Opens the microphone, starts a speech session and wires the pill to
+    /// both: the part of a hold that dictation and command mode share.
+    private func startCapture(
+        listeningMode: OverlayView.Mode,
+        vocabulary: [String],
+        pressed: ContinuousClock.Instant
+    ) async throws {
+        let clock = ContinuousClock()
+        guard let format = await transcriber.analyzerFormat else {
+            throw Transcriber.TranscriberError.notPrepared
+        }
+
+        // The microphone opens FIRST — before the overlay, whose caret
+        // lookup is a synchronous IPC round-trip into another process.
+        // On a Bluetooth mic the headset takes hundreds of milliseconds
+        // to wake; every millisecond of our own work belongs inside that
+        // window, not in front of it. Issue #4.
+        let streams = try audio.start(convertingTo: format)
+        microphoneStart = clock.now - pressed
+
+        // The pill must not say "Listening" yet: no audio is flowing,
+        // and inviting speech into dead air is the clipped-first-words
+        // bug. The level task below flips it the moment sound arrives.
+        overlay.show(mode: .warming)
+
+        let snapshots = try await transcriber.startDictation(
+            consuming: streams.input,
+            vocabulary: vocabulary
+        )
+
+        displayTasks = [
+            Task { [weak self] in
+                for await text in snapshots {
+                    guard let self else { return }
+                    self.liveText = text
+                    self.overlay.update(text: text)
+                }
+            },
+            Task { [weak self] in
+                var heardAudio = false
+                for await level in streams.levels {
+                    guard let self else { return }
+                    // Strictly non-zero: a waking Bluetooth mic delivers
+                    // buffers of exact digital zeros immediately, so
+                    // "a buffer arrived" is not "the mic is alive". A
+                    // live capture always carries a noise floor; only a
+                    // dead route is perfectly silent. Flipping on the
+                    // first buffer made the pill say "Listening" into
+                    // dead air — the same lie, one level down.
+                    if !heardAudio, level > 0 {
+                        heardAudio = true
+                        self.firstAudio = clock.now - pressed
+                        self.overlay.update(mode: listeningMode)
+                    }
+                    self.overlay.pushLevel(level)
+                }
+            },
+        ]
+    }
+
     private func endListening() async {
-        guard status == .listening else { return }
+        guard status == .listening, gesture == .dictation else { return }
 
         // Read before stop() — stopping discards the tap processor that
         // knows whether any buffers ever arrived.
@@ -286,8 +325,7 @@ public final class DictationController {
             cancelDisplayTasks()
             overlay.update(mode: .error("The microphone didn't deliver any audio."))
             overlay.hide(after: .seconds(2.5))
-            liveText = ""
-            status = .idle
+            becomeIdle()
             return
         }
 
@@ -346,6 +384,179 @@ public final class DictationController {
             cancelDisplayTasks()
             showFailure(error)
         }
+    }
+
+    // MARK: - Command mode
+
+    /// How long right ⌘ must be held, uninterrupted, before it means command
+    /// mode. Right ⌘ is a working shortcut key — ⌘P, ⌘-click — so a hold only
+    /// counts once it has outlasted an ordinary shortcut, and the pill
+    /// appearing is the cue that releasing now will do something. GDR-0012.
+    private static let commandArmDelay: Duration = .milliseconds(350)
+
+    /// Right ⌘ went down. Nothing visible happens yet: the hold has to
+    /// survive the arm delay with no other key, click or modifier, any of
+    /// which means it was a shortcut (`commandWasInterrupted`).
+    private func commandKeyWentDown() {
+        guard gesture == nil else { return }
+        switch status {
+        case .idle, .error: break
+        default: return
+        }
+
+        hotkey.beginInterruptionWatch()
+        commandArmTask?.cancel()
+        commandArmTask = Task { [weak self] in
+            try? await Task.sleep(for: Self.commandArmDelay)
+            guard let self, !Task.isCancelled else { return }
+            // Claimed synchronously, before any suspension, so a release
+            // landing during setup knows the session has begun and waits for
+            // it rather than cancelling half of one.
+            self.gesture = .command
+            await self.beginCommand()
+        }
+    }
+
+    private func commandKeyWentUp() async {
+        hotkey.endInterruptionWatch()
+        await settleCommandArming()
+        await endCommand()
+    }
+
+    /// A key, a click or another modifier arrived mid-hold: the user was
+    /// typing a shortcut. Put everything back, silently.
+    private func commandWasInterrupted() async {
+        hotkey.endInterruptionWatch()
+        await settleCommandArming()
+        guard gesture == .command else { return }
+        await abandonCommand()
+    }
+
+    /// Cancels a hold that has not armed, or waits out the setup of one that
+    /// has. Cancelling an armed session mid-setup would surface as a thrown
+    /// cancellation from the speech stack — an error pill for a normal release.
+    private func settleCommandArming() async {
+        let arming = commandArmTask
+        commandArmTask = nil
+        if gesture != .command { arming?.cancel() }
+        await arming?.value
+    }
+
+    /// Right ⌥ went down while a right-⌘ hold was still waiting to arm:
+    /// dictation wins, the pending command is forgotten.
+    private func cancelPendingCommand() {
+        guard gesture != .command else { return }
+        hotkey.endInterruptionWatch()
+        commandArmTask?.cancel()
+        commandArmTask = nil
+    }
+
+    private func beginCommand() async {
+        speech.stop()
+
+        // The Accessibility route only: it posts no events. The pasteboard
+        // route's synthetic ⌘C would trip our own interruption watch, so it
+        // waits until the key is up (`endCommand`).
+        commandSelection = SelectionReader.selectedTextViaAccessibility()
+        commandIsCapturing = false
+        liveText = ""
+        status = .listening
+
+        // No microphone is not a failure here. A silent hold means "fix", and
+        // fixing needs no audio — a Mac Studio with no mic still gets it.
+        guard AVCaptureDevice.default(for: .audio) != nil else {
+            overlay.show(mode: .command)
+            return
+        }
+
+        do {
+            try await startCapture(listeningMode: .command, vocabulary: [], pressed: ContinuousClock().now)
+            commandIsCapturing = true
+        } catch {
+            audio.stop()
+            overlay.show(mode: .command)
+        }
+    }
+
+    private func endCommand() async {
+        guard gesture == .command else { return }
+        defer { commandSelection = nil }
+
+        let spoken = await finishCommandCapture()
+
+        // The user's corrections apply to commands too: a stable mis-hearing
+        // of "shorten" is teachable like any other (GDR-0011).
+        let heard = CorrectionTable.applied(vocabularyStore.corrections, to: spoken)
+        guard let command = VoiceCommand.parse(heard) else {
+            let quoted = heard.trimmingCharacters(in: .whitespacesAndNewlines)
+            finishCommand(
+                showing: .error("Heard “\(quoted)” — say fix, explain or shorten."),
+                for: .seconds(3.5)
+            )
+            return
+        }
+
+        // The key is up and the watch is gone, so the pasteboard route is safe.
+        var selection = commandSelection
+        if selection == nil { selection = await SelectionReader.selectedText() }
+        guard let selection else {
+            finishCommand(showing: .error("Select some text first."), for: .seconds(2))
+            return
+        }
+
+        status = .polishing
+        overlay.update(mode: .working(command.progressLabel), text: "")
+
+        let outcome = await transformer.run(
+            command,
+            on: selection,
+            corrections: vocabularyStore.corrections,
+            acronyms: vocabularyStore.acronyms
+        )
+        switch outcome {
+        case .replacement(let text):
+            // Hide before pasting, as dictation does. The selection is still
+            // active, so the paste replaces it — and ⌘Z puts it back.
+            overlay.hide()
+            inserter.insert(text)
+            lastInserted = text
+            becomeIdle()
+        case .explanation(let text, let source):
+            finishCommand(
+                showing: .explanation(text, caption: source.caption),
+                for: ExplanationTiming.displayDuration(for: text)
+            )
+        case .unchanged(let message):
+            finishCommand(showing: .notice(message), for: .seconds(2))
+        case .failure(let message):
+            finishCommand(showing: .error(message), for: .seconds(3.5))
+        }
+    }
+
+    /// Ends the command's speech session and returns what was said — empty
+    /// when nothing was, or when there was no microphone to say it into.
+    private func finishCommandCapture() async -> String {
+        guard commandIsCapturing else { return "" }
+        commandIsCapturing = false
+
+        let heardAudio = audio.hasDeliveredAudio
+        audio.stop()
+        let transcript = (try? await transcriber.finishDictation()) ?? ""
+        cancelDisplayTasks()
+        return heardAudio ? transcript : ""
+    }
+
+    private func abandonCommand() async {
+        _ = await finishCommandCapture()
+        commandSelection = nil
+        overlay.hide()
+        becomeIdle()
+    }
+
+    private func finishCommand(showing mode: OverlayView.Mode, for duration: Duration) {
+        overlay.update(mode: mode, text: "")
+        overlay.hide(after: duration)
+        becomeIdle()
     }
 
     // MARK: - Reading aloud
@@ -440,9 +651,20 @@ public final class DictationController {
         vocabularyStore.forget(correction)
     }
 
+    /// Defines a term for "explain"; false when there was nothing to define.
+    @discardableResult
+    public func defineAcronym(term: String, meaning: String) -> Bool {
+        vocabularyStore.define(term: term, meaning: meaning)
+    }
+
+    public func forgetAcronym(_ acronym: Acronym) {
+        vocabularyStore.undefine(acronym)
+    }
+
     // MARK: - Helpers
 
     private func becomeIdle() {
+        gesture = nil
         liveText = ""
         status = .idle
     }
@@ -450,6 +672,7 @@ public final class DictationController {
     private func showFailure(_ error: Error) {
         overlay.update(mode: .error(error.localizedDescription))
         overlay.hide(after: .seconds(2.5))
+        gesture = nil
         liveText = ""
         status = .error(error.localizedDescription)
     }

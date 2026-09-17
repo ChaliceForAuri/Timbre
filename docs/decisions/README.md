@@ -37,6 +37,7 @@ Two kinds of records live here. The boundary rule:
 | [0006](adr/0006-speech-sessions-are-single-use.md) | A speech session is single-use; rebuild it per dictation | Accepted |
 | [0007](adr/0007-hotkey-path-avoids-concurrency-runtime.md) | The hotkey event path stays out of the concurrency runtime | Accepted |
 | [0008](adr/0008-taught-vocabulary-and-the-transcriber.md) | Taught vocabulary does not reach SpeechTranscriber; stay on it anyway | Accepted |
+| [0009](adr/0009-command-mode-decodes-greedily.md) | Command mode decodes greedily; only fix uses guided generation | Accepted |
 
 ### GDRs
 
@@ -53,3 +54,4 @@ Two kinds of records live here. The boundary rule:
 | [0009](gdr/0009-renamed-to-timbre.md) | The product is called Timbre (was Timbre) | Accepted |
 | [0010](gdr/0010-optional-icloud-sync-of-personal-dictionary.md) | Optional iCloud sync of the personal dictionary (amends 0001's no-sync clause) | Accepted |
 | [0011](gdr/0011-taught-corrections-before-the-model.md) | Taught corrections: what Timbre heard becomes what you meant, before the model | Accepted |
+| [0012](gdr/0012-command-mode.md) | Command mode: hold right ⌘ on a selection to fix, explain or shorten it | Accepted |

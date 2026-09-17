@@ -34,6 +34,14 @@ struct TimbreEval {
             return
         }
 
+        if let path = value(for: "--commands", in: arguments) {
+            try await runCommands(
+                path: path,
+                repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1
+            )
+            return
+        }
+
         let vocabulary = value(for: "--vocabulary", in: arguments).map(parseVocabulary)
 
         if let path = value(for: "--stream", in: arguments) {
@@ -156,6 +164,65 @@ struct TimbreEval {
     private static func singleLine(_ text: String) -> String {
         text.split(separator: "\n", omittingEmptySubsequences: false)
             .joined(separator: " ⏎ ")
+    }
+
+    // MARK: - Command mode
+
+    /// Runs every command case through the real transformer. Same discipline
+    /// as the polisher corpus: properties, repeats, non-zero exit on a miss.
+    private static func runCommands(path: String, repeats: Int) async throws {
+        let corpus = try JSONDecoder().decode(
+            CommandCorpus.self,
+            from: try Data(contentsOf: URL(filePath: path))
+        )
+
+        let availability = TimbreEvaluation.polisherAvailability
+        print("timbre-eval — \(corpus.cases.count) command cases")
+        print("model: \(availability.reason ?? "available")\n")
+        if !availability.isReady {
+            printErr("The on-device model is unavailable, so no command would run.")
+            exit(2)
+        }
+
+        var solid = 0
+        var passedRuns = 0
+        for testCase in corpus.cases {
+            var outputs: [String] = []
+            var tally: [String: Int] = [:]
+            var passes = 0
+            for _ in 0..<repeats {
+                let result = await TimbreEvaluation.transform(
+                    testCase.command,
+                    text: testCase.text,
+                    corrections: testCase.corrections,
+                    acronyms: testCase.acronyms
+                )
+                let failures = CommandChecks.failures(for: testCase, result: result)
+                if failures.isEmpty { passes += 1 }
+                for failure in failures { tally[failure, default: 0] += 1 }
+                if !outputs.contains(result.text) { outputs.append(result.text) }
+                if let why = result.diagnostic, !outputs.contains("  ↳ \(why)") {
+                    outputs.append("  ↳ \(why)")
+                }
+            }
+            passedRuns += passes
+            if passes == repeats { solid += 1 }
+
+            print(
+                "\(passes == repeats ? "✓" : "✗") \(testCase.id)  [\(testCase.command.rawValue)]  \(passes)/\(repeats)"
+            )
+            if let note = testCase.note { print("     \(note)") }
+            print("  in   \(singleLine(testCase.text))")
+            for output in outputs { print("  out  \(singleLine(output))") }
+            for (failure, count) in tally.sorted(by: { $0.key < $1.key }) {
+                print("  ·    \(failure)\(repeats > 1 ? "  (\(count) of \(repeats))" : "")")
+            }
+            print("")
+        }
+
+        print("cases passing every run: \(solid)/\(corpus.cases.count)")
+        print("individual runs passing: \(passedRuns)/\(corpus.cases.count * repeats)")
+        if solid != corpus.cases.count { exit(1) }
     }
 
     // MARK: - Audio mode
@@ -295,6 +362,8 @@ struct TimbreEval {
 
         USAGE
           timbre-eval <corpus.json> [--repeat <n>] [--json <out.json>]
+          timbre-eval --commands <commands.json> [--repeat <n>]
+                                             command mode: fix, explain, shorten
           timbre-eval --audio <file.aiff> [--vocabulary a,b,c]
           timbre-eval --audio-dir <dir> [--corpus corpus.json] [--vocabulary a,b,c]
                                              one Transcriber, every file; with a

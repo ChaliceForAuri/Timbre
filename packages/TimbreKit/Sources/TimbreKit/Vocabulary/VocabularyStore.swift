@@ -17,6 +17,7 @@ final class VocabularyStore {
 
     private static let termsKey = "vocabulary"
     private static let correctionsKey = "corrections"
+    private static let acronymsKey = "acronyms"
 
     private let defaults: UserDefaults
 
@@ -28,12 +29,20 @@ final class VocabularyStore {
         didSet { defaults.set(try? JSONEncoder().encode(corrections), forKey: Self.correctionsKey) }
     }
 
+    /// Terms the user has defined; they answer "explain" before the model (GDR-0012).
+    private(set) var acronyms: [Acronym] {
+        didSet { defaults.set(try? JSONEncoder().encode(acronyms), forKey: Self.acronymsKey) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.terms = defaults.stringArray(forKey: Self.termsKey) ?? []
         self.corrections =
             defaults.data(forKey: Self.correctionsKey)
             .flatMap { try? JSONDecoder().decode([Correction].self, from: $0) } ?? []
+        self.acronyms =
+            defaults.data(forKey: Self.acronymsKey)
+            .flatMap { try? JSONDecoder().decode([Acronym].self, from: $0) } ?? []
     }
 
     func add(_ term: String) {
@@ -56,6 +65,20 @@ final class VocabularyStore {
         corrections.append(correction)
         add(correction.meant)
         return true
+    }
+
+    /// Defines a term; redefining one replaces its meaning. False when there
+    /// was nothing to define.
+    @discardableResult
+    func define(term: String, meaning: String) -> Bool {
+        guard let acronym = Acronym(term: term, meaning: meaning) else { return false }
+        acronyms.removeAll { $0.id == acronym.id }
+        acronyms.append(acronym)
+        return true
+    }
+
+    func undefine(_ acronym: Acronym) {
+        acronyms.removeAll { $0.id == acronym.id }
     }
 
     func forget(_ correction: Correction) {

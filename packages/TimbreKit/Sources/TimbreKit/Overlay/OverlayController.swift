@@ -80,7 +80,14 @@ final class OverlayController {
     }
 
     func update(mode: OverlayView.Mode? = nil, text: String? = nil) {
-        if let mode { self.mode = mode }
+        if let mode {
+            // An explanation is a card several lines tall. The pill's anchor
+            // holds its bottom-left corner, so growing in place would push
+            // the card up over the very text it explains; place it afresh
+            // for the size it actually is.
+            if case .explanation = mode { anchor = nil }
+            self.mode = mode
+        }
         if let text { self.text = text }
         render()
     }

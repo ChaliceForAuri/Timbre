@@ -27,6 +27,31 @@ public enum TimbreEvaluation {
         )
     }
 
+    /// Runs one command over a selection through the real transformer — same
+    /// instructions, same guardrail as command mode (GDR-0012).
+    public static func transform(
+        _ command: VoiceCommand,
+        text: String,
+        corrections: [Correction] = [],
+        acronyms: [Acronym] = []
+    ) async -> CommandResult {
+        let (outcome, diagnostic) = await TextTransformer().runDetailed(
+            command, on: text, corrections: corrections, acronyms: acronyms
+        )
+        switch outcome {
+        case .replacement(let output): return CommandResult(kind: .replacement, text: output)
+        case .explanation(let output, _): return CommandResult(kind: .explanation, text: output)
+        case .unchanged: return CommandResult(kind: .unchanged, text: text)
+        case .failure(let message):
+            return CommandResult(kind: .failure, text: message, diagnostic: diagnostic)
+        }
+    }
+
+    /// What command mode would make of a transcript; nil means it would do nothing.
+    public static func parseCommand(_ transcript: String) -> VoiceCommand? {
+        VoiceCommand.parse(transcript)
+    }
+
     /// The taught terms that did not come back verbatim — the transcriber's
     /// recall of the vocabulary it was given (ADR-0008).
     public static func missingVocabulary(_ terms: [String], in transcript: String) -> [String] {

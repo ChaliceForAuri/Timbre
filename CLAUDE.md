@@ -1,8 +1,10 @@
 # Timbre
 
-A free, fully-local dictation app for macOS. Hold right-Option, speak,
-release — cleaned-up text appears in whatever app you're using. Everything
-runs on-device: no account, no network, no subscription (GDR-0001).
+A free, fully-local voice interface for macOS. Hold right-Option, speak,
+release — cleaned-up text appears in whatever app you're using. Tap
+left-Option to hear a selection read aloud (GDR-0008). Hold right-Command on
+a selection and say fix, explain or shorten (GDR-0012). Everything runs
+on-device: no account, no network, no subscription (GDR-0001).
 
 ## Requirements
 
@@ -37,6 +39,9 @@ swift test --package-path packages/TimbreKit
 # Measure the polisher against the fixed corpus (ADR-0004). The model is
 # stochastic: never judge a prompt change on a single run.
 cd packages/TimbreKit && swift run timbre-eval Fixtures/corpus.json --repeat 5
+
+# Same discipline for command mode's fix / explain / shorten (GDR-0012):
+swift run timbre-eval --commands Fixtures/commands.json --repeat 5
 
 # Regenerate audio fixtures (no microphone needed — uses `say`):
 tools/make-audio-fixtures.sh
@@ -89,6 +94,12 @@ HotkeyMonitor          right ⌥ via device flag bit → AsyncStream<HotkeyEvent
         ├─> TextPolisher    corrections → spoken commands → FoundationModels
         │                   cleanup → terminator. Core product value.
         └─> TextInserter    pasteboard snapshot → set → synthetic ⌘V → restore
+
+Two gestures work on a selection instead, through the same controller:
+  left ⌥ tap    SelectionReader → SpeechReader (read aloud, GDR-0008)
+  right ⌘ hold  arm 350 ms → same mic + Transcriber → VoiceCommand.parse →
+                TextTransformer → paste over the selection, or an
+                explanation card (command mode, GDR-0012)
 ```
 
 Public API surface of TimbreKit is `DictationController` (+ its `Status`);
@@ -121,6 +132,21 @@ everything else is internal. Keep it that way.
   commands and the model (GDR-0011): whole phrase, case ignored, verbatim,
   never fuzzy. The polisher fixes "timbre kit" but not "timber kit" — one
   letter of phonetic distance — so that class of error lives here.
+- **Command mode never guesses and never destroys** (GDR-0012). An
+  unrecognised word does nothing and says what was heard; any model failure
+  leaves the selection untouched — the inverse of the polisher's "always
+  paste something". Explain answers from the user's taught definitions first
+  and labels the card with its source: the model invents expansions for
+  acronyms it does not know. Right ⌘ is a real shortcut key, so the mode *arms* after
+  an uninterrupted 350 ms hold; the key/click watch that detects a shortcut
+  exists only during that hold and never looks at the event.
+- **Commands decode greedily** (ADR-0009): same selection, same command,
+  same result, and a corpus that measures instead of rolling dice. Fix uses
+  guided generation without the schema in the prompt; shorten and explain
+  generate plain text, because guided generation leaked its schema into
+  explanations and copied every shorten input. The shorten prompt's shape —
+  fenced text, instruction after it, a word budget — is all measurement;
+  re-run `timbre-eval --commands` before touching it.
 - **A speech session is single-use** (ADR-0006).
   `finalizeAndFinishThroughEndOfInput()` ends the `SpeechAnalyzer` for good
   and terminates the module's `results` sequence. `Transcriber` rebuilds both
@@ -179,6 +205,8 @@ product. Records are immutable — supersede instead of editing.
    mis-hearings are fixed by the taught correction table (GDR-0011). What
    remains is teaching it without opening Settings.
 3. Per-app tone profiles (the app name is already passed to the polisher).
-4. Command mode: select text + different hotkey → "make this shorter".
+4. Command mode shipped with three verbs (GDR-0012). Next: a taught acronym
+   dictionary answering "explain" before the model does; more verbs only if
+   each comes with a guardrail that can score it.
 5. Notarize and distribute directly; build Backstage per
    `docs/design/backstage.md` (phases 1-6, University ships first).

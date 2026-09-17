@@ -11,6 +11,14 @@ struct MenuContent: View {
 
         Divider()
 
+        // The whole interface is three keys. Listed here because there is
+        // nowhere else a menu-bar app can put its instructions.
+        Menu("Shortcuts") {
+            Text("Hold right ⌥ — dictate")
+            Text("Tap left ⌥ — read the selection aloud")
+            Text("Hold right ⌘ on a selection — fix · explain · shorten")
+        }
+
         Button("Insert Last Again") {
             controller.reinsertLast()
         }

@@ -2,7 +2,7 @@ import AppKit
 import ApplicationServices
 import os
 
-/// Hold-to-talk global hotkey, surfaced as an async stream of events.
+/// Timbre's global hotkeys, surfaced as an async stream of events.
 ///
 /// Right Option is the default: reachable by thumb, nothing else uses it,
 /// and holding a modifier avoids the "did I toggle it on?" confusion that
@@ -29,6 +29,7 @@ final class HotkeyMonitor {
     private nonisolated let detector = OSAllocatedUnfairLock(initialState: HoldDetector())
     private var globalMonitor: Any?
     private var localMonitor: Any?
+    private var interruptionMonitors: [Any] = []
 
     init() {
         (events, continuation) = AsyncStream.makeStream()
@@ -87,7 +88,49 @@ final class HotkeyMonitor {
         }
     }
 
+    // MARK: - Command-mode interruption watch
+
+    /// While right ⌘ is held, a key press or a mouse click means the hold is
+    /// an ordinary shortcut — ⌘P, ⌘-click — not a command (GDR-0012).
+    ///
+    /// These monitors exist only for the length of such a hold, and they
+    /// report only *that* something was pressed, never what: the handler does
+    /// not look at the event. A privacy-first app should not be watching
+    /// keystrokes, and outside this window it is not.
+    func beginInterruptionWatch() {
+        endInterruptionWatch()
+
+        let continuation = continuation
+        let mask: NSEvent.EventTypeMask = [.keyDown, .leftMouseDown, .rightMouseDown, .otherMouseDown]
+
+        if let global = NSEvent.addGlobalMonitorForEvents(
+            matching: mask,
+            handler: { @Sendable _ in
+                continuation.yield(.commandInterrupted)
+            }
+        ) {
+            interruptionMonitors.append(global)
+        }
+        if let local = NSEvent.addLocalMonitorForEvents(
+            matching: mask,
+            handler: { @Sendable event in
+                continuation.yield(.commandInterrupted)
+                return event
+            }
+        ) {
+            interruptionMonitors.append(local)
+        }
+    }
+
+    func endInterruptionWatch() {
+        for monitor in interruptionMonitors {
+            NSEvent.removeMonitor(monitor)
+        }
+        interruptionMonitors = []
+    }
+
     func stop() {
+        endInterruptionWatch()
         if let globalMonitor { NSEvent.removeMonitor(globalMonitor) }
         if let localMonitor { NSEvent.removeMonitor(localMonitor) }
         globalMonitor = nil

@@ -18,6 +18,16 @@ struct OverlayView: View {
         /// Reading a selection aloud, showing the current speed.
         case reading(speed: String)
         case polishing
+        /// Right ⌘ held over a selection: waiting for fix, explain or shorten.
+        case command
+        /// A command is running on the selection.
+        case working(String)
+        /// The answer to "explain". A card rather than a pill: it is shown,
+        /// never pasted, and stays long enough to read. The caption says
+        /// where the answer came from.
+        case explanation(String, caption: String)
+        /// Something worth saying that is not a failure.
+        case notice(String)
         case error(String)
     }
 
@@ -27,21 +37,31 @@ struct OverlayView: View {
     let levels: [Float]
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: isCard ? .top : .center, spacing: 12) {
             indicator
 
             if !displayText.isEmpty {
-                Text(displayText)
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundStyle(textColor)
-                    .lineLimit(2)
-                    .truncationMode(.head)  // keep the END visible — that's the newest speech
-                    .frame(maxWidth: 320, alignment: .leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(displayText)
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .foregroundStyle(textColor)
+                        .lineLimit(isCard ? 14 : 2)
+                        // A transcript keeps its END visible — that's the
+                        // newest speech. An explanation is read from the start.
+                        .truncationMode(isCard ? .tail : .head)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    if let caption {
+                        Text(caption)
+                            .font(.system(size: 10.5, weight: .medium, design: .rounded))
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .frame(maxWidth: isCard ? 380 : 320, alignment: .leading)
             }
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(.vertical, isCard ? 12 : 10)
         .background {
             // Native vibrancy: what makes it look like part of macOS rather
             // than a web page pretending to be a Mac app.
@@ -62,21 +82,40 @@ struct OverlayView: View {
 
     // MARK: - Pieces
 
+    private var isCard: Bool {
+        if case .explanation = mode { return true }
+        return false
+    }
+
+    private var caption: String? {
+        if case .explanation(_, let caption) = mode { return caption }
+        return nil
+    }
+
     @ViewBuilder
     private var indicator: some View {
         switch mode {
-        case .warming, .listening:
+        case .warming, .listening, .command:
             Waveform(levels: levels)
                 .frame(width: 34, height: 18)
         case .reading:
             Image(systemName: "speaker.wave.2.fill")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.tint)
-        case .polishing:
+        case .polishing, .working:
             Image(systemName: "sparkles")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.tint)
                 .symbolEffect(.variableColor.iterative, options: .repeating)
+        case .explanation:
+            Image(systemName: "text.bubble.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.tint)
+                .padding(.top, 1)
+        case .notice:
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.tint)
         case .error:
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 13, weight: .semibold))
@@ -90,17 +129,19 @@ struct OverlayView: View {
         case .reading(let speed): "Reading  \(speed)"
         case .listening: text.isEmpty ? "Listening…" : text
         case .polishing: text.isEmpty ? "Cleaning up…" : text
+        case .command: text.isEmpty ? VoiceCommand.hint : text
+        case .working(let label): label
+        case .explanation(let answer, _): answer
+        case .notice(let message): message
         case .error(let message): message
         }
     }
 
     private var textColor: Color {
         switch mode {
-        case .warming: .secondary
-        case .reading: .primary
-        case .listening: text.isEmpty ? .secondary : .primary
-        case .polishing: .secondary
-        case .error: .primary
+        case .warming, .polishing, .working: .secondary
+        case .reading, .explanation, .notice, .error: .primary
+        case .listening, .command: text.isEmpty ? .secondary : .primary
         }
     }
 }
@@ -149,7 +190,20 @@ struct Waveform: View {
     .padding(40)
 }
 
-#Preview("Empty") {
-    OverlayView(mode: .listening, text: "", levels: [0, 0, 0, 0, 0])
+#Preview("Command") {
+    OverlayView(mode: .command, text: "", levels: [0.1, 0.2, 0.1, 0.3, 0.2])
         .padding(40)
+}
+
+#Preview("Explanation") {
+    OverlayView(
+        mode: .explanation(
+            "ADR stands for Architecture Decision Record: a short document that captures one "
+                + "significant technical choice, the context that forced it, and its consequences.",
+            caption: "On-device model · may be wrong"
+        ),
+        text: "",
+        levels: []
+    )
+    .padding(40)
 }
