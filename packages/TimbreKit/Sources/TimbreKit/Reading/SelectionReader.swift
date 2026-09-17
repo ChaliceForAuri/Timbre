@@ -18,7 +18,7 @@ enum SelectionReader {
 
     /// The current selection, or nil if there is none to read.
     static func selectedText() async -> String? {
-        if let viaAccessibility = accessibilitySelection() {
+        if let viaAccessibility = selectedTextViaAccessibility() {
             return viaAccessibility
         }
         return await pasteboardSelection()
@@ -26,7 +26,10 @@ enum SelectionReader {
 
     // MARK: - Accessibility
 
-    private static func accessibilitySelection() -> String? {
+    /// The Accessibility route on its own. It posts no events, so command
+    /// mode can use it while right ⌘ is physically held — where a synthetic
+    /// ⌘C would be seen by its own "another key was pressed" watch.
+    static func selectedTextViaAccessibility() -> String? {
         let systemWide = AXUIElementCreateSystemWide()
 
         var focusedRef: CFTypeRef?

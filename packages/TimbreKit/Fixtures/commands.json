@@ -1,0 +1,176 @@
+{
+  "cases": [
+    {
+      "id": "fix-typos",
+      "command": "fix",
+      "note": "Plain misspellings and a doubled word.",
+      "text": "i beleive the the meeting is on wendesday and they are going to anounce the new relase",
+      "required": [
+        "believe",
+        "Wednesday",
+        "announce",
+        "release"
+      ],
+      "forbidden": [
+        "beleive",
+        "wendesday",
+        "anounce",
+        "relase",
+        "the the"
+      ]
+    },
+    {
+      "id": "fix-keeps-meaning",
+      "command": "fix",
+      "note": "Fixing must not flip or drop a fact — and must not be too timid to fix an apostrophe.",
+      "text": "lets ship on friday not thursday, its safer and the the client agreed",
+      "required": [
+        "let's",
+        "Friday",
+        "Thursday",
+        "it's",
+        "safer",
+        "client agreed"
+      ],
+      "forbidden": [
+        "the the"
+      ]
+    },
+    {
+      "id": "fix-taught-correction",
+      "command": "fix",
+      "note": "GDR-0011: taught corrections apply before the model and must survive it.",
+      "text": "the timber kit tests pass on the new relase branch",
+      "corrections": [
+        {
+          "heard": "timber kit",
+          "meant": "TimbreKit"
+        }
+      ],
+      "required": [
+        "TimbreKit",
+        "release"
+      ],
+      "forbidden": [
+        "timber kit",
+        "relase"
+      ]
+    },
+    {
+      "id": "fix-leaves-clean-text",
+      "command": "fix",
+      "note": "Nothing to fix means nothing changes — no rephrasing.",
+      "text": "The build is green and the release is tagged.",
+      "required": [
+        "The build is green and the release is tagged"
+      ]
+    },
+    {
+      "id": "shorten-ramble",
+      "command": "shorten",
+      "note": "Cut the throat-clearing, keep the facts — in sentences, in the author's 'we', not as notes.",
+      "text": "So basically what I wanted to say, and I think this is really quite important for everyone to understand, is that the release is going to be delayed until Friday because the signing certificate expired, and we basically need to renew it before we can ship anything at all to customers.",
+      "required": [
+        "Friday",
+        "certificate",
+        "we"
+      ]
+    },
+    {
+      "id": "shorten-keeps-voice",
+      "command": "shorten",
+      "note": "First person stays first person — a shortening, not a summary about the author.",
+      "text": "I just wanted to reach out and let you know that I have finished reviewing the pull request that you sent over yesterday, and overall I think it looks really good, although I did leave a couple of small comments that I would like you to take a look at when you get a chance.",
+      "required": [
+        "pull request",
+        "comments"
+      ],
+      "forbidden": [
+        "the author",
+        "the user",
+        "the writer",
+        "the speaker"
+      ]
+    },
+    {
+      "id": "shorten-email",
+      "command": "shorten",
+      "note": "A polite chaser: keep who, what, when and the ask.",
+      "text": "Hi Sarah, I hope you are doing well and that you had a great weekend. I am writing to follow up on the invoice that we sent over at the beginning of March, which as far as I can tell has not yet been paid. I completely understand that things get busy, but I would really appreciate it if you could take a look at it and let me know when we can expect payment. Thanks so much in advance for your help with this.",
+      "required": [
+        "Sarah",
+        "invoice",
+        "March",
+        "payment"
+      ]
+    },
+    {
+      "id": "shorten-post",
+      "command": "shorten",
+      "note": "A launch post: first person, the product and the claim must survive.",
+      "text": "I am really excited to finally be able to share something that I have been working on in the evenings for the last couple of months. It is called Timbre, and it is a small Mac app that lets you dictate into any application, and the thing that I think makes it genuinely different from everything else out there is that absolutely nothing you say ever leaves your computer, because all of the speech recognition and all of the cleanup runs entirely on your own machine.",
+      "required": [
+        "Timbre",
+        "Mac",
+        "I"
+      ],
+      "forbidden": [
+        "the author",
+        "the writer",
+        "the user"
+      ]
+    },
+    {
+      "id": "explain-bare-acronym",
+      "command": "explain",
+      "text": "API",
+      "required": [
+        "application",
+        "interface"
+      ]
+    },
+    {
+      "id": "explain-technical-term",
+      "command": "explain",
+      "text": "The meter shows the RMS level of the audio.",
+      "required": [
+        "root mean square"
+      ]
+    },
+    {
+      "id": "explain-taught-term",
+      "command": "explain",
+      "note": "GDR-0012: a taught term answers from the dictionary, word for word, with no model. Ungrounded, the model expanded ADR as 'Architecture Design Review' 3 runs in 5.",
+      "text": "ADR",
+      "acronyms": [
+        {
+          "term": "ADR",
+          "meaning": "Architecture Decision Record"
+        }
+      ],
+      "required": [
+        "Architecture Decision Record"
+      ]
+    },
+    {
+      "id": "explain-grounded-in-taught-term",
+      "command": "explain",
+      "note": "A sentence containing a taught term: the model explains, grounded in the user's definition.",
+      "text": "We record every significant architecture choice as an ADR.",
+      "acronyms": [
+        {
+          "term": "ADR",
+          "meaning": "Architecture Decision Record"
+        }
+      ],
+      "required": [
+        "decision*",
+        "record*"
+      ],
+      "forbidden": [
+        "design review",
+        "dispute"
+      ]
+    }
+  ]
+}

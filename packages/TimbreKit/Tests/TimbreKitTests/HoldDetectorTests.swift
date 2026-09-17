@@ -39,8 +39,8 @@ struct HoldDetectorTests {
 
     @Test func ignoresUnrelatedKeys() {
         var detector = HoldDetector()
-        // Right Command (54) — neither hotkey.
-        #expect(detector.transition(keyCode: 54, rawModifierFlags: 0x10) == nil)
+        // Left Shift (56) — not a hotkey, and nothing is held.
+        #expect(detector.transition(keyCode: 56, rawModifierFlags: 0x2) == nil)
         #expect(!detector.isHeld)
         #expect(!detector.isReadKeyDown)
     }
@@ -117,5 +117,45 @@ struct HoldDetectorTests {
             ) == .released
         )
         #expect(detector.isReadKeyDown)
+    }
+
+    // MARK: - Right Command (command mode)
+
+    private static let rightCommand = HoldDetector.rightCommandKeyCode
+    private static let rightCommandBit = HoldDetector.rightCommandFlagMask
+    private static let genericCommandBit: UInt = 0x10_0000
+
+    @Test func rightCommandReportsDownAndUp() {
+        var detector = HoldDetector()
+        let down = detector.transition(
+            keyCode: Self.rightCommand,
+            rawModifierFlags: Self.genericCommandBit | Self.rightCommandBit
+        )
+        #expect(down == .commandKeyDown)
+        #expect(!detector.isHeld)
+
+        #expect(detector.transition(keyCode: Self.rightCommand, rawModifierFlags: 0) == .commandKeyUp)
+    }
+
+    /// ⌘⇧4, ⌘⌃Space: another modifier moving while right ⌘ is down makes
+    /// the hold a shortcut, not a command.
+    @Test func anotherModifierDuringACommandHoldInterruptsIt() {
+        var detector = HoldDetector()
+        _ = detector.transition(
+            keyCode: Self.rightCommand,
+            rawModifierFlags: Self.genericCommandBit | Self.rightCommandBit
+        )
+        let shift = detector.transition(
+            keyCode: 56,
+            rawModifierFlags: Self.genericCommandBit | Self.rightCommandBit | 0x2
+        )
+        #expect(shift == .commandInterrupted)
+    }
+
+    /// Left ⌘ is the everyday shortcut key and must never arm command mode.
+    @Test func leftCommandIsNotTheCommandKey() {
+        var detector = HoldDetector()
+        #expect(detector.transition(keyCode: 55, rawModifierFlags: Self.genericCommandBit | 0x8) == nil)
+        #expect(!detector.isCommandKeyDown)
     }
 }
