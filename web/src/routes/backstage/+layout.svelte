@@ -11,6 +11,7 @@
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 	import Users from '@lucide/svelte/icons/users';
 	import Scale from '@lucide/svelte/icons/scale';
+	import ListChecks from '@lucide/svelte/icons/list-checks';
 	import LogOut from '@lucide/svelte/icons/log-out';
 
 	let { children, data } = $props();
@@ -22,6 +23,7 @@
 	const live = [
 		{ href: '/backstage', label: 'Overview', icon: LayoutDashboard, exact: true },
 		{ href: '/backstage/decisions', label: 'Decisions', icon: Scale, exact: false },
+		{ href: '/backstage/plans', label: 'Plans', icon: ListChecks, exact: false },
 		{ href: '/backstage/university', label: 'University', icon: GraduationCap, exact: false }
 	];
 
