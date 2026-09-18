@@ -15,20 +15,20 @@
 		"sync:docs": "node scripts/sync-decisions.mjs && node scripts/sync-plans.mjs"
 	},
 	"devDependencies": {
-		"@internationalized/date": "^3.12.0",
+		"@internationalized/date": "^3.12.3",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-vercel": "^6.3.4",
-		"@sveltejs/kit": "^2.63.0",
-		"@sveltejs/vite-plugin-svelte": "^7.1.2",
-		"@tailwindcss/typography": "^0.5.19",
-		"@tailwindcss/vite": "^4.3.0",
+		"@sveltejs/kit": "^2.70.3",
+		"@sveltejs/vite-plugin-svelte": "^7.3.0",
+		"@tailwindcss/typography": "^0.5.20",
+		"@tailwindcss/vite": "^4.3.3",
 		"marked": "^18.0.13",
-		"mdsvex": "^0.12.7",
-		"svelte": "^5.56.1",
-		"svelte-check": "^4.6.0",
-		"tailwindcss": "^4.3.0",
+		"mdsvex": "^0.12.8",
+		"svelte": "^5.56.9",
+		"svelte-check": "^4.7.6",
+		"tailwindcss": "^4.3.3",
 		"typescript": "^6.0.3",
-		"vite": "^8.0.16"
+		"vite": "^8.2.1"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
