@@ -3,6 +3,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { modules } from '$lib/university';
 	import { records } from '$lib/decisions';
+	import { plans } from '$lib/plans';
 
 	const panels = [
 		{
@@ -15,6 +16,12 @@
 			title: 'Decisions',
 			body: `${records.length} records — every ADR and GDR, newest first. Filter by kind, open one in place, or have them read to you.`,
 			href: '/backstage/decisions',
+			status: 'ready'
+		},
+		{
+			title: 'Plans',
+			body: `${plans.length} plans — the prioritised backlog and the launch-week checklist, with progress from the ticked boxes.`,
+			href: '/backstage/plans',
 			status: 'ready'
 		},
 		{

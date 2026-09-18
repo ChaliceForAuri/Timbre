@@ -238,3 +238,53 @@
 	border-bottom: 1px solid var(--border);
 	vertical-align: top;
 }
+
+/* Plans: GitHub task lists rendered by marked. The boxes are read-only —
+   progress is edited in the markdown — so they draw as state, not controls. */
+.plan-prose ul {
+	list-style: none;
+	padding-left: 0;
+}
+.plan-prose li:has(> input[type="checkbox"]) {
+	position: relative;
+	padding-left: 1.7em;
+}
+.plan-prose input[type="checkbox"] {
+	appearance: none;
+	width: 1em;
+	height: 1em;
+	position: absolute;
+	left: 0;
+	top: 0.3em;
+	border: 1.5px solid var(--border);
+	border-radius: 4px;
+	background: var(--card);
+}
+.plan-prose input[type="checkbox"]:checked {
+	background: var(--primary);
+	border-color: var(--primary);
+}
+.plan-prose input[type="checkbox"]:checked::after {
+	content: "";
+	position: absolute;
+	left: 0.28em;
+	top: 0.08em;
+	width: 0.28em;
+	height: 0.55em;
+	border: solid var(--primary-foreground);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+.plan-prose li:has(> input:checked) {
+	color: var(--muted-foreground);
+}
+.plan-prose ol {
+	padding-left: 1.4em;
+	margin: 0 0 1em;
+	list-style: decimal;
+}
+.plan-prose ol li::marker {
+	color: var(--primary);
+	font-family: var(--font-mono);
+	font-size: 0.85em;
+}
