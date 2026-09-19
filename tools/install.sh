@@ -15,9 +15,12 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 echo "Building Release…"
+# -allowProvisioningUpdates lets Xcode create the Apple Development certificate
+# for the team in Local.xcconfig on first use: a new team, or a new Mac, needs
+# nothing but a signed-in Apple ID in Xcode.
 xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre \
     -configuration Release -destination 'platform=macOS' \
-    -derivedDataPath build/DerivedData build | grep -E '^\*\* BUILD|error:' || true
+    -derivedDataPath build/DerivedData -allowProvisioningUpdates build | grep -E '^\*\* BUILD|error:' || true
 
 APP="build/DerivedData/Build/Products/Release/Timbre.app"
 [ -d "$APP" ] || { echo "Build failed — no app at $APP"; exit 1; }

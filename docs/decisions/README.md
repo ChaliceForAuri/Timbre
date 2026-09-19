@@ -55,4 +55,4 @@ Two kinds of records live here. The boundary rule:
 | [0010](gdr/0010-optional-icloud-sync-of-personal-dictionary.md) | Optional iCloud sync of the personal dictionary (amends 0001's no-sync clause) | Accepted |
 | [0011](gdr/0011-taught-corrections-before-the-model.md) | Taught corrections: what Timbre heard becomes what you meant, before the model | Accepted |
 | [0012](gdr/0012-command-mode.md) | Command mode: hold right ⌘ on a selection to fix, explain or shorten it | Accepted |
-| [0013](gdr/0013-update-check-off-by-default.md) | An update check, off by default, is the only network request Timbre can ever make (amends 0006) | Proposed |
+| [0013](gdr/0013-update-check-off-by-default.md) | An update check, off by default, is the only network request Timbre can ever make (amends 0006) | Accepted |
