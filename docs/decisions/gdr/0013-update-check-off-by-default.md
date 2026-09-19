@@ -1,6 +1,6 @@
 # 0013 — An update check, off by default, is the only network request Timbre can ever make
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-18
 - **Amends:** the "not an update check" line of
   [GDR-0006](0006-app-never-phones-home.md) and the landing page copy that
@@ -49,6 +49,11 @@ Timbre may check for updates, on these terms:
   whole mechanism is URLSession, Security and FileManager.
 - **Release notes travel with the check.** The appcast carries the notes, so
   "what changed" is answered in the app, not by a trip to GitHub.
+- **The headline keeps its asterisk honest.** The site goes on saying
+  *zero network requests*, marked, and the mark leads to a page that lists
+  every request the binary is capable of making, what it carries, and what
+  turns it on. Today that list has one entry. A reader who wants the whole
+  truth gets it in one click; a reader who does not is not misled.
 
 ## Consequences
 
