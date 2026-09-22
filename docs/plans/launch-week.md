@@ -62,7 +62,7 @@ Timbre goes public on LinkedIn at the end of this week. The week is for finishin
 
 ## Needs Hugo
 
-- [ ] iCloud capability on the Timbre App ID and a new Developer ID provisioning profile (for GDR-0010 sync — after launch unless it lands early)
+- [x] iCloud capability on the Timbre App ID and a new Developer ID provisioning profile — done under the renewed team WX9L5M4Y9Q, with a notarized dry-run release proving the chain
 - [ ] The live right-⌘ gesture test above; nobody else can hold the key
 - [ ] Record the demo clip; approve the LinkedIn copy
 - [ ] Decide whether the Reminders list is called "Timbre" or something else
