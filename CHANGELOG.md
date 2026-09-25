@@ -10,6 +10,9 @@ turns the section for that version into the release notes shown in the app.
 ## [Unreleased]
 
 ### Added
+- **An icon.** The waveform from the website's favicon — four bars, the
+  shape of a voice — on a charcoal tile, in the retro colours. Timbre had
+  shipped with Xcode's placeholder until now.
 - **A disk image.** The download is now a `.dmg` with an Applications
   folder to drag Timbre onto; the zip remains for updates and for anyone
   who prefers it.

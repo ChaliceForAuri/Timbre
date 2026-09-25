@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- A waveform: the shape of a voice, which is what timbre means. -->
-  <rect width="32" height="32" rx="7" fill="#0e7370"/>
-  <g stroke="#f7f8f9" stroke-width="2.6" stroke-linecap="round">
-    <line x1="8" y1="13" x2="8" y2="19"/>
-    <line x1="13.3" y1="9" x2="13.3" y2="23"/>
-    <line x1="18.6" y1="11.5" x2="18.6" y2="20.5"/>
-    <line x1="24" y1="14.5" x2="24" y2="17.5"/>
+  <!-- A waveform: the shape of a voice, which is what timbre means. The same
+       mark as the app icon (tools/app-icon.swift): charcoal case, four bars
+       in the retro accents (GDR-0017). -->
+  <rect width="32" height="32" rx="7" fill="#2e2d2b"/>
+  <g stroke-width="2.6" stroke-linecap="round">
+    <line x1="8" y1="13" x2="8" y2="19" stroke="#e4573f"/>
+    <line x1="13.3" y1="9" x2="13.3" y2="23" stroke="#f0c846"/>
+    <line x1="18.6" y1="11.5" x2="18.6" y2="20.5" stroke="#50c8a0"/>
+    <line x1="24" y1="14.5" x2="24" y2="17.5" stroke="#50aadc"/>
   </g>
 </svg>

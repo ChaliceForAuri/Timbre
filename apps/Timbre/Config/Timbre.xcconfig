@@ -25,3 +25,7 @@ CODE_SIGN_ENTITLEMENTS = Timbre.entitlements
 
 LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks
 COMBINE_HIDPI_IMAGES = YES
+
+// The icon: the favicon's waveform on the case colour, drawn by
+// tools/app-icon.swift into Sources/Assets.xcassets (tools/make-icon-set.sh).
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
