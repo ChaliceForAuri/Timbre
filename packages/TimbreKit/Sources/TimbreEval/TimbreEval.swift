@@ -23,7 +23,10 @@ struct TimbreEval {
 
     // MARK: - Dispatch
 
+    nonisolated(unsafe) private static var arguments: [String] = []
+
     private static func run(arguments: [String]) async throws {
+        Self.arguments = arguments
         if arguments.contains("--help") || arguments.isEmpty {
             print(usage)
             return
@@ -49,9 +52,11 @@ struct TimbreEval {
         }
 
         if let path = value(for: "--commands", in: arguments) {
+            TimbreEvaluation.pretendModelUnavailable(arguments.contains("--without-model"))
             try await runCommands(
                 path: path,
-                repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1
+                repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1,
+                only: value(for: "--only", in: arguments)
             )
             return
         }
@@ -248,16 +253,20 @@ struct TimbreEval {
 
     /// Runs every command case through the real transformer. Same discipline
     /// as the polisher corpus: properties, repeats, non-zero exit on a miss.
-    private static func runCommands(path: String, repeats: Int) async throws {
-        let corpus = try JSONDecoder().decode(
+    private static func runCommands(path: String, repeats: Int, only: String?) async throws {
+        var corpus = try JSONDecoder().decode(
             CommandCorpus.self,
             from: try Data(contentsOf: URL(filePath: path))
         )
+        if let only {
+            corpus = CommandCorpus(
+                cases: corpus.cases.filter { $0.command.rawValue == only || $0.id.hasPrefix(only) })
+        }
 
         let availability = TimbreEvaluation.polisherAvailability
         print("timbre-eval — \(corpus.cases.count) command cases")
         print("model: \(availability.reason ?? "available")\n")
-        if !availability.isReady {
+        if !availability.isReady, !arguments.contains("--without-model") {
             printErr("The on-device model is unavailable, so no command would run.")
             exit(2)
         }
@@ -279,6 +288,7 @@ struct TimbreEval {
                     text: testCase.text,
                     corrections: testCase.corrections,
                     acronyms: testCase.acronyms,
+                    vocabulary: testCase.vocabulary,
                     onExplanation: { partial in
                         guard !sawFirst, !partial.isEmpty else { return }
                         sawFirst = true
@@ -454,7 +464,9 @@ struct TimbreEval {
 
         USAGE
           timbre-eval <corpus.json> [--repeat <n>] [--json <out.json>]
-          timbre-eval --commands <commands.json> [--repeat <n>]
+          timbre-eval --commands <commands.json> [--repeat <n>] [--only <verb|id-prefix>]
+                                             [--without-model]  the fallbacks Apple
+                                             Intelligence's absence leaves you with
           timbre-eval --verify-update <feed-url|appcast.json> [--from <version>] [--install-over <app>]
                                              download, hash, signature and replace,
                                              everything an update does but relaunch

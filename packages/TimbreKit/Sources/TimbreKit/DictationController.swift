@@ -558,6 +558,7 @@ public final class DictationController {
             on: selection,
             corrections: vocabularyStore.corrections,
             acronyms: vocabularyStore.acronyms,
+            vocabulary: vocabularyStore.terms,
             onExplanation: { [weak self] partial in self?.showExplanationSoFar(partial) }
         )
         switch outcome {

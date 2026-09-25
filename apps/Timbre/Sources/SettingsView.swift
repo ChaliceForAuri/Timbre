@@ -67,9 +67,10 @@ private struct GeneralSettings: View {
             )
             ShortcutRow(
                 keys: "hold right ⌘",
-                title: "Fix · explain · shorten",
-                detail: "On a selection. Say one of the three, or say nothing to fix. "
-                    + "Explain shows a card; fix and shorten replace the text, and ⌘Z puts it back."
+                title: "Fix · explain · shorten · plain",
+                detail: "On a selection. Say one of the four, or say nothing to fix. "
+                    + "Explain shows a card; the others replace the text, and ⌘Z puts it back. "
+                    + "Plain strips corporate filler and says what the text actually says."
             )
 
             Divider()

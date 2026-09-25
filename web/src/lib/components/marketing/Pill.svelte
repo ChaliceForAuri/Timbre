@@ -18,7 +18,7 @@
 		mode === 'warming'
 			? 'Waking the mic…'
 			: mode === 'command' && !text
-				? 'fix · explain · shorten'
+				? 'fix · explain · shorten · plain'
 				: mode === 'listening' && !text
 					? 'Listening…'
 					: text

@@ -38,7 +38,7 @@
 		},
 		{
 			q: 'Can it fix text I have already written?',
-			a: 'Yes. Select the text, hold right Command and say “fix” — or say nothing, because a silent hold means fix. Say “shorten” to tighten it, or “explain” to have it explained in a small card. A word Timbre does not recognise does nothing, and Command-Z undoes any change.'
+			a: 'Yes. Select the text, hold right Command and say “fix” — or say nothing, because a silent hold means fix. Say “shorten” to tighten it, “plain” to strip corporate filler and keep what it actually says, or “explain” to have it explained in a small card. Links, mentions, dates and numbers come back untouched. A word Timbre does not recognise does nothing, and Command-Z undoes any change.'
 		},
 		{
 			q: 'What about acronyms and jargon it does not know?',
@@ -237,18 +237,21 @@
 		<div class="grid items-center gap-10 lg:grid-cols-2">
 			<div>
 				<div class="mb-6"><KeyCap symbol="⌘" name="right command" gesture="hold" /></div>
-				<h3 class="font-sans text-xl font-semibold">Hold on a selection. Say fix, explain or shorten.</h3>
+				<h3 class="font-sans text-xl font-semibold">Hold on a selection. Say fix, explain, shorten or plain.</h3>
 				<p class="text-muted-foreground mt-3 leading-relaxed">
 					<strong class="text-foreground">Fix</strong> corrects spelling, grammar and punctuation and
 					changes nothing else — say nothing at all and that is what you get.
 					<strong class="text-foreground">Shorten</strong> says the same thing in fewer words, in your
-					voice. <strong class="text-foreground">Explain</strong> shows what a word, acronym or passage
+					voice. <strong class="text-foreground">Plain</strong> strips the corporate filler out of
+					machine-sounding text and keeps what it actually says.
+					<strong class="text-foreground">Explain</strong> shows what a word, acronym or passage
 					means, in a card, without touching your text.
 				</p>
 				<p class="text-muted-foreground mt-3 leading-relaxed">
 					It never guesses: a word it does not recognise does nothing. It never destroys: if the
-					model cannot do the job safely, your text is left exactly as it was. And a change is an
-					ordinary paste, so ⌘Z puts it back.
+					model cannot do the job safely, your text is left exactly as it was, and links, mentions,
+					dates and numbers come back untouched either way. A change is an ordinary paste, so ⌘Z
+					puts it back.
 				</p>
 			</div>
 			<div class="relative">

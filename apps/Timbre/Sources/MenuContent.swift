@@ -25,7 +25,7 @@ struct MenuContent: View {
         Menu("Shortcuts") {
             Text("Hold right ⌥ — dictate")
             Text("Tap left ⌥ — read the selection aloud")
-            Text("Hold right ⌘ on a selection — fix · explain · shorten")
+            Text("Hold right ⌘ on a selection — fix · explain · shorten · plain")
         }
 
         Button("Insert Last Again") {
