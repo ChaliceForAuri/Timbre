@@ -81,6 +81,10 @@ private struct GeneralSettings: View {
 
             Divider()
 
+            TypingSection(controller: controller)
+
+            Divider()
+
             UsageSection(controller: controller)
 
             Divider()
@@ -90,6 +94,31 @@ private struct GeneralSettings: View {
             Divider()
 
             UpdatesSection(updater: updater)
+        }
+    }
+}
+
+/// Words as you speak, or words on release (GDR-0018).
+private struct TypingSection: View {
+    let controller: DictationController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("While you talk")
+                .font(.headline)
+            Toggle(
+                "Type as I speak",
+                isOn: Binding(
+                    get: { controller.typesAsYouSpeak },
+                    set: { controller.typesAsYouSpeak = $0 }
+                )
+            )
+            Text(
+                "Words appear in the app as they are confirmed, and the cleanup replaces them when you let go. "
+                    + "Off keeps every word in the pill until you release the key — handy on a shared screen."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
     }
 }

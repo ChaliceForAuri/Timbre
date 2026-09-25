@@ -121,7 +121,7 @@ public enum TimbreEvaluation {
     public static func streamTranscribe(
         audioFileAt url: URL,
         vocabulary: [String] = [],
-        onSnapshot: @escaping @Sendable (String) -> Void
+        onSnapshot: @escaping @Sendable (TranscriptSnapshot) -> Void
     ) async throws -> String {
         let transcriber = Transcriber()
         try await transcriber.prepare()
@@ -179,9 +179,9 @@ public enum TimbreEvaluation {
             let watch = Task { () -> (VoiceCommand?, Duration?, String) in
                 var last = ""
                 for await snapshot in snapshots {
-                    last = snapshot
-                    if let command = VoiceCommand.recognizedWhileSpeaking(in: snapshot) {
-                        return (command, clock.now - started, snapshot)
+                    last = snapshot.text
+                    if let command = VoiceCommand.recognizedWhileSpeaking(in: last) {
+                        return (command, clock.now - started, last)
                     }
                 }
                 return (nil, nil, last)
