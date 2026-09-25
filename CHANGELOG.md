@@ -10,6 +10,11 @@ turns the section for that version into the release notes shown in the app.
 ## [Unreleased]
 
 ### Added
+- **To-dos by voice.** Hold right Command with nothing selected and say it —
+  "call the dentist Thursday" — and it lands in a Timbre list in Apple's
+  Reminders, with the date read on your Mac, so it's on your iPhone too. Tap
+  left Option with nothing selected to hear the list. Pick any list in
+  Settings.
 - **Plain.** A fourth command: hold right Command on machine-sounding or
   corporate text and say "plain" to get what it actually says, in your
   own words.

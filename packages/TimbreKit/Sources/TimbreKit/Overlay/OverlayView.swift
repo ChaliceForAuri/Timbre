@@ -20,6 +20,9 @@ struct OverlayView: View {
         case polishing
         /// Right ⌘ held over a selection: waiting for fix, explain or shorten.
         case command
+        /// Right ⌘ held with nothing selected: whatever is said is a to-do
+        /// (GDR-0016), unless it turns out to be a command word.
+        case capture
         /// A command is running on the selection.
         case working(String)
         /// The answer to "explain", carried in `text` as it streams in. A
@@ -97,7 +100,7 @@ struct OverlayView: View {
     @ViewBuilder
     private var indicator: some View {
         switch mode {
-        case .warming, .listening, .command:
+        case .warming, .listening, .command, .capture:
             Waveform(levels: levels)
                 .frame(width: 34, height: 18)
         case .reading:
@@ -132,6 +135,7 @@ struct OverlayView: View {
         case .listening: text.isEmpty ? "Listening…" : text
         case .polishing: text.isEmpty ? "Cleaning up…" : text
         case .command: text.isEmpty ? VoiceCommand.hint : text
+        case .capture: text.isEmpty ? "Say a to-do…" : text
         case .working(let label): label
         case .explanation: text.isEmpty ? "Explaining…" : text
         case .notice(let message): message
@@ -143,7 +147,7 @@ struct OverlayView: View {
         switch mode {
         case .warming, .polishing, .working: .secondary
         case .reading, .explanation, .notice, .error: .primary
-        case .listening, .command: text.isEmpty ? .secondary : .primary
+        case .listening, .command, .capture: text.isEmpty ? .secondary : .primary
         }
     }
 }

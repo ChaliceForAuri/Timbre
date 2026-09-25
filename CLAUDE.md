@@ -3,7 +3,8 @@
 A free, fully-local voice interface for macOS. Hold right-Option, speak,
 release — cleaned-up text appears in whatever app you're using. Tap
 left-Option to hear a selection read aloud (GDR-0008). Hold right-Command on
-a selection and say fix, explain, shorten or plain (GDR-0012, GDR-0015).
+a selection and say fix, explain, shorten or plain (GDR-0012, GDR-0015) —
+or with nothing selected, say a to-do and it lands in Reminders (GDR-0016).
 Everything runs
 on-device: no account, no network, no subscription (GDR-0001).
 
@@ -117,7 +118,10 @@ Two gestures work on a selection instead, through the same controller:
   right ⌘ hold  arm 350 ms → same mic + Transcriber → the first live result
                 holding a command word fires it (CommandHold, GDR-0014) →
                 TextTransformer → paste over the selection, or a streamed
-                explanation card (command mode, GDR-0012)
+                explanation card (command mode, GDR-0012). With nothing
+                selected and no command word: polisher → TodoParser (Apple's
+                data detector, no model) → ReminderStore (EventKit), and
+                left ⌥ with nothing selected reads the list (GDR-0016)
 ```
 
 Public API surface of TimbreKit is `DictationController` (+ its `Status`)
@@ -208,7 +212,8 @@ the evaluation seam (ADR-0004). Keep it that way.
   The hardened runtime gates the mic behind it; the Info.plist usage string
   alone is not enough. Without it `requestAccess` returns false with no
   prompt and the app never appears in Privacy & Security › Microphone
-- `INFOPLIST_KEY_*` carries mic + speech strings and `LSUIElement`
+- `INFOPLIST_KEY_*` carries mic, speech and Reminders strings and `LSUIElement`.
+  Reminders is asked for on the first spoken to-do (GDR-0016)
 - Accessibility is granted manually (System Settings, `+` button). Timbre
   polls `AXIsProcessTrusted()` while blocked and retries startup on its own,
   so a relaunch should not be needed — but if the trusted state turns out to

@@ -11,6 +11,7 @@ INFOPLIST_KEY_LSUIElement = YES
 INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.productivity
 INFOPLIST_KEY_NSMicrophoneUsageDescription = Timbre listens when you hold the dictation key.
 INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = Timbre transcribes your speech on-device.
+INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = Timbre adds the to-dos you say to a list in Reminders, and reads the list back to you.
 
 // The sandbox blocks the synthetic ⌘V into other apps (ADR-0003), so it
 // stays off. Hardened runtime stays on — it's required for notarization and

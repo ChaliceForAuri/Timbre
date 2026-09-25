@@ -40,6 +40,41 @@ public final class DictationController {
         vocabularyStore.acronyms
     }
 
+    // MARK: To-dos (GDR-0016)
+
+    public nonisolated enum RemindersAccess: Equatable, Sendable {
+        case notAsked
+        case granted
+        case denied
+    }
+
+    public var remindersAccess: RemindersAccess {
+        switch reminders.authorization {
+        case .fullAccess: .granted
+        case .notDetermined: .notAsked
+        default: .denied
+        }
+    }
+
+    /// Prompts for Reminders access; macOS remembers the answer.
+    @discardableResult
+    public func requestRemindersAccess() async -> Bool {
+        await reminders.requestAccess()
+    }
+
+    /// The list captures go to; "Timbre" is created on first use.
+    public var todoListTitle: String { reminders.chosenListTitle }
+
+    /// Every list the user could choose instead, with the account it is in.
+    public var availableTodoLists: [(id: String, title: String, account: String)] {
+        reminders.lists().map { ($0.id, $0.title, $0.account) }
+    }
+
+    public var chosenTodoListIdentifier: String? {
+        get { reminders.chosenListIdentifier }
+        set { reminders.chosenListIdentifier = newValue }
+    }
+
     /// The voice read-aloud will use, and whether macOS has a better one
     /// available for download. Nil when no voice is installed at all.
     public var readingVoiceName: String? { VoiceCatalog.preferred()?.name }
@@ -79,6 +114,7 @@ public final class DictationController {
     private let dictationLog = DictationLog()
     private let speech = SpeechReader()
     private let transformer = TextTransformer()
+    private let reminders = ReminderStore()
 
     private var capturedAppName: String?
     private var pressInstant: ContinuousClock.Instant?
@@ -468,19 +504,23 @@ public final class DictationController {
         commandSelection = SelectionReader.selectedTextViaAccessibility()
         commandIsCapturing = false
         commandHold = CommandHold()
+        // Nothing selected, as far as Accessibility can see: what is said is
+        // a to-do (GDR-0016) — unless it turns out to be a command word,
+        // which still wins, because Electron apps hide their selection.
+        let listeningMode: OverlayView.Mode = commandSelection == nil ? .capture : .command
         liveText = ""
         status = .listening
 
         // No microphone is not a failure here. A silent hold means "fix", and
         // fixing needs no audio — a Mac Studio with no mic still gets it.
         guard AVCaptureDevice.default(for: .audio) != nil else {
-            overlay.show(mode: .command)
+            overlay.show(mode: listeningMode)
             return
         }
 
         do {
             try await startCapture(
-                listeningMode: .command,
+                listeningMode: listeningMode,
                 vocabulary: [],
                 pressed: ContinuousClock().now,
                 onTranscript: { [weak self] text in self?.commandTranscriptArrived(text) }
@@ -488,7 +528,7 @@ public final class DictationController {
             commandIsCapturing = true
         } catch {
             audio.stop()
-            overlay.show(mode: .command)
+            overlay.show(mode: listeningMode)
         }
     }
 
@@ -527,9 +567,14 @@ public final class DictationController {
         case .alreadyHandled:
             return
         case .unrecognised(let words):
+            // Not a command. With nothing selected, it was a to-do (GDR-0016).
+            if commandSelection == nil, !words.isEmpty {
+                await captureTodo(words)
+                return
+            }
             commandSelection = nil
             finishCommand(
-                showing: .error("Heard “\(words)” — say fix, explain or shorten."), for: .seconds(3.5))
+                showing: .error("Heard “\(words)” — say fix, explain, shorten or plain."), for: .seconds(3.5))
         case .run(let command):
             overlay.update(mode: .working(command.progressLabel), text: "")
             await perform(command)
@@ -579,6 +624,29 @@ public final class DictationController {
             finishCommand(showing: .notice(message), for: .seconds(2))
         case .failure(let message):
             finishCommand(showing: .error(message), for: .seconds(3.5))
+        }
+    }
+
+    /// A spoken to-do: cleaned by the polisher, parsed on-device, saved to
+    /// Reminders, confirmed in the pill (GDR-0016).
+    private func captureTodo(_ spoken: String) async {
+        status = .polishing
+        overlay.update(mode: .working("Adding to-do…"), text: "")
+
+        if reminders.authorization == .notDetermined {
+            _ = await reminders.requestAccess()
+        }
+
+        // The polisher removes the "um" and the false start; the terminator's
+        // full stop is not part of a to-do.
+        let cleaned = await polisher.polish(
+            spoken, vocabulary: vocabularyStore.terms, corrections: vocabularyStore.corrections)
+        let todo = TodoParser.parse(cleaned.trimmingCharacters(in: CharacterSet(charactersIn: ".!")))
+        do {
+            let list = try reminders.add(todo)
+            finishCommand(showing: .notice(TodoPhrasing.confirmation(todo, list: list)), for: .seconds(3))
+        } catch {
+            finishCommand(showing: .error(error.localizedDescription), for: .seconds(4))
         }
     }
 
@@ -677,8 +745,8 @@ public final class DictationController {
         overlay.show(mode: .reading(speed: ReadingSpeed.label(for: ReadingSpeed.slowest)))
 
         guard let text = await SelectionReader.selectedText() else {
-            overlay.update(mode: .error("Select some text first."))
-            overlay.hide(after: .seconds(2))
+            // Nothing selected: read the to-do list instead (GDR-0016).
+            await readTodos()
             return
         }
 
@@ -687,6 +755,24 @@ public final class DictationController {
         }
         speech.read(text)
         overlay.update(mode: .reading(speed: ReadingSpeed.label(for: speech.speedMultiplier)))
+    }
+
+    private func readTodos() async {
+        guard reminders.hasAccess else {
+            overlay.update(
+                mode: .error("Select some text first — or grant Reminders access to hear your to-dos."))
+            overlay.hide(after: .seconds(3))
+            return
+        }
+        do {
+            let (list, todos) = try await reminders.openTodos()
+            speech.onFinish = { [weak self] in self?.overlay.hide() }
+            speech.read(TodoPhrasing.spokenList(todos, list: list))
+            overlay.update(mode: .reading(speed: ReadingSpeed.label(for: speech.speedMultiplier)))
+        } catch {
+            overlay.update(mode: .error(error.localizedDescription))
+            overlay.hide(after: .seconds(3))
+        }
     }
 
     private func speedUpReading() {

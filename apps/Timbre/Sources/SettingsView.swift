@@ -72,11 +72,77 @@ private struct GeneralSettings: View {
                     + "Explain shows a card; the others replace the text, and ⌘Z puts it back. "
                     + "Plain strips corporate filler and says what the text actually says."
             )
+            ShortcutRow(
+                keys: "hold right ⌘",
+                title: "Add a to-do",
+                detail: "With nothing selected, say it — \"call the dentist Thursday\" — and it lands in "
+                    + "Reminders. Tap left ⌥ with nothing selected to hear the list."
+            )
+
+            Divider()
+
+            TodosSection(controller: controller)
 
             Divider()
 
             UpdatesSection(updater: updater)
         }
+    }
+}
+
+/// Where spoken to-dos go (GDR-0016): the Reminders permission and the list.
+private struct TodosSection: View {
+    let controller: DictationController
+    @State private var lists: [(id: String, title: String, account: String)] = []
+    @State private var chosen: String = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("To-dos")
+                .font(.headline)
+            Text(
+                "Spoken to-dos go to Apple's Reminders, so they are on your iPhone and your other Macs "
+                    + "through your own iCloud. Timbre still sends nothing anywhere; macOS does the syncing."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            switch controller.remindersAccess {
+            case .granted:
+                Picker("List", selection: $chosen) {
+                    Text("Timbre (created if needed)").tag("")
+                    ForEach(lists, id: \.id) { list in
+                        Text("\(list.title) — \(list.account)").tag(list.id)
+                    }
+                }
+                .onChange(of: chosen) { _, value in
+                    controller.chosenTodoListIdentifier = value.isEmpty ? nil : value
+                }
+            case .notAsked:
+                Button("Allow Reminders access…") {
+                    Task {
+                        await controller.requestRemindersAccess()
+                        reload()
+                    }
+                }
+            case .denied:
+                Text("Reminders access is off for Timbre.")
+                    .font(.caption)
+                Button("Open Privacy & Security › Reminders") {
+                    let url = URL(
+                        string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders")
+                    if let url { NSWorkspace.shared.open(url) }
+                }
+                .buttonStyle(.link)
+            }
+        }
+        .onAppear(perform: reload)
+    }
+
+    private func reload() {
+        lists = controller.availableTodoLists
+        chosen = controller.chosenTodoListIdentifier ?? ""
     }
 }
 

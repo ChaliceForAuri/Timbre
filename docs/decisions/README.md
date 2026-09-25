@@ -60,3 +60,4 @@ Two kinds of records live here. The boundary rule:
 | [0013](gdr/0013-update-check-off-by-default.md) | An update check, off by default, is the only network request Timbre can ever make (amends 0006) | Accepted |
 | [0014](gdr/0014-commands-act-on-the-word.md) | Command mode acts on the word, not on the release (amends 0012) | Accepted |
 | [0015](gdr/0015-command-mode-plain-verb-literals-fallback.md) | Command mode: a "plain" verb, guarded literals, and a spelling fallback | Accepted |
+| [0016](gdr/0016-todos-by-voice-into-reminders.md) | To-dos by voice, into Apple's Reminders | Accepted |
