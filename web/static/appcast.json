@@ -1,12 +1,12 @@
 {
   "latest": {
-    "version": "0.3.0",
-    "build": 4,
+    "version": "0.3.1",
+    "build": 5,
     "minimumSystemVersion": "26.0",
-    "url": "https://timbre.hugopretorius.dev/releases/Timbre-0.3.0.zip",
-    "sha256": "cf4ed23620592335d9199cf49867f7bb1e5777185060e1f3c268cef5b8a7bafb",
-    "size": 637489,
-    "published": "2026-09-24",
-    "notes": "Added:\n• Command mode. Select text, hold right Command, and say fix, explain or shorten — it acts the moment it hears the word. Say nothing and release to fix. Explain shows a card and never touches your text; fix and shorten replace the selection, and Command-Z puts it back.\n• Definitions. Teach Timbre your acronyms in Settings › Dictionary. A defined term is explained from your definition, and every card says whether its answer came from your dictionary or the on-device model.\n• Corrections. When Timbre keeps hearing a phrase wrong, teach it what you meant once: \"timber kit\" becomes \"TimbreKit\" every time.\n• Updates. Check for Updates in the menu, and an optional daily check, off by default. It fetches one small version file from Timbre's own website and sends nothing about you. Installing checks that the download is Timbre, signed by its developer and notarized by Apple, before it replaces anything.\n\nChanged:\n• Settings is organised into General, Dictionary, Reading and Privacy.\n• Timbre is signed by its developer's renewed Apple team. Coming from 0.2.0, macOS asks for Accessibility once more: remove the old Timbre entry and add the new one.\n\nFixed:\n• A speech session could be started while the previous one was still warming up, and then hear nothing."
+    "url": "https://timbre.hugopretorius.dev/releases/Timbre-0.3.1.zip",
+    "sha256": "2fc5c42a4c9af289af6e57cd227c7610116befc4ad551a05874f767118836264",
+    "size": 643321,
+    "published": "2026-09-25",
+    "notes": "Changed:\n• Cleanup is now deterministic. The same words get the same cleanup every time; the corpus passes 11 of 11 across five repeats with one output per case.\n• Sentences always start with a capital. Applied as a rule after the model, like the final full stop, because the model left short casual sentences lowercase. Words with their own casing (iPhone, macOS) and abbreviations (e.g., a.m.) are left alone."
   }
 }
