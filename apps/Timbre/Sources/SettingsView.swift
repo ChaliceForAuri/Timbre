@@ -81,11 +81,64 @@ private struct GeneralSettings: View {
 
             Divider()
 
+            UsageSection(controller: controller)
+
+            Divider()
+
             TodosSection(controller: controller)
 
             Divider()
 
             UpdatesSection(updater: updater)
+        }
+    }
+}
+
+/// What Timbre has done on this Mac. Counted here, never transmitted — the
+/// counter Tidy shows, minus any suggestion that anyone else can see it.
+private struct UsageSection: View {
+    let controller: DictationController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("This Mac, so far")
+                .font(.headline)
+            if controller.usage.allTime.isEmpty {
+                Text("Nothing yet. Hold right ⌥ and say something.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 4) {
+                    GridRow {
+                        Text("").frame(width: 0)
+                        Text("This week").font(.caption).foregroundStyle(.secondary)
+                        Text("All time").font(.caption).foregroundStyle(.secondary)
+                    }
+                    row("Words dictated", \.words)
+                    row("Dictations", \.dictations)
+                    row("Commands", \.commands)
+                    row("To-dos", \.todos)
+                    row("Read aloud", \.readings)
+                }
+                .font(.callout.monospacedDigit())
+                HStack {
+                    Text("Stored in this Mac's preferences and nowhere else.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Button("Reset", role: .destructive) { controller.resetUsage() }
+                        .buttonStyle(.link)
+                        .font(.caption)
+                }
+            }
+        }
+    }
+
+    private func row(_ label: String, _ key: KeyPath<UsageLedger.Counts, Int>) -> some View {
+        GridRow {
+            Text(label).foregroundStyle(.secondary)
+            Text(controller.usage.thisWeek[keyPath: key].formatted())
+            Text(controller.usage.allTime[keyPath: key].formatted())
         }
     }
 }
