@@ -113,7 +113,7 @@
 		</div>
 		<div class="flex flex-col items-start gap-4">
 			<KeyCap symbol="⌘" name="right command" gesture="hold" />
-			<p class="text-muted-foreground text-sm">Hold with text selected and say fix, explain or shorten. Say nothing to fix.</p>
+			<p class="text-muted-foreground text-sm">Hold with text selected and say fix, explain, shorten or plain. Say nothing to fix.</p>
 		</div>
 	</div>
 </section>

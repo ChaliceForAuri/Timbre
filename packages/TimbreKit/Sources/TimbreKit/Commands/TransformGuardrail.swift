@@ -33,6 +33,13 @@ nonisolated enum TransformGuardrail {
             // Noticeably shorter — trimming a trailing space is not a
             // shortening — but still the text rather than a one-word summary.
             return ratio < 0.95 && ratio > 0.15
+        case .plain:
+            // Plain English is usually shorter and never much longer; a
+            // two-word answer to a paragraph is a summary, not a rewrite.
+            // Pure filler can honestly reduce to one sentence: measured, a 325-
+            // character memo that says only "onboarding is a problem" became
+            // 39 characters, and that is the plain truth of it.
+            return ratio > 0.1 && ratio < 1.15
         case .explain:
             // Length is the trimmer's business. What cannot be fixed after
             // the fact is an echo: measured, the model sometimes answers

@@ -34,10 +34,12 @@ public enum TimbreEvaluation {
         text: String,
         corrections: [Correction] = [],
         acronyms: [Acronym] = [],
+        vocabulary: [String] = [],
         onExplanation: ((String) -> Void)? = nil
     ) async -> CommandResult {
         let (outcome, diagnostic) = await TextTransformer().runDetailed(
-            command, on: text, corrections: corrections, acronyms: acronyms, onExplanation: onExplanation
+            command, on: text, corrections: corrections, acronyms: acronyms, vocabulary: vocabulary,
+            onExplanation: onExplanation
         )
         switch outcome {
         case .replacement(let output): return CommandResult(kind: .replacement, text: output)
@@ -235,6 +237,12 @@ public enum TimbreEvaluation {
         let verified = try await UpdateInstaller.prepare(release, using: session)
         let installed = try standIn.map { try UpdateInstaller.replace($0, with: verified) }
         return (release, verified, installed)
+    }
+
+    /// Runs commands as if Apple Intelligence were off, so the fallbacks can
+    /// be measured on the same corpus (GDR-0015).
+    public static func pretendModelUnavailable(_ pretend: Bool) {
+        TextTransformer.pretendModelUnavailable = pretend
     }
 
     /// Whether an app bundle would pass the update signature check.

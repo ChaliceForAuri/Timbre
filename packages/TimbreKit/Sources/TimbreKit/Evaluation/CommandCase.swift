@@ -3,6 +3,10 @@ import Foundation
 /// A corpus of command-mode samples, loaded from JSON.
 nonisolated public struct CommandCorpus: Codable, Sendable {
     public let cases: [CommandCase]
+
+    public init(cases: [CommandCase]) {
+        self.cases = cases
+    }
 }
 
 /// One selection, the command spoken over it, and the properties the result
@@ -17,10 +21,14 @@ nonisolated public struct CommandCase: Codable, Sendable, Identifiable {
     public let corrections: [Correction]
     /// Terms the user has defined; `explain` answers from them first.
     public let acronyms: [Acronym]
+    /// Words the user has taught; the spelling fallback leaves them alone.
+    public let vocabulary: [String]
     /// Phrases the result must contain. A trailing `*` matches a word stem.
     public let required: [String]
     /// Phrases the result must not contain.
     public let forbidden: [String]
+    /// The exact text the result must be, when only exactness will do ("the", not "The").
+    public let exact: String?
     public let note: String?
 
     public init(from decoder: any Decoder) throws {
@@ -30,8 +38,10 @@ nonisolated public struct CommandCase: Codable, Sendable, Identifiable {
         text = try container.decode(String.self, forKey: .text)
         corrections = try container.decodeIfPresent([Correction].self, forKey: .corrections) ?? []
         acronyms = try container.decodeIfPresent([Acronym].self, forKey: .acronyms) ?? []
+        vocabulary = try container.decodeIfPresent([String].self, forKey: .vocabulary) ?? []
         required = try container.decodeIfPresent([String].self, forKey: .required) ?? []
         forbidden = try container.decodeIfPresent([String].self, forKey: .forbidden) ?? []
+        exact = try container.decodeIfPresent(String.self, forKey: .exact)
         note = try container.decodeIfPresent(String.self, forKey: .note)
     }
 }
@@ -62,7 +72,8 @@ nonisolated public enum CommandChecks {
         switch (testCase.command, result.kind) {
         case (_, .failure):
             return ["did nothing: \(result.text)"]
-        case (.explain, .explanation), (.fix, .replacement), (.fix, .unchanged), (.shorten, .replacement):
+        case (.explain, .explanation), (.fix, .replacement), (.fix, .unchanged), (.shorten, .replacement),
+            (.plain, .replacement), (.plain, .unchanged):
             break
         default:
             failures.append("\(testCase.command.rawValue) produced a \(result.kind.rawValue)")
@@ -76,6 +87,9 @@ nonisolated public enum CommandChecks {
         }
         for phrase in testCase.required where !contains(phrase, in: result.text) {
             failures.append("lost \"\(phrase)\"")
+        }
+        if let exact = testCase.exact, result.text.trimmingCharacters(in: .whitespacesAndNewlines) != exact {
+            failures.append("is \"\(result.text)\", not exactly \"\(exact)\"")
         }
         return failures
     }

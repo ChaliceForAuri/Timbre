@@ -59,3 +59,4 @@ Two kinds of records live here. The boundary rule:
 | [0012](gdr/0012-command-mode.md) | Command mode: hold right ⌘ on a selection to fix, explain or shorten it | Accepted |
 | [0013](gdr/0013-update-check-off-by-default.md) | An update check, off by default, is the only network request Timbre can ever make (amends 0006) | Accepted |
 | [0014](gdr/0014-commands-act-on-the-word.md) | Command mode acts on the word, not on the release (amends 0012) | Accepted |
+| [0015](gdr/0015-command-mode-plain-verb-literals-fallback.md) | Command mode: a "plain" verb, guarded literals, and a spelling fallback | Accepted |

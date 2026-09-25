@@ -9,6 +9,21 @@ turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
 
+### Added
+- **Plain.** A fourth command: hold right Command on machine-sounding or
+  corporate text and say "plain" to get what it actually says, in your
+  own words.
+- **Fix without Apple Intelligence.** On a Mac without the on-device model,
+  fix still corrects spelling with macOS's own spell checker, leaving names
+  and your taught words alone.
+
+### Fixed
+- Fix, shorten and plain no longer touch Slack mentions and channels, links,
+  email addresses, dates, times, units, versions or abbreviations like
+  "e.g." — they come back exactly as they were.
+- Fixing a single selected word keeps its case: "teh" becomes "the", not
+  "The".
+
 ## [0.3.1] — 2026-09-25
 
 ### Changed

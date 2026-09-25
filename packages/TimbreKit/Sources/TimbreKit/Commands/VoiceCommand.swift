@@ -8,9 +8,11 @@ nonisolated public enum VoiceCommand: String, Sendable, CaseIterable, Codable {
     case explain
     /// Say the same thing in fewer words.
     case shorten
+    /// Strip the filler and the machine phrasing; keep what it says (GDR-0015).
+    case plain
 
     /// Shown in the pill while the key is held and nothing has been said yet.
-    static let hint = "fix · explain · shorten"
+    static let hint = "fix · explain · shorten · plain"
 
     /// Shown in the pill while the command runs.
     var progressLabel: String {
@@ -18,8 +20,12 @@ nonisolated public enum VoiceCommand: String, Sendable, CaseIterable, Codable {
         case .fix: "Fixing…"
         case .explain: "Explaining…"
         case .shorten: "Shortening…"
+        case .plain: "Making it plain…"
         }
     }
+
+    /// Whether the command rewrites the selection (as opposed to showing something).
+    var rewritesText: Bool { self != .explain }
 
     /// Reads a command out of what the transcriber heard.
     ///
@@ -83,6 +89,11 @@ nonisolated public enum VoiceCommand: String, Sendable, CaseIterable, Codable {
             .shorten: [
                 "shorten", "shortened", "shorter", "short", "trim", "tighten", "condense", "concise", "brief",
                 "briefer",
+            ],
+            .plain: [
+                "plain", "plainly", "plainer", "simple", "simpler", "simplify", "simplified", "deslop",
+                "slop",
+                "human", "natural", "normal", "jargon", "honest", "unslop",
             ],
         ]
         for (command, words) in aliases {

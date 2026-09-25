@@ -3,7 +3,8 @@
 A free, fully-local voice interface for macOS. Hold right-Option, speak,
 release — cleaned-up text appears in whatever app you're using. Tap
 left-Option to hear a selection read aloud (GDR-0008). Hold right-Command on
-a selection and say fix, explain or shorten (GDR-0012). Everything runs
+a selection and say fix, explain, shorten or plain (GDR-0012, GDR-0015).
+Everything runs
 on-device: no account, no network, no subscription (GDR-0001).
 
 ## Requirements
@@ -41,8 +42,10 @@ swift test --package-path packages/TimbreKit
 # prompt change on a single run.
 cd packages/TimbreKit && swift run timbre-eval Fixtures/corpus.json --repeat 5
 
-# Same discipline for command mode's fix / explain / shorten (GDR-0012):
+# Same discipline for command mode's fix / explain / shorten / plain (GDR-0012,
+# GDR-0015). --without-model measures what a Mac without Apple Intelligence gets.
 swift run timbre-eval --commands Fixtures/commands.json --repeat 5
+swift run timbre-eval --commands Fixtures/commands.json --only fix --without-model
 
 # When each spoken command is recognised live, and that the session after an
 # abandon still works (GDR-0014). Pad each clip with the silence of a held key:
@@ -158,6 +161,13 @@ the evaluation seam (ADR-0004). Keep it that way.
   acronyms it does not know. Right ⌘ is a real shortcut key, so the mode *arms* after
   an uninterrupted 350 ms hold; the key/click watch that detects a shortcut
   exists only during that hold and never looks at the event.
+- **Literals are guarded** (GDR-0015). `LiteralGuard` swaps mentions,
+  URLs, emails, dates, times, units, versions and abbreviations for `LIT<n>`
+  placeholders before fix, shorten and plain, and puts them back after; fix
+  must return every one. The placeholder shape was measured — brackets and
+  symbols get stripped by the model. `CaseKeeper` keeps a fragment's case;
+  `SpellingFallback` is fix without the model, spelling only, names and
+  taught words untouched.
 - **Commands act on the word, not the release** (GDR-0014). The first live
   result containing a command word runs it, once; explain alone may fire on
   a partial ("Expl", "Acr") because it never touches text. After firing the
@@ -234,8 +244,7 @@ product. Records are immutable — supersede instead of editing.
    mis-hearings are fixed by the taught correction table (GDR-0011). What
    remains is teaching it without opening Settings.
 3. Per-app tone profiles (the app name is already passed to the polisher).
-4. Command mode shipped with three verbs (GDR-0012). Next: a taught acronym
-   dictionary answering "explain" before the model does; more verbs only if
-   each comes with a guardrail that can score it.
+4. Command mode has four verbs (GDR-0012, GDR-0015) and taught definitions
+   answer "explain" first. A fifth verb needs a guardrail that can score it.
 5. Notarize and distribute directly; build Backstage per
    `docs/design/backstage.md` (phases 1-6, University ships first).
