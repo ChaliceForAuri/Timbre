@@ -221,8 +221,10 @@ public enum TimbreEvaluation {
         let session = URLSession(configuration: .ephemeral)
         let (data, _) = try await session.data(from: feed)
         let release = try JSONDecoder().decode(Appcast.self, from: data).latest
+        // The release's own build number, so the version alone decides:
+        // `--from 0.3.0` means "a copy of 0.3.0", which must not be offered 0.3.0.
         switch UpdateDecision.decide(
-            release, currentVersion: currentVersion, currentBuild: 0,
+            release, currentVersion: currentVersion, currentBuild: release.build,
             system: ProcessInfo.processInfo.operatingSystemVersion, feed: feed
         ) {
         case .available: break

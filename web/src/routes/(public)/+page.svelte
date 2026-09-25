@@ -14,7 +14,7 @@
 	const faqs = [
 		{
 			q: 'Does Timbre send my voice anywhere?',
-			a: 'No. Timbre makes zero network requests. Speech recognition, text cleanup, read-aloud and the text commands all run on your Mac using Apple’s on-device models. You can verify this yourself with a network monitor such as Little Snitch.'
+			a: 'No. Timbre sends nothing about you anywhere. Out of the box it makes no network requests at all; if you turn on update checks, it fetches one small version file from this website, carrying nothing. Speech recognition, text cleanup, read-aloud and the text commands all run on your Mac using Apple’s on-device models. You can verify this yourself with a network monitor such as Little Snitch.'
 		},
 		{
 			q: 'Does it work offline?',
@@ -58,7 +58,7 @@
 		},
 		{
 			q: 'Does Timbre check for updates?',
-			a: 'Not today. It makes no network requests at all. New versions are announced on the download page.'
+			a: 'Only when you ask. Choose Check for Updates in the menu, or turn on a daily check in Settings; both fetch one small version file from this website and send nothing about you. Installing an update first checks that the download is Timbre, signed by its developer and notarized by Apple.'
 		}
 	];
 
@@ -81,7 +81,7 @@
 					'Fixes, shortens or explains selected text',
 					'Reads selected text aloud',
 					'Personal dictionary: vocabulary, corrections, definitions',
-					'No network requests',
+					'No network requests unless you check for updates',
 					'No account required'
 				]
 			},
@@ -112,10 +112,13 @@
 <section class="mx-auto max-w-6xl px-6 pt-16 pb-20 sm:pt-24">
 	<div class="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
 		<div>
-			<p class="text-primary mb-5 inline-flex items-center gap-2 font-mono text-xs tracking-[0.14em] uppercase">
+			<a
+				href="/network"
+				class="text-primary mb-5 inline-flex items-center gap-2 font-mono text-xs tracking-[0.14em] uppercase hover:underline"
+			>
 				<span class="bg-primary inline-block size-1.5 rounded-full"></span>
-				Zero network requests
-			</p>
+				Zero network requests<sup aria-label="see every request Timbre can make">*</sup>
+			</a>
 
 			<h1 class="max-w-[19ch] text-5xl leading-[1.05] sm:text-6xl">
 				Dictation that never leaves your Mac.
@@ -152,10 +155,12 @@
 		<h2 class="max-w-[24ch] text-2xl sm:text-3xl">Most private dictation apps ask you to trust them.</h2>
 		<p class="text-muted-foreground mt-4 max-w-[62ch]">
 			Timbre makes a claim you can falsify in thirty seconds: <strong class="text-foreground"
-				>it makes no network requests at all.</strong
-			> Not telemetry, not crash reports, not an update check. Point Little Snitch at it and watch nothing
-			happen. There is no cloud tier to fall back to, because there is no cloud. And the source is public,
-			so you do not have to take even that on trust.
+				>out of the box, it makes no network requests at all.</strong
+			> Not telemetry, not crash reports. Point Little Snitch at it and watch nothing happen. Turn on update
+			checks and it makes exactly one, to this website, carrying nothing —
+			<a href="/network" class="text-primary underline underline-offset-4">every request it is capable of is listed here</a>.
+			There is no cloud tier to fall back to, because there is no cloud. And the source is public, so you do
+			not have to take even that on trust.
 		</p>
 	</div>
 </section>

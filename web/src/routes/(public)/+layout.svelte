@@ -34,7 +34,8 @@
 			class="text-muted-foreground mx-auto flex max-w-5xl flex-wrap gap-x-6 gap-y-2 px-6 py-8 text-xs"
 		>
 			<span>Timbre never sends your voice or your text off this Mac.</span>
-			<a href="https://github.com/ChaliceForAuri/Timbre" class="hover:text-foreground ml-auto">
+			<a href="/network" class="hover:text-foreground ml-auto">Every network request</a>
+			<a href="https://github.com/ChaliceForAuri/Timbre" class="hover:text-foreground">
 				Source
 			</a>
 		</div>

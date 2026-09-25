@@ -60,7 +60,7 @@
 <h1 class="text-3xl">Backstage</h1>
 <p class="text-muted-foreground mt-2 max-w-[65ch]">
 	The laboratory. Everything here is fed by the development side — eval runs, traces, imports —
-	never by anyone's app. Timbre itself makes no network requests.
+	never by anyone's app. Timbre itself makes no network requests beyond the opt-in update check.
 </p>
 
 <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
