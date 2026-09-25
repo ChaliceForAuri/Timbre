@@ -81,14 +81,23 @@ xcrun stapler staple "$APP"
 rm -f "$ZIP"
 ditto -c -k --keepParent "$APP" "$ZIP"
 
-# ---- Files for the website: the version file and the zip (GDR-0013). -------
+# ---- Disk image: the download page's format (GDR-0013 keeps the zip for updates).
+DMG="build/Timbre-$VERSION.dmg"
+tools/make-dmg.sh "$APP" "$DMG" "Timbre" >/dev/null
+codesign --sign "Developer ID Application: Hugo Pretorius ($TEAM)" --timestamp "$DMG"
+echo "Notarizing the disk image…"
+xcrun notarytool submit "$DMG" --keychain-profile TimbreNotary --wait | grep -E 'status:' | tail -1
+xcrun stapler staple "$DMG" | tail -1
+
+# ---- Files for the website: the version file, the zip and the image (GDR-0013).
 # The update check fetches web/static/appcast.json from the site, and the zip
 # it names is served from the same host. Publishing a release is committing
 # these two files on a release branch and merging it: the deploy is the release.
 BUILD="$(sed -n 's/^CURRENT_PROJECT_VERSION = //p' apps/Timbre/Config/Shared.xcconfig)"
 mkdir -p web/static/releases
-find web/static/releases -name 'Timbre-*.zip' ! -name "Timbre-$VERSION.zip" -delete
+find web/static/releases \( -name 'Timbre-*.zip' -o -name 'Timbre-*.dmg' \) ! -name "Timbre-$VERSION.*" -delete
 cp "$ZIP" "web/static/releases/Timbre-$VERSION.zip"
+cp "$DMG" "web/static/releases/Timbre-$VERSION.dmg"
 python3 - "$VERSION" "$BUILD" "$ZIP" > web/static/appcast.json <<'PY'
 import datetime, hashlib, json, os, re, sys
 version, build, zip_path = sys.argv[1], int(sys.argv[2]), sys.argv[3]
@@ -113,6 +122,7 @@ print(json.dumps({"latest": {
     "build": build,
     "minimumSystemVersion": "26.0",
     "url": f"https://timbre.hugopretorius.dev/releases/Timbre-{version}.zip",
+    "dmgURL": f"https://timbre.hugopretorius.dev/releases/Timbre-{version}.dmg",
     "sha256": hashlib.sha256(data).hexdigest(),
     "size": len(data),
     "published": datetime.date.today().isoformat(),
@@ -121,8 +131,8 @@ print(json.dumps({"latest": {
 PY
 
 echo
-echo "Ready: $ZIP"
-echo "Site files: web/static/appcast.json and web/static/releases/Timbre-$VERSION.zip"
+echo "Ready: $ZIP and $DMG"
+echo "Site files: web/static/appcast.json, web/static/releases/Timbre-$VERSION.zip and .dmg"
 echo "Check them before publishing:"
 echo "  (cd packages/TimbreKit && swift run timbre-eval --verify-update ../../web/static/appcast.json)"
 echo "  — that reads the zip from the site, so run it against a file:// copy first; see CLAUDE.md."

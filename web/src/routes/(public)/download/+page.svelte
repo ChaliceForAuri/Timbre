@@ -6,6 +6,10 @@
 	import appcast from '../../../../static/appcast.json';
 
 	const release = appcast.latest;
+	// The disk image is the download page's format; the zip stays the update
+	// format. Releases before the image have only the zip.
+	const dmg = (release as { dmgURL?: string }).dmgURL ?? null;
+	const local = (url: string) => url.replace('https://timbre.hugopretorius.dev', '');
 	const megabytes = (release.size / 1_000_000).toFixed(1);
 	const published = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(
 		new Date(`${release.published}T12:00:00`)
@@ -50,11 +54,14 @@
 	</dl>
 
 	<div class="mt-8 flex flex-wrap items-center gap-4">
-		<Button href={release.url.replace('https://timbre.hugopretorius.dev', '')} size="lg">
+		<Button href={local(dmg ?? release.url)} size="lg">
 			Download Timbre {release.version}
 		</Button>
 		<p class="text-muted-foreground font-mono text-xs">
-			{megabytes} MB · zip · {published}
+			{dmg ? 'disk image' : `${megabytes} MB · zip`} · {published}
+			{#if dmg}
+				· <a href={local(release.url)} class="hover:text-foreground underline underline-offset-4">or the zip</a>
+			{/if}
 		</p>
 	</div>
 
@@ -73,7 +80,7 @@
 
 	<h2 class="mt-16 text-2xl">Setting up</h2>
 	<ol class="text-muted-foreground mt-5 list-decimal space-y-2.5 pl-5 text-sm">
-		<li>Unzip and drag <strong class="text-foreground">Timbre.app</strong> to Applications.</li>
+		<li>Open the disk image and drag <strong class="text-foreground">Timbre</strong> onto the Applications folder beside it.</li>
 		<li>
 			Coming from 0.2.0? Replace it, then remove the old Timbre entry under Accessibility and add the
 			new one: 0.3.0 is signed by a renewed developer account. Later updates keep the permission.
