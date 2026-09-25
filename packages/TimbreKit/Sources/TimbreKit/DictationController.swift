@@ -40,6 +40,16 @@ public final class DictationController {
         vocabularyStore.acronyms
     }
 
+    // MARK: Usage
+
+    /// What Timbre has done on this Mac: this week and all time. Counted
+    /// here, shown in Settings, never transmitted.
+    public var usage: UsageLedger { usageStore.ledger }
+
+    public func resetUsage() {
+        usageStore.reset()
+    }
+
     // MARK: To-dos (GDR-0016)
 
     public nonisolated enum RemindersAccess: Equatable, Sendable {
@@ -115,6 +125,7 @@ public final class DictationController {
     private let speech = SpeechReader()
     private let transformer = TextTransformer()
     private let reminders = ReminderStore()
+    private let usageStore = UsageStore()
 
     private var capturedAppName: String?
     private var pressInstant: ContinuousClock.Instant?
@@ -422,6 +433,7 @@ public final class DictationController {
             )
 
             lastInserted = cleaned
+            usageStore.record(.dictation(words: UsageLedger.wordCount(of: cleaned)))
             becomeIdle()
         } catch {
             cancelDisplayTasks()
@@ -613,8 +625,10 @@ public final class DictationController {
             overlay.hide()
             inserter.insert(text)
             lastInserted = text
+            usageStore.record(.command)
             becomeIdle()
         case .explanation(let text, let source):
+            usageStore.record(.command)
             finishCommand(
                 showing: .explanation(caption: source.caption),
                 text: text,
@@ -644,6 +658,7 @@ public final class DictationController {
         let todo = TodoParser.parse(cleaned.trimmingCharacters(in: CharacterSet(charactersIn: ".!")))
         do {
             let list = try reminders.add(todo)
+            usageStore.record(.todo)
             finishCommand(showing: .notice(TodoPhrasing.confirmation(todo, list: list)), for: .seconds(3))
         } catch {
             finishCommand(showing: .error(error.localizedDescription), for: .seconds(4))
@@ -754,6 +769,7 @@ public final class DictationController {
             self?.overlay.hide()
         }
         speech.read(text)
+        usageStore.record(.reading)
         overlay.update(mode: .reading(speed: ReadingSpeed.label(for: speech.speedMultiplier)))
     }
 

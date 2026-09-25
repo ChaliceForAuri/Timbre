@@ -10,6 +10,9 @@ turns the section for that version into the release notes shown in the app.
 ## [Unreleased]
 
 ### Added
+- **A usage count in Settings** — words dictated, dictations, commands,
+  to-dos and readings, this week and all time. Stored in this Mac's
+  preferences and nowhere else.
 - **To-dos by voice.** Hold right Command with nothing selected and say it —
   "call the dentist Thursday" — and it lands in a Timbre list in Apple's
   Reminders, with the date read on your Mac, so it's on your iPhone too. Tap
