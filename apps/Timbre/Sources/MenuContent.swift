@@ -3,11 +3,20 @@ import TimbreKit
 
 struct MenuContent: View {
     let controller: DictationController
+    let updater: SoftwareUpdater
 
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         Text(controller.statusText)
+
+        // Found by the daily check, if the user turned it on. A menu item,
+        // never a pop-up: nothing appears unless the user comes looking.
+        if case .available(let release) = updater.state {
+            Button("Install Timbre \(release.version)…") {
+                UpdatePrompt.offer(release, updater: updater)
+            }
+        }
 
         Divider()
 
@@ -28,6 +37,11 @@ struct MenuContent: View {
         // and an LSUIElement app is never active — so the window appeared
         // behind everything, or seemingly not at all. Activate first, then
         // open; stealing focus is correct here, the user asked for a window.
+        Button("Check for Updates…") {
+            UpdatePrompt.checkAndReport(updater)
+        }
+        .disabled(updater.state == .checking)
+
         Button("Settings…") {
             NSApp.activate()
             openSettings()

@@ -38,6 +38,7 @@ Two kinds of records live here. The boundary rule:
 | [0007](adr/0007-hotkey-path-avoids-concurrency-runtime.md) | The hotkey event path stays out of the concurrency runtime | Accepted |
 | [0008](adr/0008-taught-vocabulary-and-the-transcriber.md) | Taught vocabulary does not reach SpeechTranscriber; stay on it anyway | Accepted |
 | [0009](adr/0009-command-mode-decodes-greedily.md) | Command mode decodes greedily; only fix uses guided generation | Accepted |
+| [0010](adr/0010-self-update-without-sparkle.md) | Self-update: verify by code requirement, swap in place, relaunch; no Sparkle | Accepted |
 
 ### GDRs
 

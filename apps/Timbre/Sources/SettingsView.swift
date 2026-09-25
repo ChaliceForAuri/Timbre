@@ -6,11 +6,12 @@ import TimbreKit
 /// window.
 struct SettingsView: View {
     let controller: DictationController
+    let updater: SoftwareUpdater
 
     var body: some View {
         TabView {
             Tab("General", systemImage: "gearshape") {
-                GeneralSettings(controller: controller)
+                GeneralSettings(controller: controller, updater: updater)
             }
             Tab("Dictionary", systemImage: "character.book.closed") {
                 DictionarySettings(controller: controller)
@@ -30,8 +31,16 @@ struct SettingsView: View {
 
 private struct GeneralSettings: View {
     let controller: DictationController
+    let updater: SoftwareUpdater
 
     var body: some View {
+        ScrollView {
+            content
+                .padding(24)
+        }
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 18) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Timbre")
@@ -63,13 +72,66 @@ private struct GeneralSettings: View {
                     + "Explain shows a card; fix and shorten replace the text, and ⌘Z puts it back."
             )
 
-            Spacer()
+            Divider()
 
-            Text("Everything runs on this Mac. Timbre makes no network requests.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            UpdatesSection(updater: updater)
         }
-        .padding(24)
+    }
+}
+
+/// The update check, described exactly (GDR-0013): what it fetches, from
+/// where, and that it is the only request Timbre can make.
+private struct UpdatesSection: View {
+    @Bindable var updater: SoftwareUpdater
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Updates")
+                    .font(.headline)
+                Spacer()
+                Text("Timbre \(updater.currentVersion)")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+
+            Toggle("Check for updates once a day", isOn: $updater.checksAutomatically)
+
+            Text(
+                "Off by default. When on, Timbre fetches one small version file from "
+                    + "timbre.hugopretorius.dev — no identifier, no cookie, nothing about you or your words. "
+                    + "It is the only network request Timbre can make. Installing an update asks first."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            HStack {
+                Text(status)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                if case .available(let release) = updater.state {
+                    Button("Install \(release.version)…") { UpdatePrompt.offer(release, updater: updater) }
+                }
+                Button("Check Now") { UpdatePrompt.checkAndReport(updater) }
+                    .disabled(updater.state == .checking)
+            }
+        }
+    }
+
+    private var status: String {
+        switch updater.state {
+        case .idle:
+            updater.lastChecked.map { "Last checked \($0.formatted(.relative(presentation: .named)))." }
+                ?? "Not checked yet."
+        case .checking: "Checking…"
+        case .upToDate: "Up to date."
+        case .available(let release): "Timbre \(release.version) is available."
+        case .needsNewerMacOS(let release): "\(release.version) needs macOS \(release.minimumSystemVersion)."
+        case .installing(let release): "Installing \(release.version)…"
+        case .failed(let message): message
+        }
     }
 }
 
@@ -366,7 +428,8 @@ private struct PrivacySettings: View {
                 .font(.headline)
             Text(
                 "Speech recognition, cleanup, commands and reading all run on-device. "
-                    + "Timbre makes no network requests: no telemetry, no crash reports, no update check."
+                    + "Timbre sends nothing about you anywhere: no telemetry, no crash reports. The only "
+                    + "network request it can make is the update check in General, which is off unless you turn it on."
             )
             .font(.caption)
             .foregroundStyle(.secondary)

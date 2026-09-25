@@ -74,8 +74,16 @@ xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre -destination 'pl
 # Daily driver: build Release and install to /Applications (grants carry over):
 tools/install.sh
 
-# Notarized zip for any Mac (one-time setup inside the script):
+# Notarized zip for any Mac (one-time setup inside the script). Also writes
+# web/static/appcast.json and web/static/releases/Timbre-<version>.zip, with
+# notes taken from that version's CHANGELOG section; publishing a release is
+# committing those two files and merging (GDR-0013).
 tools/release.sh
+
+# Everything an update does except relaunch: fetch, hash, unpack, verify the
+# signature, and optionally swap into a stand-in app (ADR-0010). Before
+# publishing, point it at a file:// copy of the appcast; after, at the site.
+swift run timbre-eval --verify-update https://timbre.hugopretorius.dev/appcast.json --from 0.2.0
 ```
 
 Or open `apps/Timbre/Timbre.xcodeproj` and ⌘R. Signing is ad-hoc by default;
@@ -108,8 +116,9 @@ Two gestures work on a selection instead, through the same controller:
                 explanation card (command mode, GDR-0012)
 ```
 
-Public API surface of TimbreKit is `DictationController` (+ its `Status`);
-everything else is internal. Keep it that way.
+Public API surface of TimbreKit is `DictationController` (+ its `Status`)
+and `SoftwareUpdater` (ADR-0010); everything else is internal, apart from
+the evaluation seam (ADR-0004). Keep it that way.
 
 ## Conventions
 
@@ -159,6 +168,11 @@ everything else is internal. Keep it that way.
   explanations and copied every shorten input. The shorten prompt's shape —
   fenced text, instruction after it, a word budget — is all measurement;
   re-run `timbre-eval --commands` before touching it.
+- **Updates trust the signature, not the website** (ADR-0010). A download
+  must match the version file's hash *and* satisfy a code requirement naming
+  our identifier, team WX9L5M4Y9Q and notarization. Only a notarized release
+  replaces itself; dev builds open the download page. The team in that
+  requirement is a commitment — changing it strands every installed copy.
 - **A speech session is single-use** (ADR-0006).
   `finalizeAndFinishThroughEndOfInput()` ends the `SpeechAnalyzer` for good
   and terminates the module's `results` sequence. `Transcriber` rebuilds both
