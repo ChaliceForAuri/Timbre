@@ -17,7 +17,7 @@ Timbre goes public on LinkedIn at the end of this week. The week is for finishin
 
 ## Product — ship these, measured
 
-- [ ] **Todo capture into Apple Reminders.** Hold right ⌘ with nothing selected, say "call the dentist Thursday", and it lands in a Timbre list in Reminders with the date parsed on-device. "Read my list" on left ⌥ with nothing selected. Pure Apple (EventKit), syncs everywhere Reminders does, and the binary still makes no network requests. Needs a GDR and the Reminders permission string.
+- [x] **Todo capture into Apple Reminders.** Hold right ⌘ with nothing selected, say "call the dentist Thursday", and it lands in a Timbre list in Reminders with the date parsed on-device. "Read my list" on left ⌥ with nothing selected. Pure Apple (EventKit), syncs everywhere Reminders does, and the binary still makes no network requests. Needs a GDR and the Reminders permission string.
 - [x] **Update check** (GDR-0013, ADR-0010). A menu item "Check for Updates…" plus an opt-in daily check: one GET of a static `appcast.json` on our own site, no identifiers, no cookies; one-click download, signature verified against our Team ID, replace, relaunch. Amends GDR-0006's wording: zero network requests by default, and the only request Timbre can ever make is that one, when you turn it on. Landing copy changes to match.
 - [x] **"plain" verb** — Tidy's de-slop, ours. Select AI-flavoured text, say "plain": corporate filler out, facts and voice in, length roughly kept. Guardrail and four corpus cases, including their "synergies" email.
 - [x] **Literal guard.** Slack mentions (`@here`, `#channel`, `<@U…>`), URLs, emails, dates, times and units are masked before fix/shorten/plain and restored after; a lost placeholder means the guardrail refuses. Corpus cases for each.
@@ -66,4 +66,4 @@ Timbre goes public on LinkedIn at the end of this week. The week is for finishin
 - [x] iCloud capability on the Timbre App ID and a new Developer ID provisioning profile — done under the renewed team WX9L5M4Y9Q, with a notarized dry-run release proving the chain
 - [ ] The live right-⌘ gesture test above; nobody else can hold the key
 - [ ] Record the demo clip; approve the LinkedIn copy
-- [ ] Decide whether the Reminders list is called "Timbre" or something else
+- [x] Decide whether the Reminders list is called "Timbre" or something else — both: "Timbre" by default, any list in Settings
