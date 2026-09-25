@@ -11,6 +11,7 @@ Timbre goes public on LinkedIn at the end of this week. The week is for finishin
 - [x] Command mode: hold right ⌘ on a selection — fix, explain, shorten (GDR-0012)
 - [x] Definitions: your own acronyms answer "explain" first; the card names its source
 - [x] Greedy decoding: same selection, same command, same result (ADR-0009); commands 12/12
+- [x] Commands act on the word, not the release; explain fires on a partial and streams into its card (GDR-0014)
 - [x] Warm-up race fixed; the audio harness went from 1 of 10 to 11 of 11
 - [x] Backstage: Decisions (filter, listen, superseded marking, dialog) and Plans
 

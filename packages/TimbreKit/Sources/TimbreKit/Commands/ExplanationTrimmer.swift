@@ -11,6 +11,22 @@ nonisolated enum ExplanationTrimmer {
     static let maximumSentences = 3
     static let maximumCharacters = 420
 
+    /// Whether a partial answer already holds everything `trimmed` will
+    /// keep: a sentence past the maximum has begun, or it is past the length
+    /// limit. Generation stops there. A cap, not a speed-up: with the current
+    /// prompt the model ends on its own within two sentences (measured: 641 ms
+    /// with the stop, 640 ms without). It bounds the run the day it doesn't —
+    /// the first prompt drew eight sentences.
+    static func isFull(_ partial: String) -> Bool {
+        if partial.count > maximumCharacters { return true }
+        var sentences = 0
+        partial.enumerateSubstrings(in: partial.startIndex..., options: .bySentences) { _, _, _, stop in
+            sentences += 1
+            if sentences > maximumSentences { stop = true }
+        }
+        return sentences > maximumSentences
+    }
+
     static func trimmed(_ text: String) -> String {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
