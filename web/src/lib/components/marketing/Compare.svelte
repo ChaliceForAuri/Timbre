@@ -12,7 +12,7 @@
 		{ feature: 'Reads text aloud', cells: ['yes', 'Spoken Content', 'no', 'no'] },
 		{ feature: 'Learns your words and corrections', cells: ['yes', 'partly', 'yes', 'no'] },
 		{ feature: 'Where your voice goes', cells: ['nowhere', 'on-device for most languages', 'their servers', 'no voice'] },
-		{ feature: 'Network requests', cells: ['none', 'none for on-device languages', 'yes', 'its update feed'] },
+		{ feature: 'Network requests', cells: ['none by default', 'none for on-device languages', 'yes', 'its update feed'] },
 		{ feature: 'Account', cells: ['none', 'none', 'required', 'none'] },
 		{ feature: 'Price', cells: ['free', 'included', 'subscription', 'free'] },
 		{ feature: 'Source', cells: ['open', 'closed', 'closed', 'closed'] }
