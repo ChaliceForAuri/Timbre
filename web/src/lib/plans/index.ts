@@ -11,7 +11,14 @@ export interface Plan {
 	order: number;
 	done: number;
 	open: number;
+	items: PlanItem[];
 	html: string;
+}
+
+export interface PlanItem {
+	section: string;
+	text: string;
+	done: boolean;
 }
 
 export const plans = data as Plan[];

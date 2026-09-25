@@ -1,0 +1,301 @@
+{
+	"sha": "40f1a9c",
+	"date": "2026-09-25",
+	"repeats": 5,
+	"polisher": {
+		"casesPassed": 11,
+		"cases": 11,
+		"runsPassed": 55,
+		"runs": 55,
+		"perCase": [
+			{
+				"id": "01-filler",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "02-false-start",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "03-run-on",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "04-spoken-formatting",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "05-keeps-voice",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "06-vocabulary",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "07-app-context-slack",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "08-no-added-facts",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "09-short",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "10-punctuation-words",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			},
+			{
+				"id": "11-hard-vocabulary",
+				"verb": null,
+				"passes": 5,
+				"runs": 5,
+				"ms": null,
+				"firstWordsMs": null
+			}
+		]
+	},
+	"commands": {
+		"casesPassed": 24,
+		"cases": 24,
+		"runsPassed": 120,
+		"runs": 120,
+		"perCase": [
+			{
+				"id": "fix-typos",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 431,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-keeps-meaning",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 458,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-taught-correction",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 346,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-leaves-clean-text",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 317,
+				"firstWordsMs": null
+			},
+			{
+				"id": "shorten-ramble",
+				"verb": "shorten",
+				"passes": 5,
+				"runs": 5,
+				"ms": 468,
+				"firstWordsMs": null
+			},
+			{
+				"id": "shorten-keeps-voice",
+				"verb": "shorten",
+				"passes": 5,
+				"runs": 5,
+				"ms": 523,
+				"firstWordsMs": null
+			},
+			{
+				"id": "shorten-email",
+				"verb": "shorten",
+				"passes": 5,
+				"runs": 5,
+				"ms": 1109,
+				"firstWordsMs": null
+			},
+			{
+				"id": "shorten-post",
+				"verb": "shorten",
+				"passes": 5,
+				"runs": 5,
+				"ms": 923,
+				"firstWordsMs": null
+			},
+			{
+				"id": "explain-bare-acronym",
+				"verb": "explain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 636,
+				"firstWordsMs": 352
+			},
+			{
+				"id": "explain-technical-term",
+				"verb": "explain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 647,
+				"firstWordsMs": 293
+			},
+			{
+				"id": "explain-taught-term",
+				"verb": "explain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 0,
+				"firstWordsMs": null
+			},
+			{
+				"id": "explain-grounded-in-taught-term",
+				"verb": "explain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 351,
+				"firstWordsMs": 302
+			},
+			{
+				"id": "fix-slack-literals",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 625,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-url-and-email",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 421,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-injection",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 387,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-single-word-keeps-case",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 260,
+				"firstWordsMs": null
+			},
+			{
+				"id": "shorten-injection",
+				"verb": "shorten",
+				"passes": 5,
+				"runs": 5,
+				"ms": 388,
+				"firstWordsMs": null
+			},
+			{
+				"id": "plain-synergies",
+				"verb": "plain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 387,
+				"firstWordsMs": null
+			},
+			{
+				"id": "plain-tldr",
+				"verb": "plain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 359,
+				"firstWordsMs": null
+			},
+			{
+				"id": "plain-launch-post",
+				"verb": "plain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 549,
+				"firstWordsMs": null
+			},
+			{
+				"id": "plain-already-plain",
+				"verb": "plain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 403,
+				"firstWordsMs": null
+			},
+			{
+				"id": "shorten-with-literals",
+				"verb": "shorten",
+				"passes": 5,
+				"runs": 5,
+				"ms": 881,
+				"firstWordsMs": null
+			},
+			{
+				"id": "plain-with-literals",
+				"verb": "plain",
+				"passes": 5,
+				"runs": 5,
+				"ms": 641,
+				"firstWordsMs": null
+			},
+			{
+				"id": "fix-fallback-keeps-names",
+				"verb": "fix",
+				"passes": 5,
+				"runs": 5,
+				"ms": 434,
+				"firstWordsMs": null
+			}
+		]
+	}
+}

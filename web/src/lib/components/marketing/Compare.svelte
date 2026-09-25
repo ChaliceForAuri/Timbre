@@ -10,6 +10,7 @@
 		{ feature: 'Shortens or de-slops a selection', cells: ['yes', 'no', 'no', 'yes'] },
 		{ feature: 'Explains a selection, using your own definitions', cells: ['yes', 'no', 'no', 'no'] },
 		{ feature: 'Reads text aloud', cells: ['yes', 'Spoken Content', 'no', 'no'] },
+		{ feature: 'To-dos by voice, into Reminders', cells: ['yes', 'via Siri', 'no', 'no'] },
 		{ feature: 'Learns your words and corrections', cells: ['yes', 'partly', 'yes', 'no'] },
 		{ feature: 'Where your voice goes', cells: ['nowhere', 'on-device for most languages', 'their servers', 'no voice'] },
 		{ feature: 'Network requests', cells: ['none by default', 'none for on-device languages', 'yes', 'its update feed'] },
@@ -19,34 +20,37 @@
 	];
 </script>
 
-<div class="overflow-x-auto">
-	<table class="w-full min-w-[640px] border-collapse text-sm">
+<div class="bg-card ring-foreground/8 overflow-x-auto rounded-2xl ring-1">
+	<table class="w-full min-w-[680px] border-collapse text-sm">
 		<thead>
-			<tr class="border-b">
-				<th class="py-3 pr-4 text-left font-mono text-[11px] font-medium tracking-[0.12em] text-muted-foreground uppercase"></th>
+			<tr class="border-b-2">
+				<th class="py-3 pr-4 pl-5 text-left"></th>
 				{#each columns as column, i (column)}
-					<th
-						class="py-3 pr-4 text-left font-mono text-[11px] font-medium tracking-[0.12em] uppercase {i === 0
-							? 'text-primary'
-							: 'text-muted-foreground'}"
-					>
-						{column}
+					<th class="eyebrow py-3 pr-4 text-left {i === 0 ? 'text-foreground' : 'text-muted-foreground'}">
+						{#if i === 0}
+							<span class="inline-flex items-center gap-2">
+								<span class="rainbow inline-block h-2 w-6 rounded-full"></span>
+								{column}
+							</span>
+						{:else}
+							{column}
+						{/if}
 					</th>
 				{/each}
 			</tr>
 		</thead>
 		<tbody>
 			{#each rows as row (row.feature)}
-				<tr class="border-border/60 border-b">
-					<td class="py-2.5 pr-4 font-medium">{row.feature}</td>
+				<tr class="border-border/70 border-b last:border-0">
+					<td class="py-2.5 pr-4 pl-5 font-medium">{row.feature}</td>
 					{#each row.cells as cell, i (i)}
-						<td class="py-2.5 pr-4 whitespace-nowrap {i === 0 ? 'text-foreground' : 'text-muted-foreground'}">
+						<td class="py-2.5 pr-4 whitespace-nowrap {i === 0 ? 'text-foreground font-medium' : 'text-muted-foreground'}">
 							{#if cell === 'yes'}
-								<svg class="text-primary size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-label="yes">
+								<svg class="size-4 {i === 0 ? 'text-retro-green' : 'text-muted-foreground'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-label="yes">
 									<path d="M5 12.5l4.5 4.5L19 7" />
 								</svg>
 							{:else if cell === 'no'}
-								<span class="text-muted-foreground/60" aria-label="no">—</span>
+								<span class="text-muted-foreground/50" aria-label="no">—</span>
 							{:else}
 								{cell}
 							{/if}

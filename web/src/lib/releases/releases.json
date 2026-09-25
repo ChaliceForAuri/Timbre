@@ -1,0 +1,110 @@
+[
+	{
+		"version": "Unreleased",
+		"date": null,
+		"unreleased": true,
+		"url": "https://github.com/ChaliceForAuri/Timbre/blob/main/CHANGELOG.md",
+		"intro": "",
+		"sections": [
+			{
+				"name": "Added",
+				"html": "<ul>\n<li><strong>A disk image.</strong> The download is now a <code>.dmg</code> with an Applications\nfolder to drag Timbre onto; the zip remains for updates and for anyone\nwho prefers it.</li>\n<li><strong>A usage count in Settings</strong> — words dictated, dictations, commands,\nto-dos and readings, this week and all time. Stored in this Mac&#39;s\npreferences and nowhere else.</li>\n<li><strong>To-dos by voice.</strong> Hold right Command with nothing selected and say it —\n&quot;call the dentist Thursday&quot; — and it lands in a Timbre list in Apple&#39;s\nReminders, with the date read on your Mac, so it&#39;s on your iPhone too. Tap\nleft Option with nothing selected to hear the list. Pick any list in\nSettings.</li>\n<li><strong>Plain.</strong> A fourth command: hold right Command on machine-sounding or\ncorporate text and say &quot;plain&quot; to get what it actually says, in your\nown words.</li>\n<li><strong>Fix without Apple Intelligence.</strong> On a Mac without the on-device model,\nfix still corrects spelling with macOS&#39;s own spell checker, leaving names\nand your taught words alone.</li>\n</ul>\n"
+			},
+			{
+				"name": "Fixed",
+				"html": "<ul>\n<li>Fix, shorten and plain no longer touch Slack mentions and channels, links,\nemail addresses, dates, times, units, versions or abbreviations like\n&quot;e.g.&quot; — they come back exactly as they were.</li>\n<li>Fixing a single selected word keeps its case: &quot;teh&quot; becomes &quot;the&quot;, not\n&quot;The&quot;.</li>\n</ul>\n"
+			}
+		],
+		"items": 7
+	},
+	{
+		"version": "0.3.1",
+		"date": "2026-09-25",
+		"unreleased": false,
+		"url": "https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.3.1",
+		"intro": "",
+		"sections": [
+			{
+				"name": "Changed",
+				"html": "<ul>\n<li><strong>Cleanup is now deterministic.</strong> The same words get the same cleanup\nevery time; the corpus passes 11 of 11 across five repeats with one\noutput per case.</li>\n<li><strong>Sentences always start with a capital.</strong> Applied as a rule after the\nmodel, like the final full stop, because the model left short casual\nsentences lowercase. Words with their own casing (iPhone, macOS) and\nabbreviations (e.g., a.m.) are left alone.</li>\n</ul>\n"
+			}
+		],
+		"items": 2
+	},
+	{
+		"version": "0.3.0",
+		"date": "2026-09-24",
+		"unreleased": false,
+		"url": "https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.3.0",
+		"intro": "",
+		"sections": [
+			{
+				"name": "Added",
+				"html": "<ul>\n<li><strong>Command mode.</strong> Select text, hold right Command, and say fix, explain or\nshorten — it acts the moment it hears the word. Say nothing and release\nto fix. Explain shows a card and never touches your text; fix and shorten\nreplace the selection, and Command-Z puts it back.</li>\n<li><strong>Definitions.</strong> Teach Timbre your acronyms in Settings › Dictionary. A\ndefined term is explained from your definition, and every card says\nwhether its answer came from your dictionary or the on-device model.</li>\n<li><strong>Corrections.</strong> When Timbre keeps hearing a phrase wrong, teach it what\nyou meant once: &quot;timber kit&quot; becomes &quot;TimbreKit&quot; every time.</li>\n<li><strong>Updates.</strong> Check for Updates in the menu, and an optional daily check,\noff by default. It fetches one small version file from Timbre&#39;s own\nwebsite and sends nothing about you. Installing checks that the download\nis Timbre, signed by its developer and notarized by Apple, before it\nreplaces anything.</li>\n</ul>\n"
+			},
+			{
+				"name": "Changed",
+				"html": "<ul>\n<li>Settings is organised into General, Dictionary, Reading and Privacy.</li>\n<li>Timbre is signed by its developer&#39;s renewed Apple team. Coming from 0.2.0,\nmacOS asks for Accessibility once more: remove the old Timbre entry and\nadd the new one.</li>\n</ul>\n"
+			},
+			{
+				"name": "Fixed",
+				"html": "<ul>\n<li>A speech session could be started while the previous one was still\nwarming up, and then hear nothing.</li>\n</ul>\n"
+			}
+		],
+		"items": 7
+	},
+	{
+		"version": "0.2.0",
+		"date": "2026-08-21",
+		"unreleased": false,
+		"url": "https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.2.0",
+		"intro": "",
+		"sections": [
+			{
+				"name": "Changed",
+				"html": "<ul>\n<li><strong>The app is now called Timbre</strong> (GDR-0009). &quot;Spoke&quot; read as bicycle\nhardware; the obvious replacements collided with Apple&#39;s own &quot;Spoken\nContent&quot; feature and with existing Mac dictation apps. Timbre is the\ncharacter that makes a voice recognisably someone&#39;s own.\nThe bundle identifier changed, so <strong>Microphone and Accessibility must be\ngranted again</strong>, and captured dictations stay behind in\n<code>~/Library/Application Support/Spoke/</code>.</li>\n</ul>\n"
+			},
+			{
+				"name": "Added",
+				"html": "<ul>\n<li><strong>Read aloud</strong> (GDR-0008): select text anywhere and tap left Option to\nhear it, tap again to speed up, hold to stop. On-device voices; Timbre\npicks the best installed and flags in Settings when only basic ones exist.</li>\n<li>Adaptive pre-roll so a cold Bluetooth audio route doesn&#39;t swallow the\nfirst words, mirroring the microphone warm-up fix.</li>\n</ul>\n"
+			}
+		],
+		"items": 3
+	},
+	{
+		"version": "0.1.1",
+		"date": "2026-08-20",
+		"unreleased": false,
+		"url": "https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.1.1",
+		"intro": "",
+		"sections": [
+			{
+				"name": "Fixed",
+				"html": "<ul>\n<li>&quot;Settings…&quot; did nothing: <code>SettingsLink</code> opens the window without\nactivating the app, and a menu-bar app is never active, so the window\nappeared behind everything. The app now activates itself first. Found\nwithin a day of running on three Macs — the first bug caught by\ndistribution.</li>\n</ul>\n"
+			}
+		],
+		"items": 1
+	},
+	{
+		"version": "0.1.0",
+		"date": "2026-08-19",
+		"unreleased": false,
+		"url": "https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.1.0",
+		"intro": "First release. Everything below shipped between 2026-08-15 and today.",
+		"sections": [
+			{
+				"name": "Added",
+				"html": "<ul>\n<li>Dictation pipeline: hold right ⌥, speak, release — cleaned-up text is pasted\ninto whatever app has focus. Transcription via <code>SpeechAnalyzer</code>, cleanup via\nthe on-device <code>SystemLanguageModel</code>.</li>\n<li><code>spoke-eval</code>, an evaluation harness measuring the polisher against a fixed\ncorpus (ADR-0004). Supports <code>--repeat</code> for stochastic output, <code>--stream</code> for\npartial-result timing, and <code>--audio-dir</code> for transcriber reuse.</li>\n<li>Opt-in local dictation capture for building real evaluation fixtures\n(GDR-0004).</li>\n</ul>\n"
+			},
+			{
+				"name": "Added",
+				"html": "<ul>\n<li>Per-dictation timing records (mic start, first audio, transcript, polish)\nin the capture log, so latency work is measured rather than felt.</li>\n</ul>\n"
+			},
+			{
+				"name": "Fixed",
+				"html": "<ul>\n<li>Speaking immediately after the hotkey press lost the first words. The\nmicrophone now opens before anything else on the press, the analyzer is\npre-warmed at launch and between dictations, and the pill says &quot;Waking the\nmic…&quot; until the first non-silent buffer arrives — the flip to &quot;Listening…&quot;\nis a true go signal. On Bluetooth headsets the wake itself remains\nhardware-bound (issue #4).</li>\n<li>A Release-only crash (SIGBUS) in the hotkey event path: the monitor\nclosures inherited MainActor isolation, and the runtime executor check\nSwift compiled into every key event dereferenced a stale pointer inside\nAppKit&#39;s event dispatch. The event path now runs with no isolation\nmachinery at all (ADR-0007).</li>\n<li>Dictating with no microphone connected hung forever at &quot;Cleaning up…&quot;;\nthe finish path is now un-hangable (immediate refusal, silence detection,\nand a watchdog around finalization).</li>\n<li>The overlay could appear unpositioned in the bottom-left corner: a zero\nfirst-pass layout size skipped placement entirely. It now always places —\nunder the caret when the app reveals it, otherwise as a bottom-center HUD.\nThe mouse fallback is gone; pointer position is unrelated to typing.</li>\n<li>Speech sessions are rebuilt per dictation; previously only the first\ndictation produced any text (ADR-0006).</li>\n<li>The microphone is requested unconditionally, and the hardened runtime&#39;s\n<code>com.apple.security.device.audio-input</code> entitlement is present — without it\nmacOS blocked the microphone before TCC was ever consulted.</li>\n<li>The overlay no longer re-sets its own frame on every audio buffer, which\nflickered and could clip the live transcript out of view.</li>\n</ul>\n"
+			}
+		],
+		"items": 11
+	}
+]

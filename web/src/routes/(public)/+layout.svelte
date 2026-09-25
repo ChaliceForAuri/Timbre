@@ -1,27 +1,48 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { Button } from '$lib/components/ui/button';
+	import Stripe from '$lib/components/marketing/Stripe.svelte';
+	import ThemeToggle from '$lib/components/site/ThemeToggle.svelte';
+	import { site } from '$lib/site';
 
 	let { children } = $props();
+
+	const links = [
+		{ href: '/#three-keys', label: 'How it works' },
+		{ href: '/#compare', label: 'Compare' },
+		{ href: '/network', label: 'Network' }
+	];
+	const current = (href: string) => href.startsWith('/#') ? false : page.url.pathname.startsWith(href);
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<header class="border-border/60 border-b">
-		<nav class="mx-auto flex max-w-5xl items-center gap-6 px-6 py-4">
-			<a href="/" class="font-serif text-lg tracking-tight">Timbre</a>
-			<a
-				href="/download"
-				class="text-muted-foreground hover:text-foreground text-sm"
-				class:text-foreground={page.url.pathname.startsWith('/download')}
-			>
-				Download
+	<header class="bg-background/85 sticky top-0 z-30 backdrop-blur-md">
+		<nav class="mx-auto flex h-16 max-w-6xl items-center gap-5 px-6">
+			<a href="/" class="flex flex-col gap-[5px]" aria-label="Timbre home">
+				<span class="display text-[1.6rem] leading-none">Timbre</span>
+				<Stripe height="3px" />
 			</a>
-			<a
-				href="/backstage"
-				class="text-muted-foreground hover:text-foreground ml-auto text-sm"
-				rel="nofollow"
-			>
-				Backstage
-			</a>
+
+			<div class="ml-auto hidden items-center gap-6 text-sm sm:flex">
+				{#each links as link (link.href)}
+					<a
+						href={link.href}
+						class="hover:text-foreground transition-colors {current(link.href)
+							? 'text-foreground'
+							: 'text-muted-foreground'}"
+					>
+						{link.label}
+					</a>
+				{/each}
+				<a href="/backstage" rel="nofollow" class="text-muted-foreground hover:text-foreground transition-colors">
+					Backstage
+				</a>
+			</div>
+
+			<div class="ml-auto flex items-center gap-1 sm:ml-0">
+				<ThemeToggle />
+				<Button href="/download" size="sm" class="ml-1">Download</Button>
+			</div>
 		</nav>
 	</header>
 
@@ -29,15 +50,37 @@
 		{@render children()}
 	</main>
 
-	<footer class="border-border/60 border-t">
-		<div
-			class="text-muted-foreground mx-auto flex max-w-5xl flex-wrap gap-x-6 gap-y-2 px-6 py-8 text-xs"
-		>
-			<span>Timbre never sends your voice or your text off this Mac.</span>
-			<a href="/network" class="hover:text-foreground ml-auto">Every network request</a>
-			<a href="https://github.com/ChaliceForAuri/Timbre" class="hover:text-foreground">
-				Source
-			</a>
+	<footer class="mt-16">
+		<Stripe height="6px" rounded={false} />
+		<div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 sm:grid-cols-[1.2fr_1fr_1fr]">
+			<div>
+				<p class="display text-2xl">Timbre</p>
+				<p class="text-muted-foreground mt-3 max-w-[38ch] text-sm leading-relaxed">
+					{site.tagline} Free for personal use, built in the open, and it never sends your voice
+					or your text off this Mac.
+				</p>
+			</div>
+			<div class="text-sm">
+				<p class="eyebrow text-muted-foreground mb-3">Product</p>
+				<ul class="space-y-2">
+					<li><a href="/download" class="hover:underline">Download</a></li>
+					<li><a href="/network" class="hover:underline">Every network request</a></li>
+					<li><a href="/#compare" class="hover:underline">How it compares</a></li>
+					<li><a href="/#questions" class="hover:underline">Questions</a></li>
+				</ul>
+			</div>
+			<div class="text-sm">
+				<p class="eyebrow text-muted-foreground mb-3">Open</p>
+				<ul class="space-y-2">
+					<li><a href={site.repo} class="hover:underline">Source on GitHub</a></li>
+					<li><a href="{site.repo}/blob/main/CHANGELOG.md" class="hover:underline">Changelog</a></li>
+					<li><a href="{site.repo}/issues" class="hover:underline">Report a problem</a></li>
+					<li><a href="/backstage" rel="nofollow" class="hover:underline">Backstage</a></li>
+				</ul>
+			</div>
 		</div>
+		<p class="text-muted-foreground mx-auto max-w-6xl px-6 pb-10 font-mono text-[11px]">
+			macOS 26 · Apple Silicon · Notarized by Apple · Requires Apple Intelligence for cleanup and commands
+		</p>
 	</footer>
 </div>
