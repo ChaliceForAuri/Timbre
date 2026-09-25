@@ -6,6 +6,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import CommandPalette from '$lib/components/backstage/CommandPalette.svelte';
 	import ThemeToggle from '$lib/components/site/ThemeToggle.svelte';
+	import Mark from '$lib/components/marketing/Mark.svelte';
 	import Stripe from '$lib/components/marketing/Stripe.svelte';
 	import { modules } from '$lib/university';
 	import { releases } from '$lib/releases';
@@ -73,10 +74,7 @@
 	<Sidebar.Root collapsible="icon">
 		<Sidebar.Header>
 			<a href="/backstage" class="flex items-center gap-2.5 px-2 py-1.5">
-				<span class="flex shrink-0 flex-col gap-[3px]">
-					<span class="display text-[1.15rem] leading-none">T</span>
-					<span class="rainbow block h-[3px] w-4 rounded-full"></span>
-				</span>
+				<Mark size={28} class="shrink-0" />
 				<span class="flex flex-col group-data-[collapsible=icon]:hidden">
 					<span class="display text-base leading-none">Timbre</span>
 					<span class="eyebrow text-muted-foreground mt-1 text-[9px]">backstage</span>

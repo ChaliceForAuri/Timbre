@@ -23,7 +23,14 @@ let ink = rgb(36, 35, 34)
 let muted = rgb(118, 116, 110)
 let capTop = rgb(236, 234, 229)
 let capSide = rgb(196, 193, 186)
-let caseColor = rgb(58, 57, 55)
+let caseColor = rgb(46, 45, 43)
+
+extension NSBezierPath {
+    func fill(with color: NSColor) {
+        color.setFill()
+        fill()
+    }
+}
 let rainbow = [rgb(228, 87, 63), rgb(240, 140, 60), rgb(240, 200, 70), rgb(80, 200, 160), rgb(80, 170, 220), rgb(160, 120, 220)]
 
 guard let rep = NSBitmapImageRep(
@@ -62,7 +69,19 @@ func size(of text: String, font: NSFont, kern: Double = 0) -> NSSize {
     NSAttributedString(string: text, attributes: [.font: font, .kern: kern]).size()
 }
 
-draw("Timbre", at: NSPoint(x: 76, y: 400), font: display, color: ink, kern: -4)
+// The mark: the favicon's four bars on a charcoal tile, beside the wordmark.
+let markSide = 150.0
+let markX = 80.0
+let markY = 412.0
+NSBezierPath(roundedRect: NSRect(x: markX, y: markY, width: markSide, height: markSide), xRadius: markSide * 7 / 32, yRadius: markSide * 7 / 32).fill(with: caseColor)
+let grid = markSide / 32
+let barWidth = 2.6 * grid
+for (i, cx) in [8.0, 13.3, 18.6, 24.0].enumerated() {
+    let h = [6.0, 14.0, 9.0, 3.0][i] * grid + barWidth
+    [rainbow[0], rainbow[2], rainbow[3], rainbow[4]][i].setFill()
+    NSBezierPath(roundedRect: NSRect(x: markX + cx * grid - barWidth / 2, y: markY + markSide / 2 - h / 2, width: barWidth, height: h), xRadius: barWidth / 2, yRadius: barWidth / 2).fill()
+}
+draw("Timbre", at: NSPoint(x: markX + markSide + 26, y: 400), font: display, color: ink, kern: -4)
 draw("Dictation that never leaves your Mac.", at: NSPoint(x: 80, y: 336), font: tagline, color: ink, kern: -0.5)
 
 // The rainbow under "never".
