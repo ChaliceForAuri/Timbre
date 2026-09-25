@@ -40,6 +40,24 @@ function parse(source, slug, path) {
 	const done = (body.match(/^\s*- \[x\]/gim) ?? []).length;
 	const open = (body.match(/^\s*- \[ \]/gm) ?? []).length;
 
+	// Every task, with the section it sits under, so the overview can list
+	// what is still open without re-parsing HTML. Markdown emphasis is
+	// stripped; the first sentence is enough to recognise the item.
+	const items = [];
+	let section = '';
+	for (const line of lines) {
+		const heading = line.match(/^## (.+)$/);
+		if (heading) section = heading[1].trim();
+		const task = line.match(/^\s*- \[([ xX])\] (.+)$/);
+		if (!task) continue;
+		const text = task[2]
+			.replace(/\*\*([^*]+)\*\*/g, '$1')
+			.replace(/`([^`]+)`/g, '$1')
+			.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+			.trim();
+		items.push({ section, text, done: task[1] !== ' ' });
+	}
+
 	// The body starts at the first section; the header (fields and intro) is
 	// shown by the page itself.
 	const sections = headerEnd === -1 ? '' : lines.slice(headerEnd).join('\n').trim();
@@ -55,6 +73,7 @@ function parse(source, slug, path) {
 		order: Number(fields.order ?? 99),
 		done,
 		open,
+		items,
 		html
 	};
 }

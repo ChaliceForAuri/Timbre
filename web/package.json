@@ -12,7 +12,11 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"sync:decisions": "node scripts/sync-decisions.mjs",
 		"sync:plans": "node scripts/sync-plans.mjs",
-		"sync:docs": "node scripts/sync-decisions.mjs && node scripts/sync-plans.mjs"
+		"sync:docs": "node scripts/sync-decisions.mjs && node scripts/sync-plans.mjs && node scripts/sync-releases.mjs && node scripts/sync-evals.mjs && node scripts/sync-launch.mjs",
+		"sync:evals": "node scripts/sync-evals.mjs",
+		"sync:releases": "node scripts/sync-releases.mjs",
+		"sync:launch": "node scripts/sync-launch.mjs",
+		"measure": "node scripts/measure-evals.mjs"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.12.3",
@@ -39,7 +43,7 @@
 		}
 	},
 	"dependencies": {
-		"@lucide/svelte": "^1.45.0",
+		"@lucide/svelte": "^1.48.0",
 		"@supabase/ssr": "^0.12.4",
 		"@supabase/supabase-js": "^2.112.3",
 		"bits-ui": "^2.19.0",

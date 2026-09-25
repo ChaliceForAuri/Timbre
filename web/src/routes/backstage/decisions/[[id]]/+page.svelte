@@ -66,7 +66,12 @@
 </svelte:head>
 
 {#snippet marks(record: DecisionRecord)}
-	<Badge variant={record.kind === 'ADR' ? 'default' : 'secondary'}>{record.kind}</Badge>
+	<span
+		class="rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[oklch(0.2_0.005_80)]"
+		style="background: var(--retro-{record.kind === 'ADR' ? 'blue' : 'orange'})"
+	>
+		{record.kind}
+	</span>
 	<span class="font-mono">{record.id}</span>
 	<span class="text-muted-foreground">{dayFormat.format(at(record.date))}</span>
 	{#if record.statusKind === 'proposed'}
@@ -90,8 +95,9 @@
 
 <div class="flex flex-wrap items-end justify-between gap-4">
 	<div>
-		<h1 class="text-3xl">Decisions</h1>
-		<p class="text-muted-foreground mt-2">
+		<p class="eyebrow text-retro-yellow">Decisions</p>
+		<h1 class="mt-2 text-4xl sm:text-5xl">What we decided.</h1>
+		<p class="text-muted-foreground mt-3">
 			What we decided, newest first. {counts.adr} ADRs · {counts.gdr} GDRs{counts.proposed
 				? ` · ${counts.proposed} proposed`
 				: ''}{counts.superseded ? ` · ${counts.superseded} superseded` : ''}.
@@ -122,7 +128,7 @@
 	<div
 		class="bg-card/95 sticky top-16 z-10 mt-6 flex items-center gap-2 rounded-xl border px-3 py-2 shadow-sm backdrop-blur-md"
 	>
-		<span class="bg-primary size-2 shrink-0 animate-pulse rounded-full"></span>
+		<span class="bg-retro-green size-2 shrink-0 animate-pulse rounded-full"></span>
 		<p class="min-w-0 flex-1 truncate text-sm">
 			<span class="text-muted-foreground font-mono text-xs">{reading.id}</span>
 			{reading.title}
@@ -151,26 +157,27 @@
 
 <div class="mt-10">
 	{#each months as group (group.label)}
-		<p class="text-muted-foreground mb-4 font-mono text-xs tracking-[0.14em] uppercase">{group.label}</p>
+		<p class="eyebrow text-muted-foreground mb-4">{group.label}</p>
 		<ol class="border-border/70 relative mb-10 ml-1.5 border-l pl-6">
 			{#each group.items as record (record.id)}
 				{@const superseded = record.statusKind === 'superseded'}
 				{@const beingRead = reading?.id === record.id}
 				<li class="relative mb-4">
 					<span
-						class="absolute top-7 -left-[29px] size-2 rounded-full {beingRead ? 'bg-primary' : 'bg-border'}"
+						class="absolute top-7 -left-[29px] size-2 rounded-full"
+						style="background: {beingRead ? 'var(--retro-green)' : `var(--retro-${record.kind === 'ADR' ? 'blue' : 'orange'})`}"
 					></span>
 					<a
 						href="/backstage/decisions/{record.id}"
 						data-sveltekit-noscroll
-						class="bg-card hover:border-primary/40 block rounded-xl border p-5 transition-colors
-							{superseded ? 'border-dashed opacity-60 hover:opacity-100' : ''}
-							{beingRead ? 'ring-primary/40 ring-2' : ''}"
+						class="bg-card ring-foreground/8 hover:ring-foreground/25 block rounded-2xl p-5 ring-1 transition-shadow
+							{superseded ? 'opacity-60 ring-dashed hover:opacity-100' : ''}
+							{beingRead ? 'ring-retro-green ring-2' : ''}"
 					>
 						<div class="flex flex-wrap items-center gap-2 text-xs">
 							{@render marks(record)}
 						</div>
-						<h3 class="mt-3 text-xl {superseded ? 'text-muted-foreground' : ''}">{record.title}</h3>
+						<h3 class="mt-3 text-2xl {superseded ? 'text-muted-foreground' : ''}">{record.title}</h3>
 						<p class="text-muted-foreground mt-2 line-clamp-3 text-sm leading-relaxed">{record.excerpt}</p>
 					</a>
 				</li>
@@ -199,7 +206,7 @@
 				<div class="flex flex-wrap items-center gap-2 pr-6 text-xs">
 					{@render marks(open)}
 				</div>
-				<Dialog.Title class="font-serif text-2xl leading-snug font-medium">{open.title}</Dialog.Title>
+				<Dialog.Title class="display text-3xl leading-tight">{open.title}</Dialog.Title>
 				<Dialog.Description class="font-mono text-xs">{open.path}</Dialog.Description>
 			</Dialog.Header>
 

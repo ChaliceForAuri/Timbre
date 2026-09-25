@@ -252,3 +252,16 @@ toys.
   the learning value — using the real tools is the point.
 - **Secrets sprawl.** Service keys live in Vercel env + GitHub Secrets only.
   The repo rule stands: nothing secret is ever committed.
+
+## 15. Where it stands (2026-09-25)
+
+Backstage is the home, not just the lab: Overview (a dashboard read from the
+repo), Releases (the changelog), Decisions, Plans, Launch (the announcement
+copy and scripts, one Copy button away), Evals (every corpus case and the
+last measured run, with its git SHA), and the University — searchable from
+anywhere with ⌘K. Every page is fed by committed JSON that CI regenerates
+from the source files and fails on drift; the measured numbers are written
+by `pnpm run measure` on a Mac with the model. Phase 2's "eval publishing"
+therefore landed without Supabase: a recorded run in the repo is enough
+until there is a second machine producing them. Traces, Lab, Feedback and
+Customers remain phases 3–6 as above. The look follows GDR-0017.

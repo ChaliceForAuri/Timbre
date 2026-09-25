@@ -4,87 +4,111 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Timbre's identity: cool paper, petrol accent.
-   The neutrals carry a slight teal bias rather than being pure grey — the
-   ground and the accent belong to the same family, which is what stops a
-   utility app looking like a bootstrap template. */
+/* Timbre's identity, second edition: keycap grey and a retro rainbow.
+   The ground is the warm grey of an ABS keycap, the ink is charcoal, and
+   colour arrives only as the six retro accents — one per gesture, plus a
+   stripe. Everything shadcn draws takes the greys; the rainbow is ours. */
 :root {
-	--background: oklch(0.985 0.003 200);
-	--foreground: oklch(0.23 0.017 220);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.23 0.017 220);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.23 0.017 220);
+	--background: oklch(0.955 0.004 80);
+	--foreground: oklch(0.21 0.006 80);
+	--card: oklch(0.992 0.002 80);
+	--card-foreground: oklch(0.21 0.006 80);
+	--popover: oklch(0.992 0.002 80);
+	--popover-foreground: oklch(0.21 0.006 80);
 
-	/* Petrol — deep enough to carry white text, saturated enough to read as
-	   a choice rather than a default blue. */
-	--primary: oklch(0.47 0.077 190);
-	--primary-foreground: oklch(0.985 0.003 200);
+	/* Buttons are ink on paper, the way a keycap legend is. */
+	--primary: oklch(0.21 0.006 80);
+	--primary-foreground: oklch(0.97 0.003 80);
 
-	--secondary: oklch(0.955 0.006 200);
-	--secondary-foreground: oklch(0.3 0.02 215);
-	--muted: oklch(0.955 0.006 200);
-	--muted-foreground: oklch(0.49 0.018 215);
-	--accent: oklch(0.945 0.014 195);
-	--accent-foreground: oklch(0.3 0.02 215);
+	--secondary: oklch(0.915 0.005 80);
+	--secondary-foreground: oklch(0.28 0.006 80);
+	--muted: oklch(0.915 0.005 80);
+	--muted-foreground: oklch(0.5 0.01 80);
+	--accent: oklch(0.9 0.006 80);
+	--accent-foreground: oklch(0.21 0.006 80);
 
-	--destructive: oklch(0.55 0.16 27);
-	--destructive-foreground: oklch(0.985 0.003 200);
+	--destructive: oklch(0.6 0.19 27);
+	--destructive-foreground: oklch(0.97 0.003 80);
 
-	--border: oklch(0.9 0.008 205);
-	--input: oklch(0.9 0.008 205);
-	--ring: oklch(0.47 0.077 190);
+	--border: oklch(0.87 0.006 80);
+	--input: oklch(0.87 0.006 80);
+	--ring: oklch(0.72 0.14 163);
 
-	/* Sidebar: a shade off the page ground so the rail reads as a surface,
-	   not a border. Active rows use the accent tint rather than the primary
-	   fill — a sidebar full of petrol blocks would shout. */
-	--sidebar: oklch(0.97 0.005 200);
+	--sidebar: oklch(0.935 0.004 80);
 	--sidebar-foreground: var(--foreground);
 	--sidebar-primary: var(--primary);
 	--sidebar-primary-foreground: var(--primary-foreground);
-	--sidebar-accent: oklch(0.93 0.012 195);
-	--sidebar-accent-foreground: oklch(0.3 0.02 215);
-	--sidebar-border: oklch(0.89 0.008 205);
+	--sidebar-accent: oklch(0.885 0.006 80);
+	--sidebar-accent-foreground: oklch(0.21 0.006 80);
+	--sidebar-border: oklch(0.86 0.006 80);
 	--sidebar-ring: var(--ring);
 
-	--radius: 0.625rem;
+	/* The rainbow. Hues from the classic accent keycaps: coral, orange,
+	   mustard, mint, sky, lilac. Each gesture owns one. */
+	--retro-red: oklch(0.65 0.19 27);
+	--retro-orange: oklch(0.73 0.17 52);
+	--retro-yellow: oklch(0.86 0.15 90);
+	--retro-green: oklch(0.77 0.14 163);
+	--retro-blue: oklch(0.71 0.12 228);
+	--retro-violet: oklch(0.64 0.15 300);
+
+	/* Keycap plastic: the top face and the side. */
+	--cap: oklch(0.93 0.004 80);
+	--cap-side: oklch(0.8 0.006 80);
+	--cap-dark: oklch(0.32 0.006 80);
+	--cap-dark-side: oklch(0.22 0.006 80);
+	--case: oklch(0.27 0.006 80);
+
+	--radius: 0.75rem;
 }
 
 .dark {
-	--background: oklch(0.19 0.014 220);
-	--foreground: oklch(0.93 0.008 200);
-	--card: oklch(0.23 0.016 220);
-	--card-foreground: oklch(0.93 0.008 200);
-	--popover: oklch(0.23 0.016 220);
-	--popover-foreground: oklch(0.93 0.008 200);
+	--background: oklch(0.2 0.005 80);
+	--foreground: oklch(0.94 0.004 80);
+	--card: oklch(0.245 0.005 80);
+	--card-foreground: oklch(0.94 0.004 80);
+	--popover: oklch(0.245 0.005 80);
+	--popover-foreground: oklch(0.94 0.004 80);
 
-	/* Lifted and desaturated for a dark ground: the light-mode petrol goes
-	   muddy against dark, so the accent shifts rather than simply inverting. */
-	--primary: oklch(0.72 0.096 187);
-	--primary-foreground: oklch(0.19 0.014 220);
+	--primary: oklch(0.94 0.004 80);
+	--primary-foreground: oklch(0.2 0.005 80);
 
-	--secondary: oklch(0.27 0.016 218);
-	--secondary-foreground: oklch(0.93 0.008 200);
-	--muted: oklch(0.27 0.016 218);
-	--muted-foreground: oklch(0.68 0.018 205);
-	--accent: oklch(0.3 0.022 200);
-	--accent-foreground: oklch(0.93 0.008 200);
+	--secondary: oklch(0.29 0.005 80);
+	--secondary-foreground: oklch(0.94 0.004 80);
+	--muted: oklch(0.29 0.005 80);
+	--muted-foreground: oklch(0.68 0.008 80);
+	--accent: oklch(0.32 0.006 80);
+	--accent-foreground: oklch(0.94 0.004 80);
 
-	--destructive: oklch(0.7 0.14 25);
-	--destructive-foreground: oklch(0.19 0.014 220);
+	--destructive: oklch(0.7 0.16 25);
+	--destructive-foreground: oklch(0.2 0.005 80);
 
-	--border: oklch(0.31 0.016 215);
-	--input: oklch(0.31 0.016 215);
-	--ring: oklch(0.72 0.096 187);
+	--border: oklch(0.32 0.006 80);
+	--input: oklch(0.32 0.006 80);
+	--ring: oklch(0.77 0.14 163);
 
-	--sidebar: oklch(0.17 0.014 220);
+	--sidebar: oklch(0.18 0.005 80);
 	--sidebar-foreground: var(--foreground);
 	--sidebar-primary: var(--primary);
 	--sidebar-primary-foreground: var(--primary-foreground);
-	--sidebar-accent: oklch(0.27 0.02 205);
-	--sidebar-accent-foreground: oklch(0.93 0.008 200);
-	--sidebar-border: oklch(0.29 0.016 215);
+	--sidebar-accent: oklch(0.28 0.006 80);
+	--sidebar-accent-foreground: oklch(0.94 0.004 80);
+	--sidebar-border: oklch(0.28 0.006 80);
 	--sidebar-ring: var(--ring);
+
+	/* Lifted a touch so the plastic still reads as coloured on charcoal. */
+	--retro-red: oklch(0.7 0.18 27);
+	--retro-orange: oklch(0.77 0.16 52);
+	--retro-yellow: oklch(0.88 0.14 90);
+	--retro-green: oklch(0.8 0.13 163);
+	--retro-blue: oklch(0.75 0.11 228);
+	--retro-violet: oklch(0.7 0.13 300);
+
+	--cap: oklch(0.36 0.006 80);
+	--cap-side: oklch(0.25 0.006 80);
+	--cap-dark: oklch(0.3 0.006 80);
+	--cap-dark-side: oklch(0.2 0.006 80);
+	--case: oklch(0.15 0.005 80);
 }
 
 @theme inline {
@@ -117,14 +141,22 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
+	--color-retro-red: var(--retro-red);
+	--color-retro-orange: var(--retro-orange);
+	--color-retro-yellow: var(--retro-yellow);
+	--color-retro-green: var(--retro-green);
+	--color-retro-blue: var(--retro-blue);
+	--color-retro-violet: var(--retro-violet);
+	--color-cap: var(--cap);
+	--color-cap-side: var(--cap-side);
+	--color-case: var(--case);
+
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
 
-	--font-sans:
-		"Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-	--font-serif: "Newsreader", Georgia, serif;
+	--font-sans: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	--font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
@@ -134,51 +166,119 @@
 	}
 	body {
 		@apply bg-background text-foreground;
-		font-feature-settings: "cv11", "ss01";
 		-webkit-font-smoothing: antialiased;
+		font-variation-settings: "wdth" 100;
 	}
-	/* Headings carry the serif; it's the one place the page gets a voice. */
+	/* Headlines are the condensed, heavy cut: the brand's voice is a bold
+	   grotesk set tight, like a legend printed on a keycap. */
 	h1,
 	h2,
 	h3 {
-		font-family: var(--font-serif);
-		font-weight: 500;
+		font-family: var(--font-sans);
+		font-weight: 800;
+		font-variation-settings: "wdth" 84;
+		letter-spacing: -0.025em;
+		line-height: 1.02;
 		text-wrap: balance;
+	}
+	::selection {
+		background: color-mix(in oklch, var(--retro-yellow) 55%, transparent);
 	}
 }
 
-/* Record prose: University modules and decision records. The fragments are
-   hand-written HTML or rendered markdown, so these rules give inherited
-   markup the site's typography rather than restyling every element. */
+/* The condensed cut, for anything that is not a heading but should shout. */
+@utility display {
+	font-family: var(--font-sans);
+	font-weight: 800;
+	font-variation-settings: "wdth" 84;
+	letter-spacing: -0.025em;
+	line-height: 1.02;
+}
+@utility wide {
+	font-variation-settings: "wdth" 112;
+}
+
+/* A small mono label, uppercase, tracked out: the eyebrow above a heading,
+   the caption under a keycap, the header of a table. */
+@utility eyebrow {
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	font-weight: 500;
+}
+
+/* The rainbow, as a background. Hard stops: stripes, not a gradient. */
+@utility rainbow {
+	background-image: linear-gradient(
+		90deg,
+		var(--retro-red) 0 16.66%,
+		var(--retro-orange) 16.66% 33.33%,
+		var(--retro-yellow) 33.33% 50%,
+		var(--retro-green) 50% 66.66%,
+		var(--retro-blue) 66.66% 83.33%,
+		var(--retro-violet) 83.33% 100%
+	);
+}
+/* A word underlined with the rainbow: the one emphasis the headline gets. */
+@utility underline-rainbow {
+	background-image: linear-gradient(
+		90deg,
+		var(--retro-red) 0 16.66%,
+		var(--retro-orange) 16.66% 33.33%,
+		var(--retro-yellow) 33.33% 50%,
+		var(--retro-green) 50% 66.66%,
+		var(--retro-blue) 66.66% 83.33%,
+		var(--retro-violet) 83.33% 100%
+	);
+	background-repeat: no-repeat;
+	background-size: 100% 0.14em;
+	background-position: 0 92%;
+	padding-bottom: 0.04em;
+}
+@utility rainbow-text {
+	background-image: linear-gradient(
+		90deg,
+		var(--retro-red),
+		var(--retro-orange),
+		var(--retro-yellow),
+		var(--retro-green),
+		var(--retro-blue),
+		var(--retro-violet)
+	);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+/* Record prose: University modules, decision records, plans, launch copy.
+   The fragments are hand-written HTML or rendered markdown, so these rules
+   give inherited markup the site's typography rather than restyling every
+   element. */
 .record-prose {
 	max-width: 68ch;
 	line-height: 1.7;
 }
 .record-prose h2 {
-	font-family: var(--font-sans);
-	font-size: 1.2rem;
-	font-weight: 600;
+	font-size: 1.35rem;
 	margin: 2em 0 0.6em;
-	letter-spacing: -0.01em;
 }
 .record-prose h3 {
-	font-family: var(--font-sans);
-	font-size: 1.1rem;
-	font-weight: 600;
+	font-size: 1.15rem;
 	margin: 2.2em 0 0.6em;
-	letter-spacing: -0.01em;
 }
 .record-prose p {
 	margin: 0 0 1em;
 }
 .record-prose a {
-	color: var(--primary);
+	color: var(--foreground);
 	text-underline-offset: 3px;
 	text-decoration: underline;
-	text-decoration-color: color-mix(in oklch, var(--primary) 35%, transparent);
+	text-decoration-thickness: 2px;
+	text-decoration-color: var(--retro-green);
 }
 .record-prose a:hover {
-	text-decoration-color: var(--primary);
+	text-decoration-color: var(--retro-orange);
 }
 .record-prose ul {
 	padding-left: 1.2em;
@@ -189,14 +289,20 @@
 	margin-bottom: 0.4em;
 }
 .record-prose li::marker {
-	color: var(--primary);
+	color: var(--retro-orange);
 }
 .record-prose strong {
-	font-weight: 600;
+	font-weight: 700;
+}
+.record-prose blockquote {
+	border-left: 3px solid var(--retro-yellow);
+	padding-left: 1em;
+	margin: 0 0 1em;
+	color: var(--muted-foreground);
 }
 .record-prose pre {
-	background: var(--muted);
-	border: 1px solid var(--border);
+	background: var(--case);
+	color: oklch(0.93 0.004 80);
 	border-radius: var(--radius);
 	padding: 14px 16px;
 	overflow-x: auto;
@@ -211,7 +317,7 @@
 }
 .record-prose :not(pre) > code {
 	background: var(--muted);
-	border-radius: calc(var(--radius) - 4px);
+	border-radius: calc(var(--radius) - 6px);
 	padding: 0.1em 0.35em;
 }
 .record-prose table {
@@ -227,16 +333,31 @@
 	font-family: var(--font-mono);
 	font-size: 0.7rem;
 	text-transform: uppercase;
-	letter-spacing: 0.08em;
+	letter-spacing: 0.1em;
 	color: var(--muted-foreground);
 	padding: 8px 12px;
-	border-bottom: 1px solid var(--border);
+	border-bottom: 2px solid var(--border);
 	white-space: nowrap;
 }
 .record-prose td {
 	padding: 9px 12px;
 	border-bottom: 1px solid var(--border);
 	vertical-align: top;
+}
+.record-prose hr {
+	border: 0;
+	height: 4px;
+	margin: 2em 0;
+	background-image: linear-gradient(
+		90deg,
+		var(--retro-red) 0 16.66%,
+		var(--retro-orange) 16.66% 33.33%,
+		var(--retro-yellow) 33.33% 50%,
+		var(--retro-green) 50% 66.66%,
+		var(--retro-blue) 66.66% 83.33%,
+		var(--retro-violet) 83.33% 100%
+	);
+	border-radius: 2px;
 }
 
 /* Plans: GitHub task lists rendered by marked. The boxes are read-only —
@@ -247,31 +368,31 @@
 }
 .plan-prose li:has(> input[type="checkbox"]) {
 	position: relative;
-	padding-left: 1.7em;
+	padding-left: 1.8em;
 }
 .plan-prose input[type="checkbox"] {
 	appearance: none;
-	width: 1em;
-	height: 1em;
+	width: 1.05em;
+	height: 1.05em;
 	position: absolute;
 	left: 0;
-	top: 0.3em;
-	border: 1.5px solid var(--border);
-	border-radius: 4px;
+	top: 0.28em;
+	border: 2px solid var(--border);
+	border-radius: 5px;
 	background: var(--card);
 }
 .plan-prose input[type="checkbox"]:checked {
-	background: var(--primary);
-	border-color: var(--primary);
+	background: var(--retro-green);
+	border-color: var(--retro-green);
 }
 .plan-prose input[type="checkbox"]:checked::after {
 	content: "";
 	position: absolute;
 	left: 0.28em;
-	top: 0.08em;
+	top: 0.05em;
 	width: 0.28em;
 	height: 0.55em;
-	border: solid var(--primary-foreground);
+	border: solid oklch(0.2 0.005 80);
 	border-width: 0 2px 2px 0;
 	transform: rotate(45deg);
 }
@@ -279,12 +400,13 @@
 	color: var(--muted-foreground);
 }
 .plan-prose ol {
-	padding-left: 1.4em;
+	padding-left: 1.6em;
 	margin: 0 0 1em;
 	list-style: decimal;
 }
 .plan-prose ol li::marker {
-	color: var(--primary);
+	color: var(--retro-orange);
 	font-family: var(--font-mono);
+	font-weight: 600;
 	font-size: 0.85em;
 }

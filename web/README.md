@@ -86,6 +86,37 @@ edit, but re-adding a component overwrites it. Re-apply these on purpose:
   `data-[active=true]:` rather than upstream's presence variant
   `data-active:`. Svelte renders `isActive={false}` as `data-active="false"`,
   and a presence variant matches that too, so every row lit up as active.
+- **tabs, tabs-list** — orientation styling uses
+  `data-[orientation=horizontal]:` rather than upstream's `data-horizontal:`.
+  The installed bits-ui renders `data-orientation="horizontal"` only, so the
+  presence variant never matched and the tab strip stacked beside its content.
+
+## Generated data
+
+Backstage renders from committed JSON so the deploy never reaches outside
+`web/`. Each file has a source of truth elsewhere in the repo and a script
+that regenerates it; CI runs `pnpm run sync:docs` and fails on any diff.
+
+| JSON | Source | Script |
+|---|---|---|
+| `src/lib/decisions/records.json` | `docs/decisions/{adr,gdr}` | `sync:decisions` |
+| `src/lib/plans/plans.json` | `docs/plans` | `sync:plans` |
+| `src/lib/releases/releases.json` | `CHANGELOG.md` | `sync:releases` |
+| `src/lib/evals/cases.json` | `packages/TimbreKit/Fixtures` | `sync:evals` |
+| `src/lib/launch/launch.json` | `docs/launch` | `sync:launch` |
+| `src/lib/evals/measured.json` | a real `timbre-eval` run | `pnpm run measure` — needs a Mac with the model, so CI leaves it alone; the SHA and date on the page say how old it is |
+
+A launch document is markdown with `- **Kind:**`, `- **Status:**` and
+`- **Order:**` bullets under the title; whatever sits under a `## Copy`
+heading is what the page's Copy button puts on the clipboard.
+
+## Identity
+
+GDR-0017: keycap grey, charcoal ink, and six retro accents, one per gesture.
+The palette lives in `src/app.css` (`--retro-*`, `--cap*`, `--case`) with
+utilities `display` (the condensed headline cut), `eyebrow`, `rainbow`,
+`underline-rainbow`. The share image is drawn by `tools/og-image.swift`
+into `static/og.png`; re-run it if the palette or tagline changes.
 
 ## Decisions page
 

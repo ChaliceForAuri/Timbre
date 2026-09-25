@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { enhance } from '$app/forms';
+	import Stripe from '$lib/components/marketing/Stripe.svelte';
 
 	let { data, form } = $props();
 </script>
@@ -14,9 +15,10 @@
 <div class="mx-auto flex min-h-[70vh] max-w-md items-center px-6">
 	<Card.Root class="w-full">
 		<Card.Header>
-			<Card.Title class="text-2xl">Backstage</Card.Title>
+			<Stripe height="4px" width="3rem" class="mb-3" />
+			<Card.Title class="display text-3xl">Backstage</Card.Title>
 			<Card.Description>
-				The laboratory: evals, traces, feedback, and the University. Private.
+				Where Timbre is run: releases, decisions, plans, evals and the University. Private.
 			</Card.Description>
 		</Card.Header>
 

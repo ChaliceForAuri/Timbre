@@ -31,13 +31,16 @@ jobs:
           cache: pnpm
           cache-dependency-path: web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - name: Generated docs data matches docs/decisions and docs/plans
-        # records.json and plans.json are generated from the markdown and
-        # committed, so the deploy never reaches outside web/. If the docs
-        # changed without a re-sync, this is where it shows.
+      - name: Generated data matches the docs, the changelog and the fixtures
+        # records, plans, releases, eval cases and launch copy are generated
+        # from markdown and JSON elsewhere in the repo and committed, so the
+        # deploy never reaches outside web/. If a source changed without a
+        # re-sync, this is where it shows. measured.json is not checked: it
+        # comes from a Mac with the model (pnpm run measure).
         run: |
           pnpm run sync:docs
           git diff --exit-code --stat -- src/lib/decisions/records.json src/lib/plans/plans.json \
-            || { echo "::error::docs changed — run 'pnpm run sync:docs' in web/ and commit the JSON"; exit 1; }
+            src/lib/releases/releases.json src/lib/evals/cases.json src/lib/launch/launch.json \
+            || { echo "::error::sources changed — run 'pnpm run sync:docs' in web/ and commit the JSON"; exit 1; }
       - run: pnpm run check
       - run: pnpm run build
