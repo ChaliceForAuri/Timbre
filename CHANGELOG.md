@@ -10,6 +10,9 @@ turns the section for that version into the release notes shown in the app.
 ## [Unreleased]
 
 ### Added
+- **A disk image.** The download is now a `.dmg` with an Applications
+  folder to drag Timbre onto; the zip remains for updates and for anyone
+  who prefers it.
 - **A usage count in Settings** — words dictated, dictations, commands,
   to-dos and readings, this week and all time. Stored in this Mac's
   preferences and nowhere else.
