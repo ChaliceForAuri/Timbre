@@ -10,6 +10,12 @@ turns the section for that version into the release notes shown in the app.
 ## [Unreleased]
 
 ### Added
+- **Words appear as you speak.** Confirmed words are typed into the app
+  while you are still talking, a sentence or so behind your voice, and the
+  cleanup replaces them the moment you let go. The pill now shows only the
+  words still being heard. Off in Settings › General if you would rather
+  keep everything in the pill until release. Where an app cannot be read
+  back — Terminal, secure fields — the pill-then-paste flow remains.
 - **An icon.** The waveform from the website's favicon — four bars, the
   shape of a voice — on a charcoal tile, in the retro colours. Timbre had
   shipped with Xcode's placeholder until now.

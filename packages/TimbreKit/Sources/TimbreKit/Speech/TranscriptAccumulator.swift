@@ -9,8 +9,12 @@ nonisolated struct TranscriptAccumulator {
     private var volatileText = ""
 
     /// Everything heard so far, finalized plus in-flight.
-    var currentText: String {
-        (finalizedText + volatileText).trimmingCharacters(in: .whitespacesAndNewlines)
+    var currentText: String { snapshot.text }
+
+    /// The two halves, for callers that act on confirmed words while the
+    /// user is still speaking.
+    var snapshot: TranscriptSnapshot {
+        TranscriptSnapshot(finalized: finalizedText, volatile: volatileText)
     }
 
     mutating func apply(_ text: String, isFinal: Bool) {
