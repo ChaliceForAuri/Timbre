@@ -34,6 +34,15 @@ struct TimbreEval {
             return
         }
 
+        if let feed = value(for: "--verify-update", in: arguments) {
+            try await runVerifyUpdate(
+                feed: feed,
+                currentVersion: value(for: "--from", in: arguments) ?? "0.0.0",
+                standIn: value(for: "--install-over", in: arguments)
+            )
+            return
+        }
+
         if let directory = value(for: "--live-commands", in: arguments) {
             try await runLiveCommands(path: directory, check: value(for: "--check", in: arguments))
             return
@@ -170,6 +179,32 @@ struct TimbreEval {
         text.split(separator: "\n", omittingEmptySubsequences: false)
             .joined(separator: " ⏎ ")
     }
+
+    // MARK: - Update pipeline
+
+    /// Download, hash, unpack, signature and version checks against a real
+    /// feed — the production one after a release, a file:// one before.
+    private static func runVerifyUpdate(feed: String, currentVersion: String, standIn: String?) async throws {
+        let url = feed.contains("://") ? URL(string: feed)! : URL(filePath: feed)
+        print("verifying the update pipeline against \(url.absoluteString), as \(currentVersion)\n")
+        let result = try await TimbreEvaluation.verifyUpdate(
+            feed: url,
+            currentVersion: currentVersion,
+            installOver: standIn.map { URL(filePath: $0) }
+        )
+        print(
+            "✓ release    \(result.release.version) (build \(result.release.build)), \(result.release.size) bytes"
+        )
+        print("✓ download   size and SHA-256 match the version file")
+        print("✓ signature  team \(UpdateSignature.team), notarized — \(result.verified.path)")
+        if let installed = result.installed {
+            let version =
+                Bundle(url: installed)?.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "?"
+            print("✓ replaced   \(installed.path) is now \(version)")
+        }
+    }
+
+    private enum UpdateSignature { static let team = "WX9L5M4Y9Q" }
 
     // MARK: - Live command recognition
 
@@ -420,6 +455,9 @@ struct TimbreEval {
         USAGE
           timbre-eval <corpus.json> [--repeat <n>] [--json <out.json>]
           timbre-eval --commands <commands.json> [--repeat <n>]
+          timbre-eval --verify-update <feed-url|appcast.json> [--from <version>] [--install-over <app>]
+                                             download, hash, signature and replace,
+                                             everything an update does but relaunch
           timbre-eval --live-commands <dir> [--check <file>]
                                              when each spoken command is recognised
                                              live, and that an abandoned session

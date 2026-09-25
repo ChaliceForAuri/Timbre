@@ -209,6 +209,37 @@ public enum TimbreEvaluation {
         return (results, try await transcriber.finishDictation())
     }
 
+    /// The update pipeline end to end, short of relaunching (ADR-0010):
+    /// fetch the feed, decide as a copy of `currentVersion` would, download,
+    /// check the hash, unpack and verify the signature. With `installOver`,
+    /// also replace that app bundle — a stand-in, never the running app.
+    public static func verifyUpdate(
+        feed: URL,
+        currentVersion: String,
+        installOver standIn: URL? = nil
+    ) async throws -> (release: AppRelease, verified: URL, installed: URL?) {
+        let session = URLSession(configuration: .ephemeral)
+        let (data, _) = try await session.data(from: feed)
+        let release = try JSONDecoder().decode(Appcast.self, from: data).latest
+        switch UpdateDecision.decide(
+            release, currentVersion: currentVersion, currentBuild: 0,
+            system: ProcessInfo.processInfo.operatingSystemVersion, feed: feed
+        ) {
+        case .available: break
+        case .upToDate: throw UpdateFailure.feed("\(currentVersion) is already current")
+        case .needsNewerMacOS: throw UpdateFailure.feed("needs macOS \(release.minimumSystemVersion)")
+        case .unusable(let why): throw UpdateFailure.feed(why)
+        }
+        let verified = try await UpdateInstaller.prepare(release, using: session)
+        let installed = try standIn.map { try UpdateInstaller.replace($0, with: verified) }
+        return (release, verified, installed)
+    }
+
+    /// Whether an app bundle would pass the update signature check.
+    public static func updateSignatureAccepts(_ app: URL) -> Bool {
+        UpdateVerifier.isRelease(app)
+    }
+
     public enum EvaluationError: LocalizedError {
         case analyzerFormatUnavailable
 

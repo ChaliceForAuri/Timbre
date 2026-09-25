@@ -47,6 +47,13 @@ fi
 VERSION="$(sed -n 's/^MARKETING_VERSION = //p' apps/Timbre/Config/Shared.xcconfig)"
 echo "Releasing Timbre $VERSION"
 
+# Release notes come from the changelog, so the app and the repo can never
+# disagree about what a version contains. No section, no release.
+if ! grep -q "^## \[$VERSION\]" CHANGELOG.md; then
+    echo "CHANGELOG.md has no section for $VERSION. Write one first:  ## [$VERSION] — $(date +%F)"
+    exit 1
+fi
+
 # ---- Archive and export with Developer ID. ----------------------------------
 
 rm -rf build/Timbre.xcarchive build/export
@@ -74,6 +81,49 @@ xcrun stapler staple "$APP"
 rm -f "$ZIP"
 ditto -c -k --keepParent "$APP" "$ZIP"
 
+# ---- Files for the website: the version file and the zip (GDR-0013). -------
+# The update check fetches web/static/appcast.json from the site, and the zip
+# it names is served from the same host. Publishing a release is committing
+# these two files on a release branch and merging it: the deploy is the release.
+BUILD="$(sed -n 's/^CURRENT_PROJECT_VERSION = //p' apps/Timbre/Config/Shared.xcconfig)"
+mkdir -p web/static/releases
+find web/static/releases -name 'Timbre-*.zip' ! -name "Timbre-$VERSION.zip" -delete
+cp "$ZIP" "web/static/releases/Timbre-$VERSION.zip"
+python3 - "$VERSION" "$BUILD" "$ZIP" > web/static/appcast.json <<'PY'
+import datetime, hashlib, json, os, re, sys
+version, build, zip_path = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+
+section = re.search(rf"^## \[{re.escape(version)}\][^\n]*\n(.*?)(?=^## |\Z)",
+                    open("CHANGELOG.md").read(), re.S | re.M).group(1)
+lines, current = [], None
+for raw in section.splitlines():
+    line = raw.strip()
+    if line.startswith("### "):
+        lines.append(f"\n{line[4:]}:")
+    elif line.startswith("- "):
+        current = "• " + line[2:]
+        lines.append(current)
+    elif line and lines:
+        lines[-1] += " " + line
+notes = re.sub(r"[*`]", "", "\n".join(lines)).strip()
+
+data = open(zip_path, "rb").read()
+print(json.dumps({"latest": {
+    "version": version,
+    "build": build,
+    "minimumSystemVersion": "26.0",
+    "url": f"https://timbre.hugopretorius.dev/releases/Timbre-{version}.zip",
+    "sha256": hashlib.sha256(data).hexdigest(),
+    "size": len(data),
+    "published": datetime.date.today().isoformat(),
+    "notes": notes,
+}}, indent=2, ensure_ascii=False))
+PY
+
 echo
 echo "Ready: $ZIP"
-echo "Verify on another Mac: unzip, then  spctl -a -vv Timbre.app"
+echo "Site files: web/static/appcast.json and web/static/releases/Timbre-$VERSION.zip"
+echo "Check them before publishing:"
+echo "  (cd packages/TimbreKit && swift run timbre-eval --verify-update ../../web/static/appcast.json)"
+echo "  — that reads the zip from the site, so run it against a file:// copy first; see CLAUDE.md."
+echo "Publish: commit both on a release branch, open a PR, merge. The deploy is the release."

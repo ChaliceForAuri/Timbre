@@ -8,18 +8,22 @@ import TimbreKit
 struct TimbreApp: App {
 
     @State private var controller = DictationController()
+    @State private var updater = SoftwareUpdater()
 
     var body: some Scene {
         MenuBarExtra {
-            MenuContent(controller: controller)
+            MenuContent(controller: controller, updater: updater)
         } label: {
             Image(systemName: iconName)
-                .task { await controller.bootstrap() }
+                .task {
+                    updater.start()
+                    await controller.bootstrap()
+                }
         }
         .menuBarExtraStyle(.menu)
 
         Settings {
-            SettingsView(controller: controller)
+            SettingsView(controller: controller, updater: updater)
         }
     }
 

@@ -3,10 +3,39 @@
 Notable changes to Timbre (called *Spoke* through v0.1.1). Format follows [Keep a Changelog](https://keepachangelog.com);
 versioning is [Semantic Versioning](https://semver.org).
 
-`MARKETING_VERSION` in `apps/Spoke/Config/Shared.xcconfig` is the source of
-truth for the app's version; a release tag must match it.
+`MARKETING_VERSION` in `apps/Timbre/Config/Shared.xcconfig` is the source of
+truth for the app's version; a release tag must match it. `tools/release.sh`
+turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
+
+## [0.3.0] — 2026-09-24
+
+### Added
+- **Command mode.** Select text, hold right Command, and say fix, explain or
+  shorten — it acts the moment it hears the word. Say nothing and release
+  to fix. Explain shows a card and never touches your text; fix and shorten
+  replace the selection, and Command-Z puts it back.
+- **Definitions.** Teach Timbre your acronyms in Settings › Dictionary. A
+  defined term is explained from your definition, and every card says
+  whether its answer came from your dictionary or the on-device model.
+- **Corrections.** When Timbre keeps hearing a phrase wrong, teach it what
+  you meant once: "timber kit" becomes "TimbreKit" every time.
+- **Updates.** Check for Updates in the menu, and an optional daily check,
+  off by default. It fetches one small version file from Timbre's own
+  website and sends nothing about you. Installing checks that the download
+  is Timbre, signed by its developer and notarized by Apple, before it
+  replaces anything.
+
+### Changed
+- Settings is organised into General, Dictionary, Reading and Privacy.
+- Timbre is signed by its developer's renewed Apple team. Coming from 0.2.0,
+  macOS asks for Accessibility once more: remove the old Timbre entry and
+  add the new one.
+
+### Fixed
+- A speech session could be started while the previous one was still
+  warming up, and then hear nothing.
 
 ## [0.2.0] — 2026-08-21
 
