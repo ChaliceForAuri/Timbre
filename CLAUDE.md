@@ -36,8 +36,9 @@ web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
 # Fast loop — the package is where the logic lives:
 swift test --package-path packages/TimbreKit
 
-# Measure the polisher against the fixed corpus (ADR-0004). The model is
-# stochastic: never judge a prompt change on a single run.
+# Measure the polisher against the fixed corpus (ADR-0004). Decoding is
+# greedy (ADR-0011), so --repeat checks determinism; still never judge a
+# prompt change on a single run.
 cd packages/TimbreKit && swift run timbre-eval Fixtures/corpus.json --repeat 5
 
 # Same discipline for command mode's fix / explain / shorten (GDR-0012):
@@ -138,10 +139,12 @@ the evaluation seam (ADR-0004). Keep it that way.
   transcript on any failure; `TextInserter` falls back to leaving text on
   the pasteboard when Accessibility is missing. The user never loses an
   utterance.
-- **Pasted text always ends a sentence.** `SentenceTerminator` adds the final
-  full stop deterministically as the last step of `polish`, on every path
-  including the fallbacks (ADR-0005). The prompt must not ask the model for
-  it — that was tried twice and failed 5 of 5 runs.
+- **Pasted text always ends a sentence, and starts with a capital.**
+  `SentenceCapitalizer` then `SentenceTerminator` run deterministically as
+  the last steps of `polish`, on every path including the fallbacks
+  (ADR-0005, ADR-0011). The prompt must not be asked for the full stop —
+  tried twice, failed 5 of 5 — and the polisher decodes greedily: same
+  words, same cleanup, 11/11 at five repeats.
 - **Taught corrections run first, deterministically.** `CorrectionTable`
   replaces each taught *heard* phrase with its *meant* text before spoken
   commands and the model (GDR-0011): whole phrase, case ignored, verbatim,

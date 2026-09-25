@@ -1,5 +1,32 @@
 [
 	{
+		"id": "ADR-0011",
+		"kind": "ADR",
+		"number": "0011",
+		"slug": "polisher-decodes-greedily-capitalizes-deterministically",
+		"path": "docs/decisions/adr/0011-polisher-decodes-greedily-capitalizes-deterministically.md",
+		"title": "The polisher decodes greedily; sentence capitals are deterministic",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-09-25",
+		"relations": [
+			{
+				"label": "Extends",
+				"summary": "ADR-0005 (the final full stop) and ADR-0009 (greedy decoding for commands),…",
+				"refs": [
+					"ADR-0005",
+					"ADR-0009"
+				]
+			}
+		],
+		"excerpt": "The polisher's one flaky corpus case (#27: \"like\" surviving cleanup one run\nin five) was suspected to be sampling variance, the same variance ADR-0009\nremoved from command mode. Measured on the eleven-case corpus at five\nrepeats:",
+		"plain": "Accepted.\nContext.\nThe polisher's one flaky corpus case (#27: \"like\" surviving cleanup one run\nin five) was suspected to be sampling variance, the same variance ADR-0009\nremoved from command mode. Measured on the eleven-case corpus at five\nrepeats:\nDecoding, Cases passing every run, Distinct outputs per case.\nDefault sampling, schema in prompt, 10/11, up to 3.\nGreedy, schema out of prompt, 11/11, 1.\nGreedy also exposed something sampling had been hiding: for short casual\ninputs the model's most likely output starts lowercase — \"the deploy went\nout this morning.\", \"yep that works.\", \"yeah that sounds good to me lets just\ndo it.\" — every time. Under sampling the same cases came back capitalized\nsometimes and not others. Instruction 3 asks the model for capitalization;\nlike the final full stop (ADR-0005), it is a mechanical rule the model\napplies unreliably, and a deterministic step applies perfectly.\nDecision.\nTextPolisher decodes with GenerationOptions(sampling: .greedy) and keeps\nthe schema out of the prompt. The same words get the same cleanup, every\ntime.\nSentenceCapitalizer runs after the model on every path, before the\nterminator: the first letter of the text and of each sentence after . !\n? or a line break is uppercased. Words that carry their own casing (iPhone,\nmacOS, eBay) are left alone; an abbreviation's dot (e.g., i.e., a.m.) is not\na sentence end; a quote or bracket at a sentence start is looked through.\nThe corpus checks every output for an initial capital.\nConsequences.\n11/11 at five repeats, one output per case. #27 is closed by measurement.\nA greedy answer that is wrong is wrong every time; the corpus is what\n catches it, and --repeat now tests determinism rather than luck.\nThe prompt still says \"capitalization\" in instruction 3. It stays: the\n model handles mid-sentence proper nouns, which the rule does not touch.\nTwo deterministic passes now bracket the model — capitalizer and\n terminator — and both run on the fallback path, so a raw transcript pasted\n because the model was unavailable still reads as a sentence.\nAlternatives considered.\nKeep sampling and add the capitalizer: rejected; it fixes the visible\n symptom and keeps the variance that produced #27.\nAsk harder for capitals in the prompt: rejected on ADR-0005's\n evidence; asking twice for the full stop failed five of five.\nUppercase the first letter unconditionally: rejected; \"IPhone\".",
+		"html": "<h2>Context</h2>\n<p>The polisher&#39;s one flaky corpus case (#27: &quot;like&quot; surviving cleanup one run\nin five) was suspected to be sampling variance, the same variance ADR-0009\nremoved from command mode. Measured on the eleven-case corpus at five\nrepeats:</p>\n<table>\n<thead>\n<tr>\n<th>Decoding</th>\n<th>Cases passing every run</th>\n<th>Distinct outputs per case</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Default sampling, schema in prompt</td>\n<td>10/11</td>\n<td>up to 3</td>\n</tr>\n<tr>\n<td>Greedy, schema out of prompt</td>\n<td>11/11</td>\n<td>1</td>\n</tr>\n</tbody></table>\n<p>Greedy also exposed something sampling had been hiding: for short casual\ninputs the model&#39;s most likely output starts lowercase — &quot;the deploy went\nout this morning.&quot;, &quot;yep that works.&quot;, &quot;yeah that sounds good to me lets just\ndo it.&quot; — every time. Under sampling the same cases came back capitalized\nsometimes and not others. Instruction 3 asks the model for capitalization;\nlike the final full stop (ADR-0005), it is a mechanical rule the model\napplies unreliably, and a deterministic step applies perfectly.</p>\n<h2>Decision</h2>\n<p><code>TextPolisher</code> decodes with <code>GenerationOptions(sampling: .greedy)</code> and keeps\nthe schema out of the prompt. The same words get the same cleanup, every\ntime.</p>\n<p><code>SentenceCapitalizer</code> runs after the model on every path, before the\nterminator: the first letter of the text and of each sentence after <code>.</code> <code>!</code>\n<code>?</code> or a line break is uppercased. Words that carry their own casing (iPhone,\nmacOS, eBay) are left alone; an abbreviation&#39;s dot (e.g., i.e., a.m.) is not\na sentence end; a quote or bracket at a sentence start is looked through.\nThe corpus checks every output for an initial capital.</p>\n<h2>Consequences</h2>\n<ul>\n<li>11/11 at five repeats, one output per case. #27 is closed by measurement.</li>\n<li>A greedy answer that is wrong is wrong every time; the corpus is what\ncatches it, and <code>--repeat</code> now tests determinism rather than luck.</li>\n<li>The prompt still says &quot;capitalization&quot; in instruction 3. It stays: the\nmodel handles mid-sentence proper nouns, which the rule does not touch.</li>\n<li>Two deterministic passes now bracket the model — capitalizer and\nterminator — and both run on the fallback path, so a raw transcript pasted\nbecause the model was unavailable still reads as a sentence.</li>\n</ul>\n<h2>Alternatives considered</h2>\n<ul>\n<li><strong>Keep sampling and add the capitalizer:</strong> rejected; it fixes the visible\nsymptom and keeps the variance that produced #27.</li>\n<li><strong>Ask harder for capitals in the prompt:</strong> rejected on ADR-0005&#39;s\nevidence; asking twice for the full stop failed five of five.</li>\n<li><strong>Uppercase the first letter unconditionally:</strong> rejected; &quot;IPhone&quot;.</li>\n</ul>\n"
+	},
+	{
 		"id": "GDR-0014",
 		"kind": "GDR",
 		"number": "0014",
