@@ -140,6 +140,10 @@ nonisolated public enum PolishChecks {
         if testCase.requiresPunctuation, !trimmed.contains(where: { ".!?".contains($0) }) {
             failures.append("added no sentence punctuation")
         }
+        // Every case: pasted text starts with a capital (ADR-0011).
+        if !SentenceCapitalizer.isCapitalizedAtStart(trimmed) {
+            failures.append("does not start with a capital")
+        }
         if testCase.requiresLineBreak, !trimmed.contains("\n") {
             failures.append("produced no line break")
         }

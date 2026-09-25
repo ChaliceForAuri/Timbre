@@ -39,6 +39,7 @@ Two kinds of records live here. The boundary rule:
 | [0008](adr/0008-taught-vocabulary-and-the-transcriber.md) | Taught vocabulary does not reach SpeechTranscriber; stay on it anyway | Accepted |
 | [0009](adr/0009-command-mode-decodes-greedily.md) | Command mode decodes greedily; only fix uses guided generation | Accepted |
 | [0010](adr/0010-self-update-without-sparkle.md) | Self-update: verify by code requirement, swap in place, relaunch; no Sparkle | Accepted |
+| [0011](adr/0011-polisher-decodes-greedily-capitalizes-deterministically.md) | The polisher decodes greedily; sentence capitals are deterministic | Accepted |
 
 ### GDRs
 

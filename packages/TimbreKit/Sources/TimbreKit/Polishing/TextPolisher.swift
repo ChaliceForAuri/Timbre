@@ -89,11 +89,11 @@ final class TextPolisher {
         // them (GDR-0003).
         let structured = SpokenCommands.applied(to: corrected)
 
-        // One exit point, so the terminal-punctuation guarantee holds on every
-        // path — including the fallbacks, where the model never ran. ADR-0005.
-        return SentenceTerminator.terminated(
-            await modelCleanup(of: structured, appContext: appContext, vocabulary: vocabulary)
-        )
+        // One exit point, so the capital and the full stop hold on every path
+        // — including the fallbacks, where the model never ran. ADR-0005,
+        // ADR-0011.
+        let cleaned = await modelCleanup(of: structured, appContext: appContext, vocabulary: vocabulary)
+        return SentenceTerminator.terminated(SentenceCapitalizer.capitalized(cleaned))
     }
 
     /// The model half of `polish`. Returns `trimmed` unchanged whenever the
@@ -111,7 +111,16 @@ final class TextPolisher {
         do {
             // A fresh session per utterance: no cross-utterance contamination.
             let session = LanguageModelSession(instructions: Self.instructions)
-            let response = try await session.respond(to: prompt, generating: Polished.self)
+            // Greedy, so the same words get the same cleanup every time —
+            // 11/11 at five repeats, one output per case, against 10/11 with
+            // sampling (ADR-0011). The schema stays out of the prompt: it is
+            // enforced by decoding, and describing it leaked into answers.
+            let response = try await session.respond(
+                to: prompt,
+                generating: Polished.self,
+                includeSchemaInPrompt: false,
+                options: GenerationOptions(sampling: .greedy)
+            )
             let cleaned = response.content.text.trimmingCharacters(in: .whitespacesAndNewlines)
 
             guard PolishGuardrail.accepts(cleaned: cleaned, raw: trimmed) else { return trimmed }

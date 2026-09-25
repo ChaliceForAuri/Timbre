@@ -35,7 +35,7 @@ Timbre goes public on LinkedIn at the end of this week. The week is for finishin
 - [ ] Fresh-Mac install: permissions flow with no existing grants; the Accessibility poll picks the grant up without relaunch
 - [ ] Read-aloud with an Enhanced voice on each Mac; the compact-voice warning on a Mac without one
 - [ ] Import a week of real dictations (GDR-0004) and run the polisher corpus against them; fix what fails 2 of 5 or worse
-- [ ] Issue #27: measure greedy decoding and the schema flag on the polisher before changing either
+- [x] Issue #27: measured — greedy decoding and the schema flag take the polisher to 11/11 deterministic; sentence capitals made a rule (ADR-0011)
 - [ ] Settings tabs rendered and checked on the 13-inch Air
 
 ## Landing page and story

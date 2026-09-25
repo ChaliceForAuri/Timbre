@@ -9,6 +9,17 @@ turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-09-25
+
+### Changed
+- **Cleanup is now deterministic.** The same words get the same cleanup
+  every time; the corpus passes 11 of 11 across five repeats with one
+  output per case.
+- **Sentences always start with a capital.** Applied as a rule after the
+  model, like the final full stop, because the model left short casual
+  sentences lowercase. Words with their own casing (iPhone, macOS) and
+  abbreviations (e.g., a.m.) are left alone.
+
 ## [0.3.0] — 2026-09-24
 
 ### Added
