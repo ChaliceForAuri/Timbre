@@ -93,6 +93,8 @@ public final class DictationController {
     private var commandArmTask: Task<Void, Never>?
     private var commandSelection: String?
     private var commandIsCapturing = false
+    private var commandHold = CommandHold()
+    private var lastExplanationPush: ContinuousClock.Instant?
     private var microphoneStart: Duration?
     private var firstAudio: Duration?
     private var hotkeyLoop: Task<Void, Never>?
@@ -248,10 +250,14 @@ public final class DictationController {
 
     /// Opens the microphone, starts a speech session and wires the pill to
     /// both: the part of a hold that dictation and command mode share.
+    ///
+    /// `onTranscript` sees every live transcript as it arrives, after the
+    /// pill does; command mode uses it to act on the word, not the release.
     private func startCapture(
         listeningMode: OverlayView.Mode,
         vocabulary: [String],
-        pressed: ContinuousClock.Instant
+        pressed: ContinuousClock.Instant,
+        onTranscript: ((String) -> Void)? = nil
     ) async throws {
         let clock = ContinuousClock()
         guard let format = await transcriber.analyzerFormat else {
@@ -282,6 +288,7 @@ public final class DictationController {
                     guard let self else { return }
                     self.liveText = text
                     self.overlay.update(text: text)
+                    onTranscript?(text)
                 }
             },
             Task { [weak self] in
@@ -424,11 +431,12 @@ public final class DictationController {
     }
 
     /// A key, a click or another modifier arrived mid-hold: the user was
-    /// typing a shortcut. Put everything back, silently.
+    /// typing a shortcut. Put everything back, silently — unless a command
+    /// already fired, in which case their other keys are their own business.
     private func commandWasInterrupted() async {
         hotkey.endInterruptionWatch()
         await settleCommandArming()
-        guard gesture == .command else { return }
+        guard gesture == .command, commandHold.acceptsInterruption else { return }
         await abandonCommand()
     }
 
@@ -459,6 +467,7 @@ public final class DictationController {
         // waits until the key is up (`endCommand`).
         commandSelection = SelectionReader.selectedTextViaAccessibility()
         commandIsCapturing = false
+        commandHold = CommandHold()
         liveText = ""
         status = .listening
 
@@ -470,7 +479,12 @@ public final class DictationController {
         }
 
         do {
-            try await startCapture(listeningMode: .command, vocabulary: [], pressed: ContinuousClock().now)
+            try await startCapture(
+                listeningMode: .command,
+                vocabulary: [],
+                pressed: ContinuousClock().now,
+                onTranscript: { [weak self] text in self?.commandTranscriptArrived(text) }
+            )
             commandIsCapturing = true
         } catch {
             audio.stop()
@@ -478,25 +492,57 @@ public final class DictationController {
         }
     }
 
+    /// A live transcript arrived mid-hold. The moment it holds a command
+    /// word, the command runs — the key does not have to come up (GDR-0014).
+    private func commandTranscriptArrived(_ text: String) {
+        guard gesture == .command else { return }
+        // Taught corrections first: a stable mis-hearing of a command is
+        // teachable like any other word (GDR-0011).
+        let heard = CorrectionTable.applied(vocabularyStore.corrections, to: text)
+        guard let command = commandHold.heard(heard) else { return }
+
+        // Committed. The shortcut watch has done its job, and our own ⌘C and
+        // ⌘V below must not be mistaken for the user typing a shortcut.
+        hotkey.endInterruptionWatch()
+        overlay.update(mode: .working(command.progressLabel), text: "")
+
+        // Unstructured on purpose: this runs inside the transcript task,
+        // which is cancelled as capture stops, and the command must outlive it.
+        Task { [weak self] in
+            guard let self else { return }
+            await self.dropCommandCapture()
+            await self.perform(command)
+        }
+    }
+
+    /// The key came up. If a command already fired this does nothing; if not,
+    /// the final transcript decides, and silence means fix.
     private func endCommand() async {
         guard gesture == .command else { return }
-        defer { commandSelection = nil }
+        if commandHold.beginRelease() == .alreadyHandled { return }
 
         let spoken = await finishCommandCapture()
-
-        // The user's corrections apply to commands too: a stable mis-hearing
-        // of "shorten" is teachable like any other (GDR-0011).
         let heard = CorrectionTable.applied(vocabularyStore.corrections, to: spoken)
-        guard let command = VoiceCommand.parse(heard) else {
-            let quoted = heard.trimmingCharacters(in: .whitespacesAndNewlines)
-            finishCommand(
-                showing: .error("Heard “\(quoted)” — say fix, explain or shorten."),
-                for: .seconds(3.5)
-            )
+        switch commandHold.resolve(finalTranscript: heard) {
+        case .alreadyHandled:
             return
+        case .unrecognised(let words):
+            commandSelection = nil
+            finishCommand(
+                showing: .error("Heard “\(words)” — say fix, explain or shorten."), for: .seconds(3.5))
+        case .run(let command):
+            overlay.update(mode: .working(command.progressLabel), text: "")
+            await perform(command)
         }
+    }
 
-        // The key is up and the watch is gone, so the pasteboard route is safe.
+    /// Runs a decided command on the selection — the same path whether it
+    /// fired on the word or on the release.
+    private func perform(_ command: VoiceCommand) async {
+        defer { commandSelection = nil }
+
+        // The shortcut watch is gone, so the pasteboard route is safe even if
+        // the key is still physically held.
         var selection = commandSelection
         if selection == nil { selection = await SelectionReader.selectedText() }
         guard let selection else {
@@ -505,13 +551,14 @@ public final class DictationController {
         }
 
         status = .polishing
-        overlay.update(mode: .working(command.progressLabel), text: "")
+        lastExplanationPush = nil
 
         let outcome = await transformer.run(
             command,
             on: selection,
             corrections: vocabularyStore.corrections,
-            acronyms: vocabularyStore.acronyms
+            acronyms: vocabularyStore.acronyms,
+            onExplanation: { [weak self] partial in self?.showExplanationSoFar(partial) }
         )
         switch outcome {
         case .replacement(let text):
@@ -523,7 +570,8 @@ public final class DictationController {
             becomeIdle()
         case .explanation(let text, let source):
             finishCommand(
-                showing: .explanation(text, caption: source.caption),
+                showing: .explanation(caption: source.caption),
+                text: text,
                 for: ExplanationTiming.displayDuration(for: text)
             )
         case .unchanged(let message):
@@ -531,6 +579,27 @@ public final class DictationController {
         case .failure(let message):
             finishCommand(showing: .error(message), for: .seconds(3.5))
         }
+    }
+
+    /// The card opens with the first streamed words. Throttled: the model
+    /// writes faster than a panel should be re-laid-out, and nobody reads at
+    /// twenty frames a word.
+    private func showExplanationSoFar(_ partial: String) {
+        let now = ContinuousClock.now
+        if let last = lastExplanationPush, now - last < .milliseconds(70) { return }
+        lastExplanationPush = now
+        overlay.update(
+            mode: .explanation(caption: TextTransformer.ExplanationSource.model.caption), text: partial)
+    }
+
+    /// Stops listening once a command fired on the word: the rest of the
+    /// transcript is not needed, so the session is dropped, not finalized.
+    private func dropCommandCapture() async {
+        guard commandIsCapturing else { return }
+        commandIsCapturing = false
+        audio.stop()
+        cancelDisplayTasks()
+        await transcriber.abandonDictation()
     }
 
     /// Ends the command's speech session and returns what was said — empty
@@ -553,8 +622,8 @@ public final class DictationController {
         becomeIdle()
     }
 
-    private func finishCommand(showing mode: OverlayView.Mode, for duration: Duration) {
-        overlay.update(mode: mode, text: "")
+    private func finishCommand(showing mode: OverlayView.Mode, text: String = "", for duration: Duration) {
+        overlay.update(mode: mode, text: text)
         overlay.hide(after: duration)
         becomeIdle()
     }

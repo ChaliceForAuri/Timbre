@@ -33,13 +33,41 @@ nonisolated public enum VoiceCommand: String, Sendable, CaseIterable, Codable {
     ///   the alias lists are generous and an unknown word is reported back
     ///   rather than rounded to the nearest command.
     static func parse(_ transcript: String) -> VoiceCommand? {
-        let words = TextMatch.normalized(transcript).split(separator: " ")
-        guard !words.isEmpty else { return .fix }
-        for word in words {
+        TextMatch.normalized(transcript).isEmpty ? .fix : recognized(in: transcript)
+    }
+
+    /// The command in a transcript that is still arriving, or nil — never
+    /// `.fix` for silence, because silence mid-hold only means "not yet".
+    /// Command mode acts the moment this returns a command (GDR-0014), so it
+    /// is deliberately the same whole-word lookup as `parse`: a partial result
+    /// can fire a command only by containing one of its words.
+    static func recognized(in transcript: String) -> VoiceCommand? {
+        for word in TextMatch.normalized(transcript).split(separator: " ") {
             if let command = vocabulary[String(word)] { return command }
         }
         return nil
     }
+
+    /// `recognized(in:)`, plus one allowance for a word still being spoken.
+    ///
+    /// Measured: the first live result arrives about 1.1 s into a spoken
+    /// command, often as a *partial* word — "Expl", "Acr" — and the whole
+    /// word only in the next burst, near 2 s. So the last word of a live
+    /// result may fire a command on a clear prefix of three letters or more,
+    /// but only when every word it could be finishing means **explain**.
+    /// Explain never touches the user's text, so the worst misfire is a card
+    /// nobody asked for. Fix and shorten rewrite text and wait for the whole
+    /// word; they arrive whole in the first burst anyway ("Fix", "Short").
+    static func recognizedWhileSpeaking(in transcript: String) -> VoiceCommand? {
+        if let command = recognized(in: transcript) { return command }
+        guard let last = TextMatch.normalized(transcript).split(separator: " ").last,
+            last.count >= minimumPrefix
+        else { return nil }
+        let completions = vocabulary.filter { $0.key.hasPrefix(last) }.map(\.value)
+        return !completions.isEmpty && completions.allSatisfy { $0 == .explain } ? .explain : nil
+    }
+
+    private static let minimumPrefix = 3
 
     private static let vocabulary: [String: VoiceCommand] = {
         var table: [String: VoiceCommand] = [:]

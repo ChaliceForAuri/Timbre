@@ -33,10 +33,11 @@ public enum TimbreEvaluation {
         _ command: VoiceCommand,
         text: String,
         corrections: [Correction] = [],
-        acronyms: [Acronym] = []
+        acronyms: [Acronym] = [],
+        onExplanation: ((String) -> Void)? = nil
     ) async -> CommandResult {
         let (outcome, diagnostic) = await TextTransformer().runDetailed(
-            command, on: text, corrections: corrections, acronyms: acronyms
+            command, on: text, corrections: corrections, acronyms: acronyms, onExplanation: onExplanation
         )
         switch outcome {
         case .replacement(let output): return CommandResult(kind: .replacement, text: output)
@@ -136,6 +137,76 @@ public enum TimbreEvaluation {
         defer { observer.cancel() }
 
         return try await transcriber.finishDictation()
+    }
+
+    /// One spoken command, fed at microphone pace: when its word first
+    /// appeared in a live result, and how long dropping the session took.
+    public struct LiveCommandResult: Sendable {
+        public let name: String
+        public let command: VoiceCommand?
+        /// From the first audio fed to the live result containing the word.
+        public let heardAfter: Duration?
+        /// The live result that contained it, or the last one seen.
+        public let transcript: String
+        public let abandonTook: Duration
+    }
+
+    /// Command mode's hot path, measured (GDR-0014): every file through one
+    /// `Transcriber`, each abandoned the moment a command word appears, then
+    /// `check` transcribed in full on the same transcriber — because a
+    /// session ended a new way is exactly how ADR-0006's silent failure
+    /// comes back, and one file passing proves nothing.
+    public static func liveCommands(
+        audioFilesAt urls: [URL],
+        thenTranscribe check: URL,
+        giveUpAfter limit: Duration = .seconds(6)
+    ) async throws -> (results: [LiveCommandResult], check: String) {
+        let transcriber = Transcriber()
+        try await transcriber.prepare()
+        guard let format = await transcriber.analyzerFormat else {
+            throw EvaluationError.analyzerFormatUnavailable
+        }
+
+        let clock = ContinuousClock()
+        var results: [LiveCommandResult] = []
+        for url in urls {
+            let started = clock.now
+            let input = try AudioFileInput.stream(contentsOf: url, to: format, pacing: .realTime)
+            let snapshots = try await transcriber.startDictation(consuming: input)
+
+            let watch = Task { () -> (VoiceCommand?, Duration?, String) in
+                var last = ""
+                for await snapshot in snapshots {
+                    last = snapshot
+                    if let command = VoiceCommand.recognizedWhileSpeaking(in: snapshot) {
+                        return (command, clock.now - started, snapshot)
+                    }
+                }
+                return (nil, nil, last)
+            }
+            let timeout = Task {
+                try? await Task.sleep(for: limit)
+                watch.cancel()
+            }
+            let (command, heardAfter, transcript) = await watch.value
+            timeout.cancel()
+
+            let abandonStarted = clock.now
+            await transcriber.abandonDictation()
+            results.append(
+                LiveCommandResult(
+                    name: url.lastPathComponent,
+                    command: command,
+                    heardAfter: heardAfter,
+                    transcript: transcript,
+                    abandonTook: clock.now - abandonStarted
+                )
+            )
+        }
+
+        let input = try AudioFileInput.stream(contentsOf: check, to: format)
+        _ = try await transcriber.startDictation(consuming: input)
+        return (results, try await transcriber.finishDictation())
     }
 
     public enum EvaluationError: LocalizedError {

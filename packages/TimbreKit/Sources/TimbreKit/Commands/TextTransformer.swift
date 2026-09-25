@@ -43,13 +43,19 @@ final class TextTransformer {
         }
     }
 
+    /// `onExplanation` receives the explanation as it is written — already
+    /// cleaned and trimmed for the card — so the card can open with the
+    /// first words instead of the last.
     func run(
         _ command: VoiceCommand,
         on selection: String,
         corrections: [Correction] = [],
-        acronyms: [Acronym] = []
+        acronyms: [Acronym] = [],
+        onExplanation: ((String) -> Void)? = nil
     ) async -> Outcome {
-        await runDetailed(command, on: selection, corrections: corrections, acronyms: acronyms).outcome
+        await runDetailed(
+            command, on: selection, corrections: corrections, acronyms: acronyms, onExplanation: onExplanation
+        ).outcome
     }
 
     /// `run`, plus why a failure failed. The user is told only that their
@@ -59,7 +65,8 @@ final class TextTransformer {
         _ command: VoiceCommand,
         on selection: String,
         corrections: [Correction] = [],
-        acronyms: [Acronym] = []
+        acronyms: [Acronym] = [],
+        onExplanation: ((String) -> Void)? = nil
     ) async -> (outcome: Outcome, diagnostic: String?) {
         let frame = SelectionFrame(selection)
         guard !frame.core.isEmpty else { return (.failure("Select some text first."), nil) }
@@ -92,7 +99,9 @@ final class TextTransformer {
         }
 
         do {
-            let result = try await generate(command, from: source, acronyms: acronyms)
+            let result = try await generate(
+                command, from: source, acronyms: acronyms, onExplanation: onExplanation
+            )
 
             // Greedy decoding's strongest pull is to copy its input. When a
             // shortening comes back the same length, the honest report is
@@ -140,7 +149,8 @@ final class TextTransformer {
     private func generate(
         _ command: VoiceCommand,
         from source: String,
-        acronyms: [Acronym]
+        acronyms: [Acronym],
+        onExplanation: ((String) -> Void)?
     ) async throws -> String {
         let session = LanguageModelSession(instructions: Self.instructions(for: command))
         let known = command == .explain ? AcronymTable.matches(in: source, from: acronyms) : []
@@ -158,9 +168,19 @@ final class TextTransformer {
                 options: options
             )
             return response.content.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        case .shorten, .explain:
+        case .shorten:
             let response = try await session.respond(to: prompt, options: options)
             return OutputCleaner.unwrapped(response.content, original: source)
+        case .explain:
+            // Streamed, so the card fills as the model writes; and stopped
+            // as soon as the card is full rather than when the model is done.
+            var latest = ""
+            for try await snapshot in session.streamResponse(to: prompt, options: options) {
+                latest = snapshot.content
+                onExplanation?(ExplanationTrimmer.trimmed(OutputCleaner.unwrapped(latest, original: source)))
+                if ExplanationTrimmer.isFull(latest) { break }
+            }
+            return OutputCleaner.unwrapped(latest, original: source)
         }
     }
 

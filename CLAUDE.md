@@ -43,6 +43,11 @@ cd packages/TimbreKit && swift run timbre-eval Fixtures/corpus.json --repeat 5
 # Same discipline for command mode's fix / explain / shorten (GDR-0012):
 swift run timbre-eval --commands Fixtures/commands.json --repeat 5
 
+# When each spoken command is recognised live, and that the session after an
+# abandon still works (GDR-0014). Pad each clip with the silence of a held key:
+#   say -o dir/explain.aiff "explain [[slnc 2000]]"
+swift run timbre-eval --live-commands <dir> --check Fixtures/audio/03-run-on.aiff
+
 # Regenerate audio fixtures (no microphone needed — uses `say`):
 tools/make-audio-fixtures.sh
 
@@ -97,8 +102,9 @@ HotkeyMonitor          right ⌥ via device flag bit → AsyncStream<HotkeyEvent
 
 Two gestures work on a selection instead, through the same controller:
   left ⌥ tap    SelectionReader → SpeechReader (read aloud, GDR-0008)
-  right ⌘ hold  arm 350 ms → same mic + Transcriber → VoiceCommand.parse →
-                TextTransformer → paste over the selection, or an
+  right ⌘ hold  arm 350 ms → same mic + Transcriber → the first live result
+                holding a command word fires it (CommandHold, GDR-0014) →
+                TextTransformer → paste over the selection, or a streamed
                 explanation card (command mode, GDR-0012)
 ```
 
@@ -140,6 +146,12 @@ everything else is internal. Keep it that way.
   acronyms it does not know. Right ⌘ is a real shortcut key, so the mode *arms* after
   an uninterrupted 350 ms hold; the key/click watch that detects a shortcut
   exists only during that hold and never looks at the event.
+- **Commands act on the word, not the release** (GDR-0014). The first live
+  result containing a command word runs it, once; explain alone may fire on
+  a partial ("Expl", "Acr") because it never touches text. After firing the
+  speech session is *abandoned*, not finalized. Measure changes to this path
+  with `swift run timbre-eval --live-commands <dir>`, which also checks the
+  session after an abandon still transcribes (ADR-0006).
 - **Commands decode greedily** (ADR-0009): same selection, same command,
   same result, and a corpus that measures instead of rolling dice. Fix uses
   guided generation without the schema in the prompt; shorten and explain

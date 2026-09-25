@@ -34,6 +34,11 @@ struct TimbreEval {
             return
         }
 
+        if let directory = value(for: "--live-commands", in: arguments) {
+            try await runLiveCommands(path: directory, check: value(for: "--check", in: arguments))
+            return
+        }
+
         if let path = value(for: "--commands", in: arguments) {
             try await runCommands(
                 path: path,
@@ -166,6 +171,44 @@ struct TimbreEval {
             .joined(separator: " ⏎ ")
     }
 
+    // MARK: - Live command recognition
+
+    /// How fast command mode can act (GDR-0014): each file at microphone
+    /// pace, abandoned the instant its word appears, then a full transcript
+    /// on the same transcriber to prove the session after an abandon works.
+    private static func runLiveCommands(path: String, check: String?) async throws {
+        let files = try FileManager.default
+            .contentsOfDirectory(at: URL(filePath: path), includingPropertiesForKeys: nil)
+            .filter { ["aiff", "aif", "wav", "caf", "m4a"].contains($0.pathExtension.lowercased()) }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+        guard let first = files.first else {
+            printErr("no audio files in \(path)")
+            exit(1)
+        }
+        let checkURL = check.map { URL(filePath: $0) } ?? first
+        print("live command recognition — \(files.count) files at microphone pace\n")
+
+        let (results, checkTranscript) = try await TimbreEvaluation.liveCommands(
+            audioFilesAt: files,
+            thenTranscribe: checkURL
+        )
+        var missed = 0
+        for result in results {
+            let heard = result.heardAfter.map { "\(milliseconds($0)) ms" } ?? "never"
+            let command = result.command?.rawValue ?? "—"
+            if result.command == nil { missed += 1 }
+            print(
+                "\(result.command == nil ? "✗" : "✓") \(result.name)  \(command)  heard at \(heard)"
+                    + "  · abandon \(milliseconds(result.abandonTook)) ms"
+            )
+            print("   \(result.transcript.isEmpty ? "(nothing)" : result.transcript)")
+        }
+        let reused = !checkTranscript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        print("\nsession after abandon: \(reused ? "✓" : "✗") \(checkURL.lastPathComponent)")
+        print("   \(reused ? checkTranscript : "(empty — ADR-0006 regression)")")
+        if missed > 0 || !reused { exit(1) }
+    }
+
     // MARK: - Command mode
 
     /// Runs every command case through the real transformer. Same discipline
@@ -190,12 +233,22 @@ struct TimbreEval {
             var outputs: [String] = []
             var tally: [String: Int] = [:]
             var passes = 0
+            var timings: [Duration] = []
+            var firstWords: [Duration] = []
             for _ in 0..<repeats {
+                let started = ContinuousClock.now
+                defer { timings.append(ContinuousClock.now - started) }
+                var sawFirst = false
                 let result = await TimbreEvaluation.transform(
                     testCase.command,
                     text: testCase.text,
                     corrections: testCase.corrections,
-                    acronyms: testCase.acronyms
+                    acronyms: testCase.acronyms,
+                    onExplanation: { partial in
+                        guard !sawFirst, !partial.isEmpty else { return }
+                        sawFirst = true
+                        firstWords.append(ContinuousClock.now - started)
+                    }
                 )
                 let failures = CommandChecks.failures(for: testCase, result: result)
                 if failures.isEmpty { passes += 1 }
@@ -210,6 +263,10 @@ struct TimbreEval {
 
             print(
                 "\(passes == repeats ? "✓" : "✗") \(testCase.id)  [\(testCase.command.rawValue)]  \(passes)/\(repeats)"
+                    + "  · \(milliseconds(timings.sorted()[timings.count / 2])) ms"
+                    + (firstWords.isEmpty
+                        ? ""
+                        : "  · first words \(milliseconds(firstWords.sorted()[firstWords.count / 2])) ms")
             )
             if let note = testCase.note { print("     \(note)") }
             print("  in   \(singleLine(testCase.text))")
@@ -363,6 +420,10 @@ struct TimbreEval {
         USAGE
           timbre-eval <corpus.json> [--repeat <n>] [--json <out.json>]
           timbre-eval --commands <commands.json> [--repeat <n>]
+          timbre-eval --live-commands <dir> [--check <file>]
+                                             when each spoken command is recognised
+                                             live, and that an abandoned session
+                                             leaves the next one working
                                              command mode: fix, explain, shorten
           timbre-eval --audio <file.aiff> [--vocabulary a,b,c]
           timbre-eval --audio-dir <dir> [--corpus corpus.json] [--vocabulary a,b,c]
@@ -388,6 +449,10 @@ struct TimbreEval {
         list.split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
+    }
+
+    private static func milliseconds(_ duration: Duration) -> Int64 {
+        duration.components.seconds * 1000 + duration.components.attoseconds / 1_000_000_000_000_000
     }
 
     private static func value(for flag: String, in arguments: [String]) -> String? {

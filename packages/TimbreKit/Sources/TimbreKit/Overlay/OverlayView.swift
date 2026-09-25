@@ -22,10 +22,12 @@ struct OverlayView: View {
         case command
         /// A command is running on the selection.
         case working(String)
-        /// The answer to "explain". A card rather than a pill: it is shown,
-        /// never pasted, and stays long enough to read. The caption says
-        /// where the answer came from.
-        case explanation(String, caption: String)
+        /// The answer to "explain", carried in `text` as it streams in. A
+        /// card rather than a pill: it is shown, never pasted, and stays long
+        /// enough to read. The caption says where the answer came from. The
+        /// answer is not part of the mode on purpose — the view animates mode
+        /// changes, and every streamed word would otherwise be one.
+        case explanation(caption: String)
         /// Something worth saying that is not a failure.
         case notice(String)
         case error(String)
@@ -88,7 +90,7 @@ struct OverlayView: View {
     }
 
     private var caption: String? {
-        if case .explanation(_, let caption) = mode { return caption }
+        if case .explanation(let caption) = mode { return caption }
         return nil
     }
 
@@ -131,7 +133,7 @@ struct OverlayView: View {
         case .polishing: text.isEmpty ? "Cleaning up…" : text
         case .command: text.isEmpty ? VoiceCommand.hint : text
         case .working(let label): label
-        case .explanation(let answer, _): answer
+        case .explanation: text.isEmpty ? "Explaining…" : text
         case .notice(let message): message
         case .error(let message): message
         }
@@ -197,12 +199,9 @@ struct Waveform: View {
 
 #Preview("Explanation") {
     OverlayView(
-        mode: .explanation(
-            "ADR stands for Architecture Decision Record: a short document that captures one "
-                + "significant technical choice, the context that forced it, and its consequences.",
-            caption: "On-device model · may be wrong"
-        ),
-        text: "",
+        mode: .explanation(caption: "On-device model · may be wrong"),
+        text: "ADR stands for Architecture Decision Record: a short document that captures one "
+            + "significant technical choice, the context that forced it, and its consequences.",
         levels: []
     )
     .padding(40)

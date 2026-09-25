@@ -184,18 +184,38 @@ actor Transcriber {
 
         let text = accumulator.currentText
         accumulator = TranscriptAccumulator()
-
-        // Build the next one now rather than on the next key press, and warm
-        // it up off the hot path — this runs after the transcript is already
-        // on its way back to the user.
-        if let locale {
-            let next = Self.makeSession(locale: locale)
-            ready = next
-            let format = analyzerFormat
-            warmup = Task { try? await next.analyzer.prepareToAnalyze(in: format) }
-        }
-
+        prepareNextSession()
         return text
+    }
+
+    /// Ends the session *without* finalizing, and discards what it heard.
+    ///
+    /// For command mode once the command word is in: the rest of the
+    /// transcript is not needed, and `finalizeAndFinishThroughEndOfInput()`
+    /// waits for the model to settle the whole utterance — time the user
+    /// feels between saying "explain" and seeing the card. The next session
+    /// is rebuilt exactly as `finishDictation()` does (ADR-0006), and
+    /// `timbre-eval --live-commands` checks it still transcribes.
+    func abandonDictation() async {
+        guard let session = active else { return }
+        await session.analyzer.cancelAndFinishNow()
+        resultsTask?.cancel()
+        await resultsTask?.value
+        resultsTask = nil
+        active = nil
+        accumulator = TranscriptAccumulator()
+        prepareNextSession()
+    }
+
+    /// Builds the next session now rather than on the next key press, and
+    /// warms it up off the hot path — this runs after the result is already
+    /// on its way back to the user. `startDictation` awaits the warm-up.
+    private func prepareNextSession() {
+        guard let locale else { return }
+        let next = Self.makeSession(locale: locale)
+        ready = next
+        let format = analyzerFormat
+        warmup = Task { try? await next.analyzer.prepareToAnalyze(in: format) }
     }
 
     enum TranscriberError: LocalizedError {
