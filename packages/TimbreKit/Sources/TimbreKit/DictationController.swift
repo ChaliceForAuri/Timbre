@@ -98,6 +98,15 @@ public final class DictationController {
         return !best.isHighQuality
     }
 
+    /// Whether confirmed words are typed into the app while the user is still
+    /// talking, with the cleanup replacing them on release (GDR-0018). On by
+    /// default; off keeps every word in the pill until the key is released.
+    public var typesAsYouSpeak: Bool {
+        get { UserDefaults.standard.object(forKey: Self.typesAsYouSpeakKey) as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: Self.typesAsYouSpeakKey) }
+    }
+    private static let typesAsYouSpeakKey = "typesAsYouSpeak"
+
     /// Whether dictations are being saved locally as tuning fixtures.
     /// Off unless the user turns it on — see GDR-0004.
     public var isCapturingDictations: Bool {
@@ -144,6 +153,10 @@ public final class DictationController {
     private var lastExplanationPush: ContinuousClock.Instant?
     private var microphoneStart: Duration?
     private var firstAudio: Duration?
+    /// The field being typed into live, or nil for the pill-then-paste flow.
+    private var liveField: FocusedField?
+    private var liveTyping = LiveTyping()
+    private var firstTyped: Duration?
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
@@ -287,7 +300,8 @@ public final class DictationController {
             try await startCapture(
                 listeningMode: .listening,
                 vocabulary: vocabularyStore.terms,
-                pressed: pressed
+                pressed: pressed,
+                typingLive: typesAsYouSpeak
             )
         } catch {
             audio.stop()
@@ -300,10 +314,16 @@ public final class DictationController {
     ///
     /// `onTranscript` sees every live transcript as it arrives, after the
     /// pill does; command mode uses it to act on the word, not the release.
+    ///
+    /// With `typingLive`, confirmed words are typed into the focused field
+    /// as they arrive and the pill shows only the words still in flight —
+    /// provided the field can be read back and re-selected afterwards
+    /// (GDR-0018). A field that cannot gets the pill-then-paste flow.
     private func startCapture(
         listeningMode: OverlayView.Mode,
         vocabulary: [String],
         pressed: ContinuousClock.Instant,
+        typingLive: Bool = false,
         onTranscript: ((String) -> Void)? = nil
     ) async throws {
         let clock = ContinuousClock()
@@ -324,6 +344,12 @@ public final class DictationController {
         // bug. The level task below flips it the moment sound arrives.
         overlay.show(mode: .warming)
 
+        // After the mic and the pill: three more Accessibility round-trips,
+        // inside the same window the headset spends waking up.
+        liveTyping = LiveTyping()
+        firstTyped = nil
+        liveField = typingLive ? FocusedField.probe() : nil
+
         let snapshots = try await transcriber.startDictation(
             consuming: streams.input,
             vocabulary: vocabulary
@@ -331,10 +357,22 @@ public final class DictationController {
 
         displayTasks = [
             Task { [weak self] in
-                for await text in snapshots {
+                for await snapshot in snapshots {
                     guard let self else { return }
+                    let text = snapshot.text
                     self.liveText = text
-                    self.overlay.update(text: text)
+                    if self.liveField != nil {
+                        // Confirmed words go into the app; the pill keeps
+                        // only the guess still in flight.
+                        let delta = self.liveTyping.delta(for: snapshot.finalized)
+                        if !delta.isEmpty {
+                            if self.firstTyped == nil { self.firstTyped = clock.now - pressed }
+                            SyntheticText.type(delta)
+                        }
+                        self.overlay.update(text: snapshot.volatile.trimmingCharacters(in: .whitespaces))
+                    } else {
+                        self.overlay.update(text: text)
+                    }
                     onTranscript?(text)
                 }
             },
@@ -399,6 +437,13 @@ public final class DictationController {
                 return
             }
 
+            // Typing live: the words confirmed only at the end land now, so
+            // the whole utterance is on screen while the cleanup runs.
+            if liveField != nil, let rest = liveTyping.remainder(of: raw), !rest.isEmpty {
+                SyntheticText.type(rest)
+                liveTyping.didType(rest)
+            }
+
             let polishStarted = clock.now
             let cleaned = await polisher.polish(
                 raw,
@@ -412,7 +457,15 @@ public final class DictationController {
             // synthetic ⌘V fires, the pill flickers over the user's own text —
             // it reads as a glitch even though nothing went wrong.
             overlay.hide()
-            inserter.insert(cleaned)
+            var replaceDuration: Duration?
+            if let field = liveField, !liveTyping.typed.isEmpty {
+                let replaceStarted = clock.now
+                replaceTypedRun(in: field, with: cleaned)
+                replaceDuration = clock.now - replaceStarted
+            } else {
+                inserter.insert(cleaned)
+            }
+            liveField = nil
 
             // After the paste, never before: capturing a fixture must not sit
             // between the user releasing the key and their text appearing.
@@ -427,7 +480,9 @@ public final class DictationController {
                         microphoneStartMs: (microphoneStart ?? .zero).wholeMilliseconds,
                         firstAudioMs: (firstAudio ?? .zero).wholeMilliseconds,
                         transcriptMs: transcriptDuration.wholeMilliseconds,
-                        polishMs: polishDuration.wholeMilliseconds
+                        polishMs: polishDuration.wholeMilliseconds,
+                        firstTypedMs: firstTyped?.wholeMilliseconds,
+                        replaceMs: replaceDuration?.wholeMilliseconds
                     )
                 )
             )
@@ -835,8 +890,38 @@ public final class DictationController {
 
     // MARK: - Helpers
 
+    /// Swaps the run typed live for the polished text: select it through
+    /// Accessibility, paste over it. The selection is set only when the
+    /// field still has focus and the text between the run's start and the
+    /// caret is recognisably what was typed — autocorrect and auto-capitals
+    /// allowed, anything else not. When it is not, the words stay exactly as
+    /// heard: never delete by count, never guess (GDR-0018).
+    private func replaceTypedRun(in field: FocusedField, with cleaned: String) {
+        let typed = liveTyping.typed
+        guard
+            field.isStillFocused(),
+            let end = field.caretLocation(),
+            end > field.start,
+            let inField = field.text(in: NSRange(location: field.start, length: end - field.start)),
+            ReplacementCheck.matches(field: inField, typed: typed)
+        else {
+            overlay.show(mode: .notice("Kept as heard"))
+            overlay.hide(after: .seconds(1.5))
+            return
+        }
+        // Already what the cleanup would have produced: leave it be.
+        if inField == cleaned { return }
+        guard field.select(NSRange(location: field.start, length: end - field.start)) else {
+            overlay.show(mode: .notice("Kept as heard"))
+            overlay.hide(after: .seconds(1.5))
+            return
+        }
+        inserter.insert(cleaned)
+    }
+
     private func becomeIdle() {
         gesture = nil
+        liveField = nil
         liveText = ""
         status = .idle
     }
