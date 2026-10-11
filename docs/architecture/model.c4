@@ -1,0 +1,259 @@
+model {
+  user = person 'You' {
+    description 'Holds a key and talks. Owns every word in the Bank.'
+  }
+  hugo = person 'Hugo' {
+    description 'Builds Timbre, runs it from Backstage.'
+  }
+
+  // ---------------------------------------------------------------- the Mac
+  timbre = system 'Timbre for Mac' {
+    description 'Dictation that never leaves your Mac. Zero network requests by default; one, opt-in, for updates.'
+    link https://github.com/ChaliceForAuri/Timbre 'Source'
+
+    app = container 'Timbre.app' {
+      description 'The thin SwiftUI shell: menu bar item, Settings, the update prompt. Everything else is the package.'
+      technology 'SwiftUI, macOS 26'
+      -> kit 'drives'
+    }
+
+    kit = container 'TimbreKit' {
+      description 'The whole pipeline, one dictation at a time, as a Swift package with the tests.'
+      technology 'Swift 6, complete concurrency'
+
+      hotkey = component 'HotkeyMonitor' {
+        description 'Right ⌥, left ⌥ and right ⌘ via the device flag bit → one AsyncStream of events.'
+      }
+      controller = component 'DictationController' {
+        description 'Consumes hotkey events in one task — that is what serialises press and release. The public surface.'
+      }
+      audio = component 'AudioCapture' {
+        description 'Mic tap; converts on the audio thread; emits AnalyzerInput and levels.'
+      }
+      transcriber = component 'Transcriber' {
+        description 'Actor around SpeechAnalyzer. A session is single-use (ADR-0006). Streams confirmed and in-flight words.'
+      }
+      polisher = component 'TextPolisher' {
+        description 'Corrections → spoken commands → the on-device model, greedy → capital → full stop (ADR-0005, ADR-0011).'
+      }
+      live = component 'Live typing' {
+        description 'LiveTyping types confirmed words as keystrokes; FocusedField re-selects the run on release so the paste replaces it (GDR-0018).'
+      }
+      inserter = component 'TextInserter' {
+        description 'Pasteboard snapshot → set → synthetic ⌘V → restore (ADR-0003).'
+      }
+      overlay = component 'Overlay' {
+        description 'The pill: a non-activating panel near the caret. Never takes focus.'
+      }
+      commands = component 'Command mode' {
+        description 'CommandHold arms after 350 ms; VoiceCommand fires on the word; TextTransformer does fix, shorten, plain, explain (GDR-0012, 0014, 0015).'
+      }
+      reader = component 'Read aloud' {
+        description 'SelectionReader grabs the selection; SpeechReader speaks it with the best installed voice (GDR-0008).'
+      }
+      todos = component 'To-dos' {
+        description 'TodoParser reads the date with Apple’s data detector; ReminderStore files it in Reminders (GDR-0016).'
+      }
+      vocabulary = component 'VocabularyStore' {
+        description 'Taught words, corrections, definitions. Three lists in UserDefaults — the Bank’s ancestor.'
+      }
+      updater = component 'SoftwareUpdater' {
+        description 'One GET of appcast.json when asked; installs only a notarized build signed by our team (ADR-0010, GDR-0013).'
+      }
+      usage = component 'UsageLedger' {
+        description 'Words, dictations, commands, this week and all time. This Mac only.'
+      }
+      log = component 'DictationLog' {
+        description 'Opt-in capture of raw → polished pairs for tuning (GDR-0004). Never leaves the disk.'
+      }
+
+      hotkey -> controller 'press, release, read, command'
+      controller -> audio 'opens the mic first'
+      audio -> transcriber 'AnalyzerInput'
+      controller -> transcriber 'start, finish, abandon'
+      controller -> overlay 'show, update, hide'
+      controller -> live 'confirmed words'
+      controller -> polisher 'the transcript'
+      controller -> inserter 'the polished text'
+      controller -> commands 'a held right ⌘'
+      controller -> reader 'a tapped left ⌥'
+      controller -> todos 'a sentence with nothing selected'
+      controller -> usage 'counts'
+      controller -> log 'captures, opt-in'
+      polisher -> vocabulary 'corrections, vocabulary'
+      commands -> vocabulary 'definitions answer explain first'
+      commands -> inserter 'paste over the selection'
+      commands -> overlay 'the explanation card'
+      todos -> polisher 'cleans the sentence first'
+      app -> updater 'Check for Updates…'
+    }
+
+    eval = container 'timbre-eval' {
+      #dev
+      description 'The harness: polisher corpus, command corpus, audio fixtures, live commands, update verification. Measures every prompt change (ADR-0004).'
+      technology 'Swift CLI'
+      -> kit 'exercises the real modules'
+    }
+  }
+
+  // ------------------------------------------------------------ Apple’s side
+  apple = system 'macOS' {
+    #apple
+    description 'What Timbre is built on. Every model runs here, on the device.'
+    style {
+      color keycap
+    }
+    speech = external 'SpeechAnalyzer' {
+      description 'On-device speech recognition. Confirms words a sentence at a time while you talk.'
+    }
+    models = external 'Foundation Models' {
+      description 'The on-device language model behind cleanup, fix, shorten, plain and explain. Needs Apple Intelligence.'
+    }
+    ax = external 'Accessibility' {
+      description 'Hotkeys while another app is focused; the caret; the field’s text and selection.'
+    }
+    pasteboard = external 'Pasteboard' {
+      description 'The paste that works in every app.'
+    }
+    synth = external 'AVSpeechSynthesizer' {
+      description 'Read aloud, with the voices installed on the Mac.'
+    }
+    reminders = external 'Reminders (EventKit)' {
+      description 'Where to-dos go. Apple syncs them to the iPhone.'
+    }
+    icloud = external 'iCloud' {
+      description 'The user’s own account. Reminders sync through it today; the Bank would too (GDR-0010).'
+    }
+    gatekeeper = external 'Gatekeeper and notarization' {
+      description 'Verifies the signature of every download before it replaces the app.'
+    }
+  }
+
+  timbre.kit.transcriber -> apple.speech 'streams audio'
+  timbre.kit.polisher -> apple.models 'one greedy generation'
+  timbre.kit.commands -> apple.models 'guided fix; plain-text shorten, plain, explain'
+  timbre.kit.hotkey -> apple.ax 'needs the grant'
+  timbre.kit.live -> apple.ax 'types; reads the run back; selects it'
+  timbre.kit.overlay -> apple.ax 'asks where the caret is'
+  timbre.kit.inserter -> apple.pasteboard '⌘V'
+  timbre.kit.reader -> apple.synth 'speaks'
+  timbre.kit.todos -> apple.reminders 'adds to the Timbre list'
+  apple.reminders -> apple.icloud 'syncs'
+  timbre.kit.updater -> apple.gatekeeper 'verifies before replacing'
+
+  // ------------------------------------------------------------- the website
+  site = system 'timbre.hugopretorius.dev' {
+    description 'One SvelteKit app: the public site, and Backstage behind a magic link.'
+    technology 'SvelteKit 2, Svelte 5, shadcn-svelte, Tailwind 4'
+
+    web = container 'Website' {
+      description 'The claim, the three keys, the download, the network list. Prerendered.'
+      style {
+        shape browser
+      }
+    }
+    appcast = store 'appcast.json + releases/' {
+      description 'The version file the app reads, and the zip and disk image it points at. Written by release.sh.'
+    }
+    backstage = container 'Backstage' {
+      description 'Overview, releases, decisions, plans, launch, evals, architecture, brand, the University. Fed by the repo, never by anyone’s app.'
+      style {
+        shape browser
+      }
+    }
+    data = store 'Generated JSON' {
+      description 'records, plans, releases, eval cases, launch copy, the C4 model — regenerated from the repo; CI fails on drift.'
+    }
+    backstage -> data 'reads'
+  }
+
+  user -> timbre.app 'holds right ⌥, taps left ⌥, holds right ⌘'
+  user -> site.web 'reads, downloads'
+  timbre.kit.updater -> site.appcast 'GET, opt-in, carries nothing'
+  hugo -> site.backstage 'runs the product from'
+
+  github = external 'GitHub' {
+    description 'The repository, pull requests, Actions on every PR, releases with the signed assets.'
+    technology 'git, Actions'
+  }
+  vercel = external 'Vercel' {
+    description 'Builds and serves the site from main. Previews are off on purpose.'
+  }
+  supabase = external 'Supabase' {
+    description 'Magic-link sign-in for Backstage. Nothing else yet.'
+  }
+
+  hugo -> github 'merges; the merge is the release'
+  github -> vercel 'deploys main'
+  vercel -> site 'serves'
+  site.backstage -> supabase 'who is this'
+  timbre.eval -> github 'measured.json, committed'
+  github -> site.data 'the sync scripts, in CI'
+
+  // ----------------------------------------------------------- the next part
+  core = container 'TimbreCore' {
+    #planned
+    description 'Planned: the platform-neutral package the Mac app and the iPhone app both import — the Bank, parsing, practice scoring.'
+    technology 'Swift package, macOS + iOS'
+    style {
+      color mustard
+    }
+
+    bank = store 'The Bank' {
+      #planned
+      description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, industry tags, strength, history.'
+      style {
+        color mustard
+      }
+    }
+    profile = component 'Profile' {
+      #planned
+      description 'Industry, role, first language. Makes explain right for the reader; picks the word-of-the-day lists.'
+      style {
+        color mustard
+      }
+    }
+    practice = component 'Practice' {
+      #planned
+      description 'Spell it, Say it, Explain it, word of the day. Drills scored like commands, with a corpus.'
+      style {
+        color mustard
+      }
+    }
+    practice -> bank 'raises strength'
+    profile -> bank 'tags'
+  }
+
+  iphone = system 'Timbre for iPhone' {
+    #planned
+    description 'Planned: the Bank in your pocket. Review, practise, word of the day, add a word you heard. A companion, not a port — iOS cannot dictate into other apps.'
+    technology 'SwiftUI, iOS 26'
+    style {
+      color mustard
+      shape mobile
+    }
+    -> core 'imports'
+  }
+
+  timbre.kit -> core 'imports; VocabularyStore becomes the Bank' {
+    #planned
+  }
+  timbre.kit.commands -> core.profile 'explain reads the industry' {
+    #planned
+  }
+  core.bank <-> apple.icloud 'CloudKit, private database — the binary still makes no requests' {
+    #planned
+  }
+  user -> iphone 'practises; hears the word of the day'
+
+  account = external 'A Timbre account' {
+    #open
+    description 'Open decision: sign-in and sync through Supabase, for a Bank on Android or the web. Would amend GDR-0013 and add entries to /network. Not before a non-Apple client is real.'
+    style {
+      color coral
+    }
+  }
+  iphone -> account 'would sign in' {
+    #open
+  }
+}

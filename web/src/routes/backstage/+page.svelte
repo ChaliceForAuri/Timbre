@@ -205,7 +205,9 @@
 			</div>
 		</dl>
 		<p class="text-muted-foreground mt-4 text-sm">
-			{modules.length} University modules explain how each number is produced.
+			{modules.length} University modules explain how each number is produced; the
+			<a href="/backstage/architecture" class="decoration-retro-blue underline decoration-2 underline-offset-4">Architecture</a>
+			room shows where each piece lives.
 		</p>
 	</section>
 	<section class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">

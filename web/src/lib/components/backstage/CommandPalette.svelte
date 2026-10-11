@@ -14,6 +14,8 @@
 	import Megaphone from '@lucide/svelte/icons/megaphone';
 	import ChartLine from '@lucide/svelte/icons/chart-line';
 	import GraduationCap from '@lucide/svelte/icons/graduation-cap';
+	import Boxes from '@lucide/svelte/icons/boxes';
+	import Palette from '@lucide/svelte/icons/palette';
 	import Sun from '@lucide/svelte/icons/sun-moon';
 	import { theme } from '$lib/theme.svelte';
 
@@ -29,6 +31,8 @@
 		{ label: 'Plans', href: '/backstage/plans', icon: ListChecks },
 		{ label: 'Launch', href: '/backstage/launch', icon: Megaphone },
 		{ label: 'Evals', href: '/backstage/evals', icon: ChartLine },
+		{ label: 'Architecture', href: '/backstage/architecture', icon: Boxes },
+		{ label: 'Brand', href: '/backstage/brand', icon: Palette },
 		{ label: 'University', href: '/backstage/university', icon: GraduationCap }
 	];
 

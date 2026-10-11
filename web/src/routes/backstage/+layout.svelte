@@ -21,6 +21,8 @@
 	import Package from '@lucide/svelte/icons/package';
 	import Megaphone from '@lucide/svelte/icons/megaphone';
 	import Activity from '@lucide/svelte/icons/activity';
+	import Boxes from '@lucide/svelte/icons/boxes';
+	import Palette from '@lucide/svelte/icons/palette';
 	import Search from '@lucide/svelte/icons/search';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
@@ -43,6 +45,8 @@
 		{ href: '/backstage/plans', label: 'Plans', icon: ListChecks, exact: false, color: 'green' },
 		{ href: '/backstage/launch', label: 'Launch', icon: Megaphone, exact: false, color: 'blue' },
 		{ href: '/backstage/evals', label: 'Evals', icon: ChartLine, exact: false, color: 'violet' },
+		{ href: '/backstage/architecture', label: 'Architecture', icon: Boxes, exact: false, color: 'blue' },
+		{ href: '/backstage/brand', label: 'Brand', icon: Palette, exact: false, color: 'violet' },
 		{ href: '/backstage/university', label: 'University', icon: GraduationCap, exact: false, color: 'red' }
 	];
 

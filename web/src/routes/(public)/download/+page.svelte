@@ -128,15 +128,15 @@
 	<h2 class="mt-5 text-3xl">The three keys</h2>
 	<div class="mt-8 grid gap-8 sm:grid-cols-3">
 		<div class="flex flex-col items-start gap-4">
-			<KeyCap symbol="⌥" name="right option" gesture="hold" color="green" />
+			<KeyCap symbol="⌥" name="right ⌥" gesture="hold" color="green" />
 			<p class="text-muted-foreground text-sm leading-relaxed">Hold and talk. Release, and the cleaned-up text is pasted where your cursor is.</p>
 		</div>
 		<div class="flex flex-col items-start gap-4">
-			<KeyCap symbol="⌥" name="left option" gesture="tap" color="yellow" />
+			<KeyCap symbol="⌥" name="left ⌥" gesture="tap" color="yellow" />
 			<p class="text-muted-foreground text-sm leading-relaxed">Tap with text selected to hear it. Tap again for faster; hold to stop. Nothing selected? It reads your to-dos.</p>
 		</div>
 		<div class="flex flex-col items-start gap-4">
-			<KeyCap symbol="⌘" name="right command" gesture="hold" color="orange" />
+			<KeyCap symbol="⌘" name="right ⌘" gesture="hold" color="orange" />
 			<p class="text-muted-foreground text-sm leading-relaxed">Hold with text selected and say fix, explain, shorten or plain. Nothing selected? Say a to-do.</p>
 		</div>
 	</div>

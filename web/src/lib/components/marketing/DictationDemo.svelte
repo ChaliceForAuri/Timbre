@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Keyboard from './Keyboard.svelte';
 	import Pill from './Pill.svelte';
 	import WindowMock from './WindowMock.svelte';
 
-	/// The hero: one dictation, start to finish, on a loop, with the keyboard
-	/// underneath showing which key is held. The raw words arrive as the
-	/// transcriber would emit them — filler and all — then the cleaned
-	/// sentence lands in the field. Reduced motion shows the end state.
+	/// The hero: one dictation, start to finish, on a loop. The raw words
+	/// arrive as the transcriber would emit them — filler and all — then the
+	/// cleaned sentence lands in the field. Reduced motion shows the end state.
 	const raw = ['so', 'um', 'I', 'was', 'thinking', 'that', 'we', 'should', 'like', 'ship', 'it', 'on', 'friday'];
 	const clean = 'So I was thinking that we should ship it on Friday.';
 
@@ -19,7 +17,6 @@
 
 	const liveText = $derived(raw.slice(0, heard).join(' '));
 	const fieldText = $derived(phase === 'inserted' ? clean.slice(0, typed) : '');
-	const holding = $derived(phase === 'warming' || phase === 'listening');
 
 	onMount(() => {
 		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -50,7 +47,7 @@
 </script>
 
 <div class="relative">
-	<div class="relative z-10 mx-auto max-w-[30rem]">
+	<div class="relative mx-auto max-w-[32rem]">
 		<WindowMock title="New Message">
 			<div class="text-muted-foreground mb-3 flex gap-3 border-b pb-2 text-xs">
 				<span>To: <span class="text-foreground">Sam</span></span>
@@ -79,11 +76,6 @@
 				<Pill mode="polishing" text="Cleaning up…" />
 			{/if}
 		</div>
-	</div>
-
-	<!-- The keyboard, with right Option held while the mic is open. -->
-	<div class="mt-1 flex justify-center px-2">
-		<Keyboard pressed={!animate || holding ? 'rightOption' : null} />
 	</div>
 </div>
 

@@ -1,0 +1,52 @@
+views {
+  view index {
+    title 'Landscape'
+    description 'Everything, one level deep: the people, the Mac app, Apple’s side, the site, and what is planned.'
+    include *
+    exclude core
+    include core with {
+      title 'TimbreCore (planned)'
+    }
+    autoLayout LeftRight
+  }
+
+  view context of timbre {
+    title 'Timbre in context'
+    description 'The Mac app and what it touches. Nothing on the right talks back except Apple’s own services, on the device.'
+    include *
+    include apple.*
+    include site.appcast
+    include user
+    autoLayout LeftRight
+  }
+
+  view pipeline of timbre.kit {
+    title 'Inside TimbreKit'
+    description 'One pipeline, one dictation at a time, and the two gestures that work on a selection.'
+    include *
+    include apple.*
+    exclude apple.icloud
+    autoLayout TopBottom
+  }
+
+  view run of site {
+    title 'The site and Backstage'
+    description 'How the product is run: the repo feeds Backstage, the merge is the release, the app reads one file.'
+    include *
+    include github, vercel, supabase, hugo, user
+    include timbre.kit.updater, timbre.eval
+    autoLayout LeftRight
+  }
+
+  view learn {
+    title 'The Bank, the phone, and sync (planned)'
+    description 'What the product map proposes: one store the Mac and the iPhone both import, synced by the user’s own iCloud. The account is the open decision.'
+    include user
+    include timbre.kit
+    include core.*
+    include iphone
+    include apple.icloud
+    include account
+    autoLayout LeftRight
+  }
+}
