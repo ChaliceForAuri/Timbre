@@ -14,12 +14,27 @@ nonisolated public struct DictationTimings: Codable, Sendable {
     public let transcriptMs: Int
     /// Transcript → polished text ready to paste.
     public let polishMs: Int
+    /// Hotkey press → first confirmed words typed into the app, when typing
+    /// live (GDR-0018). Nil when the dictation used the pill-then-paste flow.
+    public let firstTypedMs: Int?
+    /// Key release → typed run replaced by the polished text. Nil when the
+    /// dictation used the pill-then-paste flow.
+    public let replaceMs: Int?
 
-    public init(microphoneStartMs: Int, firstAudioMs: Int, transcriptMs: Int, polishMs: Int) {
+    public init(
+        microphoneStartMs: Int,
+        firstAudioMs: Int,
+        transcriptMs: Int,
+        polishMs: Int,
+        firstTypedMs: Int? = nil,
+        replaceMs: Int? = nil
+    ) {
         self.microphoneStartMs = microphoneStartMs
         self.firstAudioMs = firstAudioMs
         self.transcriptMs = transcriptMs
         self.polishMs = polishMs
+        self.firstTypedMs = firstTypedMs
+        self.replaceMs = replaceMs
     }
 }
 

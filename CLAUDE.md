@@ -111,6 +111,9 @@ HotkeyMonitor          right ⌥ via device flag bit → AsyncStream<HotkeyEvent
         ├─> OverlayController  non-activating panel near the caret
         ├─> TextPolisher    corrections → spoken commands → FoundationModels
         │                   cleanup → terminator. Core product value.
+        ├─> LiveTyping      confirmed words → SyntheticText keystrokes while
+        │                   the user talks; FocusedField (AX) re-selects the
+        │                   typed run on release so the paste replaces it
         └─> TextInserter    pasteboard snapshot → set → synthetic ⌘V → restore
 
 Two gestures work on a selection instead, through the same controller:
@@ -152,6 +155,14 @@ the evaluation seam (ADR-0004). Keep it that way.
   (ADR-0005, ADR-0011). The prompt must not be asked for the full stop —
   tried twice, failed 5 of 5 — and the polisher decodes greedily: same
   words, same cleanup, 11/11 at five repeats.
+- **Words appear as you speak; never delete by count** (GDR-0018).
+  `LiveTyping` types only *finalized* transcript text, as keystrokes with no
+  modifier flags (the user is holding right ⌥). On release the typed run is
+  replaced by selecting it through `FocusedField` and pasting — only when
+  the same element still has focus and `ReplacementCheck` recognises the
+  run (autocorrect allowed). Fields that cannot be read back keep the
+  pill-then-paste flow. `timbre-eval --stream` shows the finalized/volatile
+  split; that is how to check the model still confirms words mid-utterance.
 - **Taught corrections run first, deterministically.** `CorrectionTable`
   replaces each taught *heard* phrase with its *meant* text before spoken
   commands and the model (GDR-0011): whole phrase, case ignored, verbatim,

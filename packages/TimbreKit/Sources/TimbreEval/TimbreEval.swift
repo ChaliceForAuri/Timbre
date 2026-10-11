@@ -422,7 +422,9 @@ struct TimbreEval {
                 elapsed.components.seconds * 1000
                 + elapsed.components.attoseconds / 1_000_000_000_000_000
             counter.increment()
-            print(String(format: "  %6d ms  %@", milliseconds, snapshot))
+            // Confirmed words first, then the guess still in flight — the
+            // split that decides how much can be typed while the user talks.
+            print(String(format: "  %6d ms  %@ ‹%@›", milliseconds, snapshot.finalized, snapshot.volatile))
         }
 
         print("\n\(counter.count) snapshots before finish")

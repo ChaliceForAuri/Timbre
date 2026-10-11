@@ -85,8 +85,9 @@ actor Transcriber {
     // MARK: - Dictation lifecycle
 
     /// Begins a dictation consuming model-ready audio, and returns a stream of
-    /// transcript snapshots for live display. The snapshot stream finishes
-    /// when the session does.
+    /// transcript snapshots — confirmed words and in-flight words, separately
+    /// — for live display and live typing. The stream finishes when the
+    /// session does.
     ///
     /// `vocabulary` is the user's taught terms, offered to the model as
     /// contextual strings for this session — see the note below and ADR-0008
@@ -94,7 +95,7 @@ actor Transcriber {
     func startDictation(
         consuming input: AsyncStream<AnalyzerInput>,
         vocabulary: [String] = []
-    ) async throws -> AsyncStream<String> {
+    ) async throws -> AsyncStream<TranscriptSnapshot> {
         guard let locale else { throw TranscriberError.notPrepared }
 
         // The previous dictation left the next session warming up in the
@@ -135,12 +136,12 @@ actor Transcriber {
 
         try await session.analyzer.start(inputSequence: input)
 
-        let (snapshots, continuation) = AsyncStream<String>.makeStream()
+        let (snapshots, continuation) = AsyncStream<TranscriptSnapshot>.makeStream()
         resultsTask = Task {
             do {
                 for try await result in session.transcriber.results {
                     accumulator.apply(String(result.text.characters), isFinal: result.isFinal)
-                    continuation.yield(accumulator.currentText)
+                    continuation.yield(accumulator.snapshot)
                 }
             } catch {
                 // Stream ended or errored; finishDictation() reports whatever
