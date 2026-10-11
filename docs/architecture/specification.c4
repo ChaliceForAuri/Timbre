@@ -11,7 +11,7 @@ specification {
   color mint rgb(80, 200, 160)
   color mustard rgb(240, 200, 70)
   color coral rgb(228, 87, 63)
-  color sky rgb(80, 170, 220)
+  color skyblue rgb(80, 170, 220)  // "sky" is a reserved name
   color keycap rgb(184, 181, 174)
 
   element person {
