@@ -21,3 +21,6 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Generated from docs/architecture by scripts/gen-architecture.mjs
+src/lib/architecture/likec4-views.js

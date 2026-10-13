@@ -161,7 +161,7 @@
 			</p>
 		</div>
 
-		<div class="min-w-0 pt-6 pb-4 lg:pt-10">
+		<div class="min-w-0 pt-6 pb-10 lg:pt-10">
 			<DictationDemo />
 		</div>
 	</div>
@@ -223,7 +223,7 @@ Timbre.1428            0           0</span>
 		<!-- 1. Dictate -->
 		<div class="grid items-center gap-10 lg:grid-cols-2">
 			<div>
-				<div class="mb-6"><KeyCap symbol="⌥" name="right option" gesture="hold" color="green" /></div>
+				<div class="mb-6"><KeyCap symbol="⌥" name="right ⌥" gesture="hold" color="green" /></div>
 				<h3 class="text-3xl">Hold, talk, release. It writes.</h3>
 				<p class="text-muted-foreground mt-4 leading-relaxed">
 					Apple’s on-device speech model transcribes as you speak; you see the words land in the
@@ -258,7 +258,7 @@ Timbre.1428            0           0</span>
 				<div class="absolute -bottom-5 left-6"><Pill mode="reading" text="Reading  1.5×" /></div>
 			</div>
 			<div class="order-1 lg:order-2">
-				<div class="mb-6"><KeyCap symbol="⌥" name="left option" gesture="tap" color="yellow" /></div>
+				<div class="mb-6"><KeyCap symbol="⌥" name="left ⌥" gesture="tap" color="yellow" /></div>
 				<h3 class="text-3xl">Tap, and it reads the selection back.</h3>
 				<p class="text-muted-foreground mt-4 leading-relaxed">
 					Select any text — an email, a paragraph you just wrote, a page — and tap. Tap again to
@@ -271,7 +271,7 @@ Timbre.1428            0           0</span>
 		<!-- 3. Command -->
 		<div class="grid items-center gap-10 lg:grid-cols-2">
 			<div>
-				<div class="mb-6"><KeyCap symbol="⌘" name="right command" gesture="hold" color="orange" /></div>
+				<div class="mb-6"><KeyCap symbol="⌘" name="right ⌘" gesture="hold" color="orange" /></div>
 				<h3 class="text-3xl">Hold on a selection. Say fix, explain, shorten or plain.</h3>
 				<p class="text-muted-foreground mt-4 leading-relaxed">
 					<strong class="text-foreground">Fix</strong> corrects spelling, grammar and punctuation and
@@ -328,10 +328,7 @@ Timbre.1428            0           0</span>
 				<div class="absolute -bottom-5 left-6"><Pill mode="capture" text="call the dentist Thursday" /></div>
 			</div>
 			<div class="order-1 lg:order-2">
-				<div class="mb-6 flex items-end gap-4">
-					<KeyCap symbol="⌘" name="right command" gesture="hold" color="orange" />
-					<span class="text-muted-foreground mb-7 font-mono text-xs">+ nothing selected</span>
-				</div>
+				<div class="mb-6"><KeyCap symbol="⌘" name="right ⌘ · nothing selected" gesture="hold" color="orange" /></div>
 				<h3 class="text-3xl">Say a to-do. It lands in Reminders.</h3>
 				<p class="text-muted-foreground mt-4 leading-relaxed">
 					Hold the same key with nothing selected and say it — “call the dentist Thursday”. Timbre

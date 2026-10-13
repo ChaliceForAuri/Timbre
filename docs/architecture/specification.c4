@@ -1,0 +1,49 @@
+// The vocabulary of the model. Kinds are deliberately few: a person, a
+// system, a container (something that runs), a component (something inside
+// a container), a store, and an external we do not own. Colour means one
+// thing — what is shipped (default), what is Apple's (gray), what is
+// planned (amber), what is an open decision (red).
+specification {
+  // The site's palette (GDR-0017), so the diagrams and the page agree:
+  // mint for what is shipped, mustard for what is planned, coral for an
+  // open decision, keycap grey for Apple's side and ours alike. rgb(),
+  // because a hex that starts with a letter parses as a #tag.
+  color mint rgb(80, 200, 160)
+  color mustard rgb(240, 200, 70)
+  color coral rgb(228, 87, 63)
+  color skyblue rgb(80, 170, 220)  // "sky" is a reserved name
+  color keycap rgb(184, 181, 174)
+
+  element person {
+    style {
+      shape person
+      color muted
+    }
+  }
+  element system
+  element container
+  element component {
+    style {
+      size small
+    }
+  }
+  element store {
+    style {
+      shape storage
+    }
+  }
+  element external {
+    style {
+      color keycap
+    }
+  }
+
+  tag planned
+  tag open
+  tag apple
+  tag dev
+
+  relationship uses
+  relationship syncs
+  relationship feeds
+}
