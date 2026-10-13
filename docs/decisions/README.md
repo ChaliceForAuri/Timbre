@@ -63,3 +63,4 @@ Two kinds of records live here. The boundary rule:
 | [0016](gdr/0016-todos-by-voice-into-reminders.md) | To-dos by voice, into Apple's Reminders | Accepted |
 | [0017](gdr/0017-retro-identity-one-colour-per-gesture.md) | A retro identity: keycap grey, and one colour per gesture | Accepted |
 | [0018](gdr/0018-words-appear-as-you-speak.md) | Words appear as you speak; the cleanup replaces them on release | Accepted |
+| [0019](gdr/0019-outfit-and-a-simpler-drawing.md) | Outfit, served by the site; the keyboard goes; keys are flat (amends 0017) | Accepted |

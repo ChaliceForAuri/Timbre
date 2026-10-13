@@ -1,6 +1,6 @@
 model {
   user = person 'You' {
-    description 'Holds a key and talks. Owns every word in the Bank.'
+    description 'Holds a key and talks. Owns every word in the Library.'
   }
   hugo = person 'Hugo' {
     description 'Builds Timbre, runs it from Backstage.'
@@ -55,7 +55,7 @@ model {
         description 'TodoParser reads the date with Apple’s data detector; ReminderStore files it in Reminders (GDR-0016).'
       }
       vocabulary = component 'VocabularyStore' {
-        description 'Taught words, corrections, definitions. Three lists in UserDefaults — the Bank’s ancestor.'
+        description 'Taught words, corrections, definitions. Three lists in UserDefaults — the Library’s ancestor.'
       }
       updater = component 'SoftwareUpdater' {
         description 'One GET of appcast.json when asked; installs only a notarized build signed by our team (ADR-0010, GDR-0013).'
@@ -122,7 +122,7 @@ model {
       description 'Where to-dos go. Apple syncs them to the iPhone.'
     }
     icloud = external 'iCloud' {
-      description 'The user’s own account. Reminders sync through it today; the Bank would too (GDR-0010).'
+      description 'The user’s own account. Reminders sync through it today; the Library would too (GDR-0010).'
     }
     gatekeeper = external 'Gatekeeper and notarization' {
       description 'Verifies the signature of every download before it replaces the app.'
@@ -193,13 +193,13 @@ model {
   // ----------------------------------------------------------- the next part
   core = container 'TimbreCore' {
     #planned
-    description 'Planned: the platform-neutral package the Mac app and the iPhone app both import — the Bank, parsing, practice scoring.'
+    description 'Planned: the platform-neutral package the Mac app and the iPhone app both import — the Library, parsing, practice scoring.'
     technology 'Swift package, macOS + iOS'
     style {
       color mustard
     }
 
-    bank = store 'The Bank' {
+    library = store 'The Library' {
       #planned
       description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, industry tags, strength, history.'
       style {
@@ -220,13 +220,13 @@ model {
         color mustard
       }
     }
-    practice -> bank 'raises strength'
-    profile -> bank 'tags'
+    practice -> library 'raises strength'
+    profile -> library 'tags'
   }
 
   iphone = system 'Timbre for iPhone' {
     #planned
-    description 'Planned: the Bank in your pocket. Review, practise, word of the day, add a word you heard. A companion, not a port — iOS cannot dictate into other apps.'
+    description 'Planned: the Library in your pocket. Review, practise, word of the day, add a word you heard. A companion, not a port — iOS cannot dictate into other apps.'
     technology 'SwiftUI, iOS 26'
     style {
       color mustard
@@ -235,20 +235,20 @@ model {
     -> core 'imports'
   }
 
-  timbre.kit -> core 'imports; VocabularyStore becomes the Bank' {
+  timbre.kit -> core 'imports; VocabularyStore becomes the Library' {
     #planned
   }
   timbre.kit.commands -> core.profile 'explain reads the industry' {
     #planned
   }
-  core.bank <-> apple.icloud 'CloudKit, private database — the binary still makes no requests' {
+  core.library <-> apple.icloud 'CloudKit, private database — the binary still makes no requests' {
     #planned
   }
   user -> iphone 'practises; hears the word of the day'
 
   account = external 'A Timbre account' {
     #open
-    description 'Open decision: sign-in and sync through Supabase, for a Bank on Android or the web. Would amend GDR-0013 and add entries to /network. Not before a non-Apple client is real.'
+    description 'Open decision: sign-in and sync through Supabase, for a Library on Android or the web. Would amend GDR-0013 and add entries to /network. Not before a non-Apple client is real.'
     style {
       color coral
     }

@@ -1,5 +1,31 @@
 [
 	{
+		"id": "GDR-0019",
+		"kind": "GDR",
+		"number": "0019",
+		"slug": "outfit-and-a-simpler-drawing",
+		"path": "docs/decisions/gdr/0019-outfit-and-a-simpler-drawing.md",
+		"title": "Outfit, served by the site; the keyboard goes; keys are flat",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-10-13",
+		"relations": [
+			{
+				"label": "Amends",
+				"summary": "GDR-0017, points 4 and 5",
+				"refs": [
+					"GDR-0017"
+				]
+			}
+		],
+		"excerpt": "Two weeks with GDR-0017 on the live site. The colours, the mark and the clean window-and-pill demo held up; Hugo named them as what he loves. Three things did not: the condensed heavy headline cut read as the thing he disliked most, the drawn keyboard under the demo was busy and \"less ugly\" was the brief, and the big two-tone keycaps with a legend, a name…",
+		"plain": "Accepted.\nContext.\nTwo weeks with GDR-0017 on the live site. The colours, the mark and the clean window-and-pill demo held up; Hugo named them as what he loves. Three things did not: the condensed heavy headline cut read as the thing he disliked most, the drawn keyboard under the demo was busy and \"less ugly\" was the brief, and the big two-tone keycaps with a legend, a name and a caption had \"too much going on\". The underline beneath the logotype went the same way.\nSix typefaces were laid out side by side in Backstage's Brand room — the mark, the word, a headline and a line of text in each — and the choice was made by looking.\nDecision.\n1. Outfit is the typeface, one family for headlines and text, bold for headlines set a touch tight, regular for text. IBM Plex Mono stays for labels and anything measured. GDR-0017's width-axis family is withdrawn.\n2. The site serves its own fonts. Both families ship from web/static/fonts under the SIL Open Font License; a visit to the site makes no request to Google. The share image is drawn with the same Outfit file the site serves.\n3. The keyboard illustration is withdrawn. The hero is the window and the pill; nothing underneath.\n4. A key is one flat face, its symbol, a three-pixel edge, and the gesture as a caption beneath. No legend inside the cap, no bevel, no animation.\n5. The logotype is the mark beside the word \"Timbre\", no underline. The rainbow keeps its three places: the stripe between sections, under one word of the headline, and in the mark.\nConsequences.\nEverything in GDR-0017 that is not points 4 and 5 stands: the greys, the six accents and their meanings, the stripe, drawn assets from one palette, the falsifiable claim.\nThe Brand room records the candidates and marks the one in use; the next typeface question starts there, not in a chat.\ntools/og-image.swift registers the repo's Outfit file for its process, so the card and the page match without the font being installed on the machine.",
+		"html": "<h2>Context</h2>\n<p>Two weeks with GDR-0017 on the live site. The colours, the mark and the clean window-and-pill demo held up; Hugo named them as what he loves. Three things did not: the condensed heavy headline cut read as the thing he disliked most, the drawn keyboard under the demo was busy and &quot;less ugly&quot; was the brief, and the big two-tone keycaps with a legend, a name and a caption had &quot;too much going on&quot;. The underline beneath the logotype went the same way.</p>\n<p>Six typefaces were laid out side by side in Backstage&#39;s Brand room — the mark, the word, a headline and a line of text in each — and the choice was made by looking.</p>\n<h2>Decision</h2>\n<ol>\n<li><strong>Outfit is the typeface</strong>, one family for headlines and text, bold for headlines set a touch tight, regular for text. IBM Plex Mono stays for labels and anything measured. GDR-0017&#39;s width-axis family is withdrawn.</li>\n<li><strong>The site serves its own fonts.</strong> Both families ship from <code>web/static/fonts</code> under the SIL Open Font License; a visit to the site makes no request to Google. The share image is drawn with the same Outfit file the site serves.</li>\n<li><strong>The keyboard illustration is withdrawn.</strong> The hero is the window and the pill; nothing underneath.</li>\n<li><strong>A key is one flat face, its symbol, a three-pixel edge, and the gesture as a caption beneath.</strong> No legend inside the cap, no bevel, no animation.</li>\n<li><strong>The logotype is the mark beside the word &quot;Timbre&quot;</strong>, no underline. The rainbow keeps its three places: the stripe between sections, under one word of the headline, and in the mark.</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li>Everything in GDR-0017 that is not points 4 and 5 stands: the greys, the six accents and their meanings, the stripe, drawn assets from one palette, the falsifiable claim.</li>\n<li>The Brand room records the candidates and marks the one in use; the next typeface question starts there, not in a chat.</li>\n<li><code>tools/og-image.swift</code> registers the repo&#39;s Outfit file for its process, so the card and the page match without the font being installed on the machine.</li>\n</ul>\n"
+	},
+	{
 		"id": "GDR-0018",
 		"kind": "GDR",
 		"number": "0018",

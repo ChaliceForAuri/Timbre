@@ -5,7 +5,7 @@ export const perspectives = [
 	{ id: 'context', label: 'The Mac app', blurb: 'What Timbre touches, and what touches it.' },
 	{ id: 'pipeline', label: 'Inside TimbreKit', blurb: 'One pipeline, one dictation at a time.' },
 	{ id: 'run', label: 'Site and Backstage', blurb: 'How the product is run and released.' },
-	{ id: 'learn', label: 'The Bank (planned)', blurb: 'The store, the phone, and sync.' }
+	{ id: 'learn', label: 'The Library (planned)', blurb: 'The store, the phone, and sync.' }
 ] as const;
 
 export type PerspectiveId = (typeof perspectives)[number]['id'];
