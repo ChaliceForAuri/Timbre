@@ -63,7 +63,6 @@
 	/// Lowercase is decided (2026-10-14). What remains: whether the bars sit
 	/// beside the word, and whether the rounded rainbow sits under it.
 	const wordmarks = [
-		{ label: 'bars + timbre, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, tight: true, note: 'The bars carry the colour beside the word, the rainbow runs under it, tucked close.' },
 		{ label: 'bars + timbre', word: 'timbre', mark: true, under: 'none', weight: 800, note: 'The bars alone carry the colour. The quietest header.' },
 		{ label: 'timbre, underlined', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, note: 'The word and the rainbow, nothing else. The rainbow does the mark\u2019s job.' }
 	];
@@ -120,9 +119,9 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">The wordmark</h2>
-		<p class="text-muted-foreground text-sm">Nunito, lowercase — decided. Bare bars beside the word, never the tile; the rainbow has rounded ends.</p>
+		<p class="text-muted-foreground text-sm">Nunito, lowercase — decided. The rainbow appears once: in the bars, or under the word.</p>
 	</div>
-	<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="mt-6 grid gap-4 sm:grid-cols-2">
 		{#each wordmarks as w, i (w.label)}
 			<div class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
 				<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {w.label}</Badge>
