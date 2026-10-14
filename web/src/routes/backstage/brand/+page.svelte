@@ -60,6 +60,16 @@
 	];
 	const fontsHref = `https://fonts.googleapis.com/css2?${candidates.map((c) => `family=${c.query}`).join('&')}&display=swap`;
 
+	/// Where the rounded rainbow sits under the word, if anywhere.
+	const wordmarks = [
+		{ label: 'mark + word', word: 'Timbre', mark: true, under: 'none', weight: 800, note: 'As the header shows it today. The rainbow lives in the mark only.' },
+		{ label: 'mark + word, underlined', word: 'Timbre', mark: true, under: 'full', weight: 800, note: 'The rounded rainbow runs the width of the word.' },
+		{ label: 'mark + word, short bar', word: 'Timbre', mark: true, under: 'short', weight: 800, note: 'A short rounded bar, left-aligned: a signature rather than an underline.' },
+		{ label: 'word, underlined', word: 'Timbre', mark: false, under: 'full', weight: 800, note: 'No mark; the rainbow does the mark\u2019s job.' },
+		{ label: 'lowercase, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, note: 'Lowercase, which Nunito draws roundest.' },
+		{ label: 'mark + word, lighter', word: 'Timbre', mark: true, under: 'full', weight: 700, note: 'One weight down, for a quieter header.' }
+	];
+
 	const colours = [
 		['red', 'refusal, error, must drop'],
 		['orange', 'command (right ⌘)'],
@@ -104,6 +114,47 @@
 			<Mark size={32} />
 			<Mark size={16} />
 		</div>
+	</div>
+</section>
+
+<!-- The wordmark -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">The wordmark</h2>
+		<p class="text-muted-foreground text-sm">Nunito. The rainbow has rounded ends now; the question is where it sits.</p>
+	</div>
+	<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		{#each wordmarks as w, i (w.label)}
+			<div class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
+				<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {w.label}</Badge>
+				<div class="mt-6 flex h-16 items-center">
+					{#if w.mark}<Mark size={32} class="mr-3 shrink-0" />{/if}
+					<span class="relative inline-flex flex-col">
+						<span class="text-[2rem] leading-none tracking-tight {w.weight === 700 ? 'font-bold' : 'font-extrabold'}">{w.word}</span>
+						{#if w.under === 'full'}
+							<span class="rainbow mt-1.5 block h-[5px] w-full rounded-full"></span>
+						{:else if w.under === 'short'}
+							<span class="rainbow mt-1.5 block h-[5px] w-10 rounded-full"></span>
+						{/if}
+					</span>
+					{#if w.under === 'dot'}
+						<span class="rainbow ml-2 block size-3 self-end rounded-full"></span>
+					{/if}
+				</div>
+				<p class="text-muted-foreground mt-4 text-xs">{w.note}</p>
+			</div>
+		{/each}
+	</div>
+	<div class="bg-case mt-4 grid gap-4 rounded-2xl p-6 sm:grid-cols-3">
+		{#each wordmarks.slice(0, 3) as w (w.label)}
+			<div class="flex h-14 items-center text-[oklch(0.94_0.004_80)]">
+				{#if w.mark}<Mark size={32} class="mr-3 shrink-0" />{/if}
+				<span class="inline-flex flex-col">
+					<span class="text-[2rem] leading-none font-extrabold tracking-tight">{w.word}</span>
+					{#if w.under === 'full'}<span class="rainbow mt-1.5 block h-[5px] w-full rounded-full"></span>{:else if w.under === 'short'}<span class="rainbow mt-1.5 block h-[5px] w-10 rounded-full"></span>{/if}
+				</span>
+			</div>
+		{/each}
 	</div>
 </section>
 

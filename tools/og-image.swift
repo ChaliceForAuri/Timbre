@@ -91,10 +91,13 @@ draw("Dictation that", at: NSPoint(x: 80, y: 318), font: headline, color: ink, k
 draw("never leaves your Mac.", at: NSPoint(x: 80, y: 250), font: headline, color: ink, kern: -1)
 let neverWidth = size(of: "never", font: headline, kern: -1).width
 let band = neverWidth / Double(rainbow.count)
+NSGraphicsContext.saveGraphicsState()
+NSBezierPath(roundedRect: NSRect(x: 80, y: 242, width: neverWidth, height: 8), xRadius: 4, yRadius: 4).addClip()
 for (i, color) in rainbow.enumerated() {
     color.setFill()
-    NSRect(x: 80 + Double(i) * band, y: 246, width: band + 0.5, height: 6).fill()
+    NSRect(x: 80 + Double(i) * band, y: 242, width: band + 0.5, height: 8).fill()
 }
+NSGraphicsContext.restoreGraphicsState()
 
 draw("Zero network requests*   ·   No account   ·   Free   ·   Open source", at: NSPoint(x: 82, y: 170), font: mono, color: muted)
 draw("timbre.hugopretorius.dev", at: NSPoint(x: 82, y: 124), font: mono, color: ink)

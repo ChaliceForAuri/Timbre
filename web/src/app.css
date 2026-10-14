@@ -215,21 +215,32 @@
 		var(--retro-violet) 83.33% 100%
 	);
 }
-/* A word underlined with the rainbow: the one emphasis the headline gets. */
-@utility underline-rainbow {
-	background-image: linear-gradient(
-		90deg,
-		var(--retro-red) 0 16.66%,
-		var(--retro-orange) 16.66% 33.33%,
-		var(--retro-yellow) 33.33% 50%,
-		var(--retro-green) 50% 66.66%,
-		var(--retro-blue) 66.66% 83.33%,
-		var(--retro-violet) 83.33% 100%
-	);
-	background-repeat: no-repeat;
-	background-size: 100% 0.14em;
-	background-position: 0 92%;
-	padding-bottom: 0.04em;
+/* A word underlined with the rainbow: the one emphasis the headline gets.
+   A rounded bar beneath the word (GDR-0020's rounded face wants rounded
+   ends everywhere the rainbow sits). */
+@layer components {
+	.underline-rainbow {
+		position: relative;
+		display: inline-block;
+	}
+	.underline-rainbow::after {
+		content: "";
+		position: absolute;
+		left: 0.02em;
+		right: 0.02em;
+		bottom: -0.06em;
+		height: 0.14em;
+		border-radius: 999px;
+		background-image: linear-gradient(
+			90deg,
+			var(--retro-red) 0 16.66%,
+			var(--retro-orange) 16.66% 33.33%,
+			var(--retro-yellow) 33.33% 50%,
+			var(--retro-green) 50% 66.66%,
+			var(--retro-blue) 66.66% 83.33%,
+			var(--retro-violet) 83.33% 100%
+		);
+	}
 }
 @utility rainbow-text {
 	background-image: linear-gradient(
