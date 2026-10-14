@@ -151,7 +151,7 @@
 	</div>
 	<p class="eyebrow text-muted-foreground mt-8">The shortlist, bars without a tile</p>
 	{#each [false, true] as dark (dark)}
-		<div class="mt-3 grid gap-6 rounded-2xl p-8 sm:grid-cols-2 lg:grid-cols-5 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+		<div class="mt-3 grid gap-x-10 gap-y-6 rounded-2xl p-8 sm:grid-cols-2 xl:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
 			{#each shortlist as w (w.label)}
 				<div class="flex h-20 items-center">
 					{#if w.mark}<Mark size={36} tile={false} class="mr-3 shrink-0" />{/if}
