@@ -6,37 +6,56 @@
 	/// The brand, laid out so a choice can be made by looking: the mark,
 	/// logotype candidates in real typefaces, the colours, the keycap.
 	/// Each candidate family is loaded from Google Fonts for this page only.
+	/// Round two, 2026-10-14: rounded families, after Hugo named Instagram's
+	/// face as the feel he likes — friendly, soft corners — while wanting to
+	/// keep what Outfit gave the page. Outfit stays in the list as the one in
+	/// use, so the comparison is against the real thing.
 	const candidates = [
 		{
-			family: 'Space Grotesk',
-			query: 'Space+Grotesk:wght@500;700',
-			note: 'Geometric, a little technical. The most "software" of the set.'
-		},
-		{
-			family: 'Instrument Sans',
-			query: 'Instrument+Sans:wght@500;600;700',
-			note: 'Clean and even, slightly wide. Disappears into the page in a good way.'
-		},
-		{
-			family: 'Bricolage Grotesque',
-			query: 'Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700',
-			note: 'Warm, with character in the a, g and y. Reads as made by a person.'
-		},
-		{
-			family: 'Manrope',
-			query: 'Manrope:wght@600;800',
-			note: 'Rounded corners, neutral. Calm at large sizes.'
-		},
-		{
 			family: 'Outfit',
-			query: 'Outfit:wght@500;700',
-			note: 'Geometric and friendly. The closest to the keycap colours in spirit.',
+			query: 'Outfit:wght@400;500;700',
+			note: 'In use. Geometric, not rounded. The baseline.',
 			chosen: true
 		},
 		{
-			family: 'Sora',
-			query: 'Sora:wght@600;700',
-			note: 'Precise, slightly squared. The most "device".'
+			family: 'Rubik',
+			query: 'Rubik:wght@400;500;700',
+			note: 'Geometric with softly rounded corners. Friendly without going soft — the closest to a keycap legend.'
+		},
+		{
+			family: 'Figtree',
+			query: 'Figtree:wght@400;500;700',
+			note: 'Modern and warm, corners eased rather than rounded. Reads as a product, not a toy.'
+		},
+		{
+			family: 'Red Hat Display',
+			query: 'Red+Hat+Display:wght@400;500;700',
+			note: 'Geometric with rounded terminals and a wide stance. Confident at headline size.'
+		},
+		{
+			family: 'Nunito',
+			query: 'Nunito:wght@400;600;800',
+			note: 'Fully rounded terminals, the classic friendly sans. Very close to the Instagram feel.'
+		},
+		{
+			family: 'Onest',
+			query: 'Onest:wght@400;500;700',
+			note: 'Humanist with soft corners. The quietest of the rounded set.'
+		},
+		{
+			family: 'Fredoka',
+			query: 'Fredoka:wght@400;500;600;700',
+			note: 'The bubble. Bold, round, playful — the furthest from "device", the nearest to "friend".'
+		},
+		{
+			family: 'Comfortaa',
+			query: 'Comfortaa:wght@400;700',
+			note: 'Geometric and bubbly, built from circles. Distinctive; lowercase is its strength.'
+		},
+		{
+			family: 'Baloo 2',
+			query: 'Baloo+2:wght@400;600;800',
+			note: 'Rounded and chunky. Warm at headline weight, a little heavy for body text.'
 		}
 	];
 	const fontsHref = `https://fonts.googleapis.com/css2?${candidates.map((c) => `family=${c.query}`).join('&')}&display=swap`;
@@ -62,7 +81,8 @@
 <p class="text-muted-foreground mt-3 max-w-[62ch]">
 	Decisions made by looking. The mark is settled; the typeface and the logotype are candidates,
 	each shown as the header would show it, with a headline and a line of text in the same family.
-	Outfit was chosen on 2026-10-13 (GDR-0019) and is served from this site, not from Google.
+	Outfit was chosen on 2026-10-13 (GDR-0019) and is served from this site, not from Google; the
+	candidates on this page load from Google Fonts for comparison only.
 </p>
 
 <!-- The mark -->
@@ -90,8 +110,8 @@
 <!-- Logotype candidates -->
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
-		<h2 class="text-3xl">Logotype candidates</h2>
-		<p class="text-muted-foreground text-sm">Six families. Pick one, or name another.</p>
+		<h2 class="text-3xl">Logotype candidates — round two, rounded</h2>
+		<p class="text-muted-foreground text-sm">Outfit as the baseline, then eight rounded families. Pick one, or name another.</p>
 	</div>
 	<div class="mt-6 grid gap-4 lg:grid-cols-2">
 		{#each candidates as c, i (c.family)}
