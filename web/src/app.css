@@ -156,7 +156,8 @@
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
 
-	--font-sans: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--font-sans: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--font-display: "Nunito", "Nunito Sans", -apple-system, BlinkMacSystemFont, sans-serif;
 	--font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
@@ -169,12 +170,13 @@
 		-webkit-font-smoothing: antialiased;
 	}
 	/* Headlines: Nunito at its heaviest, rounded terminals and all — the
-	   friendliness Hugo asked for, in the same family as the text so the
-	   page has one voice (GDR-0020). Rounded faces want less tightening. */
+	   friendliness Hugo asked for (GDR-0020). Text is Nunito Sans, its own
+	   companion: the same bones, square terminals, easier at small sizes
+	   (GDR-0022). Rounded faces want less tightening. */
 	h1,
 	h2,
 	h3 {
-		font-family: var(--font-sans);
+		font-family: var(--font-display);
 		font-weight: 800;
 		letter-spacing: -0.015em;
 		line-height: 1.08;
@@ -187,7 +189,7 @@
 
 /* The headline cut, for anything that is not a heading but should carry it. */
 @utility display {
-	font-family: var(--font-sans);
+	font-family: var(--font-display);
 	font-weight: 800;
 	letter-spacing: -0.015em;
 	line-height: 1.08;
@@ -215,21 +217,32 @@
 		var(--retro-violet) 83.33% 100%
 	);
 }
-/* A word underlined with the rainbow: the one emphasis the headline gets. */
-@utility underline-rainbow {
-	background-image: linear-gradient(
-		90deg,
-		var(--retro-red) 0 16.66%,
-		var(--retro-orange) 16.66% 33.33%,
-		var(--retro-yellow) 33.33% 50%,
-		var(--retro-green) 50% 66.66%,
-		var(--retro-blue) 66.66% 83.33%,
-		var(--retro-violet) 83.33% 100%
-	);
-	background-repeat: no-repeat;
-	background-size: 100% 0.14em;
-	background-position: 0 92%;
-	padding-bottom: 0.04em;
+/* A word underlined with the rainbow: the one emphasis the headline gets.
+   A rounded bar beneath the word (GDR-0020's rounded face wants rounded
+   ends everywhere the rainbow sits). */
+@layer components {
+	.underline-rainbow {
+		position: relative;
+		display: inline-block;
+	}
+	.underline-rainbow::after {
+		content: "";
+		position: absolute;
+		left: 0.02em;
+		right: 0.02em;
+		bottom: -0.06em;
+		height: 0.14em;
+		border-radius: 999px;
+		background-image: linear-gradient(
+			90deg,
+			var(--retro-red) 0 16.66%,
+			var(--retro-orange) 16.66% 33.33%,
+			var(--retro-yellow) 33.33% 50%,
+			var(--retro-green) 50% 66.66%,
+			var(--retro-blue) 66.66% 83.33%,
+			var(--retro-violet) 83.33% 100%
+		);
+	}
 }
 @utility rainbow-text {
 	background-image: linear-gradient(

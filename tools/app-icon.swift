@@ -56,7 +56,7 @@ NSBezierPath(roundedRect: NSRect(x: inset, y: inset, width: tileSide, height: ti
 let grid = tileSide / 32
 let centres: [Double] = [8, 13.3, 18.6, 24]
 let heights: [Double] = [6, 14, 9, 3]
-let width = 2.6 * grid
+let width = 3.0 * grid
 for (i, cx) in centres.enumerated() {
     let h = heights[i] * grid + width  // round caps extend a stroke by half its width each end
     let x = inset + cx * grid - width / 2

@@ -60,6 +60,27 @@
 	];
 	const fontsHref = `https://fonts.googleapis.com/css2?${candidates.map((c) => `family=${c.query}`).join('&')}&display=swap`;
 
+	/// Lowercase is decided (2026-10-14). What remains: whether the bars sit
+	/// beside the word, and whether the rounded rainbow sits under it.
+	const wordmarks = [
+		{ label: 'primary · bars + timbre', word: 'timbre', mark: true, under: 'none', weight: 800, chosen: true, note: 'The lockup: headers, the share image, anywhere the icon is not already on screen.' },
+		{ label: 'secondary · timbre, underlined', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, chosen: true, note: 'The wordmark alone with the rounded rainbow beneath: beside the tiled icon, or where the bars would repeat.' }
+	];
+	const shortlist = wordmarks;
+
+	/// Pairings, 2026-10-14: Nunito keeps the wordmark and the headlines; the
+	/// question is what the paragraphs are set in. Nunito itself is the
+	/// baseline. Labels stay IBM Plex Mono throughout.
+	const pairings = [
+		{ body: 'Nunito', query: 'Nunito:wght@400;600', note: 'One family. Round everywhere, including the small text — the friendliest, and the least contrast.' },
+		{ body: 'Nunito Sans', query: 'Nunito+Sans:wght@400;600', chosen: true, note: 'In use (GDR-0022). Nunito\u2019s own text companion: same bones, square terminals.' },
+		{ body: 'Inter', query: 'Inter:wght@400;600', note: 'The runner-up. Rounded headlines over Inter is a very common, very readable pairing.' },
+		{ body: 'Source Sans 3', query: 'Source+Sans+3:wght@400;600', note: 'Humanist, warm, narrow. Pairs with round display faces without competing.' },
+		{ body: 'DM Sans', query: 'DM+Sans:wght@400;600', note: 'Geometric, low contrast, slightly rounded. Sits between Nunito and Inter.' },
+		{ body: 'Figtree', query: 'Figtree:wght@400;600', note: 'Eased corners, friendly. The closest text face to Nunito\u2019s feel without being it.' }
+	];
+	const pairingsHref = `https://fonts.googleapis.com/css2?${pairings.map((p) => `family=${p.query}`).join('&')}&display=swap`;
+
 	const colours = [
 		['red', 'refusal, error, must drop'],
 		['orange', 'command (right ⌘)'],
@@ -74,6 +95,7 @@
 	<title>Brand — Timbre Backstage</title>
 	<meta name="robots" content="noindex" />
 	<link rel="stylesheet" href={fontsHref} />
+	<link rel="stylesheet" href={pairingsHref} />
 </svelte:head>
 
 <p class="eyebrow text-retro-violet">Brand</p>
@@ -107,6 +129,118 @@
 	</div>
 </section>
 
+<!-- The wordmark -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">The wordmark</h2>
+		<p class="text-muted-foreground text-sm">Decided (GDR-0021): primary, the bare bars beside the word; secondary, the word with the rounded rainbow beneath.</p>
+	</div>
+	<div class="mt-6 grid gap-4 sm:grid-cols-2">
+		{#each wordmarks as w, i (w.label)}
+			<div class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
+				<span class="flex items-center gap-2">
+					<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {w.label}</Badge>
+					{#if 'chosen' in w && w.chosen}
+						<Badge class="bg-retro-green font-mono text-[10px] text-[oklch(0.2_0.005_80)] hover:bg-retro-green">in use</Badge>
+					{/if}
+				</span>
+				<div class="mt-6 flex h-16 items-center">
+					{#if w.mark}<Mark size={26} tile={false} class="mr-2.5 shrink-0" />{/if}
+					<span class="relative inline-flex flex-col">
+						<span class="display text-[2rem] leading-none tracking-tight">{w.word}</span>
+						{#if w.under === 'full'}
+							<span class="rainbow block h-[5px] w-full rounded-full {'tight' in w && w.tight ? 'mt-0.5' : 'mt-1.5'}"></span>
+						{:else if w.under === 'short'}
+							<span class="rainbow mt-1.5 block h-[5px] w-10 rounded-full"></span>
+						{/if}
+					</span>
+				</div>
+				<p class="text-muted-foreground mt-4 text-xs">{w.note}</p>
+			</div>
+		{/each}
+	</div>
+	<p class="eyebrow text-muted-foreground mt-8">Larger, on both grounds</p>
+	{#each [false, true] as dark (dark)}
+		<div class="mt-3 grid gap-x-10 gap-y-6 rounded-2xl p-8 sm:grid-cols-2 xl:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+			{#each shortlist as w (w.label)}
+				<div class="flex h-20 items-center">
+					{#if w.mark}<Mark size={36} tile={false} class="mr-3 shrink-0" />{/if}
+					<span class="inline-flex flex-col">
+						<span class="text-[2.75rem] leading-none display tracking-tight">{w.word}</span>
+						{#if w.under === 'full'}
+							<span class="rainbow block h-[7px] w-full rounded-full {'tight' in w && w.tight ? 'mt-1' : 'mt-2'}"></span>
+						{/if}
+					</span>
+				</div>
+			{/each}
+		</div>
+	{/each}
+</section>
+
+<!-- Pairings -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">Pairings</h2>
+		<p class="text-muted-foreground text-sm">Nunito for the wordmark and headlines; Nunito Sans for the paragraphs, chosen 2026-10-14 with Inter the runner-up. Labels stay IBM Plex Mono.</p>
+	</div>
+	<div class="mt-6 grid gap-4 lg:grid-cols-2">
+		{#each pairings as p, i (p.body)}
+			<article class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
+				<div class="flex items-center justify-between gap-3">
+					<span class="flex items-center gap-2">
+						<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · Nunito + {p.body}</Badge>
+						{#if 'chosen' in p && p.chosen}
+							<Badge class="bg-retro-green font-mono text-[10px] text-[oklch(0.2_0.005_80)] hover:bg-retro-green">in use</Badge>
+						{/if}
+					</span>
+					<p class="text-muted-foreground text-xs">{p.note}</p>
+				</div>
+				<div class="mt-6 flex items-center gap-2">
+					<Mark size={22} tile={false} />
+					<span class="text-[1.5rem] leading-none display tracking-tight">timbre</span>
+				</div>
+				<p class="display mt-5 text-[2rem] leading-[1.08] tracking-[-0.015em] text-balance">Hold a key. Say it. Done.</p>
+				<p class="text-muted-foreground mt-3 text-[15px] leading-relaxed" style="font-family: '{p.body}', sans-serif">
+					Hold a key and talk. Cleaned-up text lands wherever your cursor is — filler gone,
+					punctuation right, your phrasing intact. Tap another key to hear anything read back.
+					Hold a third on a selection to fix, shorten or explain it.
+				</p>
+				<div class="mt-4 flex flex-wrap items-center gap-3">
+					<span class="bg-primary text-primary-foreground rounded-md px-3 py-1.5 text-sm font-semibold" style="font-family: '{p.body}', sans-serif">Download for macOS</span>
+					<span class="eyebrow text-retro-green">Zero network requests *</span>
+				</div>
+			</article>
+		{/each}
+	</div>
+</section>
+
+<!-- The bars' weight -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">The bars, a little heavier</h2>
+		<p class="text-muted-foreground text-sm">Stroke 3.0 chosen on 2026-10-14; 2.6 was the favicon as first drawn, 3.4 the step too far.</p>
+	</div>
+	{#each [false, true] as dark (dark)}
+		<div class="mt-4 grid gap-6 rounded-2xl p-8 sm:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+			{#each [2.6, 3.0, 3.4] as w (w)}
+				<div>
+					<p class="eyebrow {dark ? 'text-[oklch(0.7_0.006_80)]' : 'text-muted-foreground'}">stroke {w}{w === 3 ? ' · in use' : ''}</p>
+					<div class="mt-4 flex h-16 items-center">
+						<Mark size={36} tile={false} weight={w} class="mr-3 shrink-0" />
+						<span class="text-[2.75rem] leading-none display tracking-tight">timbre</span>
+					</div>
+					<div class="mt-4 flex items-end gap-4">
+						<Mark size={64} weight={w} />
+						<Mark size={32} weight={w} />
+						<Mark size={16} weight={w} />
+						<Mark size={28} tile={false} weight={w} />
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/each}
+</section>
+
 <!-- Logotype candidates -->
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
@@ -128,14 +262,10 @@
 
 				<div class="mt-6 flex flex-wrap items-center gap-x-10 gap-y-5">
 					<span class="flex items-center gap-2.5">
-						<Mark size={28} />
-						<span class="text-[1.5rem] leading-none font-bold tracking-tight">Timbre</span>
+						<Mark size={24} tile={false} />
+						<span class="text-[1.5rem] leading-none display tracking-tight">timbre</span>
 					</span>
-					<span class="flex items-center gap-2.5">
-						<Mark size={28} />
-						<span class="text-[1.5rem] leading-none font-semibold tracking-tight">timbre</span>
-					</span>
-					<span class="text-[1.5rem] leading-none font-bold tracking-tight">Timbre</span>
+					<span class="text-[1.5rem] leading-none display tracking-tight">timbre</span>
 				</div>
 
 				<p class="mt-7 text-[2.1rem] leading-[1.08] font-bold tracking-[-0.02em] text-balance">

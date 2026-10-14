@@ -19,9 +19,9 @@
 <div class="flex min-h-screen flex-col">
 	<header class="bg-background/85 sticky top-0 z-30 backdrop-blur-md">
 		<nav class="mx-auto flex h-16 max-w-6xl items-center gap-5 px-6">
-			<a href="/" class="flex items-center gap-2.5" aria-label="Timbre home">
-				<Mark size={28} />
-				<span class="text-[1.35rem] leading-none font-bold tracking-tight">Timbre</span>
+			<a href="/" class="flex items-center gap-2" aria-label="Timbre home">
+				<Mark size={22} tile={false} />
+				<span class="display text-[1.5rem] leading-none">timbre</span>
 			</a>
 
 			<div class="ml-auto hidden items-center gap-6 text-sm sm:flex">
@@ -55,9 +55,9 @@
 		<Stripe height="6px" rounded={false} />
 		<div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 sm:grid-cols-[1.2fr_1fr_1fr]">
 			<div>
-				<div class="flex items-center gap-2.5">
-					<Mark size={26} />
-					<p class="text-xl font-bold tracking-tight">Timbre</p>
+				<div class="flex items-center gap-2">
+					<Mark size={20} tile={false} />
+					<p class="display text-[1.35rem] leading-none">timbre</p>
 				</div>
 				<p class="text-muted-foreground mt-3 max-w-[38ch] text-sm leading-relaxed">
 					{site.tagline} Free for personal use, built in the open, and it never sends your voice

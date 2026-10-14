@@ -72,7 +72,7 @@ func drawMark(x: Double, y: Double, side: Double) {
     caseColor.setFill()
     NSBezierPath(roundedRect: NSRect(x: x, y: y, width: side, height: side), xRadius: side * 7 / 32, yRadius: side * 7 / 32).fill()
     let grid = side / 32
-    let barWidth = 2.6 * grid
+    let barWidth = 3.0 * grid
     for (i, cx) in [8.0, 13.3, 18.6, 24.0].enumerated() {
         let h = [6.0, 14.0, 9.0, 3.0][i] * grid + barWidth
         [rainbow[0], rainbow[2], rainbow[3], rainbow[4]][i].setFill()
@@ -81,9 +81,19 @@ func drawMark(x: Double, y: Double, side: Double) {
 }
 drawMark(x: 880, y: 200, side: 260)
 
-// Wordmark, with the small mark beside it, as the header shows it.
-drawMark(x: 80, y: 446, side: 64)
-draw("Timbre", at: NSPoint(x: 160, y: 436), font: nunito(72, weight: 800), color: ink, kern: -1)
+// The tiled icon already stands on this card, so the wordmark is the
+// secondary: the word with the rounded rainbow beneath, no bars (GDR-0021).
+let wordmark = nunito(76, weight: 800)
+draw("timbre", at: NSPoint(x: 80, y: 430), font: wordmark, color: ink, kern: -1.5)
+let wordWidth = size(of: "timbre", font: wordmark, kern: -1.5).width
+let wordBand = wordWidth / Double(rainbow.count)
+NSGraphicsContext.saveGraphicsState()
+NSBezierPath(roundedRect: NSRect(x: 82, y: 420, width: wordWidth - 4, height: 9), xRadius: 4.5, yRadius: 4.5).addClip()
+for (i, color) in rainbow.enumerated() {
+    color.setFill()
+    NSRect(x: 82 + Double(i) * wordBand, y: 420, width: wordBand + 0.5, height: 9).fill()
+}
+NSGraphicsContext.restoreGraphicsState()
 
 // The claim, wrapped by hand, with the rainbow under "never".
 let headline = nunito(58, weight: 800)
@@ -91,10 +101,13 @@ draw("Dictation that", at: NSPoint(x: 80, y: 318), font: headline, color: ink, k
 draw("never leaves your Mac.", at: NSPoint(x: 80, y: 250), font: headline, color: ink, kern: -1)
 let neverWidth = size(of: "never", font: headline, kern: -1).width
 let band = neverWidth / Double(rainbow.count)
+NSGraphicsContext.saveGraphicsState()
+NSBezierPath(roundedRect: NSRect(x: 80, y: 242, width: neverWidth, height: 8), xRadius: 4, yRadius: 4).addClip()
 for (i, color) in rainbow.enumerated() {
     color.setFill()
-    NSRect(x: 80 + Double(i) * band, y: 246, width: band + 0.5, height: 6).fill()
+    NSRect(x: 80 + Double(i) * band, y: 242, width: band + 0.5, height: 8).fill()
 }
+NSGraphicsContext.restoreGraphicsState()
 
 draw("Zero network requests*   ·   No account   ·   Free   ·   Open source", at: NSPoint(x: 82, y: 170), font: mono, color: muted)
 draw("timbre.hugopretorius.dev", at: NSPoint(x: 82, y: 124), font: mono, color: ink)
