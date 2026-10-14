@@ -66,9 +66,12 @@
 		{ label: 'mark + word, underlined', word: 'Timbre', mark: true, under: 'full', weight: 800, note: 'The rounded rainbow runs the width of the word.' },
 		{ label: 'mark + word, short bar', word: 'Timbre', mark: true, under: 'short', weight: 800, note: 'A short rounded bar, left-aligned: a signature rather than an underline.' },
 		{ label: 'word, underlined', word: 'Timbre', mark: false, under: 'full', weight: 800, note: 'No mark; the rainbow does the mark\u2019s job.' },
-		{ label: 'lowercase, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, note: 'Lowercase, which Nunito draws roundest.' },
+		{ label: 'lowercase, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, tight: true, note: 'Lowercase, which Nunito draws roundest. The line sits closer to the word.' },
 		{ label: 'mark + word, lighter', word: 'Timbre', mark: true, under: 'full', weight: 700, note: 'One weight down, for a quieter header.' }
 	];
+
+	/// The three Hugo kept on 2026-10-14, shown larger, on paper and on charcoal.
+	const shortlist = [wordmarks[0], wordmarks[3], wordmarks[4]];
 
 	const colours = [
 		['red', 'refusal, error, must drop'],
@@ -132,30 +135,32 @@
 					<span class="relative inline-flex flex-col">
 						<span class="text-[2rem] leading-none tracking-tight {w.weight === 700 ? 'font-bold' : 'font-extrabold'}">{w.word}</span>
 						{#if w.under === 'full'}
-							<span class="rainbow mt-1.5 block h-[5px] w-full rounded-full"></span>
+							<span class="rainbow block h-[5px] w-full rounded-full {'tight' in w && w.tight ? 'mt-0.5' : 'mt-1.5'}"></span>
 						{:else if w.under === 'short'}
 							<span class="rainbow mt-1.5 block h-[5px] w-10 rounded-full"></span>
 						{/if}
 					</span>
-					{#if w.under === 'dot'}
-						<span class="rainbow ml-2 block size-3 self-end rounded-full"></span>
-					{/if}
 				</div>
 				<p class="text-muted-foreground mt-4 text-xs">{w.note}</p>
 			</div>
 		{/each}
 	</div>
-	<div class="bg-case mt-4 grid gap-4 rounded-2xl p-6 sm:grid-cols-3">
-		{#each wordmarks.slice(0, 3) as w (w.label)}
-			<div class="flex h-14 items-center text-[oklch(0.94_0.004_80)]">
-				{#if w.mark}<Mark size={32} class="mr-3 shrink-0" />{/if}
-				<span class="inline-flex flex-col">
-					<span class="text-[2rem] leading-none font-extrabold tracking-tight">{w.word}</span>
-					{#if w.under === 'full'}<span class="rainbow mt-1.5 block h-[5px] w-full rounded-full"></span>{:else if w.under === 'short'}<span class="rainbow mt-1.5 block h-[5px] w-10 rounded-full"></span>{/if}
-				</span>
-			</div>
-		{/each}
-	</div>
+	<p class="eyebrow text-muted-foreground mt-8">The shortlist · 1, 4, 5</p>
+	{#each [false, true] as dark (dark)}
+		<div class="mt-3 grid gap-4 rounded-2xl p-8 sm:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+			{#each shortlist as w (w.label)}
+				<div class="flex h-20 items-center">
+					{#if w.mark}<Mark size={44} class="mr-3.5 shrink-0" />{/if}
+					<span class="inline-flex flex-col">
+						<span class="text-[2.75rem] leading-none font-extrabold tracking-tight">{w.word}</span>
+						{#if w.under === 'full'}
+							<span class="rainbow block h-[7px] w-full rounded-full {'tight' in w && w.tight ? 'mt-1' : 'mt-2'}"></span>
+						{/if}
+					</span>
+				</div>
+			{/each}
+		</div>
+	{/each}
 </section>
 
 <!-- Logotype candidates -->
