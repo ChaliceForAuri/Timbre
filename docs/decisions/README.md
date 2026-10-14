@@ -67,3 +67,4 @@ Two kinds of records live here. The boundary rule:
 | [0020](gdr/0020-nunito.md) | Nunito: the rounded face (amends 0019) | Accepted |
 | [0021](gdr/0021-the-wordmark.md) | The wordmark: bars beside "timbre", stroke 3; an underlined secondary (amends 0019, 0017) | Accepted |
 | [0022](gdr/0022-nunito-sans-for-text.md) | Nunito Sans for text; Nunito keeps the headlines (amends 0020) | Accepted |
+| [0023](gdr/0023-the-library.md) | The Library: one store, five kinds, synced by iCloud, practised by voice | Accepted |
