@@ -158,6 +158,33 @@
 	{/each}
 </section>
 
+<!-- The bars' weight -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">The bars, a little heavier</h2>
+		<p class="text-muted-foreground text-sm">Stroke 2.6 is the favicon as drawn; 3.0 and 3.4 beside it, bare and tiled.</p>
+	</div>
+	{#each [false, true] as dark (dark)}
+		<div class="mt-4 grid gap-6 rounded-2xl p-8 sm:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+			{#each [2.6, 3.0, 3.4] as w (w)}
+				<div>
+					<p class="eyebrow {dark ? 'text-[oklch(0.7_0.006_80)]' : 'text-muted-foreground'}">stroke {w}{w === 2.6 ? ' · today' : ''}</p>
+					<div class="mt-4 flex h-16 items-center">
+						<Mark size={36} tile={false} weight={w} class="mr-3 shrink-0" />
+						<span class="text-[2.75rem] leading-none font-extrabold tracking-tight">timbre</span>
+					</div>
+					<div class="mt-4 flex items-end gap-4">
+						<Mark size={64} weight={w} />
+						<Mark size={32} weight={w} />
+						<Mark size={16} weight={w} />
+						<Mark size={28} tile={false} weight={w} />
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/each}
+</section>
+
 <!-- Logotype candidates -->
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
