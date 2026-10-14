@@ -73,8 +73,8 @@
 	/// baseline. Labels stay IBM Plex Mono throughout.
 	const pairings = [
 		{ body: 'Nunito', query: 'Nunito:wght@400;600', note: 'One family. Round everywhere, including the small text — the friendliest, and the least contrast.' },
-		{ body: 'Nunito Sans', query: 'Nunito+Sans:wght@400;600', note: 'Nunito\u2019s own text companion: same bones, square terminals. The safest pairing.' },
-		{ body: 'Inter', query: 'Inter:wght@400;600', note: 'The neutral workhorse. Rounded headlines over Inter is a very common, very readable pairing.' },
+		{ body: 'Nunito Sans', query: 'Nunito+Sans:wght@400;600', chosen: true, note: 'In use (GDR-0022). Nunito\u2019s own text companion: same bones, square terminals.' },
+		{ body: 'Inter', query: 'Inter:wght@400;600', note: 'The runner-up. Rounded headlines over Inter is a very common, very readable pairing.' },
 		{ body: 'Source Sans 3', query: 'Source+Sans+3:wght@400;600', note: 'Humanist, warm, narrow. Pairs with round display faces without competing.' },
 		{ body: 'DM Sans', query: 'DM+Sans:wght@400;600', note: 'Geometric, low contrast, slightly rounded. Sits between Nunito and Inter.' },
 		{ body: 'Figtree', query: 'Figtree:wght@400;600', note: 'Eased corners, friendly. The closest text face to Nunito\u2019s feel without being it.' }
@@ -147,7 +147,7 @@
 				<div class="mt-6 flex h-16 items-center">
 					{#if w.mark}<Mark size={26} tile={false} class="mr-2.5 shrink-0" />{/if}
 					<span class="relative inline-flex flex-col">
-						<span class="text-[2rem] leading-none tracking-tight {w.weight === 700 ? 'font-bold' : 'font-extrabold'}">{w.word}</span>
+						<span class="display text-[2rem] leading-none tracking-tight">{w.word}</span>
 						{#if w.under === 'full'}
 							<span class="rainbow block h-[5px] w-full rounded-full {'tight' in w && w.tight ? 'mt-0.5' : 'mt-1.5'}"></span>
 						{:else if w.under === 'short'}
@@ -166,7 +166,7 @@
 				<div class="flex h-20 items-center">
 					{#if w.mark}<Mark size={36} tile={false} class="mr-3 shrink-0" />{/if}
 					<span class="inline-flex flex-col">
-						<span class="text-[2.75rem] leading-none font-extrabold tracking-tight">{w.word}</span>
+						<span class="text-[2.75rem] leading-none display tracking-tight">{w.word}</span>
 						{#if w.under === 'full'}
 							<span class="rainbow block h-[7px] w-full rounded-full {'tight' in w && w.tight ? 'mt-1' : 'mt-2'}"></span>
 						{/if}
@@ -181,20 +181,25 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">Pairings</h2>
-		<p class="text-muted-foreground text-sm">Nunito for the wordmark and headlines; six text faces for the paragraphs. Labels stay IBM Plex Mono.</p>
+		<p class="text-muted-foreground text-sm">Nunito for the wordmark and headlines; Nunito Sans for the paragraphs, chosen 2026-10-14 with Inter the runner-up. Labels stay IBM Plex Mono.</p>
 	</div>
 	<div class="mt-6 grid gap-4 lg:grid-cols-2">
 		{#each pairings as p, i (p.body)}
 			<article class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
 				<div class="flex items-center justify-between gap-3">
-					<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · Nunito + {p.body}</Badge>
+					<span class="flex items-center gap-2">
+						<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · Nunito + {p.body}</Badge>
+						{#if 'chosen' in p && p.chosen}
+							<Badge class="bg-retro-green font-mono text-[10px] text-[oklch(0.2_0.005_80)] hover:bg-retro-green">in use</Badge>
+						{/if}
+					</span>
 					<p class="text-muted-foreground text-xs">{p.note}</p>
 				</div>
 				<div class="mt-6 flex items-center gap-2">
 					<Mark size={22} tile={false} />
-					<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
+					<span class="text-[1.5rem] leading-none display tracking-tight">timbre</span>
 				</div>
-				<p class="mt-5 text-[2rem] leading-[1.08] font-extrabold tracking-[-0.015em] text-balance">Hold a key. Say it. Done.</p>
+				<p class="display mt-5 text-[2rem] leading-[1.08] tracking-[-0.015em] text-balance">Hold a key. Say it. Done.</p>
 				<p class="text-muted-foreground mt-3 text-[15px] leading-relaxed" style="font-family: '{p.body}', sans-serif">
 					Hold a key and talk. Cleaned-up text lands wherever your cursor is — filler gone,
 					punctuation right, your phrasing intact. Tap another key to hear anything read back.
@@ -222,7 +227,7 @@
 					<p class="eyebrow {dark ? 'text-[oklch(0.7_0.006_80)]' : 'text-muted-foreground'}">stroke {w}{w === 3 ? ' · in use' : ''}</p>
 					<div class="mt-4 flex h-16 items-center">
 						<Mark size={36} tile={false} weight={w} class="mr-3 shrink-0" />
-						<span class="text-[2.75rem] leading-none font-extrabold tracking-tight">timbre</span>
+						<span class="text-[2.75rem] leading-none display tracking-tight">timbre</span>
 					</div>
 					<div class="mt-4 flex items-end gap-4">
 						<Mark size={64} weight={w} />
@@ -258,9 +263,9 @@
 				<div class="mt-6 flex flex-wrap items-center gap-x-10 gap-y-5">
 					<span class="flex items-center gap-2.5">
 						<Mark size={24} tile={false} />
-						<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
+						<span class="text-[1.5rem] leading-none display tracking-tight">timbre</span>
 					</span>
-					<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
+					<span class="text-[1.5rem] leading-none display tracking-tight">timbre</span>
 				</div>
 
 				<p class="mt-7 text-[2.1rem] leading-[1.08] font-bold tracking-[-0.02em] text-balance">

@@ -1,5 +1,6 @@
 Nunito © 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito)
+Nunito Sans © 2014 The Nunito Sans Project Authors (https://github.com/googlefonts/NunitoSans)
 IBM Plex Mono © 2017 IBM Corp. (https://github.com/IBM/plex)
 
-Both are licensed under the SIL Open Font License, Version 1.1:
+All are licensed under the SIL Open Font License, Version 1.1:
 https://openfontlicense.org

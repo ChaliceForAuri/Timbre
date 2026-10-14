@@ -9,9 +9,10 @@
 </script>
 
 <svelte:head>
-	<!-- Nunito and IBM Plex Mono, served from this site: a visit makes no
-	     request to Google. static/fonts/fonts.css, OFL. -->
+	<!-- Nunito, Nunito Sans and IBM Plex Mono, served from this site: a visit
+	     makes no request to Google. static/fonts/fonts.css, OFL. -->
 	<link rel="preload" href="/fonts/Nunito-400-800-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="preload" href="/fonts/NunitoSans-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
 	<link rel="stylesheet" href="/fonts/fonts.css" />
 	<link rel="canonical" href={canonical} />
 	<meta property="og:url" content={canonical} />

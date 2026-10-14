@@ -21,7 +21,7 @@
 		<nav class="mx-auto flex h-16 max-w-6xl items-center gap-5 px-6">
 			<a href="/" class="flex items-center gap-2" aria-label="Timbre home">
 				<Mark size={22} tile={false} />
-				<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
+				<span class="display text-[1.5rem] leading-none">timbre</span>
 			</a>
 
 			<div class="ml-auto hidden items-center gap-6 text-sm sm:flex">
@@ -57,7 +57,7 @@
 			<div>
 				<div class="flex items-center gap-2">
 					<Mark size={20} tile={false} />
-					<p class="text-[1.35rem] leading-none font-extrabold tracking-tight">timbre</p>
+					<p class="display text-[1.35rem] leading-none">timbre</p>
 				</div>
 				<p class="text-muted-foreground mt-3 max-w-[38ch] text-sm leading-relaxed">
 					{site.tagline} Free for personal use, built in the open, and it never sends your voice
