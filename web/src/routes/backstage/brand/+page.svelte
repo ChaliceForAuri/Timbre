@@ -63,8 +63,8 @@
 	/// Lowercase is decided (2026-10-14). What remains: whether the bars sit
 	/// beside the word, and whether the rounded rainbow sits under it.
 	const wordmarks = [
-		{ label: 'bars + timbre', word: 'timbre', mark: true, under: 'none', weight: 800, note: 'The bars alone carry the colour. The quietest header.' },
-		{ label: 'timbre, underlined', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, note: 'The word and the rainbow, nothing else. The rainbow does the mark\u2019s job.' }
+		{ label: 'primary · bars + timbre', word: 'timbre', mark: true, under: 'none', weight: 800, chosen: true, note: 'The lockup: headers, the share image, anywhere the icon is not already on screen.' },
+		{ label: 'secondary · timbre, underlined', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, chosen: true, note: 'The wordmark alone with the rounded rainbow beneath: beside the tiled icon, or where the bars would repeat.' }
 	];
 	const shortlist = wordmarks;
 
@@ -119,12 +119,17 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">The wordmark</h2>
-		<p class="text-muted-foreground text-sm">Nunito, lowercase — decided. The rainbow appears once: in the bars, or under the word.</p>
+		<p class="text-muted-foreground text-sm">Decided (GDR-0021): primary, the bare bars beside the word; secondary, the word with the rounded rainbow beneath.</p>
 	</div>
 	<div class="mt-6 grid gap-4 sm:grid-cols-2">
 		{#each wordmarks as w, i (w.label)}
 			<div class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
-				<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {w.label}</Badge>
+				<span class="flex items-center gap-2">
+					<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {w.label}</Badge>
+					{#if 'chosen' in w && w.chosen}
+						<Badge class="bg-retro-green font-mono text-[10px] text-[oklch(0.2_0.005_80)] hover:bg-retro-green">in use</Badge>
+					{/if}
+				</span>
 				<div class="mt-6 flex h-16 items-center">
 					{#if w.mark}<Mark size={26} tile={false} class="mr-2.5 shrink-0" />{/if}
 					<span class="relative inline-flex flex-col">
@@ -162,13 +167,13 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">The bars, a little heavier</h2>
-		<p class="text-muted-foreground text-sm">Stroke 2.6 is the favicon as drawn; 3.0 and 3.4 beside it, bare and tiled.</p>
+		<p class="text-muted-foreground text-sm">Stroke 3.0 chosen on 2026-10-14; 2.6 was the favicon as first drawn, 3.4 the step too far.</p>
 	</div>
 	{#each [false, true] as dark (dark)}
 		<div class="mt-4 grid gap-6 rounded-2xl p-8 sm:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
 			{#each [2.6, 3.0, 3.4] as w (w)}
 				<div>
-					<p class="eyebrow {dark ? 'text-[oklch(0.7_0.006_80)]' : 'text-muted-foreground'}">stroke {w}{w === 2.6 ? ' · today' : ''}</p>
+					<p class="eyebrow {dark ? 'text-[oklch(0.7_0.006_80)]' : 'text-muted-foreground'}">stroke {w}{w === 3 ? ' · in use' : ''}</p>
 					<div class="mt-4 flex h-16 items-center">
 						<Mark size={36} tile={false} weight={w} class="mr-3 shrink-0" />
 						<span class="text-[2.75rem] leading-none font-extrabold tracking-tight">timbre</span>

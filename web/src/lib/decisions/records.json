@@ -1,5 +1,32 @@
 [
 	{
+		"id": "GDR-0021",
+		"kind": "GDR",
+		"number": "0021",
+		"slug": "the-wordmark",
+		"path": "docs/decisions/gdr/0021-the-wordmark.md",
+		"title": "The wordmark: the bare bars beside \"timbre\", stroke 3, with an underlined secondary",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-10-14",
+		"relations": [
+			{
+				"label": "Amends",
+				"summary": "GDR-0019, point 5; GDR-0017, point 3 (where the rainbow sits)",
+				"refs": [
+					"GDR-0019",
+					"GDR-0017"
+				]
+			}
+		],
+		"excerpt": "With Nunito chosen (GDR-0020), the wordmark was laid out on the Brand room in every arrangement that was still open: title case and lowercase, the mark tiled and bare, the rounded rainbow under the word, beside it, or absent, and the bars at three weights. Each round narrowed by looking: lowercase first, then the tile dropped beside the word (\"if we show…",
+		"plain": "Accepted.\nContext.\nWith Nunito chosen (GDR-0020), the wordmark was laid out on the Brand room in every arrangement that was still open: title case and lowercase, the mark tiled and bare, the rounded rainbow under the word, beside it, or absent, and the bars at three weights. Each round narrowed by looking: lowercase first, then the tile dropped beside the word (\"if we show the icon with the wordmark we shouldn't show it with a background\"), then the doubled rainbow dropped, then the weight.\nDecision.\n1. The primary wordmark is the bare bars beside \"timbre\", lowercase, Nunito at its heaviest, no underline. The rainbow appears once in a lockup: in the bars. The secondary is \"timbre\" with the rounded rainbow beneath it, no bars — for the places the tiled icon already stands (an App Store listing, a window with the icon in its title) or where the bars would repeat. Never both rainbows in one lockup.\n2. The bars are drawn at stroke 3 of the 32-unit grid, up from 2.6, everywhere they appear: the favicon, the app icon, the header, the share image. Heavy enough to sit beside Nunito's extra-bold; light enough that the sixteen-pixel icon keeps its gaps.\n3. The tile stays for the icon alone — the favicon, the Dock, the update prompt — where a box is wanted. Beside the word the tile would be a second box.\n4. The name in prose stays \"Timbre.\" Lowercase is the drawing, not the spelling.\n5. The rounded rainbow underline keeps its place in the headline, under one word, and the stripe keeps its places between sections. The primary wordmark does not carry it; the secondary is where it belongs.\nConsequences.\nOne lockup, drawn once (Mark.svelte with tile={false}), used by the site header and footer, the Backstage sidebar, the login card and the share image. The secondary is the same word with the rainbow bar beneath; the Brand room shows both.\nThe app icon set and the favicon are regenerated from the same stroke; tools/app-icon.swift and tools/og-image.swift carry the number.\nThe Brand room keeps every round so the next question starts from the comparison.",
+		"html": "<h2>Context</h2>\n<p>With Nunito chosen (GDR-0020), the wordmark was laid out on the Brand room in every arrangement that was still open: title case and lowercase, the mark tiled and bare, the rounded rainbow under the word, beside it, or absent, and the bars at three weights. Each round narrowed by looking: lowercase first, then the tile dropped beside the word (&quot;if we show the icon with the wordmark we shouldn&#39;t show it with a background&quot;), then the doubled rainbow dropped, then the weight.</p>\n<h2>Decision</h2>\n<ol>\n<li><strong>The primary wordmark is the bare bars beside &quot;timbre&quot;</strong>, lowercase, Nunito at its heaviest, no underline. The rainbow appears once in a lockup: in the bars. <strong>The secondary is &quot;timbre&quot; with the rounded rainbow beneath it</strong>, no bars — for the places the tiled icon already stands (an App Store listing, a window with the icon in its title) or where the bars would repeat. Never both rainbows in one lockup.</li>\n<li><strong>The bars are drawn at stroke 3 of the 32-unit grid</strong>, up from 2.6, everywhere they appear: the favicon, the app icon, the header, the share image. Heavy enough to sit beside Nunito&#39;s extra-bold; light enough that the sixteen-pixel icon keeps its gaps.</li>\n<li><strong>The tile stays for the icon alone</strong> — the favicon, the Dock, the update prompt — where a box is wanted. Beside the word the tile would be a second box.</li>\n<li><strong>The name in prose stays &quot;Timbre.&quot;</strong> Lowercase is the drawing, not the spelling.</li>\n<li>The rounded rainbow underline keeps its place in the headline, under one word, and the stripe keeps its places between sections. The primary wordmark does not carry it; the secondary is where it belongs.</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li>One lockup, drawn once (<code>Mark.svelte</code> with <code>tile={false}</code>), used by the site header and footer, the Backstage sidebar, the login card and the share image. The secondary is the same word with the <code>rainbow</code> bar beneath; the Brand room shows both.</li>\n<li>The app icon set and the favicon are regenerated from the same stroke; <code>tools/app-icon.swift</code> and <code>tools/og-image.swift</code> carry the number.</li>\n<li>The Brand room keeps every round so the next question starts from the comparison.</li>\n</ul>\n"
+	},
+	{
 		"id": "GDR-0020",
 		"kind": "GDR",
 		"number": "0020",

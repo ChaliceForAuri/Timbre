@@ -15,7 +15,10 @@
 <div class="mx-auto flex min-h-[70vh] max-w-md items-center px-6">
 	<Card.Root class="w-full">
 		<Card.Header>
-			<Mark size={36} class="mb-3" />
+			<div class="mb-3 flex items-center gap-2">
+				<Mark size={22} tile={false} />
+				<span class="display text-2xl">timbre</span>
+			</div>
 			<Card.Title class="display text-3xl">Backstage</Card.Title>
 			<Card.Description>
 				Where Timbre is run: releases, decisions, plans, evals and the University. Private.

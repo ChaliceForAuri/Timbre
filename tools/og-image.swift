@@ -72,7 +72,7 @@ func drawMark(x: Double, y: Double, side: Double) {
     caseColor.setFill()
     NSBezierPath(roundedRect: NSRect(x: x, y: y, width: side, height: side), xRadius: side * 7 / 32, yRadius: side * 7 / 32).fill()
     let grid = side / 32
-    let barWidth = 2.6 * grid
+    let barWidth = 3.0 * grid
     for (i, cx) in [8.0, 13.3, 18.6, 24.0].enumerated() {
         let h = [6.0, 14.0, 9.0, 3.0][i] * grid + barWidth
         [rainbow[0], rainbow[2], rainbow[3], rainbow[4]][i].setFill()
@@ -81,9 +81,19 @@ func drawMark(x: Double, y: Double, side: Double) {
 }
 drawMark(x: 880, y: 200, side: 260)
 
-// Wordmark, with the small mark beside it, as the header shows it.
-drawMark(x: 80, y: 446, side: 64)
-draw("Timbre", at: NSPoint(x: 160, y: 436), font: nunito(72, weight: 800), color: ink, kern: -1)
+// The wordmark, as the header shows it: the bare bars beside "timbre".
+func drawBars(x: Double, y: Double, height: Double) {
+    // The favicon's grid, without the tile: bars span 14 units of height.
+    let grid = height / 14
+    let barWidth = 3.0 * grid
+    for (i, cx) in [0.0, 5.3, 10.6, 16.0].enumerated() {
+        let h = [6.0, 14.0, 9.0, 3.0][i] * grid + barWidth
+        [rainbow[0], rainbow[2], rainbow[3], rainbow[4]][i].setFill()
+        NSBezierPath(roundedRect: NSRect(x: x + cx * grid, y: y + height / 2 - h / 2 + barWidth / 2, width: barWidth, height: h), xRadius: barWidth / 2, yRadius: barWidth / 2).fill()
+    }
+}
+drawBars(x: 84, y: 452, height: 46)
+draw("timbre", at: NSPoint(x: 168, y: 430), font: nunito(76, weight: 800), color: ink, kern: -1.5)
 
 // The claim, wrapped by hand, with the rainbow under "never".
 let headline = nunito(58, weight: 800)

@@ -37,6 +37,9 @@ turns the section for that version into the release notes shown in the app.
   fix still corrects spelling with macOS's own spell checker, leaving names
   and your taught words alone.
 
+### Changed
+- The icon's bars are a little heavier, to match the wordmark (GDR-0021).
+
 ### Fixed
 - Fix, shorten and plain no longer touch Slack mentions and channels, links,
   email addresses, dates, times, units, versions or abbreviations like

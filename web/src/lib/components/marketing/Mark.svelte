@@ -5,7 +5,7 @@
 	let {
 		size = 28,
 		tile = true,
-		weight = 2.6,
+		weight = 3,
 		class: className = ''
 	}: { size?: number; tile?: boolean; weight?: number; class?: string } = $props();
 

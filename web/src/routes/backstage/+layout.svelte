@@ -78,9 +78,9 @@
 	<Sidebar.Root collapsible="icon">
 		<Sidebar.Header>
 			<a href="/backstage" class="flex items-center gap-2.5 px-2 py-1.5">
-				<Mark size={28} class="shrink-0" />
+				<Mark size={20} tile={false} class="shrink-0" />
 				<span class="flex flex-col group-data-[collapsible=icon]:hidden">
-					<span class="display text-base leading-none">Timbre</span>
+					<span class="display text-[1.1rem] leading-none">timbre</span>
 					<span class="eyebrow text-muted-foreground mt-1 text-[9px]">backstage</span>
 				</span>
 				{#if latest}

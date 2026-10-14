@@ -3,7 +3,7 @@
        mark as the app icon (tools/app-icon.swift): charcoal case, four bars
        in the retro accents (GDR-0017). -->
   <rect width="32" height="32" rx="7" fill="#2e2d2b"/>
-  <g stroke-width="2.6" stroke-linecap="round">
+  <g stroke-width="3" stroke-linecap="round">
     <line x1="8" y1="13" x2="8" y2="19" stroke="#e4573f"/>
     <line x1="13.3" y1="9" x2="13.3" y2="23" stroke="#f0c846"/>
     <line x1="18.6" y1="11.5" x2="18.6" y2="20.5" stroke="#50c8a0"/>
