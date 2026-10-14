@@ -62,16 +62,20 @@
 
 	/// Where the rounded rainbow sits under the word, if anywhere.
 	const wordmarks = [
-		{ label: 'mark + word', word: 'Timbre', mark: true, under: 'none', weight: 800, note: 'As the header shows it today. The rainbow lives in the mark only.' },
-		{ label: 'mark + word, underlined', word: 'Timbre', mark: true, under: 'full', weight: 800, note: 'The rounded rainbow runs the width of the word.' },
-		{ label: 'mark + word, short bar', word: 'Timbre', mark: true, under: 'short', weight: 800, note: 'A short rounded bar, left-aligned: a signature rather than an underline.' },
+		{ label: 'bars + word', word: 'Timbre', mark: true, under: 'none', weight: 800, note: 'The bare bars beside the word. The rainbow lives in the bars only.' },
+		{ label: 'bars + word, underlined', word: 'Timbre', mark: true, under: 'full', weight: 800, note: 'Bars and underline: the rainbow twice, side by side.' },
+		{ label: 'bars + word, short bar', word: 'Timbre', mark: true, under: 'short', weight: 800, note: 'A short rounded bar, left-aligned: a signature rather than an underline.' },
 		{ label: 'word, underlined', word: 'Timbre', mark: false, under: 'full', weight: 800, note: 'No mark; the rainbow does the mark\u2019s job.' },
-		{ label: 'lowercase, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, tight: true, note: 'Lowercase, which Nunito draws roundest. The line sits closer to the word.' },
-		{ label: 'mark + word, lighter', word: 'Timbre', mark: true, under: 'full', weight: 700, note: 'One weight down, for a quieter header.' }
+		{ label: 'bars + lowercase, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, tight: true, note: 'Lowercase, which Nunito draws roundest. The line sits closer to the word.' },
+		{ label: 'bars + lowercase', word: 'timbre', mark: true, under: 'none', weight: 800, note: 'Lowercase, the bars alone carrying the colour.' },
+		{ label: 'lowercase, underlined, no bars', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, note: 'The word and the rainbow, nothing else.' },
+		{ label: 'bars + word, lighter', word: 'Timbre', mark: true, under: 'full', weight: 700, note: 'One weight down, for a quieter header.' }
 	];
 
-	/// The three Hugo kept on 2026-10-14, shown larger, on paper and on charcoal.
-	const shortlist = [wordmarks[0], wordmarks[3], wordmarks[4]];
+	/// Hugo's shortlist on 2026-10-14, shown larger, on paper and on charcoal:
+	/// bars + Timbre; Timbre underlined; bars + timbre underlined; bars + timbre;
+	/// timbre underlined.
+	const shortlist = [wordmarks[0], wordmarks[3], wordmarks[4], wordmarks[5], wordmarks[6]];
 
 	const colours = [
 		['red', 'refusal, error, must drop'],
@@ -124,14 +128,14 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">The wordmark</h2>
-		<p class="text-muted-foreground text-sm">Nunito. The rainbow has rounded ends now; the question is where it sits.</p>
+		<p class="text-muted-foreground text-sm">Nunito. Beside the word the mark is the bare bars, no tile; the rainbow has rounded ends.</p>
 	</div>
 	<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each wordmarks as w, i (w.label)}
 			<div class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
 				<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {w.label}</Badge>
 				<div class="mt-6 flex h-16 items-center">
-					{#if w.mark}<Mark size={32} class="mr-3 shrink-0" />{/if}
+					{#if w.mark}<Mark size={26} tile={false} class="mr-2.5 shrink-0" />{/if}
 					<span class="relative inline-flex flex-col">
 						<span class="text-[2rem] leading-none tracking-tight {w.weight === 700 ? 'font-bold' : 'font-extrabold'}">{w.word}</span>
 						{#if w.under === 'full'}
@@ -145,12 +149,12 @@
 			</div>
 		{/each}
 	</div>
-	<p class="eyebrow text-muted-foreground mt-8">The shortlist · 1, 4, 5</p>
+	<p class="eyebrow text-muted-foreground mt-8">The shortlist, bars without a tile</p>
 	{#each [false, true] as dark (dark)}
-		<div class="mt-3 grid gap-4 rounded-2xl p-8 sm:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+		<div class="mt-3 grid gap-6 rounded-2xl p-8 sm:grid-cols-2 lg:grid-cols-5 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
 			{#each shortlist as w (w.label)}
 				<div class="flex h-20 items-center">
-					{#if w.mark}<Mark size={44} class="mr-3.5 shrink-0" />{/if}
+					{#if w.mark}<Mark size={36} tile={false} class="mr-3 shrink-0" />{/if}
 					<span class="inline-flex flex-col">
 						<span class="text-[2.75rem] leading-none font-extrabold tracking-tight">{w.word}</span>
 						{#if w.under === 'full'}
