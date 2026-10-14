@@ -1,6 +1,6 @@
 // Draws the site's Open Graph image — the card LinkedIn, Slack and iMessage
 // show when the link is shared — in the site's identity: keycap grey,
-// charcoal ink, the rainbow stripe, the mark, and Outfit (GDR-0019), loaded
+// charcoal ink, the rainbow stripe, the mark, and Nunito (GDR-0020), loaded
 // from the same file the site serves.
 //
 //   swift tools/og-image.swift web/static/og.png
@@ -15,10 +15,10 @@ let width = 1200.0
 let height = 630.0
 let scale = 2.0
 
-// Outfit, from the repo, registered for this process only.
+// Nunito, from the repo, registered for this process only.
 let fontFile = URL(fileURLWithPath: #filePath)
     .deletingLastPathComponent().deletingLastPathComponent()
-    .appending(path: "web/static/fonts/Outfit-Variable.ttf")
+    .appending(path: "web/static/fonts/Nunito-Variable.ttf")
 CTFontManagerRegisterFontsForURL(fontFile as CFURL, .process, nil)
 
 func rgb(_ r: Int, _ g: Int, _ b: Int) -> NSColor {
@@ -51,9 +51,9 @@ for (i, color) in rainbow.enumerated() {
     NSRect(x: Double(i) * stripeWidth, y: height - stripeHeight, width: stripeWidth + 1, height: stripeHeight).fill()
 }
 
-func outfit(_ size: Double, weight: Double) -> NSFont {
+func nunito(_ size: Double, weight: Double) -> NSFont {
     let descriptor = NSFontDescriptor(fontAttributes: [
-        .family: "Outfit",
+        .family: "Nunito",
         .variation: [2003265652: weight],  // the 'wght' axis
     ])
     return NSFont(descriptor: descriptor, size: size) ?? NSFont.systemFont(ofSize: size, weight: .bold)
@@ -83,10 +83,10 @@ drawMark(x: 880, y: 200, side: 260)
 
 // Wordmark, with the small mark beside it, as the header shows it.
 drawMark(x: 80, y: 446, side: 64)
-draw("Timbre", at: NSPoint(x: 160, y: 436), font: outfit(72, weight: 700), color: ink, kern: -1.5)
+draw("Timbre", at: NSPoint(x: 160, y: 436), font: nunito(72, weight: 800), color: ink, kern: -1)
 
 // The claim, wrapped by hand, with the rainbow under "never".
-let headline = outfit(58, weight: 700)
+let headline = nunito(58, weight: 800)
 draw("Dictation that", at: NSPoint(x: 80, y: 318), font: headline, color: ink, kern: -1)
 draw("never leaves your Mac.", at: NSPoint(x: 80, y: 250), font: headline, color: ink, kern: -1)
 let neverWidth = size(of: "never", font: headline, kern: -1).width

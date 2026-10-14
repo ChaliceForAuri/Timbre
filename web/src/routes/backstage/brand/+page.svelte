@@ -14,8 +14,7 @@
 		{
 			family: 'Outfit',
 			query: 'Outfit:wght@400;500;700',
-			note: 'In use. Geometric, not rounded. The baseline.',
-			chosen: true
+			note: 'Round one\u2019s choice. Geometric, not rounded.'
 		},
 		{
 			family: 'Rubik',
@@ -35,7 +34,8 @@
 		{
 			family: 'Nunito',
 			query: 'Nunito:wght@400;600;800',
-			note: 'Fully rounded terminals, the classic friendly sans. Very close to the Instagram feel.'
+			note: 'Fully rounded terminals, the classic friendly sans. Very close to the Instagram feel.',
+			chosen: true
 		},
 		{
 			family: 'Onest',
@@ -81,8 +81,8 @@
 <p class="text-muted-foreground mt-3 max-w-[62ch]">
 	Decisions made by looking. The mark is settled; the typeface and the logotype are candidates,
 	each shown as the header would show it, with a headline and a line of text in the same family.
-	Outfit was chosen on 2026-10-13 (GDR-0019) and is served from this site, not from Google; the
-	candidates on this page load from Google Fonts for comparison only.
+	Nunito was chosen on 2026-10-14 (GDR-0020, after Outfit the day before) and is served from this
+	site, not from Google; the candidates on this page load from Google Fonts for comparison only.
 </p>
 
 <!-- The mark -->

@@ -1,5 +1,31 @@
 [
 	{
+		"id": "GDR-0020",
+		"kind": "GDR",
+		"number": "0020",
+		"slug": "nunito",
+		"path": "docs/decisions/gdr/0020-nunito.md",
+		"title": "Nunito: the rounded face",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-10-14",
+		"relations": [
+			{
+				"label": "Amends",
+				"summary": "GDR-0019, point 1",
+				"refs": [
+					"GDR-0019"
+				]
+			}
+		],
+		"excerpt": "A day with Outfit on the page, and Hugo named the feeling he was after: Instagram's face, \"so friendly\", rounded — while keeping what the geometric choice had given the page. A second round went on the Brand room: Outfit as the baseline and eight rounded families, each as the header shows it, with a headline and a line of text. Nunito was chosen by looking.",
+		"plain": "Accepted.\nContext.\nA day with Outfit on the page, and Hugo named the feeling he was after: Instagram's face, \"so friendly\", rounded — while keeping what the geometric choice had given the page. A second round went on the Brand room: Outfit as the baseline and eight rounded families, each as the header shows it, with a headline and a line of text. Nunito was chosen by looking.\nDecision.\n1. Nunito is the typeface, headlines at its heaviest weight with the tracking eased (rounded faces do not want tightening), text at regular. IBM Plex Mono stays for labels and anything measured.\n2. Everything else in GDR-0019 stands: the fonts are served by the site, the share image is drawn with the same file, the keyboard stays withdrawn, keys stay flat, the logotype is the mark beside the word.\nConsequences.\nThe page reads warmer and rounder; the mark's rounded bars and the keycaps' rounded faces now have a typeface that agrees with them.\nOutfit's files leave the repo; the Brand room keeps the candidates so the next question starts from the comparison, not from memory.",
+		"html": "<h2>Context</h2>\n<p>A day with Outfit on the page, and Hugo named the feeling he was after: Instagram&#39;s face, &quot;so friendly&quot;, rounded — while keeping what the geometric choice had given the page. A second round went on the Brand room: Outfit as the baseline and eight rounded families, each as the header shows it, with a headline and a line of text. Nunito was chosen by looking.</p>\n<h2>Decision</h2>\n<ol>\n<li><strong>Nunito is the typeface</strong>, headlines at its heaviest weight with the tracking eased (rounded faces do not want tightening), text at regular. IBM Plex Mono stays for labels and anything measured.</li>\n<li>Everything else in GDR-0019 stands: the fonts are served by the site, the share image is drawn with the same file, the keyboard stays withdrawn, keys stay flat, the logotype is the mark beside the word.</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li>The page reads warmer and rounder; the mark&#39;s rounded bars and the keycaps&#39; rounded faces now have a typeface that agrees with them.</li>\n<li>Outfit&#39;s files leave the repo; the Brand room keeps the candidates so the next question starts from the comparison, not from memory.</li>\n</ul>\n"
+	},
+	{
 		"id": "GDR-0019",
 		"kind": "GDR",
 		"number": "0019",
