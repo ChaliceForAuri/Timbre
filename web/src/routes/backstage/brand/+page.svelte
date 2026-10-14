@@ -68,6 +68,19 @@
 	];
 	const shortlist = wordmarks;
 
+	/// Pairings, 2026-10-14: Nunito keeps the wordmark and the headlines; the
+	/// question is what the paragraphs are set in. Nunito itself is the
+	/// baseline. Labels stay IBM Plex Mono throughout.
+	const pairings = [
+		{ body: 'Nunito', query: 'Nunito:wght@400;600', note: 'One family. Round everywhere, including the small text — the friendliest, and the least contrast.' },
+		{ body: 'Nunito Sans', query: 'Nunito+Sans:wght@400;600', note: 'Nunito\u2019s own text companion: same bones, square terminals. The safest pairing.' },
+		{ body: 'Inter', query: 'Inter:wght@400;600', note: 'The neutral workhorse. Rounded headlines over Inter is a very common, very readable pairing.' },
+		{ body: 'Source Sans 3', query: 'Source+Sans+3:wght@400;600', note: 'Humanist, warm, narrow. Pairs with round display faces without competing.' },
+		{ body: 'DM Sans', query: 'DM+Sans:wght@400;600', note: 'Geometric, low contrast, slightly rounded. Sits between Nunito and Inter.' },
+		{ body: 'Figtree', query: 'Figtree:wght@400;600', note: 'Eased corners, friendly. The closest text face to Nunito\u2019s feel without being it.' }
+	];
+	const pairingsHref = `https://fonts.googleapis.com/css2?${pairings.map((p) => `family=${p.query}`).join('&')}&display=swap`;
+
 	const colours = [
 		['red', 'refusal, error, must drop'],
 		['orange', 'command (right ⌘)'],
@@ -82,6 +95,7 @@
 	<title>Brand — Timbre Backstage</title>
 	<meta name="robots" content="noindex" />
 	<link rel="stylesheet" href={fontsHref} />
+	<link rel="stylesheet" href={pairingsHref} />
 </svelte:head>
 
 <p class="eyebrow text-retro-violet">Brand</p>
@@ -161,6 +175,38 @@
 			{/each}
 		</div>
 	{/each}
+</section>
+
+<!-- Pairings -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">Pairings</h2>
+		<p class="text-muted-foreground text-sm">Nunito for the wordmark and headlines; six text faces for the paragraphs. Labels stay IBM Plex Mono.</p>
+	</div>
+	<div class="mt-6 grid gap-4 lg:grid-cols-2">
+		{#each pairings as p, i (p.body)}
+			<article class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
+				<div class="flex items-center justify-between gap-3">
+					<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · Nunito + {p.body}</Badge>
+					<p class="text-muted-foreground text-xs">{p.note}</p>
+				</div>
+				<div class="mt-6 flex items-center gap-2">
+					<Mark size={22} tile={false} />
+					<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
+				</div>
+				<p class="mt-5 text-[2rem] leading-[1.08] font-extrabold tracking-[-0.015em] text-balance">Hold a key. Say it. Done.</p>
+				<p class="text-muted-foreground mt-3 text-[15px] leading-relaxed" style="font-family: '{p.body}', sans-serif">
+					Hold a key and talk. Cleaned-up text lands wherever your cursor is — filler gone,
+					punctuation right, your phrasing intact. Tap another key to hear anything read back.
+					Hold a third on a selection to fix, shorten or explain it.
+				</p>
+				<div class="mt-4 flex flex-wrap items-center gap-3">
+					<span class="bg-primary text-primary-foreground rounded-md px-3 py-1.5 text-sm font-semibold" style="font-family: '{p.body}', sans-serif">Download for macOS</span>
+					<span class="eyebrow text-retro-green">Zero network requests *</span>
+				</div>
+			</article>
+		{/each}
+	</div>
 </section>
 
 <!-- The bars' weight -->
