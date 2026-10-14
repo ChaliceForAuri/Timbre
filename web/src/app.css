@@ -156,7 +156,7 @@
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
 
-	--font-sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--font-sans: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	--font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
@@ -168,15 +168,16 @@
 		@apply bg-background text-foreground;
 		-webkit-font-smoothing: antialiased;
 	}
-	/* Headlines: Outfit, bold, set a touch tight. Geometric and friendly,
-	   the same family as the text, so the page has one voice (GDR-0019). */
+	/* Headlines: Nunito at its heaviest, rounded terminals and all — the
+	   friendliness Hugo asked for, in the same family as the text so the
+	   page has one voice (GDR-0020). Rounded faces want less tightening. */
 	h1,
 	h2,
 	h3 {
 		font-family: var(--font-sans);
-		font-weight: 700;
-		letter-spacing: -0.02em;
-		line-height: 1.05;
+		font-weight: 800;
+		letter-spacing: -0.015em;
+		line-height: 1.08;
 		text-wrap: balance;
 	}
 	::selection {
@@ -187,9 +188,9 @@
 /* The headline cut, for anything that is not a heading but should carry it. */
 @utility display {
 	font-family: var(--font-sans);
-	font-weight: 700;
-	letter-spacing: -0.02em;
-	line-height: 1.05;
+	font-weight: 800;
+	letter-spacing: -0.015em;
+	line-height: 1.08;
 }
 
 /* A small mono label, uppercase, tracked out: the eyebrow above a heading,
