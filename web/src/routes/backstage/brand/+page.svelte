@@ -60,22 +60,14 @@
 	];
 	const fontsHref = `https://fonts.googleapis.com/css2?${candidates.map((c) => `family=${c.query}`).join('&')}&display=swap`;
 
-	/// Where the rounded rainbow sits under the word, if anywhere.
+	/// Lowercase is decided (2026-10-14). What remains: whether the bars sit
+	/// beside the word, and whether the rounded rainbow sits under it.
 	const wordmarks = [
-		{ label: 'bars + word', word: 'Timbre', mark: true, under: 'none', weight: 800, note: 'The bare bars beside the word. The rainbow lives in the bars only.' },
-		{ label: 'bars + word, underlined', word: 'Timbre', mark: true, under: 'full', weight: 800, note: 'Bars and underline: the rainbow twice, side by side.' },
-		{ label: 'bars + word, short bar', word: 'Timbre', mark: true, under: 'short', weight: 800, note: 'A short rounded bar, left-aligned: a signature rather than an underline.' },
-		{ label: 'word, underlined', word: 'Timbre', mark: false, under: 'full', weight: 800, note: 'No mark; the rainbow does the mark\u2019s job.' },
-		{ label: 'bars + lowercase, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, tight: true, note: 'Lowercase, which Nunito draws roundest. The line sits closer to the word.' },
-		{ label: 'bars + lowercase', word: 'timbre', mark: true, under: 'none', weight: 800, note: 'Lowercase, the bars alone carrying the colour.' },
-		{ label: 'lowercase, underlined, no bars', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, note: 'The word and the rainbow, nothing else.' },
-		{ label: 'bars + word, lighter', word: 'Timbre', mark: true, under: 'full', weight: 700, note: 'One weight down, for a quieter header.' }
+		{ label: 'bars + timbre, underlined', word: 'timbre', mark: true, under: 'full', weight: 800, tight: true, note: 'The bars carry the colour beside the word, the rainbow runs under it, tucked close.' },
+		{ label: 'bars + timbre', word: 'timbre', mark: true, under: 'none', weight: 800, note: 'The bars alone carry the colour. The quietest header.' },
+		{ label: 'timbre, underlined', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, note: 'The word and the rainbow, nothing else. The rainbow does the mark\u2019s job.' }
 	];
-
-	/// Hugo's shortlist on 2026-10-14, shown larger, on paper and on charcoal:
-	/// bars + Timbre; Timbre underlined; bars + timbre underlined; bars + timbre;
-	/// timbre underlined.
-	const shortlist = [wordmarks[0], wordmarks[3], wordmarks[4], wordmarks[5], wordmarks[6]];
+	const shortlist = wordmarks;
 
 	const colours = [
 		['red', 'refusal, error, must drop'],
@@ -128,7 +120,7 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">The wordmark</h2>
-		<p class="text-muted-foreground text-sm">Nunito. Beside the word the mark is the bare bars, no tile; the rainbow has rounded ends.</p>
+		<p class="text-muted-foreground text-sm">Nunito, lowercase — decided. Bare bars beside the word, never the tile; the rainbow has rounded ends.</p>
 	</div>
 	<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each wordmarks as w, i (w.label)}
@@ -149,7 +141,7 @@
 			</div>
 		{/each}
 	</div>
-	<p class="eyebrow text-muted-foreground mt-8">The shortlist, bars without a tile</p>
+	<p class="eyebrow text-muted-foreground mt-8">Larger, on both grounds</p>
 	{#each [false, true] as dark (dark)}
 		<div class="mt-3 grid gap-x-10 gap-y-6 rounded-2xl p-8 sm:grid-cols-2 xl:grid-cols-3 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
 			{#each shortlist as w (w.label)}
@@ -188,14 +180,10 @@
 
 				<div class="mt-6 flex flex-wrap items-center gap-x-10 gap-y-5">
 					<span class="flex items-center gap-2.5">
-						<Mark size={28} />
-						<span class="text-[1.5rem] leading-none font-bold tracking-tight">Timbre</span>
+						<Mark size={24} tile={false} />
+						<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
 					</span>
-					<span class="flex items-center gap-2.5">
-						<Mark size={28} />
-						<span class="text-[1.5rem] leading-none font-semibold tracking-tight">timbre</span>
-					</span>
-					<span class="text-[1.5rem] leading-none font-bold tracking-tight">Timbre</span>
+					<span class="text-[1.5rem] leading-none font-extrabold tracking-tight">timbre</span>
 				</div>
 
 				<p class="mt-7 text-[2.1rem] leading-[1.08] font-bold tracking-[-0.02em] text-balance">
