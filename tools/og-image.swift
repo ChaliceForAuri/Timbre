@@ -81,19 +81,19 @@ func drawMark(x: Double, y: Double, side: Double) {
 }
 drawMark(x: 880, y: 200, side: 260)
 
-// The wordmark, as the header shows it: the bare bars beside "timbre".
-func drawBars(x: Double, y: Double, height: Double) {
-    // The favicon's grid, without the tile: bars span 14 units of height.
-    let grid = height / 14
-    let barWidth = 3.0 * grid
-    for (i, cx) in [0.0, 5.3, 10.6, 16.0].enumerated() {
-        let h = [6.0, 14.0, 9.0, 3.0][i] * grid + barWidth
-        [rainbow[0], rainbow[2], rainbow[3], rainbow[4]][i].setFill()
-        NSBezierPath(roundedRect: NSRect(x: x + cx * grid, y: y + height / 2 - h / 2 + barWidth / 2, width: barWidth, height: h), xRadius: barWidth / 2, yRadius: barWidth / 2).fill()
-    }
+// The tiled icon already stands on this card, so the wordmark is the
+// secondary: the word with the rounded rainbow beneath, no bars (GDR-0021).
+let wordmark = nunito(76, weight: 800)
+draw("timbre", at: NSPoint(x: 80, y: 430), font: wordmark, color: ink, kern: -1.5)
+let wordWidth = size(of: "timbre", font: wordmark, kern: -1.5).width
+let wordBand = wordWidth / Double(rainbow.count)
+NSGraphicsContext.saveGraphicsState()
+NSBezierPath(roundedRect: NSRect(x: 82, y: 420, width: wordWidth - 4, height: 9), xRadius: 4.5, yRadius: 4.5).addClip()
+for (i, color) in rainbow.enumerated() {
+    color.setFill()
+    NSRect(x: 82 + Double(i) * wordBand, y: 420, width: wordBand + 0.5, height: 9).fill()
 }
-drawBars(x: 84, y: 452, height: 46)
-draw("timbre", at: NSPoint(x: 168, y: 430), font: nunito(76, weight: 800), color: ink, kern: -1.5)
+NSGraphicsContext.restoreGraphicsState()
 
 // The claim, wrapped by hand, with the rainbow under "never".
 let headline = nunito(58, weight: 800)
