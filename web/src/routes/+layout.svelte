@@ -9,14 +9,10 @@
 </script>
 
 <svelte:head>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-	<!-- Archivo carries a width axis: one family gives the condensed headline
-	     cut and the regular text cut, so the page loads one face, not two. -->
-	<link
-		rel="stylesheet"
-		href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,75..112,400..900;1,75..112,400..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-	/>
+	<!-- Outfit and IBM Plex Mono, served from this site: a visit makes no
+	     request to Google. static/fonts/fonts.css, OFL. -->
+	<link rel="preload" href="/fonts/Outfit-400-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="stylesheet" href="/fonts/fonts.css" />
 	<link rel="canonical" href={canonical} />
 	<meta property="og:url" content={canonical} />
 	<meta property="og:site_name" content={site.name} />

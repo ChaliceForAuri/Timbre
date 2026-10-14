@@ -39,7 +39,7 @@ views {
   }
 
   view learn {
-    title 'The Bank, the phone, and sync (planned)'
+    title 'The Library, the phone, and sync (planned)'
     description 'What the product map proposes: one store the Mac and the iPhone both import, synced by the user’s own iCloud. The account is the open decision.'
     include user
     include timbre.kit

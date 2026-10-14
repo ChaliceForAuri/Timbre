@@ -30,7 +30,8 @@
 		{
 			family: 'Outfit',
 			query: 'Outfit:wght@500;700',
-			note: 'Geometric and friendly. The closest to the keycap colours in spirit.'
+			note: 'Geometric and friendly. The closest to the keycap colours in spirit.',
+			chosen: true
 		},
 		{
 			family: 'Sora',
@@ -61,6 +62,7 @@
 <p class="text-muted-foreground mt-3 max-w-[62ch]">
 	Decisions made by looking. The mark is settled; the typeface and the logotype are candidates,
 	each shown as the header would show it, with a headline and a line of text in the same family.
+	Outfit was chosen on 2026-10-13 (GDR-0019) and is served from this site, not from Google.
 </p>
 
 <!-- The mark -->
@@ -95,7 +97,12 @@
 		{#each candidates as c, i (c.family)}
 			<article class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1" style="font-family: '{c.family}', sans-serif">
 				<div class="flex items-center justify-between gap-3">
-					<Badge variant="secondary" class="font-mono text-[10px]">{String.fromCharCode(65 + i)} · {c.family}</Badge>
+					<span class="flex items-center gap-2">
+						<Badge variant="secondary" class="font-mono text-[10px]">{String.fromCharCode(65 + i)} · {c.family}</Badge>
+						{#if 'chosen' in c && c.chosen}
+							<Badge class="bg-retro-green font-mono text-[10px] text-[oklch(0.2_0.005_80)] hover:bg-retro-green">in use</Badge>
+						{/if}
+					</span>
 					<p class="text-muted-foreground font-sans text-xs">{c.note}</p>
 				</div>
 

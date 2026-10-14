@@ -95,10 +95,7 @@
 		{#each designDocs as doc (doc.slug)}
 			<Tabs.Content value={doc.slug} class="mt-6">
 				<article class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1 sm:p-8">
-					{#if doc.status}
-						<p class="text-muted-foreground text-sm">{doc.status}</p>
-					{/if}
-					<p class="text-muted-foreground mt-1 font-mono text-[11px]">{doc.path}</p>
+					<p class="text-muted-foreground font-mono text-[11px]">{doc.path}</p>
 					<div class="record-prose mt-6 max-w-none [&_h1]:hidden">{@html doc.html}</div>
 				</article>
 			</Tabs.Content>
