@@ -157,6 +157,8 @@ public final class DictationController {
     private var liveField: FocusedField?
     private var liveTyping = LiveTyping()
     private var firstTyped: Duration?
+    private var heardAudioThisHold = false
+    private var inputFallback: Duration?
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
@@ -338,6 +340,8 @@ public final class DictationController {
         // window, not in front of it. Issue #4.
         let streams = try audio.start(convertingTo: format)
         microphoneStart = clock.now - pressed
+        heardAudioThisHold = false
+        inputFallback = nil
 
         // The pill must not say "Listening" yet: no audio is flowing,
         // and inviting speech into dead air is the clipped-first-words
@@ -377,7 +381,6 @@ public final class DictationController {
                 }
             },
             Task { [weak self] in
-                var heardAudio = false
                 for await level in streams.levels {
                     guard let self else { return }
                     // Strictly non-zero: a waking Bluetooth mic delivers
@@ -387,12 +390,37 @@ public final class DictationController {
                     // dead route is perfectly silent. Flipping on the
                     // first buffer made the pill say "Listening" into
                     // dead air — the same lie, one level down.
-                    if !heardAudio, level > 0 {
-                        heardAudio = true
+                    if !self.heardAudioThisHold, level > 0 {
+                        self.heardAudioThisHold = true
                         self.firstAudio = clock.now - pressed
                         self.overlay.update(mode: listeningMode)
                     }
                     self.overlay.pushLevel(level)
+                }
+            },
+            // A headset another device is streaming to stays the default
+            // input and delivers silence for as long as the key is held.
+            // After the wait that tells that apart from a slow wake, the
+            // capture moves to the Mac's own microphone, streams intact,
+            // and the pill says so (ADR-0012).
+            Task { [weak self] in
+                guard let self, self.audio.inputIsBluetooth else { return }
+                try? await Task.sleep(for: InputFallback.silence)
+                guard !Task.isCancelled else { return }
+                let elapsed = clock.now - pressed - (self.microphoneStart ?? .zero)
+                guard
+                    InputFallback.shouldFallBack(
+                        inputIsBluetooth: self.audio.inputIsBluetooth,
+                        heardAudio: self.heardAudioThisHold,
+                        after: elapsed),
+                    let builtIn = InputDevices.builtInInput()
+                else { return }
+                do {
+                    try self.audio.switchInput(to: builtIn)
+                    self.inputFallback = clock.now - pressed
+                    self.overlay.update(text: "Using the Mac's mic")
+                } catch {
+                    // The headset stays; the release path reports the silence.
                 }
             },
         ]
@@ -482,7 +510,8 @@ public final class DictationController {
                         transcriptMs: transcriptDuration.wholeMilliseconds,
                         polishMs: polishDuration.wholeMilliseconds,
                         firstTypedMs: firstTyped?.wholeMilliseconds,
-                        replaceMs: replaceDuration?.wholeMilliseconds
+                        replaceMs: replaceDuration?.wholeMilliseconds,
+                        inputFallbackMs: inputFallback?.wholeMilliseconds
                     )
                 )
             )

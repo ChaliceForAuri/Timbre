@@ -20,6 +20,9 @@ nonisolated public struct DictationTimings: Codable, Sendable {
     /// Key release → typed run replaced by the polished text. Nil when the
     /// dictation used the pill-then-paste flow.
     public let replaceMs: Int?
+    /// Hotkey press → capture moved from a silent Bluetooth input to the
+    /// built-in microphone (ADR-0012). Nil when it never had to.
+    public let inputFallbackMs: Int?
 
     public init(
         microphoneStartMs: Int,
@@ -27,7 +30,8 @@ nonisolated public struct DictationTimings: Codable, Sendable {
         transcriptMs: Int,
         polishMs: Int,
         firstTypedMs: Int? = nil,
-        replaceMs: Int? = nil
+        replaceMs: Int? = nil,
+        inputFallbackMs: Int? = nil
     ) {
         self.microphoneStartMs = microphoneStartMs
         self.firstAudioMs = firstAudioMs
@@ -35,6 +39,7 @@ nonisolated public struct DictationTimings: Codable, Sendable {
         self.polishMs = polishMs
         self.firstTypedMs = firstTypedMs
         self.replaceMs = replaceMs
+        self.inputFallbackMs = inputFallbackMs
     }
 }
 

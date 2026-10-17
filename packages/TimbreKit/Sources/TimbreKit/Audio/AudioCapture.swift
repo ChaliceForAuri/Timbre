@@ -17,9 +17,18 @@ final class AudioCapture {
         let levels: AsyncStream<Float>
     }
 
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Timbre", category: "audio")
+
     private let engine = AVAudioEngine()
     private var processor: AudioTapProcessor?
     private var isRunning = false
+    private var targetFormat: AVAudioFormat?
+    private var inputContinuation: AsyncStream<AnalyzerInput>.Continuation?
+    private var levelContinuation: AsyncStream<Float>.Continuation?
+
+    /// Whether the device this capture opened on is a Bluetooth headset —
+    /// the only kind that can be connected and silent at once (ADR-0012).
+    private(set) var inputIsBluetooth = false
 
     /// Whether the current/most recent capture delivered any buffers at all.
     /// A running engine with a vanished device (Bluetooth headphones taken
@@ -49,9 +58,53 @@ final class AudioCapture {
 
         let (inputStream, inputContinuation) = AsyncStream<AnalyzerInput>.makeStream()
         let (levelStream, levelContinuation) = AsyncStream<Float>.makeStream()
+        targetFormat = format
+        self.inputContinuation = inputContinuation
+        self.levelContinuation = levelContinuation
+        inputIsBluetooth = InputDevices.defaultInput().map(InputDevices.isBluetooth) ?? false
 
+        try installTap(on: input, format: inputFormat)
+        isRunning = true
+
+        return Streams(input: inputStream, levels: levelStream)
+    }
+
+    /// Moves a running capture onto `device` without touching the streams:
+    /// the analyzer keeps consuming the same input sequence, the pill the
+    /// same levels, and only the microphone behind them changes. For the
+    /// headset that is connected but silent (ADR-0012).
+    func switchInput(to device: AudioDeviceID) throws {
+        guard isRunning, let targetFormat else { return }
+        let input = engine.inputNode
+        input.removeTap(onBus: 0)
+        engine.stop()
+        engine.reset()
+        // The old route's converter holds nothing worth keeping — it only
+        // ever saw silence — so the processor is dropped, not finished:
+        // finishing would end the streams the analyzer is still reading.
+        processor = nil
+
+        guard let unit = input.audioUnit else { throw AudioCaptureError.noInputDevice }
+        var id = device
+        let status = AudioUnitSetProperty(
+            unit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0,
+            &id, UInt32(MemoryLayout<AudioDeviceID>.size))
+        guard status == noErr else {
+            Self.logger.error("could not select input device \(device): \(status)")
+            throw AudioCaptureError.noInputDevice
+        }
+
+        let inputFormat = input.outputFormat(forBus: 0)
+        guard inputFormat.sampleRate > 0 else { throw AudioCaptureError.noInputDevice }
+        try installTap(on: input, format: inputFormat)
+        inputIsBluetooth = InputDevices.isBluetooth(device)
+        Self.logger.log("input switched to \(InputDevices.name(of: device), privacy: .public)")
+    }
+
+    private func installTap(on input: AVAudioInputNode, format inputFormat: AVAudioFormat) throws {
+        guard let targetFormat, let inputContinuation, let levelContinuation else { return }
         let processor = AudioTapProcessor(
-            targetFormat: format,
+            targetFormat: targetFormat,
             input: inputContinuation,
             levels: levelContinuation
         )
@@ -64,9 +117,6 @@ final class AudioCapture {
 
         engine.prepare()
         try engine.start()
-        isRunning = true
-
-        return Streams(input: inputStream, levels: levelStream)
     }
 
     func stop() {
@@ -75,6 +125,9 @@ final class AudioCapture {
         engine.stop()
         processor?.finish()
         processor = nil
+        inputContinuation = nil
+        levelContinuation = nil
+        targetFormat = nil
         isRunning = false
     }
 

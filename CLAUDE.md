@@ -155,6 +155,12 @@ the evaluation seam (ADR-0004). Keep it that way.
   (ADR-0005, ADR-0011). The prompt must not be asked for the full stop —
   tried twice, failed 5 of 5 — and the polisher decodes greedily: same
   words, same cleanup, 11/11 at five repeats.
+- **A silent Bluetooth input falls back to the built-in mic** (ADR-0012).
+  Perfect zeros for 2.5 s on a Bluetooth input mean a headset another
+  device is using; `AudioCapture.switchInput(to:)` moves the capture to the
+  built-in mic with the streams intact, and the pill says so. The rule is
+  `InputFallback`, pure and tested; the switch is `inputFallbackMs` in the
+  capture log. Never change the system default input.
 - **Words appear as you speak; never delete by count** (GDR-0018).
   `LiveTyping` types only *finalized* transcript text, as keystrokes with no
   modifier flags (the user is holding right ⌥). On release the typed run is
