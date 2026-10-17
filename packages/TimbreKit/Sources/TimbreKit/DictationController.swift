@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import Observation
+import os
 
 /// Ties everything together: hotkey → mic → speech model → cleanup → paste,
 /// plus the two gestures that work on a selection — read aloud and command mode.
@@ -170,6 +171,8 @@ public final class DictationController {
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
+
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Timbre", category: "command")
 
     public init() {}
 
@@ -674,7 +677,12 @@ public final class DictationController {
         // Taught corrections first: a stable mis-hearing of a command is
         // teachable like any other word (GDR-0011).
         let heard = CorrectionTable.applied(vocabularyStore.corrections, to: text)
-        guard let command = commandHold.heard(heard) else { return }
+        let decision = commandHold.heard(heard)
+        let decided = decision?.rawValue ?? "nothing yet"
+        let wordCount = heard.split(separator: " ").count
+        Self.logger.log(
+            "live: \(wordCount) words, \(decided, privacy: .public) — \(heard, privacy: .private)")
+        guard let command = decision else { return }
 
         // Committed. The shortcut watch has done its job, and our own ⌘C and
         // ⌘V below must not be mistaken for the user typing a shortcut.
@@ -698,6 +706,22 @@ public final class DictationController {
 
         let spoken = await finishCommandCapture()
         let heard = CorrectionTable.applied(vocabularyStore.corrections, to: spoken)
+
+        // Silence means fix only when the microphone was live to hear it.
+        // A headset still waking delivers nothing at all for the length of
+        // a short hold; running fix on that would be a guess — and the one
+        // command that rewrites text — so it does nothing and says why.
+        guard heardAudioThisHold else {
+            Self.logger.log("release: no audio arrived during the hold")
+            commandSelection = nil
+            finishCommand(
+                showing: .notice("The mic hadn't woken yet — hold a moment longer and try again."),
+                for: .seconds(3))
+            return
+        }
+
+        let releasedWords = heard.split(separator: " ").count
+        Self.logger.log("release: \(releasedWords) words — \(heard, privacy: .private)")
         switch commandHold.resolve(finalTranscript: heard) {
         case .alreadyHandled:
             return
