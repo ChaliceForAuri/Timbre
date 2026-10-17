@@ -1,5 +1,34 @@
 [
 	{
+		"id": "ADR-0012",
+		"kind": "ADR",
+		"number": "0012",
+		"slug": "silent-bluetooth-input-falls-back",
+		"path": "docs/decisions/adr/0012-silent-bluetooth-input-falls-back.md",
+		"title": "A silent Bluetooth input falls back to the built-in microphone",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-10-17",
+		"relations": [
+			{
+				"label": "Constrains",
+				"summary": "packages/TimbreKit/Sources/TimbreKit/Audio/AudioCapture.swift,…",
+				"refs": []
+			},
+			{
+				"label": "Builds on",
+				"summary": "issue #4 (the Bluetooth wake), the no-audio guard in endListening",
+				"refs": []
+			}
+		],
+		"excerpt": "AirPods connected to a Mac and streaming music from an iPhone stay the Mac's default input and deliver exact digital zeros: one microphone link, held by the other device. Hugo held the key, talked, and got \"The microphone didn't deliver any audio\" — correct, and useless. The guard that catches a dead route was built so Timbre never pastes into dead air; it…",
+		"plain": "Accepted.\nContext.\nAirPods connected to a Mac and streaming music from an iPhone stay the Mac's default input and deliver exact digital zeros: one microphone link, held by the other device. Hugo held the key, talked, and got \"The microphone didn't deliver any audio\" — correct, and useless. The guard that catches a dead route was built so Timbre never pastes into dead air; it was never meant to be the whole answer.\nThe same route delivers zeros while a headset merely wakes, for well under two seconds on every Mac measured so far (issue #4). The two cases are told apart by time.\nDecision.\n1. After 2.5 s of perfect silence on a Bluetooth input, the capture moves to the Mac's built-in microphone for the rest of that dictation, and the pill says \"Using the Mac's mic\". The analyzer keeps consuming the same input sequence and the pill the same levels; only the device behind them changes (AudioCapture.switchInput(to:)). Nothing restarts, nothing is lost: the headset had delivered nothing.\n2. Only a Bluetooth input falls back. Wired and built-in inputs cannot be connected and silent in this way; a Mac with no built-in mic keeps the headset and the release path reports the silence as before.\n3. The rule is pure and tested (InputFallback.shouldFallBack), and the switch is a timing in the capture log (inputFallbackMs), so the wait can be tuned from numbers.\n4. The fallback never changes the system's default input. It selects the device on Timbre's own audio unit for one capture; the next hold opens the default again, which may be the headset, awake by then.\nConsequences.\nA dictation into a busy headset costs 2.5 s and a visibly different microphone, instead of nothing.\nThe wait is a constant to revisit if firstAudioMs on a waking headset is ever measured above it; the capture log is where that shows.\nThe switch is a device property set on AVAudioEngine's input unit between a stop and a start; Hugo's AirPods, playing from another device, are the test, and the capture log the proof.",
+		"html": "<h2>Context</h2>\n<p>AirPods connected to a Mac and streaming music from an iPhone stay the Mac&#39;s default input and deliver exact digital zeros: one microphone link, held by the other device. Hugo held the key, talked, and got &quot;The microphone didn&#39;t deliver any audio&quot; — correct, and useless. The guard that catches a dead route was built so Timbre never pastes into dead air; it was never meant to be the whole answer.</p>\n<p>The same route delivers zeros while a headset merely wakes, for well under two seconds on every Mac measured so far (issue #4). The two cases are told apart by time.</p>\n<h2>Decision</h2>\n<ol>\n<li><strong>After 2.5 s of perfect silence on a Bluetooth input, the capture moves to the Mac&#39;s built-in microphone</strong> for the rest of that dictation, and the pill says &quot;Using the Mac&#39;s mic&quot;. The analyzer keeps consuming the same input sequence and the pill the same levels; only the device behind them changes (<code>AudioCapture.switchInput(to:)</code>). Nothing restarts, nothing is lost: the headset had delivered nothing.</li>\n<li><strong>Only a Bluetooth input falls back.</strong> Wired and built-in inputs cannot be connected and silent in this way; a Mac with no built-in mic keeps the headset and the release path reports the silence as before.</li>\n<li><strong>The rule is pure and tested</strong> (<code>InputFallback.shouldFallBack</code>), and the switch is a timing in the capture log (<code>inputFallbackMs</code>), so the wait can be tuned from numbers.</li>\n<li><strong>The fallback never changes the system&#39;s default input.</strong> It selects the device on Timbre&#39;s own audio unit for one capture; the next hold opens the default again, which may be the headset, awake by then.</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li>A dictation into a busy headset costs 2.5 s and a visibly different microphone, instead of nothing.</li>\n<li>The wait is a constant to revisit if <code>firstAudioMs</code> on a waking headset is ever measured above it; the capture log is where that shows.</li>\n<li>The switch is a device property set on <code>AVAudioEngine</code>&#39;s input unit between a stop and a start; Hugo&#39;s AirPods, playing from another device, are the test, and the capture log the proof.</li>\n</ul>\n"
+	},
+	{
 		"id": "GDR-0023",
 		"kind": "GDR",
 		"number": "0023",

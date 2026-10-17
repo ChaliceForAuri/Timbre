@@ -245,7 +245,10 @@ the evaluation seam (ADR-0004). Keep it that way.
 Before changing architecture or product direction, check
 `docs/decisions/README.md` (the index) and add a record when the decision
 constrains future work. ADR = constrains a file; GDR = constrains the
-product. Records are immutable — supersede instead of editing.
+product. Records are immutable — supersede instead of editing. After adding
+or editing any record, plan, design doc, launch doc or the changelog, run
+`pnpm run sync:docs` in `web/` and commit the JSON it regenerates: Backstage
+renders from it and CI fails on drift.
 
 ## Known gaps / non-goals (GDR-0002)
 
