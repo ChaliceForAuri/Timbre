@@ -161,6 +161,12 @@ public final class DictationController {
     private var inputFallback: Duration?
     /// Counts holds, so a watchdog that wakes after its hold ended can tell.
     private var holdGeneration = 0
+    /// The last dictation's destination and text, for the leading-space rule
+    /// when the field cannot be read.
+    private var lastInsertion: (app: String?, text: String, at: ContinuousClock.Instant)?
+    /// A space to put in front of this dictation's text, or nothing.
+    private var leadingSpace = ""
+    private var fieldNote = ""
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
@@ -357,6 +363,26 @@ public final class DictationController {
         liveTyping = LiveTyping()
         firstTyped = nil
         liveField = typingLive ? FocusedField.probe() : nil
+        fieldNote = typingLive ? FocusedField.lastNote : "pill"
+        // The space the user would have typed before this dictation: read
+        // from the field when it can be, guessed from the last paste when not.
+        if let liveField {
+            leadingSpace = LeadingSpace.needed(before: liveField.characterBefore) ? " " : ""
+        } else if let last = lastInsertion,
+            LeadingSpace.likelyNeeded(
+                lastApp: last.app, lastText: last.text, lastAt: last.at,
+                app: capturedAppName, now: clock.now)
+        {
+            leadingSpace = " "
+        } else {
+            leadingSpace = ""
+        }
+        if liveField != nil, !leadingSpace.isEmpty {
+            // Typed now, ahead of the first words, so the run Timbre replaces
+            // on release includes it. Kept out of LiveTyping, whose first
+            // delta drops its own leading whitespace.
+            SyntheticText.type(leadingSpace)
+        }
 
         let snapshots = try await transcriber.startDictation(
             consuming: streams.input,
@@ -496,12 +522,13 @@ public final class DictationController {
             var replaceDuration: Duration?
             if let field = liveField, !liveTyping.typed.isEmpty {
                 let replaceStarted = clock.now
-                replaceTypedRun(in: field, with: cleaned)
+                replaceTypedRun(in: field, with: leadingSpace + cleaned)
                 replaceDuration = clock.now - replaceStarted
             } else {
-                inserter.insert(cleaned)
+                inserter.insert(leadingSpace + cleaned)
             }
             liveField = nil
+            lastInsertion = (capturedAppName, cleaned, clock.now)
 
             // After the paste, never before: capturing a fixture must not sit
             // between the user releasing the key and their text appearing.
@@ -520,7 +547,8 @@ public final class DictationController {
                         firstTypedMs: firstTyped?.wholeMilliseconds,
                         replaceMs: replaceDuration?.wholeMilliseconds,
                         inputFallbackMs: inputFallback?.wholeMilliseconds
-                    )
+                    ),
+                    field: fieldNote
                 )
             )
 

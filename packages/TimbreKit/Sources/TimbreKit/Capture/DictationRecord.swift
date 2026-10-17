@@ -67,6 +67,10 @@ nonisolated public struct DictationRecord: Codable, Sendable {
 
     /// Where the time went. Absent on records from before this was measured.
     public let timings: DictationTimings?
+    /// What the focused field looked like through Accessibility — its role,
+    /// and whether it typed live or why not (GDR-0018). Absent before this
+    /// was recorded.
+    public let field: String?
 
     public init(
         id: String,
@@ -74,7 +78,8 @@ nonisolated public struct DictationRecord: Codable, Sendable {
         appContext: String?,
         transcript: String,
         polished: String,
-        timings: DictationTimings? = nil
+        timings: DictationTimings? = nil,
+        field: String? = nil
     ) {
         self.id = id
         self.date = date
@@ -82,5 +87,6 @@ nonisolated public struct DictationRecord: Codable, Sendable {
         self.transcript = transcript
         self.polished = polished
         self.timings = timings
+        self.field = field
     }
 }

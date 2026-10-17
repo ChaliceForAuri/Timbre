@@ -15,22 +15,10 @@ enum CaretLocator {
     /// This is a synchronous IPC round-trip into another process. Call it
     /// once per dictation (at overlay show), never per frame.
     static func caretScreenRect() -> NSRect? {
-        let systemWide = AXUIElementCreateSystemWide()
-
-        var focusedRef: CFTypeRef?
-        guard
-            AXUIElementCopyAttributeValue(
-                systemWide,
-                kAXFocusedUIElementAttribute as CFString,
-                &focusedRef
-            ) == .success,
-            let focusedRef,
-            CFGetTypeID(focusedRef) == AXUIElementGetTypeID()
-        else {
+        guard let (focused, _) = AccessibilityFocus.focusedElement() else {
             logger.log("caret: no focused element via AX")
             return nil
         }
-        let focused = unsafeDowncast(focusedRef, to: AXUIElement.self)
 
         var rangeRef: CFTypeRef?
         guard
