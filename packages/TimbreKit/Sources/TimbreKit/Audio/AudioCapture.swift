@@ -19,7 +19,13 @@ final class AudioCapture {
 
     private static let logger = Logger(subsystem: "dev.hugopretorius.Timbre", category: "audio")
 
-    private let engine = AVAudioEngine()
+    /// The engine on the system default input, reused across dictations so
+    /// a key press pays nothing to build it.
+    private let defaultEngine = AVAudioEngine()
+    /// Whichever engine is capturing now: the default one, or a fresh one
+    /// built for the fallback device, because an I/O unit's device can only
+    /// be chosen before it is initialized.
+    private var engine: AVAudioEngine
     private var processor: AudioTapProcessor?
     private var isRunning = false
     private var targetFormat: AVAudioFormat?
@@ -29,6 +35,10 @@ final class AudioCapture {
     /// Whether the device this capture opened on is a Bluetooth headset —
     /// the only kind that can be connected and silent at once (ADR-0012).
     private(set) var inputIsBluetooth = false
+
+    init() {
+        engine = defaultEngine
+    }
 
     /// Whether the current/most recent capture delivered any buffers at all.
     /// A running engine with a vanished device (Bluetooth headphones taken
@@ -43,6 +53,7 @@ final class AudioCapture {
     func start(convertingTo format: AVAudioFormat) throws -> Streams {
         precondition(!isRunning, "AudioCapture is already running")
 
+        engine = defaultEngine
         let input = engine.inputNode
         let inputFormat = input.outputFormat(forBus: 0)
 
@@ -74,16 +85,18 @@ final class AudioCapture {
     /// same levels, and only the microphone behind them changes. For the
     /// headset that is connected but silent (ADR-0012).
     func switchInput(to device: AudioDeviceID) throws {
-        guard isRunning, let targetFormat else { return }
-        let input = engine.inputNode
-        input.removeTap(onBus: 0)
+        guard isRunning, targetFormat != nil else { return }
+        engine.inputNode.removeTap(onBus: 0)
         engine.stop()
-        engine.reset()
         // The old route's converter holds nothing worth keeping — it only
         // ever saw silence — so the processor is dropped, not finished:
         // finishing would end the streams the analyzer is still reading.
         processor = nil
 
+        // A fresh engine: the I/O unit's device must be chosen before the
+        // unit is initialized, and the default engine's already was.
+        let fallback = AVAudioEngine()
+        let input = fallback.inputNode
         guard let unit = input.audioUnit else { throw AudioCaptureError.noInputDevice }
         var id = device
         let status = AudioUnitSetProperty(
@@ -93,9 +106,10 @@ final class AudioCapture {
             Self.logger.error("could not select input device \(device): \(status)")
             throw AudioCaptureError.noInputDevice
         }
-
         let inputFormat = input.outputFormat(forBus: 0)
         guard inputFormat.sampleRate > 0 else { throw AudioCaptureError.noInputDevice }
+
+        engine = fallback
         try installTap(on: input, format: inputFormat)
         inputIsBluetooth = InputDevices.isBluetooth(device)
         Self.logger.log("input switched to \(InputDevices.name(of: device), privacy: .public)")
@@ -123,11 +137,20 @@ final class AudioCapture {
         guard isRunning else { return }
         engine.inputNode.removeTap(onBus: 0)
         engine.stop()
-        processor?.finish()
+        if let processor {
+            processor.finish()
+        } else {
+            // A switch that failed between dropping one processor and
+            // installing the next left the streams open; the analyzer is
+            // waiting on them, so they must still end here.
+            inputContinuation?.finish()
+            levelContinuation?.finish()
+        }
         processor = nil
         inputContinuation = nil
         levelContinuation = nil
         targetFormat = nil
+        engine = defaultEngine
         isRunning = false
     }
 

@@ -159,6 +159,8 @@ public final class DictationController {
     private var firstTyped: Duration?
     private var heardAudioThisHold = false
     private var inputFallback: Duration?
+    /// Counts holds, so a watchdog that wakes after its hold ended can tell.
+    private var holdGeneration = 0
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
@@ -342,6 +344,8 @@ public final class DictationController {
         microphoneStart = clock.now - pressed
         heardAudioThisHold = false
         inputFallback = nil
+        holdGeneration += 1
+        let hold = holdGeneration
 
         // The pill must not say "Listening" yet: no audio is flowing,
         // and inviting speech into dead air is the clipped-first-words
@@ -406,7 +410,11 @@ public final class DictationController {
             Task { [weak self] in
                 guard let self, self.audio.inputIsBluetooth else { return }
                 try? await Task.sleep(for: InputFallback.silence)
-                guard !Task.isCancelled else { return }
+                // Only this hold, and only while it is still listening: a
+                // watchdog that wakes after the release must touch nothing.
+                guard !Task.isCancelled, self.holdGeneration == hold, self.status == .listening else {
+                    return
+                }
                 let elapsed = clock.now - pressed - (self.microphoneStart ?? .zero)
                 guard
                     InputFallback.shouldFallBack(
