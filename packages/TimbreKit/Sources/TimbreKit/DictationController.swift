@@ -704,14 +704,17 @@ public final class DictationController {
         guard gesture == .command else { return }
         if commandHold.beginRelease() == .alreadyHandled { return }
 
+        let captured = commandIsCapturing
         let spoken = await finishCommandCapture()
         let heard = CorrectionTable.applied(vocabularyStore.corrections, to: spoken)
 
         // Silence means fix only when the microphone was live to hear it.
         // A headset still waking delivers nothing at all for the length of
         // a short hold; running fix on that would be a guess — and the one
-        // command that rewrites text — so it does nothing and says why.
-        guard heardAudioThisHold else {
+        // command that rewrites text — so it does nothing and says why. A
+        // Mac with no microphone never captured, and its silent hold is
+        // still fix.
+        guard !captured || heardAudioThisHold else {
             Self.logger.log("release: no audio arrived during the hold")
             commandSelection = nil
             finishCommand(
