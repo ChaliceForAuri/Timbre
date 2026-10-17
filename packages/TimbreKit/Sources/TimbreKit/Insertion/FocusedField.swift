@@ -98,16 +98,7 @@ final class FocusedField {
     /// The character before `location`, for the leading-space rule.
     private static func characterBefore(_ location: Int, in element: AXUIElement) -> Character? {
         guard location > 0 else { return nil }
-        var cfRange = CFRange(location: location - 1, length: 1)
-        guard let rangeValue = AXValueCreate(.cfRange, &cfRange) else { return nil }
-        var textRef: CFTypeRef?
-        guard
-            AXUIElementCopyParameterizedAttributeValue(
-                element, kAXStringForRangeParameterizedAttribute as CFString, rangeValue, &textRef)
-                == .success,
-            let text = textRef as? String
-        else { return nil }
-        return text.last
+        return text(in: NSRange(location: location - 1, length: 1), of: element)?.last
     }
 
     /// True while the same element still has focus.
@@ -123,17 +114,30 @@ final class FocusedField {
 
     /// The field's text in `range`, read back from the app.
     func text(in range: NSRange) -> String? {
+        Self.text(in: range, of: element)
+    }
+
+    /// By range where ranges are answered; through WebKit's text markers
+    /// where they are not.
+    private static func text(in range: NSRange, of element: AXUIElement) -> String? {
         var cfRange = CFRange(location: range.location, length: range.length)
-        guard let rangeValue = AXValueCreate(.cfRange, &cfRange) else { return nil }
-        var textRef: CFTypeRef?
+        if let rangeValue = AXValueCreate(.cfRange, &cfRange) {
+            var textRef: CFTypeRef?
+            if AXUIElementCopyParameterizedAttributeValue(
+                element, kAXStringForRangeParameterizedAttribute as CFString, rangeValue, &textRef)
+                == .success,
+                let text = textRef as? String
+            {
+                return text
+            }
+        }
         guard
-            AXUIElementCopyParameterizedAttributeValue(
-                element,
-                kAXStringForRangeParameterizedAttribute as CFString,
-                rangeValue,
-                &textRef
-            ) == .success,
-            let text = textRef as? String
+            let start = parameterized("AXTextMarkerForIndex", range.location as CFNumber, of: element),
+            let end = parameterized(
+                "AXTextMarkerForIndex", (range.location + range.length) as CFNumber, of: element),
+            let markerRange = parameterized(
+                "AXTextMarkerRangeForUnorderedTextMarkers", [start, end] as CFArray, of: element),
+            let text = parameterized("AXStringForTextMarkerRange", markerRange, of: element) as? String
         else { return nil }
         return text
     }
@@ -205,17 +209,45 @@ final class FocusedField {
 
     private static func selectedRange(of element: AXUIElement) -> NSRange? {
         var rangeRef: CFTypeRef?
-        guard
-            AXUIElementCopyAttributeValue(element, kAXSelectedTextRangeAttribute as CFString, &rangeRef)
-                == .success,
+        if AXUIElementCopyAttributeValue(element, kAXSelectedTextRangeAttribute as CFString, &rangeRef)
+            == .success,
             let rangeRef,
             CFGetTypeID(rangeRef) == AXValueGetTypeID()
-        else { return nil }
-        var range = CFRange()
-        guard AXValueGetValue(unsafeDowncast(rangeRef, to: AXValue.self), .cfRange, &range) else {
-            return nil
+        {
+            var range = CFRange()
+            guard AXValueGetValue(unsafeDowncast(rangeRef, to: AXValue.self), .cfRange, &range) else {
+                return nil
+            }
+            return NSRange(location: range.location, length: range.length)
         }
-        return NSRange(location: range.location, length: range.length)
+        return selectedRangeFromMarkers(of: element)
+    }
+
+    /// WebKit web areas (Mail's compose body) answer no range question
+    /// directly; they expose the selection as a text-marker range, and an
+    /// index for each marker, the way VoiceOver reads them.
+    private static func selectedRangeFromMarkers(of element: AXUIElement) -> NSRange? {
+        var markerRangeRef: CFTypeRef?
+        guard
+            AXUIElementCopyAttributeValue(element, "AXSelectedTextMarkerRange" as CFString, &markerRangeRef)
+                == .success,
+            let markerRange = markerRangeRef,
+            let start = parameterized("AXStartTextMarkerForTextMarkerRange", markerRange, of: element),
+            let end = parameterized("AXEndTextMarkerForTextMarkerRange", markerRange, of: element),
+            let startIndex = parameterized("AXIndexForTextMarker", start, of: element) as? Int,
+            let endIndex = parameterized("AXIndexForTextMarker", end, of: element) as? Int
+        else { return nil }
+        return NSRange(location: min(startIndex, endIndex), length: abs(endIndex - startIndex))
+    }
+
+    private static func parameterized(_ name: String, _ parameter: CFTypeRef, of element: AXUIElement)
+        -> CFTypeRef?
+    {
+        var ref: CFTypeRef?
+        guard
+            AXUIElementCopyParameterizedAttributeValue(element, name as CFString, parameter, &ref) == .success
+        else { return nil }
+        return ref
     }
 
     private static func string(attribute: String, of element: AXUIElement) -> String? {

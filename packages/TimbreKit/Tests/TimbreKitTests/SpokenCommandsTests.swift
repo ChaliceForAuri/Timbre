@@ -47,4 +47,18 @@ struct SpokenCommandsTests {
         #expect(SpokenCommands.applied(to: "new paragraph hello") == "hello")
         #expect(SpokenCommands.applied(to: "hello new paragraph") == "hello")
     }
+
+    @Test func aPunctuatedCommandLosesItsOwnStop() {
+        #expect(
+            SpokenCommands.applied(to: "You go eat tomato soup. New paragraph. Hugo kicks a rugby ball.")
+                == "You go eat tomato soup.\n\nHugo kicks a rugby ball.")
+        #expect(SpokenCommands.applied(to: "first line, new line, second line") == "first line,\nsecond line")
+    }
+
+    @Test func aCommandAloneIsTheBreakItself() {
+        #expect(SpokenCommands.onlyCommands(in: "New paragraph.") == "\n\n")
+        #expect(SpokenCommands.onlyCommands(in: "new line") == "\n")
+        #expect(SpokenCommands.onlyCommands(in: "Paragraph.") == nil)
+        #expect(SpokenCommands.onlyCommands(in: "soup new paragraph") == nil)
+    }
 }
