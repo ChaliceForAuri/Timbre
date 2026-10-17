@@ -1,5 +1,40 @@
 [
 	{
+		"id": "GDR-0023",
+		"kind": "GDR",
+		"number": "0023",
+		"slug": "the-library",
+		"path": "docs/decisions/gdr/0023-the-library.md",
+		"title": "The Library: one store, five kinds, synced by iCloud, practised by voice",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-10-14",
+		"relations": [
+			{
+				"label": "Builds on",
+				"summary": "GDR-0001 (the claim), GDR-0006 (the boundary), GDR-0010 (iCloud for the…",
+				"refs": [
+					"GDR-0001",
+					"GDR-0006",
+					"GDR-0010",
+					"GDR-0011",
+					"GDR-0012"
+				]
+			},
+			{
+				"label": "Decides",
+				"summary": "the five questions in docs/design/product-map.md §8",
+				"refs": []
+			}
+		],
+		"excerpt": "Hugo wants Timbre to make him better at four things: spelling, vocabulary, phrases, acronyms. The product map (2026-10-11) laid out how the product grows to do that — a Library, a phone, sync, practice — and ended with five decisions. They were walked through one at a time on 2026-10-14, each with its alternatives, and taken as follows.",
+		"plain": "Accepted.\nContext.\nHugo wants Timbre to make him better at four things: spelling, vocabulary, phrases, acronyms. The product map (2026-10-11) laid out how the product grows to do that — a Library, a phone, sync, practice — and ended with five decisions. They were walked through one at a time on 2026-10-14, each with its alternatives, and taken as follows.\nDecisions.\n1. The Library syncs through iCloud, not an account. CloudKit, private database, the user's own account; Apple's daemons move the data and the binary still makes zero requests. The store is built behind a sync interface so an account backend could be added later. An account becomes a decision on the day a non-Apple Library client is wanted, with its own record and its own change to /network. Until then, \"Apple pure\" is the product, not a tier.\n2. Timbre for iPhone is a companion. The Library in your pocket: review, practise, word of the day, add a word you heard. It does not dictate into other apps — iOS cannot — and a keyboard extension is not planned. If one is ever wanted it is a record of its own.\n3. One Library, five kinds. word, acronym, phrase, spelling, correction, replacing the three Settings lists. Every entry carries its meaning, an example, where it came from, industry tags, a strength that practice raises and time lowers, and its history. Vocabulary is the word entries; definitions are the acronym entries; corrections stay corrections. The three lists migrate on the Mac first, with nothing lost; Settings › Dictionary becomes Settings › Library with a kind filter. The polisher, explain and the correction table read the same store through the same interface, and the corpus proves the behaviour is unchanged.\n4. A platform-neutral package, TimbreCore, is created with the Library. The Library, pure parsing, practice scoring and the sync interface live there; no AppKit. TimbreKit imports it and keeps the macOS pipeline; the iPhone app imports only TimbreCore. The rule for what goes where is an ADR written with the split.\n5. Practice uses the voice, and every drill ships with a guardrail and a corpus. Spell it (say the word, spell it aloud; the recogniser checks the letters), Say it (use it in a sentence; the on-device model judges the meaning), Explain it (answer the card by voice), the word of the day (weakest entries first, then a bundled list for the profile's industry, as a local notification), and the private kind of gamification — strength, streaks, a weekly review, no leaderboard. Each drill's checks go on the Evals page next to the polisher's. Spell it ships first, because it needs no model judgment.\nConsequences.\nPhases 1–4 of the product map are now the plan: the Library on the Mac with the TimbreCore split; iCloud sync proved on two Macs with nettop still empty; the iPhone companion; Spell it with its corpus. Each phase is its own pull request and its own measurement.\nNothing here changes a claim: the headline keeps one asterisk and /network keeps one entry.\nA Library entry is the user's. The Mac app transmits none of it; iCloud carries it under the user's own account.",
+		"html": "<h2>Context</h2>\n<p>Hugo wants Timbre to make him better at four things: spelling, vocabulary, phrases, acronyms. The product map (2026-10-11) laid out how the product grows to do that — a Library, a phone, sync, practice — and ended with five decisions. They were walked through one at a time on 2026-10-14, each with its alternatives, and taken as follows.</p>\n<h2>Decisions</h2>\n<ol>\n<li><strong>The Library syncs through iCloud, not an account.</strong> CloudKit, private database, the user&#39;s own account; Apple&#39;s daemons move the data and the binary still makes zero requests. The store is built behind a sync interface so an account backend could be added later. An account becomes a decision on the day a non-Apple Library client is wanted, with its own record and its own change to <code>/network</code>. Until then, &quot;Apple pure&quot; is the product, not a tier.</li>\n<li><strong>Timbre for iPhone is a companion.</strong> The Library in your pocket: review, practise, word of the day, add a word you heard. It does not dictate into other apps — iOS cannot — and a keyboard extension is not planned. If one is ever wanted it is a record of its own.</li>\n<li><strong>One Library, five kinds.</strong> <code>word</code>, <code>acronym</code>, <code>phrase</code>, <code>spelling</code>, <code>correction</code>, replacing the three Settings lists. Every entry carries its meaning, an example, where it came from, industry tags, a strength that practice raises and time lowers, and its history. Vocabulary is the word entries; definitions are the acronym entries; corrections stay corrections. The three lists migrate on the Mac first, with nothing lost; Settings › Dictionary becomes Settings › Library with a kind filter. The polisher, explain and the correction table read the same store through the same interface, and the corpus proves the behaviour is unchanged.</li>\n<li><strong>A platform-neutral package, TimbreCore, is created with the Library.</strong> The Library, pure parsing, practice scoring and the sync interface live there; no AppKit. TimbreKit imports it and keeps the macOS pipeline; the iPhone app imports only TimbreCore. The rule for what goes where is an ADR written with the split.</li>\n<li><strong>Practice uses the voice, and every drill ships with a guardrail and a corpus.</strong> Spell it (say the word, spell it aloud; the recogniser checks the letters), Say it (use it in a sentence; the on-device model judges the meaning), Explain it (answer the card by voice), the word of the day (weakest entries first, then a bundled list for the profile&#39;s industry, as a local notification), and the private kind of gamification — strength, streaks, a weekly review, no leaderboard. Each drill&#39;s checks go on the Evals page next to the polisher&#39;s. Spell it ships first, because it needs no model judgment.</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li>Phases 1–4 of the product map are now the plan: the Library on the Mac with the <code>TimbreCore</code> split; iCloud sync proved on two Macs with <code>nettop</code> still empty; the iPhone companion; Spell it with its corpus. Each phase is its own pull request and its own measurement.</li>\n<li>Nothing here changes a claim: the headline keeps one asterisk and <code>/network</code> keeps one entry.</li>\n<li>A Library entry is the user&#39;s. The Mac app transmits none of it; iCloud carries it under the user&#39;s own account.</li>\n</ul>\n"
+	},
+	{
 		"id": "GDR-0022",
 		"kind": "GDR",
 		"number": "0022",

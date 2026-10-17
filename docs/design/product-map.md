@@ -1,9 +1,9 @@
 # Timbre, the whole product
 
-*2026-10-11 · Status: proposed map, for the decisions below. Constraining
-records: GDR-0001, GDR-0006, GDR-0010, GDR-0013. This document is where
-the product is planned as one thing; each piece that lands still gets its
-own record.*
+*2026-10-11 · Status: the map; its five decisions were taken on 2026-10-14
+and are recorded in GDR-0023. Constraining records: GDR-0001, GDR-0006,
+GDR-0010, GDR-0013. This document is where the product is planned as one
+thing; each piece that lands still gets its own record.*
 
 Timbre started as a key you hold to talk. It is about to become the place
 where the words you use get better: spelling, vocabulary, phrases,
@@ -119,10 +119,10 @@ That split is a record of its own (an ADR) before the first iOS line.
 | 5 | **Profile-aware explain** on the Mac. | A commands corpus case per industry. |
 | — | *Account and cross-platform.* | Decided when phase 3 has users asking. |
 
-## 8. Decisions this map asks for
+## 8. Decisions this map asked for — taken 2026-10-14 (GDR-0023)
 
-1. **Sync by iCloud first, account later or never** (§4).
-2. **The iPhone app is a companion** — the Library and practice — not a dictation app (§2).
-3. **One Library, five kinds**, replacing the three Settings lists (§3).
-4. **`TimbreCore`** split before the first iOS file (§6).
-5. **Practice uses the voice** — drills are scored like commands, with a corpus (§5).
+1. **Sync by iCloud first, account later or never** (§4). Taken: iCloud first; the store built behind a sync interface.
+2. **The iPhone app is a companion** — the Library and practice — not a dictation app (§2). Taken: companion; no keyboard extension planned.
+3. **One Library, five kinds**, replacing the three Settings lists (§3). Taken: five kinds, migrated on the Mac first.
+4. **`TimbreCore`** split before the first iOS file (§6). Taken: created with the Library.
+5. **Practice uses the voice** — drills are scored like commands, with a corpus (§5). Taken: Spell it first.
