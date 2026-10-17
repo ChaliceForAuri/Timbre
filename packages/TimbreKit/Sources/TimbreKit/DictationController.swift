@@ -366,8 +366,11 @@ public final class DictationController {
         fieldNote = typingLive ? FocusedField.lastNote : "pill"
         // The space the user would have typed before this dictation: read
         // from the field when it can be, guessed from the last paste when not.
-        if let liveField {
-            leadingSpace = LeadingSpace.needed(before: liveField.characterBefore) ? " " : ""
+        let before =
+            liveField.map { (known: true, character: $0.characterBefore) }
+            ?? FocusedField.characterBeforeCaret()
+        if before.known {
+            leadingSpace = LeadingSpace.needed(before: before.character) ? " " : ""
         } else if let last = lastInsertion,
             LeadingSpace.likelyNeeded(
                 lastApp: last.app, lastText: last.text, lastAt: last.at,
@@ -976,7 +979,7 @@ public final class DictationController {
         }
         // Already what the cleanup would have produced: leave it be.
         if inField == cleaned { return }
-        guard field.select(NSRange(location: field.start, length: end - field.start)) else {
+        guard field.select(NSRange(location: field.start, length: end - field.start), text: inField) else {
             overlay.show(mode: .notice("Kept as heard"))
             overlay.hide(after: .seconds(1.5))
             return
