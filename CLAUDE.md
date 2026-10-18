@@ -25,7 +25,9 @@ apps/Timbre/          Xcode project. Config/*.xcconfig holds every build
 packages/TimbreKit/   The entire pipeline + tests. Work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
-docs/learning/       Timbre University + historical planning notes.
+docs/learning/       Timbre University (original, frozen) + historical notes.
+                     Living modules: web/src/lib/university, listed in its
+                     manifest.json; new modules are written there.
 web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
                      (GDR-0007, docs/design/backstage.md). Node toolchain
                      must stay inside web/. The app NEVER phones home —

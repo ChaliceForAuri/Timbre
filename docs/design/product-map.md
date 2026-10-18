@@ -1,8 +1,9 @@
 # Timbre, the whole product
 
 *2026-10-11 · Status: the map; its five decisions were taken on 2026-10-14
-and are recorded in GDR-0023. Constraining records: GDR-0001, GDR-0006,
-GDR-0010, GDR-0013. This document is where the product is planned as one
+and are recorded in GDR-0023; GDR-0026 to GDR-0028 (2026-10-18) extend it
+to the Watch, the word of the day's bar and the bundled words. Constraining
+records: GDR-0001, GDR-0006, GDR-0010, GDR-0013. This document is where the product is planned as one
 thing; each piece that lands still gets its own record.*
 
 Timbre started as a key you hold to talk. It is about to become the place
@@ -29,6 +30,7 @@ the reason to want it on your phone. Run is ours.
 |---|---|---|
 | **Mac app** | Everything in Speak. The Library's capture side: a word you taught, a correction, a definition, a word you had explained — each lands in the Library. The Mac is where words are *met*. | Nothing cloud-side. Zero network requests (GDR-0001/0013). |
 | **iPhone app** (planned) | The Library in your pocket: review, practise, word of the day, add a word you heard. The phone is where words are *kept*. | No dictation into other apps (iOS cannot), no commands. It is a companion, not a port. |
+| **Apple Watch app** (planned, GDR-0026) | The to-do key on the wrist; the word of the day on the face; Spell it; a word you heard. Deterministic, phone-optional. | Anything that needs the model: that is the phone's or the Mac's, and arrives by sync. |
 | **Website** | The claim, the download, the network list. | Accounts, sync, anything personal. |
 | **Backstage** | Running the product. | Anything a user sees. |
 | **Cross-platform client** (open) | A Library on Android or the web, if ever. | Only exists if there is an account to sign into — see §4. |
@@ -86,7 +88,7 @@ app with a microphone bolted on:
 - **Spell it.** The phone shows the meaning; you say the word, then spell it aloud. The on-device recogniser hears both.
 - **Say it.** The phone shows a word or phrase; you use it in a sentence, out loud. The polisher's model judges whether it was used in its meaning — a guardrail-scored check, like every command (GDR-0012's rule for new verbs applies to new drills).
 - **Explain it.** The card you saw on the Mac, now a question: what does *ADR* stand for?
-- **Word of the day.** Chosen from the Library's weakest entries first, then from a bundled list for the profile's industry. Delivered as a local notification on Mac and iPhone. Saying it in a dictation that day marks it met.
+- **Word of the day.** Chosen from the Library's weakest entries first, then from a bundled list for the profile's industry. Delivered as a local notification on Mac and iPhone. Saying it in a dictation that day marks it met. The bar it must clear is GDR-0027; where its facts come from is GDR-0028.
 - **Gamification, the private kind.** Strength bars, streaks, a weekly review. No leaderboard, no sharing, nothing that needs a server.
 
 ## 6. No gaps, no duplication
@@ -118,6 +120,9 @@ That split is a record of its own (an ADR) before the first iOS line.
 | 4 | **Practice that listens.** Say it, Explain it, strength and streaks. | A drill corpus the harness can score. |
 | 5 | **Profile-aware explain** on the Mac. | A commands corpus case per industry. |
 | — | *Account and cross-platform.* | Decided when phase 3 has users asking. |
+
+GDR-0026 adds the Watch after phase 3: the to-do key first, because it
+needs nothing new; then the complication and Spell it.
 
 ## 8. Decisions this map asked for — taken 2026-10-14 (GDR-0023)
 
