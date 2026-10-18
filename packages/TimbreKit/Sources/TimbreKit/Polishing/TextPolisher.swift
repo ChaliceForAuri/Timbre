@@ -86,7 +86,9 @@ final class TextPolisher {
 
         // Structural commands resolve before the model sees the text, so it
         // punctuates around real breaks instead of around the words that named
-        // them (GDR-0003).
+        // them (GDR-0003). An utterance that was only a command is the break
+        // itself: no capital, no full stop.
+        if let breaks = SpokenCommands.onlyCommands(in: corrected) { return breaks }
         let structured = SpokenCommands.applied(to: corrected)
 
         // One exit point, so the capital and the full stop hold on every path

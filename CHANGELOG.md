@@ -41,6 +41,9 @@ turns the section for that version into the release notes shown in the app.
 - The icon's bars are a little heavier, to match the wordmark (GDR-0021).
 
 ### Fixed
+- AirPods busy with another device no longer swallow a dictation: after
+  2.5 seconds of silence on a Bluetooth input Timbre switches to the Mac's
+  microphone for that dictation and says so in the pill.
 - Fix, shorten and plain no longer touch Slack mentions and channels, links,
   email addresses, dates, times, units, versions or abbreviations like
   "e.g." — they come back exactly as they were.

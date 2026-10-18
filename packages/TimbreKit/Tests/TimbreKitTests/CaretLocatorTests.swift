@@ -44,4 +44,11 @@ struct CaretLocatorTests {
             #expect(twice == rect)
         }
     }
+
+    @Test func anEmptyRectIsNotACaret() {
+        #expect(!CaretLocator.isUsable(CGRect(x: 0, y: 1692, width: 0, height: 0)))
+        #expect(CaretLocator.isUsable(CGRect(x: 412, y: 300, width: 0, height: 18)))
+        #expect(CaretLocator.isUsable(CGRect(x: 412, y: 300, width: 1, height: 18)))
+        #expect(!CaretLocator.isUsable(CGRect(x: CGFloat.nan, y: 300, width: 1, height: 18)))
+    }
 }

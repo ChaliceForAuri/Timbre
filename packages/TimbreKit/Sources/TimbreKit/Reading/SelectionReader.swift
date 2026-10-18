@@ -30,19 +30,9 @@ enum SelectionReader {
     /// mode can use it while right ⌘ is physically held — where a synthetic
     /// ⌘C would be seen by its own "another key was pressed" watch.
     static func selectedTextViaAccessibility() -> String? {
-        let systemWide = AXUIElementCreateSystemWide()
-
-        var focusedRef: CFTypeRef?
-        guard
-            AXUIElementCopyAttributeValue(
-                systemWide,
-                kAXFocusedUIElementAttribute as CFString,
-                &focusedRef
-            ) == .success,
-            let focusedRef,
-            CFGetTypeID(focusedRef) == AXUIElementGetTypeID()
-        else { return nil }
-        let focused = unsafeDowncast(focusedRef, to: AXUIElement.self)
+        // Through the frontmost app when the system-wide question comes
+        // back empty — Electron apps hide their selection until asked.
+        guard let (focused, _) = AccessibilityFocus.focusedElement() else { return nil }
 
         var selectionRef: CFTypeRef?
         guard

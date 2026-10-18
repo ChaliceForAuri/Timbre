@@ -15,22 +15,10 @@ enum CaretLocator {
     /// This is a synchronous IPC round-trip into another process. Call it
     /// once per dictation (at overlay show), never per frame.
     static func caretScreenRect() -> NSRect? {
-        let systemWide = AXUIElementCreateSystemWide()
-
-        var focusedRef: CFTypeRef?
-        guard
-            AXUIElementCopyAttributeValue(
-                systemWide,
-                kAXFocusedUIElementAttribute as CFString,
-                &focusedRef
-            ) == .success,
-            let focusedRef,
-            CFGetTypeID(focusedRef) == AXUIElementGetTypeID()
-        else {
+        guard let (focused, _) = AccessibilityFocus.focusedElement() else {
             logger.log("caret: no focused element via AX")
             return nil
         }
-        let focused = unsafeDowncast(focusedRef, to: AXUIElement.self)
 
         var rangeRef: CFTypeRef?
         guard
@@ -63,7 +51,10 @@ enum CaretLocator {
 
         var rect = CGRect.zero
         guard AXValueGetValue(axValue, .cgRect, &rect) else { return nil }
-        guard rect.width.isFinite, rect.height.isFinite else { return nil }
+        guard isUsable(rect) else {
+            logger.log("caret: element returned an empty rect (Chromium does this); using the fallback")
+            return nil
+        }
 
         guard let primary = NSScreen.screens.first else { return nil }
         let converted = convertFromAccessibility(rect, primaryScreenHeight: primary.frame.maxY)
@@ -71,6 +62,14 @@ enum CaretLocator {
             "caret raw AX \(String(describing: rect), privacy: .public) → converted \(String(describing: converted), privacy: .public)"
         )
         return converted
+    }
+
+    /// A caret has no width to speak of but always a line's height. Chromium
+    /// answers the bounds question with a zero-size rect at a stray origin,
+    /// which placed the pill off-screen; an empty rect means "unknown".
+    nonisolated static func isUsable(_ rect: CGRect) -> Bool {
+        rect.origin.x.isFinite && rect.origin.y.isFinite && rect.width.isFinite && rect.height.isFinite
+            && rect.height > 0
     }
 
     /// Accessibility reports a top-left origin measured from the top of the

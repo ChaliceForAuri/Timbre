@@ -25,17 +25,33 @@ nonisolated enum SpokenCommands {
 
     /// Replaces each command with its break, absorbing the whitespace around
     /// it so "team new paragraph let" becomes "team\n\nlet" rather than
-    /// "team \n\n let".
+    /// "team \n\n let". The transcriber punctuates as it goes, so the command
+    /// arrives as "New paragraph." — the stop it was given is absorbed too;
+    /// the sentence before it keeps its own.
     static func applied(to transcript: String) -> String {
+        replaced(in: transcript).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// The breaks alone, when the utterance was nothing but commands — "new
+    /// paragraph", said on its own, means a paragraph break and no words.
+    /// Nil when there were words.
+    static func onlyCommands(in transcript: String) -> String? {
+        let result = replaced(in: transcript)
+        let words = result.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard words.isEmpty, result != transcript, !result.isEmpty else { return nil }
+        return result.trimmingCharacters(in: .whitespaces)
+    }
+
+    private static func replaced(in transcript: String) -> String {
         var result = transcript
         for (spoken, written) in commands {
             let escaped = NSRegularExpression.escapedPattern(for: spoken)
             result = result.replacingOccurrences(
-                of: "[ \\t]*\\b\(escaped)\\b[ \\t]*",
+                of: "[ \\t]*\\b\(escaped)\\b[.,;:!?]*[ \\t]*",
                 with: written,
                 options: [.regularExpression, .caseInsensitive]
             )
         }
-        return result.trimmingCharacters(in: .whitespacesAndNewlines)
+        return result
     }
 }

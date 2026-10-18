@@ -130,7 +130,7 @@ struct OverlayView: View {
 
     private var displayText: String {
         switch mode {
-        case .warming: "Waking the mic…"
+        case .warming: text.isEmpty ? "Waking the mic…" : text
         case .reading(let speed): "Reading  \(speed)"
         case .listening: text.isEmpty ? "Listening…" : text
         case .polishing: text.isEmpty ? "Cleaning up…" : text

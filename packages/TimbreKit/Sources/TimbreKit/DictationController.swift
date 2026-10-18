@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import Observation
+import os
 
 /// Ties everything together: hotkey → mic → speech model → cleanup → paste,
 /// plus the two gestures that work on a selection — read aloud and command mode.
@@ -157,9 +158,21 @@ public final class DictationController {
     private var liveField: FocusedField?
     private var liveTyping = LiveTyping()
     private var firstTyped: Duration?
+    private var heardAudioThisHold = false
+    private var inputFallback: Duration?
+    /// Counts holds, so a watchdog that wakes after its hold ended can tell.
+    private var holdGeneration = 0
+    /// The last dictation's destination and text, for the leading-space rule
+    /// when the field cannot be read.
+    private var lastInsertion: (app: String?, text: String, at: ContinuousClock.Instant)?
+    /// A space to put in front of this dictation's text, or nothing.
+    private var leadingSpace = ""
+    private var fieldNote = ""
     private var hotkeyLoop: Task<Void, Never>?
     private var accessibilityWatch: Task<Void, Never>?
     private var displayTasks: [Task<Void, Never>] = []
+
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Timbre", category: "command")
 
     public init() {}
 
@@ -338,6 +351,10 @@ public final class DictationController {
         // window, not in front of it. Issue #4.
         let streams = try audio.start(convertingTo: format)
         microphoneStart = clock.now - pressed
+        heardAudioThisHold = false
+        inputFallback = nil
+        holdGeneration += 1
+        let hold = holdGeneration
 
         // The pill must not say "Listening" yet: no audio is flowing,
         // and inviting speech into dead air is the clipped-first-words
@@ -349,6 +366,29 @@ public final class DictationController {
         liveTyping = LiveTyping()
         firstTyped = nil
         liveField = typingLive ? FocusedField.probe() : nil
+        fieldNote = typingLive ? FocusedField.lastNote : "pill"
+        // The space the user would have typed before this dictation: read
+        // from the field when it can be, guessed from the last paste when not.
+        let before =
+            liveField.map { (known: true, character: $0.characterBefore) }
+            ?? FocusedField.characterBeforeCaret()
+        if before.known {
+            leadingSpace = LeadingSpace.needed(before: before.character) ? " " : ""
+        } else if let last = lastInsertion,
+            LeadingSpace.likelyNeeded(
+                lastApp: last.app, lastText: last.text, lastAt: last.at,
+                app: capturedAppName, now: clock.now)
+        {
+            leadingSpace = " "
+        } else {
+            leadingSpace = ""
+        }
+        if liveField != nil, !leadingSpace.isEmpty {
+            // Typed now, ahead of the first words, so the run Timbre replaces
+            // on release includes it. Kept out of LiveTyping, whose first
+            // delta drops its own leading whitespace.
+            SyntheticText.type(leadingSpace)
+        }
 
         let snapshots = try await transcriber.startDictation(
             consuming: streams.input,
@@ -377,7 +417,6 @@ public final class DictationController {
                 }
             },
             Task { [weak self] in
-                var heardAudio = false
                 for await level in streams.levels {
                     guard let self else { return }
                     // Strictly non-zero: a waking Bluetooth mic delivers
@@ -387,12 +426,41 @@ public final class DictationController {
                     // dead route is perfectly silent. Flipping on the
                     // first buffer made the pill say "Listening" into
                     // dead air — the same lie, one level down.
-                    if !heardAudio, level > 0 {
-                        heardAudio = true
+                    if !self.heardAudioThisHold, level > 0 {
+                        self.heardAudioThisHold = true
                         self.firstAudio = clock.now - pressed
                         self.overlay.update(mode: listeningMode)
                     }
                     self.overlay.pushLevel(level)
+                }
+            },
+            // A headset another device is streaming to stays the default
+            // input and delivers silence for as long as the key is held.
+            // After the wait that tells that apart from a slow wake, the
+            // capture moves to the Mac's own microphone, streams intact,
+            // and the pill says so (ADR-0012).
+            Task { [weak self] in
+                guard let self, self.audio.inputIsBluetooth else { return }
+                try? await Task.sleep(for: InputFallback.silence)
+                // Only this hold, and only while it is still listening: a
+                // watchdog that wakes after the release must touch nothing.
+                guard !Task.isCancelled, self.holdGeneration == hold, self.status == .listening else {
+                    return
+                }
+                let elapsed = clock.now - pressed - (self.microphoneStart ?? .zero)
+                guard
+                    InputFallback.shouldFallBack(
+                        inputIsBluetooth: self.audio.inputIsBluetooth,
+                        heardAudio: self.heardAudioThisHold,
+                        after: elapsed),
+                    let builtIn = InputDevices.builtInInput()
+                else { return }
+                do {
+                    try self.audio.switchInput(to: builtIn)
+                    self.inputFallback = clock.now - pressed
+                    self.overlay.update(text: "Using the Mac's mic")
+                } catch {
+                    // The headset stays; the release path reports the silence.
                 }
             },
         ]
@@ -460,12 +528,13 @@ public final class DictationController {
             var replaceDuration: Duration?
             if let field = liveField, !liveTyping.typed.isEmpty {
                 let replaceStarted = clock.now
-                replaceTypedRun(in: field, with: cleaned)
+                replaceTypedRun(in: field, with: leadingSpace + cleaned)
                 replaceDuration = clock.now - replaceStarted
             } else {
-                inserter.insert(cleaned)
+                inserter.insert(leadingSpace + cleaned)
             }
             liveField = nil
+            lastInsertion = (capturedAppName, cleaned, clock.now)
 
             // After the paste, never before: capturing a fixture must not sit
             // between the user releasing the key and their text appearing.
@@ -482,8 +551,10 @@ public final class DictationController {
                         transcriptMs: transcriptDuration.wholeMilliseconds,
                         polishMs: polishDuration.wholeMilliseconds,
                         firstTypedMs: firstTyped?.wholeMilliseconds,
-                        replaceMs: replaceDuration?.wholeMilliseconds
-                    )
+                        replaceMs: replaceDuration?.wholeMilliseconds,
+                        inputFallbackMs: inputFallback?.wholeMilliseconds
+                    ),
+                    field: fieldNote
                 )
             )
 
@@ -606,7 +677,12 @@ public final class DictationController {
         // Taught corrections first: a stable mis-hearing of a command is
         // teachable like any other word (GDR-0011).
         let heard = CorrectionTable.applied(vocabularyStore.corrections, to: text)
-        guard let command = commandHold.heard(heard) else { return }
+        let decision = commandHold.heard(heard)
+        let decided = decision?.rawValue ?? "nothing yet"
+        let wordCount = heard.split(separator: " ").count
+        Self.logger.log(
+            "live: \(wordCount) words, \(decided, privacy: .public) — \(heard, privacy: .private)")
+        guard let command = decision else { return }
 
         // Committed. The shortcut watch has done its job, and our own ⌘C and
         // ⌘V below must not be mistaken for the user typing a shortcut.
@@ -628,8 +704,27 @@ public final class DictationController {
         guard gesture == .command else { return }
         if commandHold.beginRelease() == .alreadyHandled { return }
 
+        let captured = commandIsCapturing
         let spoken = await finishCommandCapture()
         let heard = CorrectionTable.applied(vocabularyStore.corrections, to: spoken)
+
+        // Silence means fix only when the microphone was live to hear it.
+        // A headset still waking delivers nothing at all for the length of
+        // a short hold; running fix on that would be a guess — and the one
+        // command that rewrites text — so it does nothing and says why. A
+        // Mac with no microphone never captured, and its silent hold is
+        // still fix.
+        guard !captured || heardAudioThisHold else {
+            Self.logger.log("release: no audio arrived during the hold")
+            commandSelection = nil
+            finishCommand(
+                showing: .notice("The mic hadn't woken yet — hold a moment longer and try again."),
+                for: .seconds(3))
+            return
+        }
+
+        let releasedWords = heard.split(separator: " ").count
+        Self.logger.log("release: \(releasedWords) words — \(heard, privacy: .private)")
         switch commandHold.resolve(finalTranscript: heard) {
         case .alreadyHandled:
             return
@@ -911,7 +1006,7 @@ public final class DictationController {
         }
         // Already what the cleanup would have produced: leave it be.
         if inField == cleaned { return }
-        guard field.select(NSRange(location: field.start, length: end - field.start)) else {
+        guard field.select(NSRange(location: field.start, length: end - field.start), text: inField) else {
             overlay.show(mode: .notice("Kept as heard"))
             overlay.hide(after: .seconds(1.5))
             return
