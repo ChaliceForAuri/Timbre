@@ -9,6 +9,12 @@ turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-10-17
+
+Measured before cutting: polisher 11 of 11 cases at five repeats, commands
+24 of 24, transcripts 11 of 11 — the same text gets the same cleanup every
+time.
+
 ### Added
 - **Words appear as you speak.** Confirmed words are typed into the app
   while you are still talking, a sentence or so behind your voice, and the
@@ -39,11 +45,24 @@ turns the section for that version into the release notes shown in the app.
 
 ### Changed
 - The icon's bars are a little heavier, to match the wordmark (GDR-0021).
+- A hold of right Command that heard no audio at all — a headset still
+  waking — now does nothing and says so, instead of treating the silence
+  as "fix" and rewriting the selection.
 
 ### Fixed
 - AirPods busy with another device no longer swallow a dictation: after
   2.5 seconds of silence on a Bluetooth input Timbre switches to the Mac's
   microphone for that dictation and says so in the pill.
+- Live typing, the caret, and the selection for commands now work in
+  Electron apps — the Claude app, VS Code, Slack — which keep their
+  accessibility tree off until asked; and in Mail's compose body, which
+  answers through WebKit's text markers.
+- Two dictations in a row no longer land as "better.Thank you.": the first
+  words carry the space you would have typed, read from the character
+  before the caret, and a Return before a dictation earns no stray space.
+- "New paragraph" and "new line" work again now that the transcriber
+  punctuates as it goes: the command takes its own full stop with it, and
+  said on its own it inserts just the break.
 - Fix, shorten and plain no longer touch Slack mentions and channels, links,
   email addresses, dates, times, units, versions or abbreviations like
   "e.g." — they come back exactly as they were.

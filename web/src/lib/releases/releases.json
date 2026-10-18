@@ -5,6 +5,15 @@
 		"unreleased": true,
 		"url": "https://github.com/ChaliceForAuri/Timbre/blob/main/CHANGELOG.md",
 		"intro": "",
+		"sections": [],
+		"items": 0
+	},
+	{
+		"version": "0.4.0",
+		"date": "2026-10-17",
+		"unreleased": false,
+		"url": "https://github.com/ChaliceForAuri/Timbre/releases/tag/v0.4.0",
+		"intro": "Measured before cutting: polisher 11 of 11 cases at five repeats, commands 24 of 24, transcripts 11 of 11 — the same text gets the same cleanup every time.",
 		"sections": [
 			{
 				"name": "Added",
@@ -12,14 +21,14 @@
 			},
 			{
 				"name": "Changed",
-				"html": "<ul>\n<li>The icon&#39;s bars are a little heavier, to match the wordmark (GDR-0021).</li>\n</ul>\n"
+				"html": "<ul>\n<li>The icon&#39;s bars are a little heavier, to match the wordmark (GDR-0021).</li>\n<li>A hold of right Command that heard no audio at all — a headset still\nwaking — now does nothing and says so, instead of treating the silence\nas &quot;fix&quot; and rewriting the selection.</li>\n</ul>\n"
 			},
 			{
 				"name": "Fixed",
-				"html": "<ul>\n<li>AirPods busy with another device no longer swallow a dictation: after\n2.5 seconds of silence on a Bluetooth input Timbre switches to the Mac&#39;s\nmicrophone for that dictation and says so in the pill.</li>\n<li>Fix, shorten and plain no longer touch Slack mentions and channels, links,\nemail addresses, dates, times, units, versions or abbreviations like\n&quot;e.g.&quot; — they come back exactly as they were.</li>\n<li>Fixing a single selected word keeps its case: &quot;teh&quot; becomes &quot;the&quot;, not\n&quot;The&quot;.</li>\n</ul>\n"
+				"html": "<ul>\n<li>AirPods busy with another device no longer swallow a dictation: after\n2.5 seconds of silence on a Bluetooth input Timbre switches to the Mac&#39;s\nmicrophone for that dictation and says so in the pill.</li>\n<li>Live typing, the caret, and the selection for commands now work in\nElectron apps — the Claude app, VS Code, Slack — which keep their\naccessibility tree off until asked; and in Mail&#39;s compose body, which\nanswers through WebKit&#39;s text markers.</li>\n<li>Two dictations in a row no longer land as &quot;better.Thank you.&quot;: the first\nwords carry the space you would have typed, read from the character\nbefore the caret, and a Return before a dictation earns no stray space.</li>\n<li>&quot;New paragraph&quot; and &quot;new line&quot; work again now that the transcriber\npunctuates as it goes: the command takes its own full stop with it, and\nsaid on its own it inserts just the break.</li>\n<li>Fix, shorten and plain no longer touch Slack mentions and channels, links,\nemail addresses, dates, times, units, versions or abbreviations like\n&quot;e.g.&quot; — they come back exactly as they were.</li>\n<li>Fixing a single selected word keeps its case: &quot;teh&quot; becomes &quot;the&quot;, not\n&quot;The&quot;.</li>\n</ul>\n"
 			}
 		],
-		"items": 11
+		"items": 15
 	},
 	{
 		"version": "0.3.1",
