@@ -1,12 +1,13 @@
 {
   "latest": {
-    "version": "0.3.1",
-    "build": 5,
+    "version": "0.4.0",
+    "build": 6,
     "minimumSystemVersion": "26.0",
-    "url": "https://timbre.hugopretorius.dev/releases/Timbre-0.3.1.zip",
-    "sha256": "2fc5c42a4c9af289af6e57cd227c7610116befc4ad551a05874f767118836264",
-    "size": 643321,
-    "published": "2026-09-25",
-    "notes": "Changed:\n• Cleanup is now deterministic. The same words get the same cleanup every time; the corpus passes 11 of 11 across five repeats with one output per case.\n• Sentences always start with a capital. Applied as a rule after the model, like the final full stop, because the model left short casual sentences lowercase. Words with their own casing (iPhone, macOS) and abbreviations (e.g., a.m.) are left alone."
+    "url": "https://timbre.hugopretorius.dev/releases/Timbre-0.4.0.zip",
+    "dmgURL": "https://timbre.hugopretorius.dev/releases/Timbre-0.4.0.dmg",
+    "sha256": "94869f2c35f8fa8fad276054e99b1e652157e7f3f60dc405492d1ec7fd4de8f5",
+    "size": 874230,
+    "published": "2026-10-17",
+    "notes": "Added:\n• Words appear as you speak. Confirmed words are typed into the app while you are still talking, a sentence or so behind your voice, and the cleanup replaces them the moment you let go. The pill now shows only the words still being heard. Off in Settings › General if you would rather keep everything in the pill until release. Where an app cannot be read back — Terminal, secure fields — the pill-then-paste flow remains.\n• An icon. The waveform from the website's favicon — four bars, the shape of a voice — on a charcoal tile, in the retro colours. Timbre had shipped with Xcode's placeholder until now.\n• A disk image. The download is now a .dmg with an Applications folder to drag Timbre onto; the zip remains for updates and for anyone who prefers it.\n• A usage count in Settings — words dictated, dictations, commands, to-dos and readings, this week and all time. Stored in this Mac's preferences and nowhere else.\n• To-dos by voice. Hold right Command with nothing selected and say it — \"call the dentist Thursday\" — and it lands in a Timbre list in Apple's Reminders, with the date read on your Mac, so it's on your iPhone too. Tap left Option with nothing selected to hear the list. Pick any list in Settings.\n• Plain. A fourth command: hold right Command on machine-sounding or corporate text and say \"plain\" to get what it actually says, in your own words.\n• Fix without Apple Intelligence. On a Mac without the on-device model, fix still corrects spelling with macOS's own spell checker, leaving names and your taught words alone.\n\nChanged:\n• The icon's bars are a little heavier, to match the wordmark (GDR-0021).\n• A hold of right Command that heard no audio at all — a headset still waking — now does nothing and says so, instead of treating the silence as \"fix\" and rewriting the selection.\n\nFixed:\n• AirPods busy with another device no longer swallow a dictation: after 2.5 seconds of silence on a Bluetooth input Timbre switches to the Mac's microphone for that dictation and says so in the pill.\n• Live typing, the caret, and the selection for commands now work in Electron apps — the Claude app, VS Code, Slack — which keep their accessibility tree off until asked; and in Mail's compose body, which answers through WebKit's text markers.\n• Two dictations in a row no longer land as \"better.Thank you.\": the first words carry the space you would have typed, read from the character before the caret, and a Return before a dictation earns no stray space.\n• \"New paragraph\" and \"new line\" work again now that the transcriber punctuates as it goes: the command takes its own full stop with it, and said on its own it inserts just the break.\n• Fix, shorten and plain no longer touch Slack mentions and channels, links, email addresses, dates, times, units, versions or abbreviations like \"e.g.\" — they come back exactly as they were.\n• Fixing a single selected word keeps its case: \"teh\" becomes \"the\", not \"The\"."
   }
 }
