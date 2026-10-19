@@ -2,7 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { enhance } from '$app/forms';
-	import Mark from '$lib/components/marketing/Mark.svelte';
+	import Wordmark from '$lib/components/marketing/Wordmark.svelte';
 
 	let { data, form } = $props();
 </script>
@@ -15,10 +15,7 @@
 <div class="mx-auto flex min-h-[70vh] max-w-md items-center px-6">
 	<Card.Root class="w-full">
 		<Card.Header>
-			<div class="mb-3 flex items-center gap-2">
-				<Mark size={22} tile={false} />
-				<span class="display text-2xl">timbre</span>
-			</div>
+			<Wordmark word={1.5} class="mb-3" />
 			<Card.Title class="display text-3xl">Backstage</Card.Title>
 			<Card.Description>
 				Where Timbre is run: releases, decisions, plans, evals and the University. Private.

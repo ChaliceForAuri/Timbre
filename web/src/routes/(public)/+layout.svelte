@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
-	import Mark from '$lib/components/marketing/Mark.svelte';
+	import Wordmark from '$lib/components/marketing/Wordmark.svelte';
 	import Stripe from '$lib/components/marketing/Stripe.svelte';
 	import ThemeToggle from '$lib/components/site/ThemeToggle.svelte';
 	import { site } from '$lib/site';
@@ -19,9 +19,8 @@
 <div class="flex min-h-screen flex-col">
 	<header class="bg-background/85 sticky top-0 z-30 backdrop-blur-md">
 		<nav class="mx-auto flex h-16 max-w-6xl items-center gap-5 px-6">
-			<a href="/" class="flex items-center gap-2" aria-label="Timbre home">
-				<Mark size={22} tile={false} />
-				<span class="display text-[1.5rem] leading-none">timbre</span>
+			<a href="/" class="flex items-center" aria-label="Timbre home">
+				<Wordmark word={1.5} />
 			</a>
 
 			<div class="ml-auto hidden items-center gap-6 text-sm sm:flex">
@@ -55,10 +54,7 @@
 		<Stripe height="6px" rounded={false} />
 		<div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 sm:grid-cols-[1.2fr_1fr_1fr]">
 			<div>
-				<div class="flex items-center gap-2">
-					<Mark size={20} tile={false} />
-					<p class="display text-[1.35rem] leading-none">timbre</p>
-				</div>
+				<Wordmark word={1.35} />
 				<p class="text-muted-foreground mt-3 max-w-[38ch] text-sm leading-relaxed">
 					{site.tagline} Free for personal use, built in the open, and it never sends your voice
 					or your text off this Mac.
