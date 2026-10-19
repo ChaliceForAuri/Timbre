@@ -45,8 +45,8 @@ struct RootView: View {
             SwiftUI.Tab("Library", systemImage: "books.vertical", value: Tab.library) {
                 LibraryView(model: model)
             }
-            SwiftUI.Tab("Spell it", systemImage: "textformat.abc", value: Tab.practice) {
-                SpellItView(model: model)
+            SwiftUI.Tab("Practice", systemImage: "textformat.abc", value: Tab.practice) {
+                PracticeView(model: model)
             }
             SwiftUI.Tab("To-do", systemImage: "checklist", value: Tab.todo) {
                 TodoKeyView(model: model)

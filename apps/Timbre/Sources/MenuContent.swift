@@ -27,6 +27,10 @@ struct MenuContent: View {
             }
         }
 
+        Button("Practice…") {
+            PracticeWindow.open(openWindow)
+        }
+
         Divider()
 
         // The whole interface is three keys. Listed here because there is

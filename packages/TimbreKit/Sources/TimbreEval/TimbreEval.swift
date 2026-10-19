@@ -54,6 +54,12 @@ struct TimbreEval {
             return
         }
 
+        if let path = value(for: "--drills", in: arguments) {
+            try await runDrills(
+                path: path, repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1)
+            return
+        }
+
         if let feed = value(for: "--verify-update", in: arguments) {
             try await runVerifyUpdate(
                 feed: feed,
@@ -514,6 +520,53 @@ struct TimbreEval {
         if solid < corpus.cases.count { exit(1) }
     }
 
+    // MARK: - The drills
+
+    /// The deterministic half of every case, then the model's half of the
+    /// cases that name a judge's answer, `repeats` times (GDR-0023,
+    /// decision 5). Deterministic cases need one run; the judge needs five.
+    private static func runDrills(path: String, repeats: Int) async throws {
+        let corpus = try DrillCorpus.load(from: URL(filePath: path))
+        print("timbre-eval — the drills, \(corpus.cases.count) cases\n")
+        var held = 0
+        for outcome in corpus.run() {
+            let mark = outcome.held ? "✔" : "✘"
+            if outcome.held { held += 1 }
+            print("  \(mark) \(outcome.id): \(outcome.got) — \(outcome.detail)")
+        }
+        print("\nchecks: \(held)/\(corpus.cases.count) held")
+
+        let judged = corpus.cases.filter { $0.judge != nil }
+        guard !judged.isEmpty else {
+            if held < corpus.cases.count { exit(1) }
+            return
+        }
+        let availability = TimbreEvaluation.polisherAvailability
+        print("\njudge: \(judged.count) cases × \(repeats), model: \(availability.reason ?? "available")\n")
+        guard availability.isReady else {
+            printErr("The on-device model is unavailable, so the judge cannot be measured.")
+            exit(2)
+        }
+        var solid = 0
+        for testCase in judged {
+            var agreed = 0
+            var lastReason = ""
+            for _ in 0..<repeats {
+                let verdict = await TimbreEvaluation.judge(
+                    testCase.drill, term: testCase.term, meaning: testCase.meaning, spoken: testCase.spoken)
+                let got = verdict.map { $0.passed ? "passed" : "failed" } ?? "no verdict"
+                lastReason = verdict?.reason ?? "(out of shape or unavailable)"
+                if got == testCase.judge { agreed += 1 }
+            }
+            let mark = agreed == repeats ? "✔" : "✘"
+            if agreed == repeats { solid += 1 }
+            print(
+                "  \(mark) \(testCase.id): \(agreed)/\(repeats) say \(testCase.judge ?? "") — \(lastReason)")
+        }
+        print("\njudge: \(solid)/\(judged.count) solid")
+        if held < corpus.cases.count || solid < judged.count { exit(1) }
+    }
+
     // MARK: - Spell it and the word of the day (TimbreCore corpora)
 
     /// Deterministic, so one run is the measurement (GDR-0023, decision 5).
@@ -574,6 +627,9 @@ struct TimbreEval {
           timbre-eval --examples <examples.json> [--repeat <n>]
                                              the card's example sentence, every
                                              draft against the guardrail
+          timbre-eval --drills <drills.json> [--repeat <n>]
+                                             Spell it, Say it, Explain it: the checks,
+                                             then the judge where a case names its answer
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.

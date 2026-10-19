@@ -698,6 +698,304 @@
 			}
 		]
 	},
+	"learning": [
+		{
+			"id": "spell",
+			"title": "Spell it",
+			"path": "packages/TimbreCore/Fixtures/spell.json",
+			"judged": false,
+			"cases": [
+				{
+					"id": "01-letters-glued",
+					"note": "The recogniser joins quickly spelled letters into one token.",
+					"input": "definitely: “definitely DEFINITELY”",
+					"expect": "passes"
+				},
+				{
+					"id": "02-letters-spaced",
+					"note": "",
+					"input": "definitely: “Definitely. D E F I N I T E L Y.”",
+					"expect": "passes"
+				},
+				{
+					"id": "03-wrong-letter",
+					"note": "The commonest misspelling; the check reports what it heard.",
+					"input": "definitely: “definitely d e f i n a t e l y”",
+					"expect": "fails"
+				},
+				{
+					"id": "04-doubles",
+					"note": "",
+					"input": "committee: “committee c o double m i double t double e”",
+					"expect": "passes"
+				},
+				{
+					"id": "05-letter-names",
+					"note": "Letters said alone come back as words.",
+					"input": "queue: “queue cue you ee you ee”",
+					"expect": "passes"
+				},
+				{
+					"id": "06-capital-marker",
+					"note": "",
+					"input": "iPhone: “iPhone capital I P H O N E”",
+					"expect": "passes"
+				},
+				{
+					"id": "07-double-u",
+					"note": "W is said as double-u; two U's are said as two U's.",
+					"input": "Wiktionary: “Wiktionary double u i k t i o n a r y”",
+					"expect": "passes"
+				},
+				{
+					"id": "08-two-us",
+					"note": "",
+					"input": "vacuum: “vacuum v a c u u m”",
+					"expect": "passes"
+				},
+				{
+					"id": "09-hyphens",
+					"note": "",
+					"input": "separate: “separate. S-E-P-A-R-A-T-E.”",
+					"expect": "passes"
+				},
+				{
+					"id": "10-glued-wrong",
+					"note": "",
+					"input": "separate: “separate SEPERATE”",
+					"expect": "fails"
+				},
+				{
+					"id": "11-acronym-no-word-first",
+					"note": "An acronym is its letters; there is no word to say first.",
+					"input": "ADR: “A D R”",
+					"expect": "passes"
+				},
+				{
+					"id": "12-nothing-spelled",
+					"note": "Saying the word is not spelling it.",
+					"input": "necessary: “necessary”",
+					"expect": "fails"
+				},
+				{
+					"id": "13-missing-letter",
+					"note": "",
+					"input": "rhythm: “rhythm r y t h m”",
+					"expect": "fails"
+				},
+				{
+					"id": "14-apostrophe-ignored",
+					"note": "Only letters count; the word's apostrophe is not spelled.",
+					"input": "can't: “can't c a n t”",
+					"expect": "passes"
+				},
+				{
+					"id": "15-triple",
+					"note": "",
+					"input": "goddessship: “goddessship g o d d e triple s h i p”",
+					"expect": "passes"
+				},
+				{
+					"id": "16-acronym-glued",
+					"note": "An acronym is its letters: said as one token it is still spelled.",
+					"input": "ADR: “ADR”",
+					"expect": "passes"
+				}
+			]
+		},
+		{
+			"id": "picks",
+			"title": "The word of the day",
+			"path": "packages/TimbreCore/Fixtures/picks.json",
+			"judged": false,
+			"cases": [
+				{
+					"id": "01-weakest-first",
+					"note": "Two words due; the one taught earlier has faded further and wins.",
+					"input": "2 entries, 2 events, on 2026-10-20",
+					"expect": "library: ephemeral"
+				},
+				{
+					"id": "02-a-pass-defers-a-word",
+					"note": "Ephemeral was practised and passed; tacit, untouched, is now the weaker.",
+					"input": "2 entries, 3 events, on 2026-10-20",
+					"expect": "library: tacit"
+				},
+				{
+					"id": "03-a-fail-shortens-the-return",
+					"note": "Failing a drill is a fresh exposure, so the word is not due the next morning; but it comes back sooner than a plain fade. Failed five days ago, the acronym is now weaker than a word taught four days ago.",
+					"input": "2 entries, 4 events, on 2026-10-20",
+					"expect": "library: ADR"
+				},
+				{
+					"id": "04-today-does-not-count",
+					"note": "A word taught this morning does not change today's word; yesterday's state chooses.",
+					"input": "1 entries, 1 events, on 2026-10-20",
+					"expect": "none"
+				},
+				{
+					"id": "05-corrections-are-not-words",
+					"note": "A correction is a mis-hearing to repair, never the word of the day.",
+					"input": "1 entries, 1 events, on 2026-10-20",
+					"expect": "none"
+				},
+				{
+					"id": "06-bundled-for-the-profile",
+					"note": "Nothing due, so the profile's industry list supplies the word, skipping what the Library already has.",
+					"input": "1 entries, 1 events, on 2026-10-20",
+					"expect": "bundled: orthogonal"
+				},
+				{
+					"id": "07-a-fresh-word-is-not-yet-due",
+					"note": "Taught two days ago: still above the target, so nothing is due and no list is bundled.",
+					"input": "1 entries, 1 events, on 2026-10-20",
+					"expect": "none"
+				},
+				{
+					"id": "08-forgotten-stays-forgotten",
+					"note": "A tombstone ends a history; an entry still listed by mistake is not picked.",
+					"input": "1 entries, 2 events, on 2026-10-20",
+					"expect": "none"
+				}
+			]
+		},
+		{
+			"id": "drills",
+			"title": "The drills",
+			"path": "packages/TimbreCore/Fixtures/drills.json",
+			"judged": true,
+			"cases": [
+				{
+					"id": "01-say-it-good",
+					"note": "",
+					"input": "sayIt · ephemeral: “The cache is ephemeral, so a restart clears it.”",
+					"expect": "unsure, then the judge says passed"
+				},
+				{
+					"id": "02-say-it-wrong-meaning",
+					"note": "Uses the word, but as if it meant permanent.",
+					"input": "sayIt · ephemeral: “Our ephemeral archive keeps every record forever.”",
+					"expect": "unsure, then the judge says failed"
+				},
+				{
+					"id": "03-say-it-missing-word",
+					"note": "",
+					"input": "sayIt · ephemeral: “The cache clears whenever we restart the server.”",
+					"expect": "failed"
+				},
+				{
+					"id": "04-say-it-too-short",
+					"note": "",
+					"input": "sayIt · tacit: “Tacit agreement.”",
+					"expect": "failed"
+				},
+				{
+					"id": "05-say-it-acronym",
+					"note": "",
+					"input": "sayIt · ADR: “We wrote an ADR before changing the package layout.”",
+					"expect": "unsure, then the judge says passed"
+				},
+				{
+					"id": "06-explain-it-exact",
+					"note": "",
+					"input": "explainIt · ADR: “An architecture decision record, one document per choice.”",
+					"expect": "passed"
+				},
+				{
+					"id": "07-explain-it-paraphrase",
+					"note": "Half the key terms, said differently: the words alone cannot tell.",
+					"input": "explainIt · ephemeral: “It is gone quickly, not lasting.”",
+					"expect": "unsure, then the judge says passed"
+				},
+				{
+					"id": "08-explain-it-wrong",
+					"note": "",
+					"input": "explainIt · ephemeral: “Something heavy and solid.”",
+					"expect": "failed"
+				},
+				{
+					"id": "09-explain-it-one-word-meaning",
+					"note": "",
+					"input": "explainIt · tacit: “It means unspoken.”",
+					"expect": "passed"
+				},
+				{
+					"id": "10-explain-it-stems",
+					"note": "A stem of a key term counts: records meets recording.",
+					"input": "explainIt · ADR: “Recording one architecture decision.”",
+					"expect": "passed"
+				},
+				{
+					"id": "11-spell-it-pass",
+					"note": "",
+					"input": "spellIt · tacit: “tacit t a c i t”",
+					"expect": "passed"
+				},
+				{
+					"id": "12-spell-it-fail",
+					"note": "",
+					"input": "spellIt · tacit: “tacit t a s i t”",
+					"expect": "failed"
+				}
+			]
+		},
+		{
+			"id": "examples",
+			"title": "The example writer",
+			"path": "packages/TimbreKit/Fixtures/examples.json",
+			"judged": true,
+			"cases": [
+				{
+					"id": "01-plain-word",
+					"note": "",
+					"input": "ephemeral · software",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "02-acronym",
+					"note": "An acronym used as itself, not expanded.",
+					"input": "ADR · software",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "03-phrase",
+					"note": "",
+					"input": "table stakes · product",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "04-no-meaning",
+					"note": "A taught word with no meaning yet: the model uses the word it knows.",
+					"input": "perfunctory",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "05-healthcare",
+					"note": "",
+					"input": "triage · healthcare",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "06-law",
+					"note": "",
+					"input": "estoppel · law",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "07-finance",
+					"note": "",
+					"input": "accrual · finance",
+					"expect": "a sentence that passes the guardrail"
+				},
+				{
+					"id": "08-cased-word",
+					"note": "A word that carries its own casing must come back as itself.",
+					"input": "iPhone · design",
+					"expect": "a sentence that passes the guardrail"
+				}
+			]
+		}
+	],
 	"audio": {
 		"path": "packages/TimbreKit/Fixtures/audio",
 		"cases": 11

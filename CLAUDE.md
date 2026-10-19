@@ -101,6 +101,11 @@ swift run timbre-eval --stream Fixtures/audio/03-run-on.aiff
 swift run timbre-eval --spell ../TimbreCore/Fixtures/spell.json
 swift run timbre-eval --picks ../TimbreCore/Fixtures/picks.json
 
+# The drills: every check once, then the judge five times where a case names
+# its answer; and the card's example sentence, every draft against the guardrail.
+swift run timbre-eval --drills ../TimbreCore/Fixtures/drills.json --repeat 5
+swift run timbre-eval --examples Fixtures/examples.json --repeat 5
+
 # Lint (config in .swift-format, toolchain-bundled tool):
 xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 
@@ -201,6 +206,12 @@ TimbreCore's types reach the app through TimbreKit's re-export.
 - **Spell it is deterministic** (`SpellCheck`): the letters heard against the
   word, tolerant of letter names, "double t", "capital A" and glued tokens.
   `timbre-eval --spell` is its corpus; add a case before changing a rule.
+- **A drill is checks first, the judge last** (GDR-0023 decision 5). Say
+  it: `SayItGuardrail` before the model and on its verdict; Explain it:
+  `ExplainItCheck` on the words, the model only in the unsure band; the
+  judges are `ModelDrillJudge` in TimbreModel, greedy, one yes-or-no and one
+  line. `DrillPlanner` picks the drill per entry per day; `Streaks` is the
+  private game. `timbre-eval --drills --repeat 5` measures all of it.
 - **Swift 6 language mode, complete concurrency, everywhere** (ADR-0001).
   Default MainActor isolation + approachable-concurrency features, matching
   the Xcode 26 template. Concurrency is opted into (`actor`, `nonisolated`),
