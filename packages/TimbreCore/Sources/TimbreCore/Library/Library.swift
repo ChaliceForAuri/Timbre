@@ -193,6 +193,11 @@ public final class Library {
         Strength.strength(of: history(of: entryID), at: date)
     }
 
+    /// Has a history and has faded below the target (ADR-0014).
+    public func isDue(_ entryID: String, at date: Date = Date()) -> Bool {
+        Strength.isDue(history(of: entryID), at: date)
+    }
+
     // MARK: - The word of the day (GDR-0027)
 
     public func wordOfTheDay(
@@ -237,6 +242,27 @@ public final class Library {
         try Self.makeEncoder().encode(document)
     }
 
+    /// Takes in an exported file — from another Mac, or from a backup — by
+    /// the same merge rule sync uses. Returns how much it knew already.
+    @discardableResult
+    public func importDocument(_ data: Data) throws -> (entries: Int, events: Int) {
+        let document = try Self.makeDecoder().decode(LibraryDocument.self, from: data)
+        guard document.schema <= Self.schemaVersion else { throw ImportError.newerSchema(document.schema) }
+        let known = (entries: entries.count, events: events.count)
+        merge(entries: document.entries, events: document.events)
+        return (entries.count - known.entries, events.count - known.events)
+    }
+
+    public enum ImportError: Error, Equatable {
+        /// Written by a newer Timbre; this one cannot read it safely.
+        case newerSchema(Int)
+    }
+
+    /// Called after every successful write, so a surface can follow the
+    /// Library without polling — the word of the day reschedules its
+    /// notification here.
+    public var didSave: (@MainActor () -> Void)?
+
     // MARK: - Persistence
 
     private var document: LibraryDocument {
@@ -253,6 +279,7 @@ public final class Library {
                 at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             try data.write(to: fileURL, options: .atomic)
             lastSaveError = nil
+            didSave?()
         } catch {
             lastSaveError = error
         }

@@ -228,6 +228,47 @@ struct LibraryTests {
         #expect(mac.entries.count == 3)
     }
 
+    @Test func importingAnExportMergesByTheSyncRule() throws {
+        let (fileA, defaultsA, cleanupA) = makeIsolated()
+        defer { cleanupA() }
+        let (fileB, defaultsB, cleanupB) = makeIsolated()
+        defer { cleanupB() }
+        // Explicit seconds: two devices teaching the same word in the same
+        // second would be one event, by design.
+        let mac = Library(fileURL: fileA, device: .mac, legacy: defaultsA)
+        mac.add("ephemeral", how: .typed, on: Date(timeIntervalSince1970: 1_000_000))
+        let other = Library(fileURL: fileB, device: .mac, legacy: defaultsB)
+        other.add("tacit", how: .typed, on: Date(timeIntervalSince1970: 1_000_010))
+        other.add("ephemeral", how: .typed, on: Date(timeIntervalSince1970: 1_000_020))
+
+        let added = try mac.importDocument(other.export())
+        #expect(added.entries == 1)
+        #expect(added.events == 2)
+        #expect(mac.terms == ["ephemeral", "tacit"])
+        #expect(try mac.importDocument(other.export()) == (entries: 0, events: 0))
+    }
+
+    @Test func aNewerFileIsRefused() throws {
+        let (file, defaults, cleanup) = makeIsolated()
+        defer { cleanup() }
+        let library = Library(fileURL: file, legacy: defaults)
+        let newer = Data(
+            "{\"schema\": 99, \"entries\": [], \"events\": [], \"profile\": {\"industries\": []}, \"legacyImported\": true}"
+                .utf8)
+        #expect(throws: Library.ImportError.newerSchema(99)) { try library.importDocument(newer) }
+    }
+
+    @Test func didSaveFiresAfterEveryWrite() {
+        let (file, defaults, cleanup) = makeIsolated()
+        defer { cleanup() }
+        let library = Library(fileURL: file, legacy: defaults)
+        var saves = 0
+        library.didSave = { saves += 1 }
+        library.add("one")
+        library.remove("one")
+        #expect(saves == 2)
+    }
+
     @Test func exportIsTheDocument() throws {
         let (file, defaults, cleanup) = makeIsolated()
         defer { cleanup() }

@@ -7,11 +7,15 @@
 		"intro": "",
 		"sections": [
 			{
+				"name": "Added",
+				"html": "<ul>\n<li><strong>The Library.</strong> Settings › Dictionary is now Settings › Library: one store\nfor the words the model should prefer, your acronyms, phrases, spellings\nand corrections, each with a meaning, an example, where it came from and\na strength that practice raises and time lowers. Everything you had taught\nmoved over, in order. Export the whole thing as one file; import merges.</li>\n<li><strong>A word of the day.</strong> The word in your Library that has faded furthest,\nchosen at the start of each day: in the menu bar, on a card with its\nfacts labelled by source (your meaning, Apple&#39;s dictionary, a sentence\nwritten by the on-device model), read aloud on request. Say it in a\ndictation and it counts as met. A morning notification, off unless you\nturn it on.</li>\n<li><strong>About you.</strong> Your field, role and first language, in Settings › Library.\nChooses the word lists; will make explain right for your reader.</li>\n</ul>\n"
+			},
+			{
 				"name": "Changed",
-				"html": "<ul>\n<li><strong>The menu bar shows the mark.</strong> The four bars from the icon, without\nthe tile, in the menu bar&#39;s own colour — and they carry the state: dimmed\nwhile setting up, in the retro colours while the mic is open, fading\nwhile the cleanup runs, all coral when something needs you. The\nmicrophone symbol is gone.</li>\n</ul>\n"
+				"html": "<ul>\n<li>The Library lives in its own package, TimbreCore, which the iPhone and\nWatch apps will share. Your words are in\n<code>~/Library/Application Support/Timbre/library.json</code>; the old lists in\npreferences are left in place.</li>\n<li><strong>The menu bar shows the mark.</strong> The four bars from the icon, without\nthe tile, in the menu bar&#39;s own colour — and they carry the state: dimmed\nwhile setting up, in the retro colours while the mic is open, fading\nwhile the cleanup runs, all coral when something needs you. The\nmicrophone symbol is gone.</li>\n</ul>\n"
 			}
 		],
-		"items": 1
+		"items": 5
 	},
 	{
 		"version": "0.4.0",

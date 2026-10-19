@@ -9,6 +9,7 @@ struct TimbreApp: App {
 
     @State private var controller = DictationController()
     @State private var updater = SoftwareUpdater()
+    @Environment(\.openWindow) private var openWindow
 
     var body: some Scene {
         MenuBarExtra {
@@ -17,6 +18,7 @@ struct TimbreApp: App {
             Image(nsImage: MenuBarIcon.image(for: controller.status))
                 .task {
                     updater.start()
+                    controller.wordOfTheDay.onOpenCard = { WordCardWindow.open(openWindow) }
                     await controller.bootstrap()
                 }
         }
@@ -25,6 +27,13 @@ struct TimbreApp: App {
         Settings {
             SettingsView(controller: controller, updater: updater)
         }
+
+        Window("Word of the day", id: WordCardWindow.id) {
+            WordCardView(wordOfTheDay: controller.wordOfTheDay)
+                .onAppear { controller.wordOfTheDay.refresh() }
+        }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
     }
 }
 

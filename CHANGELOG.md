@@ -9,7 +9,26 @@ turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
 
+### Added
+- **The Library.** Settings › Dictionary is now Settings › Library: one store
+  for the words the model should prefer, your acronyms, phrases, spellings
+  and corrections, each with a meaning, an example, where it came from and
+  a strength that practice raises and time lowers. Everything you had taught
+  moved over, in order. Export the whole thing as one file; import merges.
+- **A word of the day.** The word in your Library that has faded furthest,
+  chosen at the start of each day: in the menu bar, on a card with its
+  facts labelled by source (your meaning, Apple's dictionary, a sentence
+  written by the on-device model), read aloud on request. Say it in a
+  dictation and it counts as met. A morning notification, off unless you
+  turn it on.
+- **About you.** Your field, role and first language, in Settings › Library.
+  Chooses the word lists; will make explain right for your reader.
+
 ### Changed
+- The Library lives in its own package, TimbreCore, which the iPhone and
+  Watch apps will share. Your words are in
+  `~/Library/Application Support/Timbre/library.json`; the old lists in
+  preferences are left in place.
 - **The menu bar shows the mark.** The four bars from the icon, without
   the tile, in the menu bar's own colour — and they carry the state: dimmed
   while setting up, in the retro colours while the mic is open, fading

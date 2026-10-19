@@ -263,6 +263,9 @@ TimbreCore's types reach the app through TimbreKit's re-export.
   prompt and the app never appears in Privacy & Security › Microphone
 - `INFOPLIST_KEY_*` carries mic, speech and Reminders strings and `LSUIElement`.
   Reminders is asked for on the first spoken to-do (GDR-0016)
+- Notifications are asked for only when the word-of-the-day notification is
+  turned on in Settings › Library (GDR-0027); a local notification needs no
+  usage string
 - Accessibility is granted manually (System Settings, `+` button). Timbre
   polls `AXIsProcessTrusted()` while blocked and retries startup on its own,
   so a relaunch should not be needed — but if the trusted state turns out to

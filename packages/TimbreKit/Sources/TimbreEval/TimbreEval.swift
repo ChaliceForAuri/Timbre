@@ -48,6 +48,12 @@ struct TimbreEval {
             return
         }
 
+        if let path = value(for: "--examples", in: arguments) {
+            try await runExamples(
+                path: path, repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1)
+            return
+        }
+
         if let feed = value(for: "--verify-update", in: arguments) {
             try await runVerifyUpdate(
                 feed: feed,
@@ -472,6 +478,42 @@ struct TimbreEval {
 
     // MARK: - Plumbing
 
+    // MARK: - The example writer
+
+    /// Every case through the real writer, `repeats` times; a case is solid
+    /// only when every draft passes the guardrail (GDR-0027).
+    private static func runExamples(path: String, repeats: Int) async throws {
+        let corpus = try ExampleCorpus.load(from: URL(filePath: path))
+        let availability = TimbreEvaluation.polisherAvailability
+        print("timbre-eval — example sentences, \(corpus.cases.count) cases × \(repeats)")
+        print("model: \(availability.reason ?? "available")\n")
+        guard availability.isReady else {
+            printErr("The on-device model is unavailable, so nothing would be written.")
+            exit(2)
+        }
+        var solid = 0
+        for testCase in corpus.cases {
+            var passes = 0
+            var lastDraft = ""
+            var lastFailures: [ExampleGuardrail.Failure] = []
+            for _ in 0..<repeats {
+                let result = await TimbreEvaluation.exampleSentence(
+                    for: testCase.term, meaning: testCase.meaning, industry: testCase.industry)
+                lastDraft = result.draft ?? ""
+                lastFailures = result.failures
+                if result.failures.isEmpty { passes += 1 }
+            }
+            let mark = passes == repeats ? "✔" : "✘"
+            if passes == repeats { solid += 1 }
+            print("  \(mark) \(testCase.id): \(passes)/\(repeats) — \(lastDraft)")
+            if !lastFailures.isEmpty {
+                print("      broke: \(lastFailures.map(\.rawValue).joined(separator: ", "))")
+            }
+        }
+        print("\n\(solid)/\(corpus.cases.count) solid")
+        if solid < corpus.cases.count { exit(1) }
+    }
+
     // MARK: - Spell it and the word of the day (TimbreCore corpora)
 
     /// Deterministic, so one run is the measurement (GDR-0023, decision 5).
@@ -529,6 +571,9 @@ struct TimbreEval {
           timbre-eval --picks <picks.json>   the word of the day against its corpus
                                              (both in packages/TimbreCore/Fixtures;
                                              deterministic, no model needed)
+          timbre-eval --examples <examples.json> [--repeat <n>]
+                                             the card's example sentence, every
+                                             draft against the guardrail
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.
