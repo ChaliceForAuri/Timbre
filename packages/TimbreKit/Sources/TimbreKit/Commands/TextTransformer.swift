@@ -53,11 +53,12 @@ final class TextTransformer {
         corrections: [Correction] = [],
         acronyms: [Acronym] = [],
         vocabulary: [String] = [],
+        profile: Profile = .empty,
         onExplanation: ((String) -> Void)? = nil
     ) async -> Outcome {
         await runDetailed(
             command, on: selection, corrections: corrections, acronyms: acronyms, vocabulary: vocabulary,
-            onExplanation: onExplanation
+            profile: profile, onExplanation: onExplanation
         ).outcome
     }
 
@@ -70,6 +71,7 @@ final class TextTransformer {
         corrections: [Correction] = [],
         acronyms: [Acronym] = [],
         vocabulary: [String] = [],
+        profile: Profile = .empty,
         onExplanation: ((String) -> Void)? = nil
     ) async -> (outcome: Outcome, diagnostic: String?) {
         let frame = SelectionFrame(selection)
@@ -125,7 +127,8 @@ final class TextTransformer {
                 command.rewritesText
                 ? LiteralGuard.mask(source) : LiteralGuard.Masked(text: source, literals: [])
             let generated = try await generate(
-                command, from: masked.text, literals: masked, acronyms: acronyms, onExplanation: onExplanation
+                command, from: masked.text, literals: masked, acronyms: acronyms, profile: profile,
+                onExplanation: onExplanation
             )
             guard var result = LiteralGuard.restore(generated, from: masked, requireAll: command == .fix)
             else {
@@ -191,13 +194,14 @@ final class TextTransformer {
         from source: String,
         literals: LiteralGuard.Masked,
         acronyms: [Acronym],
+        profile: Profile,
         onExplanation: ((String) -> Void)?
     ) async throws -> String {
         var instructions = Self.instructions(for: command)
         if let literal = LiteralGuard.instruction(for: literals) { instructions += " " + literal }
         let session = LanguageModelSession(instructions: instructions)
         let known = command == .explain ? AcronymTable.matches(in: source, from: acronyms) : []
-        let prompt = Self.makePrompt(for: command, text: source, known: known)
+        let prompt = Self.makePrompt(for: command, text: source, known: known, reader: profile)
         let options = GenerationOptions(sampling: .greedy)
 
         switch command {
@@ -297,7 +301,8 @@ final class TextTransformer {
     nonisolated static func makePrompt(
         for command: VoiceCommand,
         text: String,
-        known: [Acronym] = []
+        known: [Acronym] = [],
+        reader: Profile = .empty
     ) -> String {
         switch command {
         case .fix:
@@ -324,10 +329,17 @@ final class TextTransformer {
                 fact, and every request; drop everything that carries no information.
                 """
         case .explain:
-            guard !known.isEmpty else { return "Explain this:\n\n\(text)" }
+            // The reader's field first (product map §3): "PA" is a physician
+            // assistant to a nurse before it is a personal assistant.
+            let field =
+                reader.industries.isEmpty
+                ? ""
+                : "The reader works in \(reader.industries.joined(separator: " and ")); where a term has more than "
+                    + "one meaning, give that field's first. "
+            guard !known.isEmpty else { return "\(field)Explain this:\n\n\(text)" }
             let definitions = known.map { "\($0.term) means \($0.meaning)" }.joined(separator: "; ")
             return """
-                The user's own dictionary defines these terms, and they are correct: \(definitions). \
+                \(field)The user's own dictionary defines these terms, and they are correct: \(definitions). \
                 Use them exactly.
 
                 Explain this:

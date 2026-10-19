@@ -39,6 +39,10 @@ turns the section for that version into the release notes shown in the app.
   phrases and idioms — with definitions, pronunciations and origins from
   Wiktionary (CC BY-SA 4.0, attributed in Settings › Library and on every
   card). A bundled word you then say in a dictation joins your Library.
+- **Explain knows your field.** With a field in Settings › Library › About
+  you, "explain" gives that field's meaning first: a PA is a physician
+  assistant to a nurse, an ER diagram is entity-relationship to an
+  engineer. Measured on the commands corpus.
 ### Changed
 - The Library lives in its own package, TimbreCore, which the iPhone and
   Watch apps will share. Your words are in

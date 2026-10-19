@@ -51,7 +51,8 @@ const verbs = commands.cases.map((c) => ({
 	exact: c.exact ?? null,
 	vocabulary: c.vocabulary ?? [],
 	corrections: c.corrections ?? [],
-	acronyms: c.acronyms ?? []
+	acronyms: c.acronyms ?? [],
+	industries: c.industries ?? []
 }));
 
 // One row per case: the input, and what must come of it. A deterministic

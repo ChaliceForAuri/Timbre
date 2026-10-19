@@ -312,6 +312,7 @@ struct TimbreEval {
                     corrections: testCase.corrections,
                     acronyms: testCase.acronyms,
                     vocabulary: testCase.vocabulary,
+                    profile: Profile(industries: testCase.industries),
                     onExplanation: { partial in
                         guard !sawFirst, !partial.isEmpty else { return }
                         sawFirst = true

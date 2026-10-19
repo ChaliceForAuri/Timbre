@@ -53,10 +53,12 @@ jobs:
         run: swift test --package-path packages/TimbreCloud
 
       - name: Test TimbreRelay (iOS simulator; the package has no macOS)
-        run: >
-          xcodebuild test -scheme TimbreRelay
-          -destination 'platform=iOS Simulator,name=iPhone 17'
-          CODE_SIGNING_ALLOWED=NO
+        # The image names its simulators by the iOS it ships; pick the first
+        # iPhone it has rather than guessing a model.
+        run: |
+          DEVICE="$(xcrun simctl list devices available | grep -m1 -oE 'iPhone [^(]+' | sed 's/ *$//')"
+          echo "Using $DEVICE"
+          xcodebuild test -scheme TimbreRelay -destination "platform=iOS Simulator,name=$DEVICE" CODE_SIGNING_ALLOWED=NO
         working-directory: packages/TimbreRelay
 
       - name: Test TimbreKit

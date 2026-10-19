@@ -361,6 +361,13 @@ renders from it and CI fails on drift.
 
 ## Roadmap
 
+The product map's phases 1–5 (`docs/design/product-map.md`) are built as of
+2026-10-18: the Library and the word of the day on the Mac, TimbreCore and
+the framework packages, iCloud sync, the iPhone and Watch companion, the
+three drills, bundled words (the extract still to be run), and explain that
+knows the reader's field. What they still need is their proofs on hardware:
+two Macs syncing with `nettop` empty, the Watch on a wrist, TestFlight.
+
 1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
    `timbre-eval` — see ADR-0004, and never trust a single run.
 2. Auto-learn vocabulary: offer a correction from the user's own edits made
@@ -371,5 +378,6 @@ renders from it and CI fails on drift.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode has four verbs (GDR-0012, GDR-0015) and taught definitions
    answer "explain" first. A fifth verb needs a guardrail that can score it.
-5. Notarize and distribute directly; build Backstage per
-   `docs/design/backstage.md` (phases 1-6, University ships first).
+5. Run the Wiktionary extract and commit the bundled words (GDR-0028); ship
+   the companion through TestFlight; fit FSRS to the user once there is
+   history to fit (ADR-0014).
