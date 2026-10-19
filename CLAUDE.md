@@ -38,6 +38,9 @@ packages/TimbreRelay/  Watch to phone over WatchConnectivity: the to-do queue
                      and the session (GDR-0029). iOS and watchOS only.
 packages/TimbreCloud/  The Library through the user's iCloud: CKSyncEngine,
                      events as immutable records (ADR-0017). All three.
+                     TimbreCore/Lists holds the curated term lists;
+                     tools/extract-words.swift turns them plus a Wiktionary
+                     extract into Core's bundled-words.json (GDR-0028).
 packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
                      insertion, the polisher, command mode. Depends on the
                      four above. Dictation work happens here.
@@ -130,6 +133,13 @@ tools/install.sh
 # notes taken from that version's CHANGELOG section; publishing a release is
 # committing those two files and merging (GDR-0013).
 tools/release.sh
+
+# The bundled words (GDR-0028): the term lists in packages/TimbreCore/Lists plus
+# kaikki.org's English Wiktionary extract (one JSON object per line) → the
+# resource the word of the day falls back on. Run on our side, never in the app.
+swift tools/extract-words.swift --lists packages/TimbreCore/Lists \
+  --out packages/TimbreCore/Sources/TimbreCore/Resources/bundled-words.json \
+  < kaikki.org-dictionary-English.jsonl
 
 # Everything an update does except relaunch: fetch, hash, unpack, verify the
 # signature, and optionally swap into a stand-in app (ADR-0010). Before

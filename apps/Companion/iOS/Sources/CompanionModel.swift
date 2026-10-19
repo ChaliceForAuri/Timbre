@@ -74,7 +74,7 @@ final class CompanionModel {
 
     private func rebuild() async {
         let now = Date()
-        guard let pick = library.wordOfTheDay(on: now) else {
+        guard let pick = library.wordOfTheDay(on: now, bundled: BundledLists.all) else {
             card = nil
             publish(nil)
             return

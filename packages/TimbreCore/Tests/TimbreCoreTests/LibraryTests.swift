@@ -282,3 +282,26 @@ struct LibraryTests {
         #expect(document.legacyImported)
     }
 }
+
+extension LibraryTests {
+
+    /// A bundled word said in a dictation becomes the user's own (GDR-0027).
+    @Test func meetingABundledWordBanksIt() {
+        let (file, defaults, cleanup) = makeIsolated()
+        defer { cleanup() }
+        let library = Library(fileURL: file, legacy: defaults)
+        let list = BundledList(
+            id: "general", title: "General English",
+            words: [BundledWord(term: "tacit", definition: "Understood without being said.")])
+        let pick = library.wordOfTheDay(bundled: [list])
+        #expect(pick?.term == "tacit")
+
+        #expect(library.noteMet(in: "A tacit agreement.", app: "Mail", bundled: [list]))
+        let banked = library.entry(LibraryEntry.id(kind: .word, term: "tacit"))
+        #expect(banked?.meaning == "Understood without being said.")
+        #expect(banked?.source.how == .bundled)
+        // Taught and met in the same second: the order is the id's, the set is the point.
+        #expect(Set(library.history(of: banked!.id).map(\.kind)) == [.taught, .met])
+        #expect(!library.noteMet(in: "tacit again", app: "Mail", bundled: [list]))
+    }
+}

@@ -102,7 +102,7 @@ public final class WordOfTheDay {
 
     private func rebuild() async {
         let now = Date()
-        guard let pick = library.wordOfTheDay(on: now) else {
+        guard let pick = library.wordOfTheDay(on: now, bundled: BundledLists.all) else {
             card = nil
             return
         }
@@ -167,7 +167,7 @@ public final class WordOfTheDay {
         }
         let fire = NotificationPlan.nextFire(
             hour: notificationHour, minute: notificationMinute, after: Date())
-        guard let pick = library.wordOfTheDay(on: fire) else {
+        guard let pick = library.wordOfTheDay(on: fire, bundled: BundledLists.all) else {
             notifier.cancel()
             return
         }

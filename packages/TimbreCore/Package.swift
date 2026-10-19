@@ -21,6 +21,7 @@ let package = Package(
     targets: [
         .target(
             name: "TimbreCore",
+            resources: [.copy("Resources/bundled-words.json")],
             swiftSettings: concurrencySettings
         ),
         .testTarget(

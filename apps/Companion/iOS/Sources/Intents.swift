@@ -40,7 +40,11 @@ struct WordOfTheDayIntent: AppIntent {
 
     @MainActor func perform() async throws -> some IntentResult & ProvidesDialog {
         let model = CompanionModel.shared
-        guard let card = model.card ?? (model.library.wordOfTheDay().map { WordCard(pick: $0, entry: nil) })
+        guard
+            let card = model.card
+                ?? (model.library.wordOfTheDay(bundled: BundledLists.all).map {
+                    WordCard(pick: $0, entry: nil)
+                })
         else {
             return .result(dialog: "Nothing is due today. Add a word and it will come round in a few days.")
         }

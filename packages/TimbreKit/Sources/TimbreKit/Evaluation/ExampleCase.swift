@@ -12,6 +12,9 @@ public struct ExampleCorpus: Codable, Sendable {
         public let term: String
         public let meaning: String?
         public let industry: String?
+        /// Apple's guardrail refuses this one; the case stays so the refusal
+        /// is visible, and a draft appearing would be news.
+        public let expectRefusal: Bool?
     }
 
     public let cases: [Case]
