@@ -1,5 +1,6 @@
 import EventKit
 import Foundation
+import TimbreCore
 
 /// Timbre's to-dos live in Apple's Reminders (GDR-0016): it is already on
 /// every device the user owns, it already syncs through their own iCloud,

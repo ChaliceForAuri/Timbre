@@ -8,9 +8,9 @@ import Foundation
 ///
 /// A word that carries its own casing — iPhone, macOS, eBay — is left alone,
 /// and an abbreviation's dot (e.g., i.e., a.m.) does not end a sentence.
-nonisolated enum SentenceCapitalizer {
+nonisolated public enum SentenceCapitalizer {
 
-    static func capitalized(_ text: String) -> String {
+    public static func capitalized(_ text: String) -> String {
         var result = ""
         result.reserveCapacity(text.count)
         var characters = Array(text)
@@ -58,7 +58,7 @@ nonisolated enum SentenceCapitalizer {
 
     /// Whether the text opens with a capital, or with something that has no
     /// capital to give — a digit, or a word that carries its own casing.
-    static func isCapitalizedAtStart(_ text: String) -> Bool {
+    public static func isCapitalizedAtStart(_ text: String) -> Bool {
         let characters = Array(text)
         guard let index = characters.firstIndex(where: { !$0.isWhitespace && !"\"'“”‘’([•-–—".contains($0) })
         else { return true }

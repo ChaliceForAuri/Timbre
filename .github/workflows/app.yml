@@ -37,6 +37,9 @@ jobs:
       - name: Lint
         run: xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 
+      - name: Test TimbreCore
+        run: swift test --package-path packages/TimbreCore
+
       - name: Test TimbreKit
         run: swift test --package-path packages/TimbreKit
 

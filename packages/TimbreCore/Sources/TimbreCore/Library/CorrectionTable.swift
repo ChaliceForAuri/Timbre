@@ -8,9 +8,9 @@ import Foundation
 /// The polisher, handed "TimbreKit" as vocabulary, fixes "timbre kit" five
 /// times out of five and "timber kit" never. One letter of phonetic distance
 /// is one too many for it; it is nothing to a lookup.
-nonisolated enum CorrectionTable {
+nonisolated public enum CorrectionTable {
 
-    static func applied(_ corrections: [Correction], to text: String) -> String {
+    public static func applied(_ corrections: [Correction], to text: String) -> String {
         guard !corrections.isEmpty else { return text }
         var result = text
         // Longest phrase first, so a taught "lang views" wins over a taught "views".

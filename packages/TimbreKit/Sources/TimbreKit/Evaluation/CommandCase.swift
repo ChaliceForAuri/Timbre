@@ -1,4 +1,5 @@
 import Foundation
+import TimbreCore
 
 /// A corpus of command-mode samples, loaded from JSON.
 nonisolated public struct CommandCorpus: Codable, Sendable {

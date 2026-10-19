@@ -22,7 +22,10 @@ thin shell of scenes and glue views.
 apps/Timbre/          Xcode project. Config/*.xcconfig holds every build
                      setting; the pbxproj uses synchronized folders and
                      should almost never change.
-packages/TimbreKit/   The entire pipeline + tests. Work happens here.
+packages/TimbreCore/  The Library, strength, the daily pick, the drill checks,
+                     the to-do parser: Foundation only, so the iPhone and
+                     the Watch import it too (ADR-0013). Kit depends on it.
+packages/TimbreKit/   The macOS pipeline + tests. Dictation work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
 docs/learning/       Timbre University (original, frozen) + historical notes.
@@ -39,6 +42,9 @@ web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
 ```bash
 # Fast loop — the package is where the logic lives:
 swift test --package-path packages/TimbreKit
+
+# The platform-neutral half: the Library, strength, the daily pick, Spell it.
+swift test --package-path packages/TimbreCore
 
 # Measure the polisher against the fixed corpus (ADR-0004). Decoding is
 # greedy (ADR-0011), so --repeat checks determinism; still never judge a
@@ -71,6 +77,11 @@ swift run timbre-eval --import ~/Library/Application\ Support/Timbre/dictations.
 
 # See partial results arrive at microphone pace:
 swift run timbre-eval --stream Fixtures/audio/03-run-on.aiff
+
+# Spell it's check and the word of the day against their corpora. Both are
+# deterministic (ADR-0014), so one run is the measurement; no model needed.
+swift run timbre-eval --spell ../TimbreCore/Fixtures/spell.json
+swift run timbre-eval --picks ../TimbreCore/Fixtures/picks.json
 
 # Lint (config in .swift-format, toolchain-bundled tool):
 xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
@@ -133,8 +144,27 @@ Public API surface of TimbreKit is `DictationController` (+ its `Status`)
 and `SoftwareUpdater` (ADR-0010); everything else is internal, apart from
 the evaluation seam (ADR-0004). Keep it that way.
 
+The Library (TimbreCore, GDR-0023) feeds the pipeline: `library.terms` to
+the transcriber and the polisher, `library.corrections` to `CorrectionTable`
+before the model, `library.acronyms` to explain. After every dictation and
+spoken to-do the controller calls `library.noteMet` so today's word is marked
+met (GDR-0027). `DictationController.library` is public for Settings;
+TimbreCore's types reach the app through TimbreKit's re-export.
+
 ## Conventions
 
+- **TimbreCore imports Foundation and Observation, nothing else** (ADR-0013).
+  Pure logic with a right answer lives there; anything that touches the Mac
+  stays in TimbreKit. What needs a framework is a protocol in Core and an
+  implementation beside the framework.
+- **Strength is never stored** (ADR-0014). The Library keeps events — taught,
+  met, passed, failed, forgot — and `Strength` derives retrievability with
+  FSRS-4.5; the daily pick is computed from the events before the start of
+  the day, so it is the same word all day on every device. Merge is a union
+  of events; `forgot` is a tombstone. `timbre-eval --picks` measures it.
+- **Spell it is deterministic** (`SpellCheck`): the letters heard against the
+  word, tolerant of letter names, "double t", "capital A" and glued tokens.
+  `timbre-eval --spell` is its corpus; add a case before changing a rule.
 - **Swift 6 language mode, complete concurrency, everywhere** (ADR-0001).
   Default MainActor isolation + approachable-concurrency features, matching
   the Xcode 26 template. Concurrency is opted into (`actor`, `nonisolated`),

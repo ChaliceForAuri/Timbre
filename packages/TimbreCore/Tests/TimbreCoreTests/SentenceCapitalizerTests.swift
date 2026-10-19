@@ -1,6 +1,6 @@
 import Testing
 
-@testable import TimbreKit
+@testable import TimbreCore
 
 struct SentenceCapitalizerTests {
 
