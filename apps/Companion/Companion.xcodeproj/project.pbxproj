@@ -1,0 +1,628 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BB0000000000000000000111 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000121 /* TimbreCore */; };
+		BB0000000000000000000112 /* TimbreSpeech in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000122 /* TimbreSpeech */; };
+		BB0000000000000000000113 /* TimbreModel in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000123 /* TimbreModel */; };
+		BB0000000000000000000114 /* TimbreReminders in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000124 /* TimbreReminders */; };
+		BB0000000000000000000117 /* TimbreRelay in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000125 /* TimbreRelay */; };
+		BB0000000000000000000115 /* TimbreWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000302 /* TimbreWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BB0000000000000000000116 /* Timbre Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000202 /* Timbre Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BB0000000000000000000211 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000221 /* TimbreCore */; };
+		BB0000000000000000000212 /* TimbreReminders in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000222 /* TimbreReminders */; };
+		BB0000000000000000000214 /* TimbreRelay in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000223 /* TimbreRelay */; };
+		BB0000000000000000000213 /* Timbre Watch Widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000402 /* Timbre Watch Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BB0000000000000000000311 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000321 /* TimbreCore */; };
+		BB0000000000000000000411 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000421 /* TimbreCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BB0000000000000000000131 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB0000000000000000000301;
+			remoteInfo = TimbreWidgets;
+		};
+		BB0000000000000000000132 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB0000000000000000000201;
+			remoteInfo = "Timbre Watch App";
+		};
+		BB0000000000000000000231 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB0000000000000000000401;
+			remoteInfo = "Timbre Watch Widgets";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BB0000000000000000000141 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BB0000000000000000000115 /* TimbreWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000142 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				BB0000000000000000000116 /* Timbre Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000241 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BB0000000000000000000213 /* Timbre Watch Widgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BB0000000000000000000102 /* Timbre.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timbre.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000202 /* Timbre Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timbre Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000302 /* TimbreWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TimbreWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000402 /* Timbre Watch Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Timbre Watch Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000011 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000012 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000013 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000014 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000015 /* Watch.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Watch.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000016 /* iOSWidgets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOSWidgets.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000017 /* WatchWidgets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WatchWidgets.xcconfig; sourceTree = "<group>"; };
+		BB0000000000000000000018 /* iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iOS.entitlements; sourceTree = "<group>"; };
+		BB0000000000000000000019 /* Watch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Watch.entitlements; sourceTree = "<group>"; };
+		BB000000000000000000001A /* iOSWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iOSWidgets.entitlements; sourceTree = "<group>"; };
+		BB000000000000000000001B /* WatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchWidgets.entitlements; sourceTree = "<group>"; };
+		BB000000000000000000001C /* iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS-Info.plist"; sourceTree = "<group>"; };
+		BB000000000000000000001D /* iOSWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOSWidgets-Info.plist"; sourceTree = "<group>"; };
+		BB000000000000000000001E /* WatchWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WatchWidgets-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		BB0000000000000000000103 /* iOS */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = iOS/Sources;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000203 /* Watch */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Watch/Sources;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000303 /* iOSWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = iOSWidgets/Sources;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000403 /* WatchWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WatchWidgets/Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BB0000000000000000000104 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000111 /* TimbreCore in Frameworks */,
+				BB0000000000000000000112 /* TimbreSpeech in Frameworks */,
+				BB0000000000000000000113 /* TimbreModel in Frameworks */,
+				BB0000000000000000000114 /* TimbreReminders in Frameworks */,
+				BB0000000000000000000117 /* TimbreRelay in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000204 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000211 /* TimbreCore in Frameworks */,
+				BB0000000000000000000212 /* TimbreReminders in Frameworks */,
+				BB0000000000000000000214 /* TimbreRelay in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000304 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000311 /* TimbreCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000404 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000411 /* TimbreCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BB0000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000103 /* iOS */,
+				BB0000000000000000000203 /* Watch */,
+				BB0000000000000000000303 /* iOSWidgets */,
+				BB0000000000000000000403 /* WatchWidgets */,
+				BB0000000000000000000003 /* Config */,
+				BB0000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000003 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000011 /* Shared.xcconfig */,
+				BB0000000000000000000012 /* Debug.xcconfig */,
+				BB0000000000000000000013 /* Release.xcconfig */,
+				BB0000000000000000000014 /* iOS.xcconfig */,
+				BB0000000000000000000015 /* Watch.xcconfig */,
+				BB0000000000000000000016 /* iOSWidgets.xcconfig */,
+				BB0000000000000000000017 /* WatchWidgets.xcconfig */,
+				BB0000000000000000000018 /* iOS.entitlements */,
+				BB0000000000000000000019 /* Watch.entitlements */,
+				BB000000000000000000001A /* iOSWidgets.entitlements */,
+				BB000000000000000000001B /* WatchWidgets.entitlements */,
+				BB000000000000000000001C /* iOS-Info.plist */,
+				BB000000000000000000001D /* iOSWidgets-Info.plist */,
+				BB000000000000000000001E /* WatchWidgets-Info.plist */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000102 /* Timbre.app */,
+				BB0000000000000000000202 /* Timbre Watch App.app */,
+				BB0000000000000000000302 /* TimbreWidgets.appex */,
+				BB0000000000000000000402 /* Timbre Watch Widgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BB0000000000000000000101 /* Timbre */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB0000000000000000000105 /* Build configuration list for PBXNativeTarget "Timbre" */;
+			buildPhases = (
+				BB0000000000000000000106 /* Sources */,
+				BB0000000000000000000104 /* Frameworks */,
+				BB0000000000000000000107 /* Resources */,
+				BB0000000000000000000141 /* Embed Foundation Extensions */,
+				BB0000000000000000000142 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BB0000000000000000000151 /* PBXTargetDependency */,
+				BB0000000000000000000152 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BB0000000000000000000103 /* iOS */,
+			);
+			name = Timbre;
+			packageProductDependencies = (
+				BB0000000000000000000121 /* TimbreCore */,
+				BB0000000000000000000122 /* TimbreSpeech */,
+				BB0000000000000000000123 /* TimbreModel */,
+				BB0000000000000000000124 /* TimbreReminders */,
+				BB0000000000000000000125 /* TimbreRelay */,
+			);
+			productName = Timbre;
+			productReference = BB0000000000000000000102 /* Timbre.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BB0000000000000000000201 /* Timbre Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB0000000000000000000205 /* Build configuration list for PBXNativeTarget "Timbre Watch App" */;
+			buildPhases = (
+				BB0000000000000000000206 /* Sources */,
+				BB0000000000000000000204 /* Frameworks */,
+				BB0000000000000000000207 /* Resources */,
+				BB0000000000000000000241 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BB0000000000000000000251 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BB0000000000000000000203 /* Watch */,
+			);
+			name = "Timbre Watch App";
+			packageProductDependencies = (
+				BB0000000000000000000221 /* TimbreCore */,
+				BB0000000000000000000222 /* TimbreReminders */,
+				BB0000000000000000000223 /* TimbreRelay */,
+			);
+			productName = "Timbre Watch App";
+			productReference = BB0000000000000000000202 /* Timbre Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BB0000000000000000000301 /* TimbreWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB0000000000000000000305 /* Build configuration list for PBXNativeTarget "TimbreWidgets" */;
+			buildPhases = (
+				BB0000000000000000000306 /* Sources */,
+				BB0000000000000000000304 /* Frameworks */,
+				BB0000000000000000000307 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BB0000000000000000000303 /* iOSWidgets */,
+			);
+			name = TimbreWidgets;
+			packageProductDependencies = (
+				BB0000000000000000000321 /* TimbreCore */,
+			);
+			productName = TimbreWidgets;
+			productReference = BB0000000000000000000302 /* TimbreWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		BB0000000000000000000401 /* Timbre Watch Widgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB0000000000000000000405 /* Build configuration list for PBXNativeTarget "Timbre Watch Widgets" */;
+			buildPhases = (
+				BB0000000000000000000406 /* Sources */,
+				BB0000000000000000000404 /* Frameworks */,
+				BB0000000000000000000407 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BB0000000000000000000403 /* WatchWidgets */,
+			);
+			name = "Timbre Watch Widgets";
+			packageProductDependencies = (
+				BB0000000000000000000421 /* TimbreCore */,
+			);
+			productName = "Timbre Watch Widgets";
+			productReference = BB0000000000000000000402 /* Timbre Watch Widgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BB0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 2600;
+			};
+			buildConfigurationList = BB0000000000000000000005 /* Build configuration list for PBXProject "Companion" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BB0000000000000000000002;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BB0000000000000000000021 /* XCLocalSwiftPackageReference "../../packages/TimbreCore" */,
+				BB0000000000000000000022 /* XCLocalSwiftPackageReference "../../packages/TimbreSpeech" */,
+				BB0000000000000000000023 /* XCLocalSwiftPackageReference "../../packages/TimbreModel" */,
+				BB0000000000000000000024 /* XCLocalSwiftPackageReference "../../packages/TimbreReminders" */,
+				BB0000000000000000000025 /* XCLocalSwiftPackageReference "../../packages/TimbreRelay" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = BB0000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BB0000000000000000000101 /* Timbre */,
+				BB0000000000000000000201 /* Timbre Watch App */,
+				BB0000000000000000000301 /* TimbreWidgets */,
+				BB0000000000000000000401 /* Timbre Watch Widgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BB0000000000000000000107 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000207 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000307 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000407 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BB0000000000000000000106 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000206 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000306 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000406 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BB0000000000000000000151 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB0000000000000000000301 /* TimbreWidgets */;
+			targetProxy = BB0000000000000000000131 /* PBXContainerItemProxy */;
+		};
+		BB0000000000000000000152 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB0000000000000000000201 /* Timbre Watch App */;
+			targetProxy = BB0000000000000000000132 /* PBXContainerItemProxy */;
+		};
+		BB0000000000000000000251 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB0000000000000000000401 /* Timbre Watch Widgets */;
+			targetProxy = BB0000000000000000000231 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		BB0000000000000000000006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000012 /* Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		BB0000000000000000000007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000013 /* Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		BB0000000000000000000108 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000014 /* iOS.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		BB0000000000000000000109 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000014 /* iOS.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		BB0000000000000000000208 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000015 /* Watch.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		BB0000000000000000000209 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000015 /* Watch.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		BB0000000000000000000308 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000016 /* iOSWidgets.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		BB0000000000000000000309 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000016 /* iOSWidgets.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		BB0000000000000000000408 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000017 /* WatchWidgets.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		BB0000000000000000000409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB0000000000000000000017 /* WatchWidgets.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BB0000000000000000000005 /* Build configuration list for PBXProject "Companion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000000000000000000006 /* Debug */,
+				BB0000000000000000000007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB0000000000000000000105 /* Build configuration list for PBXNativeTarget "Timbre" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000000000000000000108 /* Debug */,
+				BB0000000000000000000109 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB0000000000000000000205 /* Build configuration list for PBXNativeTarget "Timbre Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000000000000000000208 /* Debug */,
+				BB0000000000000000000209 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB0000000000000000000305 /* Build configuration list for PBXNativeTarget "TimbreWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000000000000000000308 /* Debug */,
+				BB0000000000000000000309 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB0000000000000000000405 /* Build configuration list for PBXNativeTarget "Timbre Watch Widgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000000000000000000408 /* Debug */,
+				BB0000000000000000000409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		BB0000000000000000000021 /* XCLocalSwiftPackageReference "../../packages/TimbreCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/TimbreCore;
+		};
+		BB0000000000000000000022 /* XCLocalSwiftPackageReference "../../packages/TimbreSpeech" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/TimbreSpeech;
+		};
+		BB0000000000000000000023 /* XCLocalSwiftPackageReference "../../packages/TimbreModel" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/TimbreModel;
+		};
+		BB0000000000000000000024 /* XCLocalSwiftPackageReference "../../packages/TimbreReminders" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/TimbreReminders;
+		};
+		BB0000000000000000000025 /* XCLocalSwiftPackageReference "../../packages/TimbreRelay" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/TimbreRelay;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BB0000000000000000000121 /* TimbreCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreCore;
+		};
+		BB0000000000000000000122 /* TimbreSpeech */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreSpeech;
+		};
+		BB0000000000000000000123 /* TimbreModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreModel;
+		};
+		BB0000000000000000000124 /* TimbreReminders */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreReminders;
+		};
+		BB0000000000000000000125 /* TimbreRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreRelay;
+		};
+		BB0000000000000000000221 /* TimbreCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreCore;
+		};
+		BB0000000000000000000222 /* TimbreReminders */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreReminders;
+		};
+		BB0000000000000000000223 /* TimbreRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreRelay;
+		};
+		BB0000000000000000000321 /* TimbreCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreCore;
+		};
+		BB0000000000000000000421 /* TimbreCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = BB0000000000000000000001 /* Project object */;
+}

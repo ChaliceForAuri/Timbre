@@ -46,7 +46,7 @@ views {
     include user
     include timbre.kit
     include core.*
-    include iphone
+    include iphone, watch
     include apple.icloud
     include account
     autoLayout LeftRight

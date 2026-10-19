@@ -49,6 +49,13 @@ jobs:
       - name: Test TimbreReminders
         run: swift test --package-path packages/TimbreReminders
 
+      - name: Test TimbreRelay (iOS simulator; the package has no macOS)
+        run: >
+          xcodebuild test -scheme TimbreRelay
+          -destination 'platform=iOS Simulator,name=iPhone 17'
+          CODE_SIGNING_ALLOWED=NO
+        working-directory: packages/TimbreRelay
+
       - name: Test TimbreKit
         run: swift test --package-path packages/TimbreKit
 
@@ -75,4 +82,28 @@ jobs:
         run: >
           xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre
           -destination 'platform=macOS' build
+          CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=NO
+
+  build-companion:
+    name: Companion build (iPhone, Watch, widgets)
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode 26
+        run: |
+          XCODE="$(find /Applications -maxdepth 1 -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          if [ -z "$XCODE" ]; then
+            echo "No Xcode 26 on this image:"; ls /Applications | grep -i xcode || true
+            exit 1
+          fi
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
+
+      - name: Build
+        # One scheme builds all four targets (ADR-0016). The simulator SDK
+        # needs no signing; the Watch app is compile-verified here.
+        run: >
+          xcodebuild -project apps/Companion/Companion.xcodeproj -scheme Timbre
+          -destination 'generic/platform=iOS Simulator' build
           CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=NO

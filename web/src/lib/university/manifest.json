@@ -75,8 +75,13 @@
     "title": "The other Apple platforms"
   },
   {
-    "slug": "glossary",
+    "slug": "building-the-companion",
     "number": "15",
+    "title": "Building the companion"
+  },
+  {
+    "slug": "glossary",
+    "number": "16",
     "title": "Glossary"
   }
 ]

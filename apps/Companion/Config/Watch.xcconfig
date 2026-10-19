@@ -1,0 +1,18 @@
+// Timbre for Apple Watch (GDR-0026): the to-do key on the wrist, the word of
+// the day at a glance, Spell it, a word you heard. Nothing here needs the
+// model; speech input is the system's dictation.
+
+SDKROOT = watchos
+WATCHOS_DEPLOYMENT_TARGET = 26.0
+TARGETED_DEVICE_FAMILY = 4
+
+PRODUCT_NAME = Timbre Watch App
+PRODUCT_BUNDLE_IDENTIFIER = dev.hugopretorius.Timbre.watchkitapp
+INFOPLIST_KEY_WKCompanionAppBundleIdentifier = dev.hugopretorius.Timbre
+INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES
+INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown
+INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = Timbre adds the to-dos you say to a list in Reminders, and reads the list back to you.
+
+CODE_SIGN_ENTITLEMENTS = Config/Watch.entitlements
+SKIP_INSTALL = YES
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks
