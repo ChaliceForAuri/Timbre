@@ -9,6 +9,13 @@ turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
 
+### Changed
+- **The menu bar shows the mark.** The four bars from the icon, without
+  the tile, in the menu bar's own colour — and they carry the state: dimmed
+  while setting up, in the retro colours while the mic is open, fading
+  while the cleanup runs, all coral when something needs you. The
+  microphone symbol is gone.
+
 ## [0.4.0] — 2026-10-17
 
 Measured before cutting: polisher 11 of 11 cases at five repeats, commands

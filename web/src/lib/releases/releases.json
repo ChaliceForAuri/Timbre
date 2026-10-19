@@ -5,8 +5,13 @@
 		"unreleased": true,
 		"url": "https://github.com/ChaliceForAuri/Timbre/blob/main/CHANGELOG.md",
 		"intro": "",
-		"sections": [],
-		"items": 0
+		"sections": [
+			{
+				"name": "Changed",
+				"html": "<ul>\n<li><strong>The menu bar shows the mark.</strong> The four bars from the icon, without\nthe tile, in the menu bar&#39;s own colour — and they carry the state: dimmed\nwhile setting up, in the retro colours while the mic is open, fading\nwhile the cleanup runs, all coral when something needs you. The\nmicrophone symbol is gone.</li>\n</ul>\n"
+			}
+		],
+		"items": 1
 	},
 	{
 		"version": "0.4.0",
