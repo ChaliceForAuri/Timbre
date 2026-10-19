@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Mark from '$lib/components/marketing/Mark.svelte';
+	import Wordmark from '$lib/components/marketing/Wordmark.svelte';
 	import KeyCap from '$lib/components/marketing/KeyCap.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 
@@ -67,6 +68,18 @@
 		{ label: 'secondary · timbre, underlined', word: 'timbre', mark: false, under: 'full', weight: 800, tight: true, chosen: true, note: 'The wordmark alone with the rounded rainbow beneath: beside the tiled icon, or where the bars would repeat.' }
 	];
 	const shortlist = wordmarks;
+
+	/// Said aloud, 2026-10-19: Hugo asked for "/ tam·br /" in the logo, so
+	/// the name is said right the first time. The content is his; what is
+	/// laid out here is where it sits and how it is set. Chosen by looking
+	/// the same day: the tight one (GDR-0025). It is on the site, so the
+	/// comparison is against the real thing.
+	const sayings = [
+		{ label: 'beside · mono · spaced', say: '/ tam·br /', place: 'beside', note: 'On the word\u2019s baseline, half its size, muted, in the label mono. Reads as a dictionary headword.' },
+		{ label: 'beside · mono · tight', say: '/tam·br/', place: 'beside', chosen: true, note: 'The same without the spaces inside the slashes. Closer to how a dictionary sets it; a little denser.' },
+		{ label: 'beside · bare', say: 'tam·br', place: 'beside', note: 'No slashes. Quieter, but without them it could be read as a second word.' },
+		{ label: 'beneath · mono', say: '/ tam·br /', place: 'beneath', note: 'Under the word, as the Backstage sidebar carries its own second line. Keeps the header short; the lockup grows taller.' }
+	];
 
 	/// Pairings, 2026-10-14: Nunito keeps the wordmark and the headlines; the
 	/// question is what the paragraphs are set in. Nunito itself is the
@@ -172,6 +185,46 @@
 						{/if}
 					</span>
 				</div>
+			{/each}
+		</div>
+	{/each}
+</section>
+
+<!-- Said aloud -->
+<section class="mt-12">
+	<div class="flex items-baseline justify-between gap-4">
+		<h2 class="text-3xl">Said aloud</h2>
+		<p class="text-muted-foreground text-sm">Decided (GDR-0025): the respelling beside the word, in the mono, tight. The other three stay for the next question.</p>
+	</div>
+	<div class="mt-6 grid gap-4 sm:grid-cols-2">
+		{#each sayings as s, i (s.label)}
+			<div class="bg-card ring-foreground/8 rounded-2xl p-6 ring-1">
+				<span class="flex items-center gap-2">
+					<Badge variant="secondary" class="font-mono text-[10px]">{i + 1} · {s.label}</Badge>
+					{#if 'chosen' in s && s.chosen}
+						<Badge class="bg-retro-green font-mono text-[10px] text-[oklch(0.2_0.005_80)] hover:bg-retro-green">in use</Badge>
+					{/if}
+				</span>
+				<div class="mt-6 flex h-16 items-center">
+					{#if s.place === 'beside'}
+						<Wordmark word={2} say={s.say} />
+					{:else}
+						<Mark size={29} tile={false} class="mr-2 shrink-0" />
+						<span class="inline-flex flex-col">
+							<span class="display text-[2rem] leading-none">timbre</span>
+							<span class="text-muted-foreground mt-1.5 font-mono text-[0.8rem] leading-none tracking-wide">{s.say}</span>
+						</span>
+					{/if}
+				</div>
+				<p class="text-muted-foreground mt-4 text-xs">{s.note}</p>
+			</div>
+		{/each}
+	</div>
+	<p class="eyebrow text-muted-foreground mt-8">At header size, on both grounds</p>
+	{#each [false, true] as dark (dark)}
+		<div class="mt-3 flex flex-wrap items-center gap-x-12 gap-y-6 rounded-2xl p-8 {dark ? 'bg-case text-[oklch(0.94_0.004_80)]' : 'bg-card ring-foreground/8 ring-1'}">
+			{#each sayings.filter((s) => s.place === 'beside') as s (s.label)}
+				<Wordmark word={1.5} say={s.say} />
 			{/each}
 		</div>
 	{/each}
