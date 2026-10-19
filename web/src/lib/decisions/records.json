@@ -1,5 +1,39 @@
 [
 	{
+		"id": "GDR-0024",
+		"kind": "GDR",
+		"number": "0024",
+		"slug": "the-menu-bar-mark",
+		"path": "docs/decisions/gdr/0024-the-menu-bar-mark.md",
+		"title": "The menu bar shows the bare bars, and the bars carry the state",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-10-19",
+		"relations": [
+			{
+				"label": "Amends",
+				"summary": "GDR-0021, point 3; GDR-0017, point 2",
+				"refs": [
+					"GDR-0021",
+					"GDR-0017"
+				]
+			},
+			{
+				"label": "Builds on",
+				"summary": "GDR-0013 (nothing appears unless the user comes looking)",
+				"refs": [
+					"GDR-0013"
+				]
+			}
+		],
+		"excerpt": "The menu bar item had been Xcode's microphone symbol since the first build, swapping to three unrelated symbols by state: a filled microphone, sparkles, a warning triangle. The icon shipped in 0.4.0, and the one place a user sees Timbre all day still showed nothing of the mark. Hugo asked for the brand icon there, and for it to show the statuses that matter.",
+		"plain": "Accepted.\nContext.\nThe menu bar item had been Xcode's microphone symbol since the first build, swapping to three unrelated symbols by state: a filled microphone, sparkles, a warning triangle. The icon shipped in 0.4.0, and the one place a user sees Timbre all day still showed nothing of the mark. Hugo asked for the brand icon there, and for it to show the statuses that matter.\nThe menu bar has rules of its own. Its glyphs are drawn in the bar's ink, inverted under an open menu, and it carries two appearances; a glyph that ignores that looks pasted on. And it is where every app's badge competes for attention.\nDecision.\n1. The menu bar item is the bare bars — the mark without its tile. GDR-0021 keeps the tile for the icon alone, and the menu bar is not that: among the bar's glyphs a tile is a second box.\n2. The one drawing carries the state; no other glyph appears there. Five looks: the bars dimmed while setting up; in the bar's own ink when ready; in the retro colours while listening; the colours fading while the cleanup runs; every bar coral on an error, the identity's colour for \"must stop\" (GDR-0017), until the next gesture or the grant that fixes it. The ink states are template images, drawn by the system; the coloured ones are not.\n3. Colour in the menu bar means the microphone is open. That is the rule a future state has to fit: if the mic is not open, the bars are not lit. The menu bar shows the mark lit, never the gesture's own colour — it cannot tell a dictation from a command hold, and does not need to. The gesture's colour belongs to the pill, where the user is looking.\n4. Nothing badges an update, or anything else the user has not asked about. No dot, no count. GDR-0013 keeps updates to the menu.\n5. Drawn in code from the favicon's grid, stroke 3 of 32 units scaled to a 2.5-point stroke, the same numbers tools/app-icon.swift draws with. A change to the mark is a change in two places, never a stale PNG.\nConsequences.\nMenuBarIcon in the app target is the drawing and the state-to-look table. A new DictationController.Status case must choose a look there; the switch is exhaustive, so the compiler asks.\nEach look carries an accessibility description (\"Timbre: listening\"), which is how VoiceOver reads the state.\nWhen the overlay takes the accents (GDR-0017's open consequence), the menu bar does not repeat them: the pill says which gesture, the bar says the mic is open.\nThe fading \"cleaning up\" look is the one to watch. If it reads as a glitch rather than a mic closing, it drops to the dimmed grey of setting up — a new record's one line, not an edit here.",
+		"html": "<h2>Context</h2>\n<p>The menu bar item had been Xcode&#39;s microphone symbol since the first build, swapping to three unrelated symbols by state: a filled microphone, sparkles, a warning triangle. The icon shipped in 0.4.0, and the one place a user sees Timbre all day still showed nothing of the mark. Hugo asked for the brand icon there, and for it to show the statuses that matter.</p>\n<p>The menu bar has rules of its own. Its glyphs are drawn in the bar&#39;s ink, inverted under an open menu, and it carries two appearances; a glyph that ignores that looks pasted on. And it is where every app&#39;s badge competes for attention.</p>\n<h2>Decision</h2>\n<ol>\n<li><strong>The menu bar item is the bare bars</strong> — the mark without its tile. GDR-0021 keeps the tile for the icon alone, and the menu bar is not that: among the bar&#39;s glyphs a tile is a second box.</li>\n<li><strong>The one drawing carries the state; no other glyph appears there.</strong> Five looks: the bars dimmed while setting up; in the bar&#39;s own ink when ready; in the retro colours while listening; the colours fading while the cleanup runs; every bar coral on an error, the identity&#39;s colour for &quot;must stop&quot; (GDR-0017), until the next gesture or the grant that fixes it. The ink states are template images, drawn by the system; the coloured ones are not.</li>\n<li><strong>Colour in the menu bar means the microphone is open.</strong> That is the rule a future state has to fit: if the mic is not open, the bars are not lit. The menu bar shows the mark lit, never the gesture&#39;s own colour — it cannot tell a dictation from a command hold, and does not need to. The gesture&#39;s colour belongs to the pill, where the user is looking.</li>\n<li><strong>Nothing badges an update</strong>, or anything else the user has not asked about. No dot, no count. GDR-0013 keeps updates to the menu.</li>\n<li><strong>Drawn in code from the favicon&#39;s grid</strong>, stroke 3 of 32 units scaled to a 2.5-point stroke, the same numbers <code>tools/app-icon.swift</code> draws with. A change to the mark is a change in two places, never a stale PNG.</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li><code>MenuBarIcon</code> in the app target is the drawing and the state-to-look table. A new <code>DictationController.Status</code> case must choose a look there; the switch is exhaustive, so the compiler asks.</li>\n<li>Each look carries an accessibility description (&quot;Timbre: listening&quot;), which is how VoiceOver reads the state.</li>\n<li>When the overlay takes the accents (GDR-0017&#39;s open consequence), the menu bar does not repeat them: the pill says which gesture, the bar says the mic is open.</li>\n<li>The fading &quot;cleaning up&quot; look is the one to watch. If it reads as a glitch rather than a mic closing, it drops to the dimmed grey of setting up — a new record&#39;s one line, not an edit here.</li>\n</ul>\n"
+	},
+	{
 		"id": "ADR-0012",
 		"kind": "ADR",
 		"number": "0012",
