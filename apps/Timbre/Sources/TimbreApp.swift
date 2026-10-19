@@ -14,7 +14,7 @@ struct TimbreApp: App {
         MenuBarExtra {
             MenuContent(controller: controller, updater: updater)
         } label: {
-            Image(systemName: iconName)
+            Image(nsImage: MenuBarIcon.image(for: controller.status))
                 .task {
                     updater.start()
                     await controller.bootstrap()
@@ -24,16 +24,6 @@ struct TimbreApp: App {
 
         Settings {
             SettingsView(controller: controller, updater: updater)
-        }
-    }
-
-    private var iconName: String {
-        switch controller.status {
-        case .settingUp: "hourglass"
-        case .idle: "mic"
-        case .listening: "mic.fill"
-        case .polishing: "sparkles"
-        case .error: "exclamationmark.triangle"
         }
     }
 }
