@@ -8,5 +8,16 @@
 	<array>
 		<string>group.dev.hugopretorius.Timbre</string>
 	</array>
+	<!-- The Library through the user's own iCloud (GDR-0023 decision 1,
+	     ADR-0017). Off until turned on in Settings; the binary still makes no
+	     request — the system's daemon does the syncing. -->
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.dev.hugopretorius.Timbre</string>
+	</array>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
 </dict>
 </plist>

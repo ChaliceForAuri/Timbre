@@ -1,4 +1,5 @@
 import SwiftUI
+import TimbreCloud
 import TimbreCore
 
 /// About you, your file, and what never leaves the phone.
@@ -20,6 +21,23 @@ struct YouView: View {
                     Text("About you")
                 } footer: {
                     Text("Your field chooses the word lists, and will make explain right for your reader.")
+                }
+
+                Section {
+                    Toggle(
+                        "Sync through iCloud",
+                        isOn: Binding(
+                            get: { model.syncsThroughICloud }, set: { model.syncsThroughICloud = $0 }))
+                    LabeledContent("Status", value: cloudStatus)
+                    if model.syncsThroughICloud {
+                        Button("Sync now") { Task { await model.cloud.syncNow() } }
+                    }
+                } header: {
+                    Text("iCloud")
+                } footer: {
+                    Text(
+                        "Your words, meanings and practice history in your own iCloud, so your Mac and Watch have the same Library. Timbre sends nothing itself; iOS's iCloud daemon does the syncing. Never a dictation. End-to-end encrypted with Advanced Data Protection."
+                    )
                 }
 
                 Section {
@@ -84,6 +102,19 @@ struct YouView: View {
         let url = URL(filePath: NSTemporaryDirectory()).appending(path: "Timbre Library.json")
         if let data = try? model.library.export(), (try? data.write(to: url, options: .atomic)) != nil {
             exportURL = url
+        }
+    }
+}
+
+extension YouView {
+    fileprivate var cloudStatus: String {
+        switch model.cloud.status {
+        case .off: "Off"
+        case .starting: "Starting…"
+        case .syncing: "Syncing…"
+        case .upToDate(let date):
+            date.map { "Up to date, \($0.formatted(.relative(presentation: .named)))" } ?? "Up to date"
+        case .unavailable(let reason): reason
         }
     }
 }

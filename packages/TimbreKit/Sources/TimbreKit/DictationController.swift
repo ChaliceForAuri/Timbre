@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import Observation
+import TimbreCloud
 import TimbreCore
 import TimbreReminders
 import TimbreSpeech
@@ -147,6 +148,21 @@ public final class DictationController {
     /// their own spoken input, so the hotkey pipeline is never borrowed.
     @ObservationIgnored public private(set) lazy var practice = PracticeSession(
         library: library, reader: speech)
+
+    /// The Library through the user's own iCloud (GDR-0023 decision 1, ADR-0017).
+    /// Off until turned on; the binary still makes no request.
+    @ObservationIgnored public private(set) lazy var cloud = CloudKitLibrarySync(
+        library: library,
+        stateURL: Library.defaultFileURL.deletingLastPathComponent().appending(path: "library-sync.json"))
+
+    /// The toggle. Stopping keeps what is on this Mac.
+    public var syncsThroughICloud: Bool {
+        get { UserDefaults.standard.bool(forKey: "librarySyncsThroughICloud") }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "librarySyncsThroughICloud")
+            if newValue { cloud.start() } else { cloud.stop() }
+        }
+    }
     private let dictationLog = DictationLog()
     private let speech = SpeechReader()
     private let transformer = TextTransformer()
@@ -197,8 +213,9 @@ public final class DictationController {
     public func bootstrap() async {
         // The word of the day follows the Library: every write rebuilds the
         // card and the pending notification.
-        library.didSave = { [weak self] in self?.wordOfTheDay.refresh() }
+        library.addSaveObserver { [weak self] in self?.wordOfTheDay.refresh() }
         wordOfTheDay.refresh()
+        if syncsThroughICloud { cloud.start() }
 
         // 1. Permissions. Microphone first and unconditionally: it is the one
         //    macOS grants in place, and gating it behind Accessibility meant

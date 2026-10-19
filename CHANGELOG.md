@@ -29,6 +29,11 @@ turns the section for that version into the release notes shown in the app.
   up as they fade. A streak, the week's count and the five words most worth
   a minute, in Settings › Library. Nothing is ranked or shared.
 
+- **iCloud, if you want it.** Settings › Library › Sync my Library through
+  iCloud: your words, meanings and practice history in your own iCloud
+  account, so your iPhone, Watch and other Macs have the same Library. Off
+  by default. Timbre still sends nothing itself; macOS's iCloud daemon does
+  the syncing. Never a dictation, a capture or a usage count.
 ### Changed
 - The Library lives in its own package, TimbreCore, which the iPhone and
   Watch apps will share. Your words are in

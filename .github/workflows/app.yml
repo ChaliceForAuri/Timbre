@@ -49,6 +49,9 @@ jobs:
       - name: Test TimbreReminders
         run: swift test --package-path packages/TimbreReminders
 
+      - name: Test TimbreCloud
+        run: swift test --package-path packages/TimbreCloud
+
       - name: Test TimbreRelay (iOS simulator; the package has no macOS)
         run: >
           xcodebuild test -scheme TimbreRelay

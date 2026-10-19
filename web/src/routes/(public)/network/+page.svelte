@@ -61,7 +61,7 @@
 
 	<h2 class="mt-16 text-3xl">What macOS does on Timbre's behalf</h2>
 	<p class="text-muted-foreground mt-4 leading-relaxed">
-		Two things happen that Timbre starts but does not perform, and a network monitor will show them
+		Three things happen that Timbre starts but does not perform, and a network monitor will show them
 		under macOS's own processes rather than Timbre's:
 	</p>
 	<ul class="text-muted-foreground mt-4 list-disc space-y-2.5 pl-5 text-sm leading-relaxed">
@@ -70,6 +70,13 @@
 			macOS may download its on-device speech model for your language, from Apple, through its own
 			asset service. Nothing you say is involved; the model is what lets your voice stay on the Mac
 			afterwards.
+		</li>
+		<li>
+			<strong class="text-foreground">iCloud, if you turn it on.</strong> Settings › Library › Sync my
+			Library through iCloud is off by default. On, your Library — the words you teach Timbre, their
+			meanings and your practice history, never a dictation — is kept in your own iCloud account and
+			moved between your devices by macOS's iCloud daemon, end-to-end encrypted when Advanced Data
+			Protection is on. Timbre hands the records to the system and makes no request itself.
 		</li>
 		<li>
 			<strong class="text-foreground">Gatekeeper.</strong> When you first open any app downloaded

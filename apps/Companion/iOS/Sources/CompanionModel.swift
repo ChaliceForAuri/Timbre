@@ -1,6 +1,7 @@
 import AVFAudio
 import Foundation
 import Observation
+import TimbreCloud
 import TimbreCore
 import TimbreModel
 import TimbreRelay
@@ -22,6 +23,8 @@ final class CompanionModel {
     let library: Library
     let reminders = ReminderStore()
     let reader = SpeechReader()
+    /// The Library through the user's own iCloud (GDR-0023 decision 1, ADR-0017).
+    let cloud: CloudKitLibrarySync
     /// Files the to-dos the Watch says (GDR-0029).
     private let relay = Relay(queueURL: SharedContainer.directory.appending(path: "pending-todos.json"))
     private let speech = SpokenInput()
@@ -38,7 +41,9 @@ final class CompanionModel {
 
     private init() {
         library = Library(fileURL: SharedContainer.libraryURL, device: .iPhone, legacy: nil)
-        library.didSave = { [weak self] in self?.refresh() }
+        cloud = CloudKitLibrarySync(
+            library: library, stateURL: SharedContainer.directory.appending(path: "library-sync.json"))
+        library.addSaveObserver { [weak self] in self?.refresh() }
         relay.onTodo = { [weak self] todo in
             guard let self else { throw ReminderStore.Failure.noAccess }
             return try await self.file(todo)
@@ -50,6 +55,7 @@ final class CompanionModel {
     func start() async {
         refresh()
         relay.activate()
+        if syncsThroughICloud { cloud.start() }
         reader.prewarm()
         do {
             try await speech.prepare()
@@ -224,5 +230,16 @@ final class CompanionModel {
             _ = await reminders.requestAccess()
         }
         return try await reminders.openTodos()
+    }
+}
+
+extension CompanionModel {
+    /// The toggle (GDR-0010): off by default; stopping keeps what is on the phone.
+    var syncsThroughICloud: Bool {
+        get { UserDefaults.standard.bool(forKey: "librarySyncsThroughICloud") }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "librarySyncsThroughICloud")
+            if newValue { cloud.start() } else { cloud.stop() }
+        }
     }
 }

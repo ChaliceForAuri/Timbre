@@ -36,6 +36,8 @@ packages/TimbreReminders/ The Timbre list in Reminders (EventKit). All three;
                      read-only on the Watch (GDR-0029).
 packages/TimbreRelay/  Watch to phone over WatchConnectivity: the to-do queue
                      and the session (GDR-0029). iOS and watchOS only.
+packages/TimbreCloud/  The Library through the user's iCloud: CKSyncEngine,
+                     events as immutable records (ADR-0017). All three.
 packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
                      insertion, the polisher, command mode. Depends on the
                      four above. Dictation work happens here.
@@ -63,6 +65,7 @@ swift test --package-path packages/TimbreCore
 swift test --package-path packages/TimbreSpeech
 swift test --package-path packages/TimbreModel
 swift test --package-path packages/TimbreReminders
+swift test --package-path packages/TimbreCloud
 
 # Measure the polisher against the fixed corpus (ADR-0004). Decoding is
 # greedy (ADR-0011), so --repeat checks determinism; still never judge a
@@ -198,6 +201,11 @@ TimbreCore's types reach the app through TimbreKit's re-export.
 - **Widgets read a snapshot, never the Library** (ADR-0016). The app writes
   `today.json` to the shared container on every rebuild and reloads the
   timelines; `SharedContainer` is the one place that knows the paths.
+- **iCloud sync is a union of events, never a stored number** (ADR-0017).
+  `TimbreCloud` sends events once and entries by latest edit through
+  CKSyncEngine; the Library's own `merge` does the merging. A field is never
+  renamed, retyped or removed: the schema is forever. Off by default; the
+  binary still makes no request.
 - **Strength is never stored** (ADR-0014). The Library keeps events — taught,
   met, passed, failed, forgot — and `Strength` derives retrievability with
   FSRS-4.5; the daily pick is computed from the events before the start of
