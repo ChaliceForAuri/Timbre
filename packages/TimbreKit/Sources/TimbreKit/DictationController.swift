@@ -2,6 +2,8 @@ import AVFoundation
 import Foundation
 import Observation
 import TimbreCore
+import TimbreReminders
+import TimbreSpeech
 import os
 
 /// Ties everything together: hotkey → mic → speech model → cleanup → paste,

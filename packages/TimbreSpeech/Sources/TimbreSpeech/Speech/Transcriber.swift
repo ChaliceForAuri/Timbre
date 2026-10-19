@@ -1,0 +1,237 @@
+import AVFoundation
+import Foundation
+import Speech
+import os
+
+/// Wraps Apple's on-device streaming speech model (macOS 26+).
+///
+/// An `actor` because its state is touched from wherever the analyzer's
+/// result stream resumes; the compiler serializes access for us.
+///
+/// **A `SpeechAnalyzer` is single-use.** `finalizeAndFinishThroughEndOfInput()`
+/// ends it permanently — that is what the `AndFinish` in the name means, and
+/// the API offers a plain `finalize(through:)` for the case where you want to
+/// keep going. The module's `results` sequence terminates along with it. So an
+/// analyzer reused for a second dictation accepts the input, produces nothing,
+/// and reports no error: the user holds the key, sees the overlay, speaks, and
+/// gets silence. Every dictation therefore builds a fresh analyzer *and* a
+/// fresh transcriber module. See ADR-0006.
+public actor Transcriber {
+
+    private static let logger = Logger(subsystem: "dev.hugopretorius.Timbre", category: "speech")
+
+    /// One dictation's worth of speech machinery. Both halves are single-use.
+    private struct Session {
+        let analyzer: SpeechAnalyzer
+        let transcriber: SpeechTranscriber
+    }
+
+    private var locale: Locale?
+    private var ready: Session?
+    private var active: Session?
+    private var resultsTask: Task<Void, Never>?
+    private var warmup: Task<Void, Never>?
+    private var accumulator = TranscriptAccumulator()
+
+    /// The audio format the model wants. Nil until `prepare()` has run.
+    public private(set) var analyzerFormat: AVAudioFormat?
+
+    public init() {}
+
+    // MARK: - Setup
+
+    /// True if this locale can run fully on-device right now.
+    public static func isSupported(locale: Locale = .current) async -> Bool {
+        await SpeechTranscriber.supportedLocale(equivalentTo: locale) != nil
+    }
+
+    /// Resolves the locale, installs model assets, and builds the first
+    /// session. Call once at launch: asset installation may download, which is
+    /// not something to do on a hotkey press.
+    public func prepare(locale requested: Locale = .current) async throws {
+        // Resolve to a locale the model actually ships, rather than passing
+        // Locale.current blindly (en_GB vs en_US style mismatches fail quietly).
+        guard let resolved = await SpeechTranscriber.supportedLocale(equivalentTo: requested) else {
+            throw TranscriberError.localeUnsupported(requested.identifier)
+        }
+        locale = resolved
+
+        let session = Self.makeSession(locale: resolved)
+
+        // Model assets are downloaded on demand, per language.
+        if let request = try await AssetInventory.assetInstallationRequest(
+            supporting: [session.transcriber]
+        ) {
+            try await request.downloadAndInstall()
+        }
+
+        analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(
+            compatibleWith: [session.transcriber]
+        )
+
+        // Allocate the analyzer's resources now, at launch, rather than
+        // inside the first key press. Apple ships this API for exactly the
+        // warm-up complaint in issue #4. Failure is fine — analysis then
+        // prepares lazily, exactly as before.
+        try? await session.analyzer.prepareToAnalyze(in: analyzerFormat)
+        ready = session
+    }
+
+    /// `.progressiveTranscription` streams volatile results as the user
+    /// speaks, firming them up as the model gains confidence.
+    private static func makeSession(locale: Locale) -> Session {
+        let transcriber = SpeechTranscriber(locale: locale, preset: .progressiveTranscription)
+        return Session(analyzer: SpeechAnalyzer(modules: [transcriber]), transcriber: transcriber)
+    }
+
+    // MARK: - Dictation lifecycle
+
+    /// Begins a dictation consuming model-ready audio, and returns a stream of
+    /// transcript snapshots — confirmed words and in-flight words, separately
+    /// — for live display and live typing. The stream finishes when the
+    /// session does.
+    ///
+    /// `vocabulary` is the user's taught terms, offered to the model as
+    /// contextual strings for this session — see the note below and ADR-0008
+    /// for why that is currently a no-op.
+    public func startDictation(
+        consuming input: AsyncStream<AnalyzerInput>,
+        vocabulary: [String] = []
+    ) async throws -> AsyncStream<TranscriptSnapshot> {
+        guard let locale else { throw TranscriberError.notPrepared }
+
+        // The previous dictation left the next session warming up in the
+        // background. A key press that lands mid-warm-up waits for it rather
+        // than starting an analyzer that is still preparing — which accepts
+        // the audio and produces nothing, silently. In the app the wait is
+        // rarely more than a few milliseconds; in the eval harness, which
+        // starts the next file the instant the last one finishes, it is the
+        // difference between eleven transcripts and one.
+        await warmup?.value
+        warmup = nil
+
+        // Normally already built — by prepare(), or by the previous
+        // finishDictation() — so the key press pays nothing for it.
+        let session = ready ?? Self.makeSession(locale: locale)
+        ready = nil
+        active = session
+        accumulator = TranscriptAccumulator()
+
+        // The documented hook for biasing the model towards taught words.
+        // Measured ineffective on SpeechTranscriber with the macOS 26.5 SDK —
+        // 0/6 terms, output byte-identical — and kept anyway: it costs
+        // nothing, and `timbre-eval --audio-dir … --corpus …` reports recall
+        // on every run, so an SDK that starts honouring it shows up as a
+        // number. ADR-0008 has the measurements. Best effort either way: a
+        // dictation without the bias is still a dictation, so a rejected
+        // context is logged, never thrown.
+        let strings = ContextualVocabulary.strings(from: vocabulary)
+        if !strings.isEmpty {
+            let context = AnalysisContext()
+            context.contextualStrings[.general] = strings
+            do {
+                try await session.analyzer.setContext(context)
+            } catch {
+                Self.logger.error("contextual vocabulary rejected: \(error.localizedDescription)")
+            }
+        }
+
+        try await session.analyzer.start(inputSequence: input)
+
+        let (snapshots, continuation) = AsyncStream<TranscriptSnapshot>.makeStream()
+        resultsTask = Task {
+            do {
+                for try await result in session.transcriber.results {
+                    accumulator.apply(String(result.text.characters), isFinal: result.isFinal)
+                    continuation.yield(accumulator.snapshot)
+                }
+            } catch {
+                // Stream ended or errored; finishDictation() reports whatever
+                // text we already have rather than losing the utterance.
+            }
+            continuation.finish()
+        }
+
+        return snapshots
+    }
+
+    /// Ends the session and returns the complete transcript. The audio input
+    /// stream must already be finished (i.e. `AudioCapture.stop()` first).
+    public func finishDictation() async throws -> String {
+        guard let session = active else { return "" }
+
+        // Flushes audio still in the model's buffer, so the last word or two
+        // isn't lost — and finishes this analyzer for good.
+        //
+        // The watchdog exists because finalize never returns when the
+        // analyzer received no audio at all (observed with no microphone
+        // connected: the engine starts cleanly and delivers nothing, and the
+        // release-key path then suspends forever). cancelAndFinishNow() is
+        // Apple's escape hatch for exactly this; the accumulated transcript —
+        // empty, in that case — still comes back below, so no utterance that
+        // did produce audio is ever lost to the timeout.
+        let watchdog = Task {
+            try? await Task.sleep(for: .seconds(5))
+            guard !Task.isCancelled else { return }
+            await session.analyzer.cancelAndFinishNow()
+        }
+        defer { watchdog.cancel() }
+        try? await session.analyzer.finalizeAndFinishThroughEndOfInput()
+
+        // The results sequence terminates once the analyzer finishes; await it
+        // so the final result is applied before we read the transcript.
+        // Cancelling instead could drop the tail of the utterance.
+        await resultsTask?.value
+        resultsTask = nil
+        active = nil
+
+        let text = accumulator.currentText
+        accumulator = TranscriptAccumulator()
+        prepareNextSession()
+        return text
+    }
+
+    /// Ends the session *without* finalizing, and discards what it heard.
+    ///
+    /// For command mode once the command word is in: the rest of the
+    /// transcript is not needed, and `finalizeAndFinishThroughEndOfInput()`
+    /// waits for the model to settle the whole utterance — time the user
+    /// feels between saying "explain" and seeing the card. The next session
+    /// is rebuilt exactly as `finishDictation()` does (ADR-0006), and
+    /// `timbre-eval --live-commands` checks it still transcribes.
+    public func abandonDictation() async {
+        guard let session = active else { return }
+        await session.analyzer.cancelAndFinishNow()
+        resultsTask?.cancel()
+        await resultsTask?.value
+        resultsTask = nil
+        active = nil
+        accumulator = TranscriptAccumulator()
+        prepareNextSession()
+    }
+
+    /// Builds the next session now rather than on the next key press, and
+    /// warms it up off the hot path — this runs after the result is already
+    /// on its way back to the user. `startDictation` awaits the warm-up.
+    private func prepareNextSession() {
+        guard let locale else { return }
+        let next = Self.makeSession(locale: locale)
+        ready = next
+        let format = analyzerFormat
+        warmup = Task { try? await next.analyzer.prepareToAnalyze(in: format) }
+    }
+
+    public enum TranscriberError: LocalizedError {
+        case notPrepared
+        case localeUnsupported(String)
+
+        public var errorDescription: String? {
+            switch self {
+            case .notPrepared:
+                return "Speech model isn't ready yet. Wait for setup to finish."
+            case .localeUnsupported(let id):
+                return "On-device speech isn't available for \(id)."
+            }
+        }
+    }
+}

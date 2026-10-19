@@ -1,6 +1,8 @@
 import Foundation
 import Observation
 import TimbreCore
+import TimbreModel
+import TimbreSpeech
 
 /// Today's word on the Mac (GDR-0027): the pick, the card with its labelled
 /// facts, the menu bar line, the morning notification, and reading it

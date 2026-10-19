@@ -43,6 +43,7 @@ Two kinds of records live here. The boundary rule:
 | [0012](adr/0012-silent-bluetooth-input-falls-back.md) | A silent Bluetooth input falls back to the built-in microphone | Accepted |
 | [0013](adr/0013-timbrecore-platform-neutral-package.md) | TimbreCore: the platform-neutral package, and the rule for what goes where | Accepted |
 | [0014](adr/0014-strength-from-events-fsrs.md) | Strength is retrievability, derived from an entry's events with FSRS-4.5 | Accepted |
+| [0015](adr/0015-a-package-per-framework.md) | Framework-bound code lives in a package per framework, with that framework's platforms | Accepted |
 
 ### GDRs
 
