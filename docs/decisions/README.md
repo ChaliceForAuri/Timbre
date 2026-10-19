@@ -70,3 +70,4 @@ Two kinds of records live here. The boundary rule:
 | [0022](gdr/0022-nunito-sans-for-text.md) | Nunito Sans for text; Nunito keeps the headlines (amends 0020) | Accepted |
 | [0023](gdr/0023-the-library.md) | The Library: one store, five kinds, synced by iCloud, practised by voice | Accepted |
 | [0024](gdr/0024-the-menu-bar-mark.md) | The menu bar shows the bare bars, and the bars carry the state (amends 0021, 0017) | Accepted |
+| [0025](gdr/0025-said-aloud.md) | The lockup says how it is said: /tam·br/ beside the word (amends 0021) | Accepted |

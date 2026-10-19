@@ -2,19 +2,19 @@
 	import Mark from './Mark.svelte';
 
 	/// The lockup (GDR-0021): the bare bars beside "timbre", and since
-	/// 2026-10-19 how the word is said — "/ tam·br /" — because almost
-	/// nobody says it right the first time, and a name you are unsure how
-	/// to say is a name you do not say. The respelling is set in the mono,
-	/// muted, on the word's baseline, like a dictionary headword. It is
-	/// hidden from screen readers: they already say the word correctly, and
-	/// would read the slashes aloud.
+	/// GDR-0025 how the word is said — "/tam·br/" — because almost nobody
+	/// says it right the first time, and a name you are unsure how to say
+	/// is a name you do not say. The respelling is set in the mono, muted,
+	/// on the word's baseline, like a dictionary headword. It is hidden from
+	/// screen readers: they already say the word correctly, and would read
+	/// the slashes aloud.
 	///
 	/// `word` is the word's size in rem; everything else is proportional.
 	/// `say` is the respelling, or false where the lockup is too small or
 	/// already carries a second line (the Backstage sidebar).
 	let {
 		word = 1.5,
-		say = '/ tam·br /',
+		say = '/tam·br/',
 		class: className = ''
 	}: { word?: number; say?: string | false; class?: string } = $props();
 

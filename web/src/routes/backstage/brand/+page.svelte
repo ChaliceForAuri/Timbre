@@ -71,11 +71,12 @@
 
 	/// Said aloud, 2026-10-19: Hugo asked for "/ tam·br /" in the logo, so
 	/// the name is said right the first time. The content is his; what is
-	/// laid out here is where it sits and how it is set. The first is on the
-	/// site now, so the comparison is against the real thing.
+	/// laid out here is where it sits and how it is set. Chosen by looking
+	/// the same day: the tight one (GDR-0025). It is on the site, so the
+	/// comparison is against the real thing.
 	const sayings = [
-		{ label: 'beside · mono · spaced', say: '/ tam·br /', place: 'beside', chosen: true, note: 'On the word\u2019s baseline, half its size, muted, in the label mono. Reads as a dictionary headword.' },
-		{ label: 'beside · mono · tight', say: '/tam·br/', place: 'beside', note: 'The same without the spaces inside the slashes. Closer to how a dictionary sets it; a little denser.' },
+		{ label: 'beside · mono · spaced', say: '/ tam·br /', place: 'beside', note: 'On the word\u2019s baseline, half its size, muted, in the label mono. Reads as a dictionary headword.' },
+		{ label: 'beside · mono · tight', say: '/tam·br/', place: 'beside', chosen: true, note: 'The same without the spaces inside the slashes. Closer to how a dictionary sets it; a little denser.' },
 		{ label: 'beside · bare', say: 'tam·br', place: 'beside', note: 'No slashes. Quieter, but without them it could be read as a second word.' },
 		{ label: 'beneath · mono', say: '/ tam·br /', place: 'beneath', note: 'Under the word, as the Backstage sidebar carries its own second line. Keeps the header short; the lockup grows taller.' }
 	];
@@ -193,7 +194,7 @@
 <section class="mt-12">
 	<div class="flex items-baseline justify-between gap-4">
 		<h2 class="text-3xl">Said aloud</h2>
-		<p class="text-muted-foreground text-sm">The respelling is decided; where it sits and how it is set is the question. Pick one by looking.</p>
+		<p class="text-muted-foreground text-sm">Decided (GDR-0025): the respelling beside the word, in the mono, tight. The other three stay for the next question.</p>
 	</div>
 	<div class="mt-6 grid gap-4 sm:grid-cols-2">
 		{#each sayings as s, i (s.label)}
