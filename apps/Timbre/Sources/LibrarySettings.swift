@@ -23,6 +23,8 @@ struct LibrarySettings: View {
                 CloudSection(controller: controller)
                 Divider()
                 ExportSection(library: controller.library)
+                Divider()
+                AboutTheWordsSection()
             }
             .padding(24)
         }
@@ -624,6 +626,50 @@ private struct CloudSection: View {
             date.map { "Up to date, last fetched \($0.formatted(.relative(presentation: .named)))." }
                 ?? "Up to date."
         case .unavailable(let reason): reason
+        }
+    }
+}
+
+// MARK: - About the words
+
+/// Where the facts on a card come from, and under what terms (GDR-0028):
+/// the bundled lists are a Wiktionary extract, CC BY-SA 4.0, attributed
+/// here and on every card that shows them.
+private struct AboutTheWordsSection: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("About the words")
+                .font(.headline)
+            if let attribution = BundledLists.attribution {
+                Text(attribution)
+                    .font(.callout)
+            } else {
+                Text("No bundled lists in this build yet; the word of the day comes from your Library alone.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+            Text(
+                "Definitions, pronunciations and origins labelled Wiktionary are from the English Wiktionary, by its "
+                    + "contributors, under the Creative Commons Attribution-ShareAlike 4.0 licence. Lines labelled "
+                    + "\"written by the model\" are the on-device model's and are never presented as facts. Apple's "
+                    + "dictionary, where shown, is Apple's."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 14) {
+                Link("Wiktionary", destination: URL(string: "https://en.wiktionary.org/")!)
+                Link(
+                    "CC BY-SA 4.0",
+                    destination: URL(string: "https://creativecommons.org/licenses/by-sa/4.0/")!)
+                Link(
+                    "The extract and its script",
+                    destination: URL(
+                        string:
+                            "https://github.com/ChaliceForAuri/Timbre/blob/main/packages/TimbreCore/LICENSE-DATA.md"
+                    )!)
+            }
+            .font(.caption)
         }
     }
 }

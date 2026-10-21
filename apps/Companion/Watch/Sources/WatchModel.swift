@@ -49,7 +49,7 @@ final class WatchModel {
 
     func refresh() {
         let now = Date()
-        guard let pick = library.wordOfTheDay(on: now) else {
+        guard let pick = library.wordOfTheDay(on: now, bundled: BundledLists.all) else {
             card = nil
             TodaySnapshot.remove(at: SharedContainer.snapshotURL)
             WidgetCenter.shared.reloadAllTimelines()

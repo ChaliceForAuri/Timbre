@@ -983,7 +983,7 @@
 				},
 				{
 					"id": "07-finance",
-					"note": "",
+					"note": "Apple's guardrail refuses this prompt — measured 0 of 5, 'Response may contain sensitive or unsafe content' — so the card shows no example. Kept as a refusal: a draft appearing would be news.",
 					"input": "accrual · finance",
 					"expect": "a sentence that passes the guardrail"
 				},

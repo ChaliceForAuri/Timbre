@@ -34,6 +34,11 @@ turns the section for that version into the release notes shown in the app.
   account, so your iPhone, Watch and other Macs have the same Library. Off
   by default. Timbre still sends nothing itself; macOS's iCloud daemon does
   the syncing. Never a dictation, a capture or a usage count.
+- **Bundled words, when your Library has nothing due.** Seven curated lists —
+  general English, software and product, healthcare, law, finance, design,
+  phrases and idioms — with definitions, pronunciations and origins from
+  Wiktionary (CC BY-SA 4.0, attributed in Settings › Library and on every
+  card). A bundled word you then say in a dictation joins your Library.
 ### Changed
 - The Library lives in its own package, TimbreCore, which the iPhone and
   Watch apps will share. Your words are in

@@ -559,7 +559,7 @@ public final class DictationController {
             )
             let polishDuration = clock.now - polishStarted
             // Today's word, met in the wild (GDR-0027): only the fact is kept.
-            library.noteMet(in: cleaned, app: capturedAppName)
+            library.noteMet(in: cleaned, app: capturedAppName, bundled: BundledLists.all)
 
             // Hide BEFORE pasting. If the overlay is still on screen when the
             // synthetic ⌘V fires, the pill flickers over the user's own text —
@@ -845,7 +845,7 @@ public final class DictationController {
         // full stop is not part of a to-do.
         let cleaned = await polisher.polish(
             spoken, vocabulary: library.terms, corrections: library.corrections)
-        library.noteMet(in: cleaned, app: capturedAppName)
+        library.noteMet(in: cleaned, app: capturedAppName, bundled: BundledLists.all)
         let todo = TodoParser.parse(cleaned.trimmingCharacters(in: CharacterSet(charactersIn: ".!")))
         do {
             let list = try reminders.add(todo)

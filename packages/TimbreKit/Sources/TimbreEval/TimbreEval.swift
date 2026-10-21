@@ -507,7 +507,8 @@ struct TimbreEval {
                     for: testCase.term, meaning: testCase.meaning, industry: testCase.industry)
                 lastDraft = result.draft ?? ""
                 lastFailures = result.failures
-                if result.failures.isEmpty { passes += 1 }
+                let refused = result.failures == [.empty]
+                if testCase.expectRefusal == true ? refused : result.failures.isEmpty { passes += 1 }
             }
             let mark = passes == repeats ? "✔" : "✘"
             if passes == repeats { solid += 1 }

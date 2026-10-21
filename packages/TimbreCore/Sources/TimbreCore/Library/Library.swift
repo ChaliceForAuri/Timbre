@@ -208,16 +208,32 @@ public final class Library {
     }
 
     /// Today's word, met in the wild: when `text` contains it, records that
-    /// — once a day, with the app, never the text. True when it did.
+    /// — once a day, with the app, never the text. A bundled word met this
+    /// way becomes the user's: it joins the Library with the extract's
+    /// meaning, labelled as bundled, and is met. True when something was
+    /// recorded.
     @discardableResult
     public func noteMet(
         in text: String, app: String?, on date: Date = Date(), bundled: [BundledList] = [],
         calendar: Calendar = .current
     ) -> Bool {
         guard let pick = wordOfTheDay(on: date, bundled: bundled, calendar: calendar),
-            case .library(let entryID, _) = pick.source,
             MetDetector.contains(pick.term, in: text)
         else { return false }
+        let entryID: String
+        switch pick.source {
+        case .library(let id, _):
+            entryID = id
+        case .bundled(_, let word):
+            let kind: EntryKind = word.term.contains(" ") ? .phrase : .word
+            guard
+                let entry = LibraryEntry(
+                    kind: kind, term: word.term, meaning: word.definition,
+                    source: Provenance(device: device, date: date, how: .bundled, app: app))
+            else { return false }
+            if self.entry(entry.id) == nil { upsert(entry, on: date) }
+            entryID = entry.id
+        }
         let metToday = events.contains {
             $0.entry == entryID && $0.kind == .met && calendar.isDate($0.date, inSameDayAs: date)
         }

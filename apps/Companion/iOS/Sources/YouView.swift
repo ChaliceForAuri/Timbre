@@ -56,6 +56,22 @@ struct YouView: View {
                 }
 
                 Section {
+                    Text(
+                        BundledLists.attribution
+                            ?? "No bundled lists in this build yet; the word of the day comes from your Library alone."
+                    )
+                    Link(
+                        "Wiktionary, CC BY-SA 4.0",
+                        destination: URL(string: "https://creativecommons.org/licenses/by-sa/4.0/")!)
+                } header: {
+                    Text("About the words")
+                } footer: {
+                    Text(
+                        "Definitions, pronunciations and origins labelled Wiktionary are from the English Wiktionary, by its contributors, under CC BY-SA 4.0. Lines labelled \"written by the model\" are the on-device model's and are never presented as facts."
+                    )
+                }
+
+                Section {
                     LabeledContent(
                         "Apple Intelligence",
                         value: model.modelAvailability.isReady

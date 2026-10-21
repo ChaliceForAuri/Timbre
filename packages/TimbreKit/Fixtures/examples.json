@@ -7,7 +7,7 @@
     { "id": "04-no-meaning", "note": "A taught word with no meaning yet: the model uses the word it knows.", "term": "perfunctory", "meaning": null, "industry": null },
     { "id": "05-healthcare", "term": "triage", "meaning": "sorting patients by urgency", "industry": "healthcare" },
     { "id": "06-law", "term": "estoppel", "meaning": "a bar on contradicting what one previously established", "industry": "law" },
-    { "id": "07-finance", "term": "accrual", "meaning": "recording revenue or expense when earned, not when paid", "industry": "finance" },
+    { "id": "07-finance", "note": "Apple's guardrail refuses this prompt — measured 0 of 5, 'Response may contain sensitive or unsafe content' — so the card shows no example. Kept as a refusal: a draft appearing would be news.", "term": "accrual", "meaning": "recording revenue or expense when earned, not when paid", "industry": "finance", "expectRefusal": true },
     { "id": "08-cased-word", "note": "A word that carries its own casing must come back as itself.", "term": "iPhone", "meaning": "Apple's phone", "industry": "design" }
   ]
 }

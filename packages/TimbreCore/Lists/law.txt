@@ -1,0 +1,56 @@
+# Law: words that carry a meaning in a contract and a courtroom (GDR-0027).
+estoppel
+precedent
+jurisdiction
+tort
+liability
+indemnity
+indemnify
+warranty
+covenant
+consideration
+breach
+remedy
+injunction
+damages
+negligence
+due diligence
+fiduciary
+statute
+statutory
+regulation
+compliance
+discovery
+deposition
+affidavit
+subpoena
+testimony
+hearsay
+admissible
+inadmissible
+plaintiff
+defendant
+appellant
+respondent
+litigation
+arbitration
+mediation
+settlement
+verdict
+acquittal
+conviction
+plea
+bail
+parole
+probation
+jurisprudence
+equity
+equitable
+lien
+escrow
+severability
+force majeure
+pro rata
+de facto
+de jure
+bona fide
