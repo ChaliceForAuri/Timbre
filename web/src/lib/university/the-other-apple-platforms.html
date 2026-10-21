@@ -1,0 +1,69 @@
+<p>Modules 1 to 11 are the Mac. The companion (GDR-0023, GDR-0026) is an iPhone and an Apple Watch, and almost everything you have learned transfers untouched: the language, the concurrency model, SwiftUI, the on-device models. What does not transfer is precisely what Timbre's Mac app is made of — reaching into other apps.</p>
+
+<h3 id="m14-sandboxes">One language, three sandboxes</h3>
+
+<p>On the Mac, Timbre runs without the App Sandbox (ADR-0003) so that it can send a synthetic ⌘V, read the focused field through the Accessibility API, and watch a modifier key from anywhere. iOS and watchOS have no such mode. Every app is sandboxed; there is no Accessibility API into other apps, no synthetic events, no global hotkey, no menu bar, and no way to put text into a field you do not own. GDR-0002 drew the conclusion in 2026-08 and it still holds: dictation into other apps is a Mac feature.</p>
+
+<p>What the other platforms offer instead is a fixed set of <em>places to appear</em>, each with its own framework: the Home and Lock Screens, Control Center, Siri and Spotlight, the share sheet, the Dynamic Island, the watch face, the Smart Stack. A companion is designed by choosing which of those places each feature belongs in.</p>
+
+<div class="box map">
+<p class="box-title">From the Mac</p>
+<table style="margin-bottom:0">
+<tr><th>On the Mac</th><th>On iPhone / Watch</th><th>Watch out</th></tr>
+<tr><td><code>HotkeyMonitor</code> — hold right ⌥</td><td>The Action Button, Double Tap, a Control, or the app's own button</td><td>A press, not a hold-and-release; design for tap-to-start, tap-to-stop</td></tr>
+<tr><td><code>OverlayController</code> — the pill</td><td>A Live Activity in the Dynamic Island; on the Watch, the app itself</td><td>Live Activities need <code>ActivityKit</code>, which the Watch does not have</td></tr>
+<tr><td><code>TextInserter</code> — paste into any app</td><td>Nothing. The clipboard at best, by the user's hand</td><td>This is the whole of GDR-0002</td></tr>
+<tr><td><code>MenuContent</code> — the menu bar</td><td>Widgets, complications, Controls</td><td>Each is a separate extension target with its own budget</td></tr>
+<tr><td>Reminders via EventKit</td><td>The same, on both</td><td>Permission strings per target</td></tr>
+</table>
+</div>
+
+<h3 id="m14-ios">What iOS gives you</h3>
+
+<ul>
+<li><strong>App Intents.</strong> One declaration makes a feature available to Siri, Shortcuts, Spotlight, the Action Button and Control Center. "Add <em>ephemeral</em> to my Library" and "what does ADR mean" are intents, not screens.</li>
+<li><strong>WidgetKit.</strong> Home Screen and Lock Screen widgets, and since iOS 18 <em>Controls</em>: a button in Control Center or on the Lock Screen that runs an intent without opening the app. The to-do key's phone-side home.</li>
+<li><strong>ActivityKit.</strong> Live Activities: a card on the Lock Screen and in the Dynamic Island for something in progress. The pill, translated.</li>
+<li><strong>Share extensions.</strong> Text selected in any app can be sent <em>to</em> Timbre; nothing can be sent back into the field it came from. Read-aloud fits that shape (GDR-0008); fix does not.</li>
+<li><strong>Background time</strong> is short and scheduled, never a daemon. Anything that must happen while the app is closed is a notification or a widget refresh, not a loop.</li>
+</ul>
+
+<h3 id="m14-watch">watchOS, checked against the SDK</h3>
+
+<p>The frameworks in the watchOS 27 SDK on the development Mac, against the iOS one — checked, because this is the kind of thing people assume:</p>
+
+<table>
+<tr><th>Framework</th><th>iOS 27</th><th>watchOS 27</th><th>Means for Timbre</th></tr>
+<tr><td>EventKit</td><td>yes</td><td>yes</td><td>The to-do key works on the wrist with no phone</td></tr>
+<tr><td>Speech (<code>SpeechAnalyzer</code>)</td><td>yes</td><td><strong>no</strong></td><td>No streaming, no live result, no vocabulary bias on the Watch; its speech input is the system's dictation, which returns text</td></tr>
+<tr><td>FoundationModels</td><td>yes</td><td>in the SDK</td><td>Presence is not eligibility: whether the model answers on a Watch is checked on hardware</td></tr>
+<tr><td>WatchConnectivity</td><td>yes</td><td>yes</td><td>Watch ↔ phone, Apple's transport; no request from our code</td></tr>
+<tr><td>AppIntents, WidgetKit</td><td>yes</td><td>yes</td><td>Action Button, complications, the Smart Stack</td></tr>
+<tr><td>ActivityKit</td><td>yes</td><td>no</td><td>No Live Activity on the wrist</td></tr>
+<tr><td>AVFAudio</td><td>yes</td><td>yes</td><td>Voice out on the wrist</td></tr>
+</table>
+
+<p>Gestures: on an Ultra the Action Button can run an App Intent; on a Series 9 or later, <code>.handGestureShortcut(.primaryAction)</code> on a button makes Double Tap press it; everything else is a tap or the Digital Crown. Text input: a SwiftUI <code>TextField</code> on watchOS brings up the system's input — dictation, scribble — and hands you a <code>String</code>. That is enough for the to-do key and for Spell it, and it is all there is.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · SDK presence is not device eligibility</p>
+<p>FoundationModels being in the watchOS SDK means code that imports it compiles. It does not mean the model runs on a watch, or on an older iPhone. Ask at runtime, every time, and design the feature to say so:</p>
+<pre><code><span class="c-key">switch</span> <span class="c-typ">SystemLanguageModel</span>.default.availability {
+<span class="c-key">case</span> .available: <span class="c-com">// Say it, an example sentence, a verdict</span>
+<span class="c-key">case</span> .unavailable(<span class="c-key">let</span> reason): <span class="c-com">// show the Library and the word; say "waiting for your phone"</span>
+}</code></pre>
+<p>GDR-0026's rule follows from this: deterministic on the wrist, the model wherever it actually is.</p>
+</div>
+
+<h3 id="m14-packages">Packages and platform floors</h3>
+
+<p>A Swift package declares its platforms once, for the whole package. <code>TimbreKit</code> says <code>macOS 26</code> and imports AppKit, so no iOS target can link it, and that is correct: the pipeline is the Mac. The Library, the scheduler, the daily pick, the drill checks and the to-do parser are Foundation and Observation, and three apps need them. Hence <code>TimbreCore</code> (GDR-0023, decision 4): a second package declaring macOS, iOS and watchOS, allowed to import nothing platform-specific, with <code>TimbreKit</code> depending on it. The alternative — one package, every shared type wrapped in <code>@available</code> and <code>#if canImport(AppKit)</code> — is noise that spreads.</p>
+
+<h3 id="m14-distribution">App Store, not Developer ID</h3>
+
+<p>The Mac ships notarized and direct, with its own updater (ADR-0010). There is no such path on iPhone or Watch: the companion goes through the App Store. That means review, a privacy label — <em>Data Not Collected</em> is a claim you must be able to defend, and Timbre can — and TestFlight for the four devices GDR-0026 names. The sandbox is on, and that is fine. The companion never needed out.</p>
+
+<div class="box good">
+<p class="box-title">In Timbre</p>
+<p>The companion lives in the places the platforms define: an intent for the to-do key, a Control and a widget on the phone, a complication and the Smart Stack on the Watch, a Live Activity for anything in progress. Nothing on the wrist needs the model; the to-do key is Foundation plus EventKit and works in a tunnel. Say it and example sentences happen where the model is and arrive by sync. And the list of what the companion never does — dictation into other apps, command mode on other apps' text, a keyboard extension — is as much a design as what it does.</p>
+</div>

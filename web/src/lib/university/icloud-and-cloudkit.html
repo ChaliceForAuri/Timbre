@@ -1,0 +1,82 @@
+<p>"The app makes zero network requests" is Timbre's headline, and the Library syncs between your devices. Both are true at once. This module is why, and then the part that actually takes design: making two copies of a Library agree.</p>
+
+<h3 id="m13-daemon">The claim and the daemon</h3>
+
+<p>iCloud on Apple platforms is a <em>system</em> service. Your process writes records into a local container on disk; a system daemon — <code>cloudd</code> — notices, talks to Apple's servers under the user's own account, and writes back what other devices changed. Point <code>nettop</code> or Little Snitch at the Timbre process while sync is on: nothing. The sockets belong to the daemon, and the daemon is the same one that moves Notes and Reminders.</p>
+
+<p>GDR-0010 made this argument first, for the dictionary; GDR-0023 extends it to the whole Library. The distinction is not a trick. "The binary makes no network requests" is a statement about <em>our code</em>, falsifiable with a network monitor, and it stays true. What changes is the headline's second claim, "never leaves your Mac", which becomes "never leaves your devices" the day sync ships, with the sync explained beside it.</p>
+
+<h3 id="m13-three">Three ways to iCloud</h3>
+
+<div class="box map">
+<p class="box-title">Which one</p>
+<table style="margin-bottom:0">
+<tr><th>Mechanism</th><th>Shape</th><th>Limits</th><th>Conflicts</th></tr>
+<tr><td><code>NSUbiquitousKeyValueStore</code></td><td>A dictionary of small values</td><td>1 MB total, 1024 keys</td><td>Whole-value replacement; last write wins</td></tr>
+<tr><td>iCloud Drive documents</td><td>Files in a ubiquity container</td><td>Whatever the disk holds</td><td>Whole-file versions; you reconcile</td></tr>
+<tr><td>CloudKit</td><td>Records in databases, in zones</td><td>Per-record quotas, generous</td><td>Per-record, per-field; you choose the rule</td></tr>
+</table>
+</div>
+
+<p>The key-value store is what GDR-0010 chose for three lists of strings, and it was right for them. The Library outgrows it twice over: on size, once entries carry meanings, examples and histories; and on merging, because replacing a whole value loses the drill the other device just recorded. CloudKit is the one that lets you say what a conflict means.</p>
+
+<h3 id="m13-shapes">CloudKit's shapes</h3>
+
+<ul>
+<li><strong>Container.</strong> An identifier in the app's entitlement; the same container on every target that shares the data.</li>
+<li><strong>Databases.</strong> <em>Public</em> (everyone), <em>private</em> (this user's), <em>shared</em> (records a user shared with others). The Library is private, only.</li>
+<li><strong>Zones.</strong> The private database's <em>custom</em> zones are what sync incrementally: you can ask "what changed since this token" only in a custom zone. The default zone cannot do that, so nothing of ours goes there.</li>
+<li><strong>Records.</strong> A <code>CKRecord</code> has a type, an ID, and fields of simple values; large blobs go in assets. Types and fields are the <em>schema</em>.</li>
+<li><strong><code>CKSyncEngine</code></strong> (macOS 14, iOS 17, watchOS 10). You tell it which records are pending; it batches, sends, fetches, retries, keeps the change tokens, and calls you back with what arrived and what conflicted. Before it existed, every app wrote this loop itself, badly.</li>
+</ul>
+
+<pre><code><span class="c-com">// The whole conversation, in outline. Core never sees CloudKit; it sees this protocol.</span>
+<span class="c-key">protocol</span> <span class="c-typ">LibrarySync</span>: <span class="c-typ">Sendable</span> {
+    <span class="c-key">func</span> push(_ events: [<span class="c-typ">LibraryEvent</span>]) <span class="c-key">async throws</span>
+    <span class="c-key">func</span> pull() <span class="c-key">async throws</span> -> [<span class="c-typ">LibraryEvent</span>]
+}
+
+<span class="c-com">// The CloudKit implementation lives in platform code, behind that door.</span>
+<span class="c-key">final class</span> <span class="c-typ">CloudKitLibrarySync</span>: <span class="c-typ">LibrarySync</span> {
+    <span class="c-key">let</span> engine: <span class="c-typ">CKSyncEngine</span>   <span class="c-com">// delegate callbacks turn into pushes and pulls</span>
+}</code></pre>
+
+<h3 id="m13-merge">Designing for merge</h3>
+
+<p>This is the part worth the module. CloudKit will happily do last-writer-wins on a record, and for a number both devices changed that is a coin toss. The Library avoids the question by never syncing a number that could disagree.</p>
+
+<ul>
+<li><strong>Events are records, and records are immutable.</strong> Each event in an entry's history — taught, met, drilled — is its own record, named by a hash of its content. A device only ever <em>adds</em> records. Two devices that both practised produce two records, not one conflict.</li>
+<li><strong>Merge is a union.</strong> The entry on any device is the union of every event record it has seen, sorted by date. Strength is recomputed from that (Module 12). There is nothing to reconcile because there is nothing that was overwritten.</li>
+<li><strong>Rare edits take the latest.</strong> A meaning, an example, a tag: edited by a person, seldom, on one device at a time. Last edit by timestamp is honest for those, and the field says when it was last changed.</li>
+<li><strong>Deletions are events too.</strong> "Forgot this entry" is a tombstone record, not a deleted record. A deletion that races an addition on another device still lands, and an export can show what was forgotten and when.</li>
+</ul>
+
+<pre><code><span class="c-com">// Pure, testable, and the only merge rule the Library has.</span>
+<span class="c-key">func</span> merged(_ a: [<span class="c-typ">LibraryEvent</span>], _ b: [<span class="c-typ">LibraryEvent</span>]) -> [<span class="c-typ">LibraryEvent</span>] {
+    <span class="c-typ">Array</span>(<span class="c-typ">Set</span>(a).union(b)).sorted { $0.date &lt; $1.date }
+}</code></pre>
+
+<h3 id="m13-schema">Entitlements, environments, and a schema that is forever</h3>
+
+<p>Three entitlements: the iCloud container identifiers, <code>icloud-services</code> set to CloudKit, and push notifications if you want to be told about changes rather than polling on launch. A Developer ID app can use iCloud; it needs a provisioning profile embedded in the bundle, which is signing plumbing <code>release.sh</code> already handles (GDR-0010). The App Store builds for iPhone and Watch carry their own.</p>
+
+<p>CloudKit has a <em>development</em> environment, where the schema is created just by saving records, and a <em>production</em> environment, where it is not: you deploy the schema from the CloudKit Console, and from then on you can add record types and fields but never remove or retype one. Every build a user ever ran must still be able to read what a newer build wrote.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · the schema is forever</p>
+<p>A field you ship is a field you keep. The event records are designed to be additive for that reason: a new kind of event is a new record type, and an old build that does not know it simply ignores it. Never rename a field; never change its type; never encode a version into a value you may need to query. Put the schema version in the local file and make the file migrate; let the cloud be dumb.</p>
+</div>
+
+<h3 id="m13-adp">Advanced Data Protection</h3>
+
+<p>By default Apple holds the keys to most iCloud data, including third-party apps' CloudKit data, so that account recovery is possible. With Advanced Data Protection turned on by the user, that data is end-to-end encrypted and Apple cannot read it. Timbre cannot turn that on for anyone; it can say, in the sync setting, that the Library lives in <em>your</em> iCloud, under <em>your</em> protection setting, and link to Apple's explanation. GDR-0010 asked for exactly that copy.</p>
+
+<h3 id="m13-testing">Testing without a server</h3>
+
+<p>The merge is a unit test: two histories in, one entry out, on every edge you can think of — the same event on both sides, a tombstone racing an addition, a clock that is wrong on one device. None of that touches CloudKit. The sync engine's delegate is tested with a fake <code>LibrarySync</code> that records what was pushed. The only thing that needs the real thing is the real thing: two Macs signed into one Apple ID, a word taught on one, seen on the other, with <code>nettop</code> open beside the Timbre process showing nothing. That is the proof the product map names, and it is the last test, not the first.</p>
+
+<div class="box good">
+<p class="box-title">In Timbre</p>
+<p><code>LibrarySync</code> is a protocol in <code>TimbreCore</code>; the CloudKit implementation lives where the framework is. Events are immutable records in a custom zone of the private database; merge is a union; edits take the latest; deletions are tombstones. Sync is off by default, described plainly, and syncs the Library and the profile — never a dictation, a capture or a usage count.</p>
+</div>

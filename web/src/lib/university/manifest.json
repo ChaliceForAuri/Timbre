@@ -60,8 +60,23 @@
     "title": "The codebase, line by line"
   },
   {
-    "slug": "glossary",
+    "slug": "spaced-repetition-and-the-library",
     "number": "12",
+    "title": "Spaced repetition and the Library"
+  },
+  {
+    "slug": "icloud-and-cloudkit",
+    "number": "13",
+    "title": "iCloud and CloudKit"
+  },
+  {
+    "slug": "the-other-apple-platforms",
+    "number": "14",
+    "title": "The other Apple platforms"
+  },
+  {
+    "slug": "glossary",
+    "number": "15",
     "title": "Glossary"
   }
 ]

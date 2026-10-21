@@ -47,7 +47,7 @@ Two kinds of records live here. The boundary rule:
 | # | Title | Status |
 |---|---|---|
 | [0001](gdr/0001-local-only-free-no-account.md) | Local-only, free, no account | Accepted · no-sync clause amended by 0010 |
-| [0002](gdr/0002-english-first-macos-only.md) | English-first, macOS-only | Accepted |
+| [0002](gdr/0002-english-first-macos-only.md) | English-first, macOS-only | Accepted · "no iOS app" superseded by 0023 and 0026; dictation stays macOS-only |
 | [0003](gdr/0003-structural-spoken-commands-only.md) | Timbren commands: structure only, never punctuation | Accepted |
 | [0004](gdr/0004-opt-in-local-dictation-capture.md) | Dictation capture is opt-in, local, and deletable | Accepted |
 | [0005](gdr/0005-licensing-preserves-optionality.md) | Licensing starts closed to preserve optionality | Accepted |
@@ -71,3 +71,6 @@ Two kinds of records live here. The boundary rule:
 | [0023](gdr/0023-the-library.md) | The Library: one store, five kinds, synced by iCloud, practised by voice | Accepted |
 | [0024](gdr/0024-the-menu-bar-mark.md) | The menu bar shows the bare bars, and the bars carry the state (amends 0021, 0017) | Accepted |
 | [0025](gdr/0025-said-aloud.md) | The lockup says how it is said: /tam·br/ beside the word (amends 0021) | Accepted |
+| [0026](gdr/0026-apple-watch-the-wrist-key.md) | Apple Watch: the to-do key on the wrist, the Library at a glance, and no model needed there (extends 0023) | Accepted · implementation pending |
+| [0027](gdr/0027-word-of-the-day-the-bar.md) | The word of the day: the bar is Vocabulary.com and the widget apps, and the word is yours first | Accepted · implementation pending |
+| [0028](gdr/0028-bundled-word-content-from-wiktionary.md) | Bundled word content comes from a Wiktionary extract, under CC BY-SA; the model writes only examples | Accepted · implementation pending |
