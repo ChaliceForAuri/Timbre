@@ -1,0 +1,13 @@
+{
+  "note": "The card's example sentence (GDR-0027, property 4): the writer must use the word, keep to a sentence or two, and arrive as prose. Run with timbre-eval --examples Fixtures/examples.json --repeat 5; decoding is greedy, so repeats check determinism.",
+  "cases": [
+    { "id": "01-plain-word", "term": "ephemeral", "meaning": "lasting for a very short time", "industry": "software" },
+    { "id": "02-acronym", "note": "An acronym used as itself, not expanded.", "term": "ADR", "meaning": "Architecture Decision Record, a short document recording one technical choice", "industry": "software" },
+    { "id": "03-phrase", "term": "table stakes", "meaning": "the minimum required to take part", "industry": "product" },
+    { "id": "04-no-meaning", "note": "A taught word with no meaning yet: the model uses the word it knows.", "term": "perfunctory", "meaning": null, "industry": null },
+    { "id": "05-healthcare", "term": "triage", "meaning": "sorting patients by urgency", "industry": "healthcare" },
+    { "id": "06-law", "term": "estoppel", "meaning": "a bar on contradicting what one previously established", "industry": "law" },
+    { "id": "07-finance", "term": "accrual", "meaning": "recording revenue or expense when earned, not when paid", "industry": "finance" },
+    { "id": "08-cased-word", "note": "A word that carries its own casing must come back as itself.", "term": "iPhone", "meaning": "Apple's phone", "industry": "design" }
+  ]
+}

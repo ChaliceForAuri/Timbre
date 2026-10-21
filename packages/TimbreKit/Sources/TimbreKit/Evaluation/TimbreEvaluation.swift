@@ -240,6 +240,17 @@ public enum TimbreEvaluation {
         return (release, verified, installed)
     }
 
+    /// One draft of the card's example sentence, and which rules it broke;
+    /// an empty list means the card would show it.
+    public static func exampleSentence(
+        for term: String, meaning: String?, industry: String?
+    ) async -> (draft: String?, failures: [ExampleGuardrail.Failure]) {
+        guard let draft = await ExampleWriter().draft(for: term, meaning: meaning, industry: industry) else {
+            return (nil, [.empty])
+        }
+        return (draft, ExampleGuardrail.failures(in: draft, for: term))
+    }
+
     /// Runs commands as if Apple Intelligence were off, so the fallbacks can
     /// be measured on the same corpus (GDR-0015).
     public static func pretendModelUnavailable(_ pretend: Bool) {

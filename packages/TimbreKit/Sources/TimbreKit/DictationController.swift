@@ -134,6 +134,12 @@ public final class DictationController {
     /// The Library (GDR-0023): the words, corrections and definitions the
     /// pipeline reads, and what Settings edits. Lives in TimbreCore.
     public let library = Library(fileURL: Library.defaultFileURL)
+
+    /// Today's word (GDR-0027): the card, the notification, read aloud. Made
+    /// on first use, so the tests that never touch it never touch the
+    /// notification center either.
+    @ObservationIgnored public private(set) lazy var wordOfTheDay = WordOfTheDay(
+        library: library, speech: speech)
     private let dictationLog = DictationLog()
     private let speech = SpeechReader()
     private let transformer = TextTransformer()
@@ -182,6 +188,11 @@ public final class DictationController {
     // MARK: - Lifecycle
 
     public func bootstrap() async {
+        // The word of the day follows the Library: every write rebuilds the
+        // card and the pending notification.
+        library.didSave = { [weak self] in self?.wordOfTheDay.refresh() }
+        wordOfTheDay.refresh()
+
         // 1. Permissions. Microphone first and unconditionally: it is the one
         //    macOS grants in place, and gating it behind Accessibility meant
         //    the prompt never fired — leaving Timbre absent from Privacy &
