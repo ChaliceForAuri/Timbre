@@ -111,7 +111,7 @@
 		'Free',
 		'On-device AI',
 		'Notarized by Apple',
-		'Open source',
+		'Source on GitHub',
 		'macOS 26',
 		'Apple Silicon',
 		'Hold ⌥ · talk · release'
