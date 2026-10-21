@@ -20,6 +20,8 @@ struct LibrarySettings: View {
                 Divider()
                 ProfileSection(library: controller.library)
                 Divider()
+                CloudSection(controller: controller)
+                Divider()
                 ExportSection(library: controller.library)
             }
             .padding(24)
@@ -561,6 +563,67 @@ private struct PracticeSection: View {
                     }
                 }
             }
+        }
+    }
+}
+
+// MARK: - iCloud
+
+/// The one boundary, described exactly (GDR-0010, GDR-0023 decision 1): the
+/// Library can sync through the user's own iCloud, off by default, and
+/// Timbre still makes no network request — macOS's own daemon does the
+/// syncing. Dictations never go.
+private struct CloudSection: View {
+    let controller: DictationController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("iCloud")
+                .font(.headline)
+            Toggle(
+                "Sync my Library through iCloud",
+                isOn: Binding(
+                    get: { controller.syncsThroughICloud },
+                    set: { controller.syncsThroughICloud = $0 }
+                )
+            )
+            Text(
+                "Your words, meanings and practice history, in your own iCloud account, so your iPhone, Watch and "
+                    + "other Macs have the same Library. Timbre sends nothing itself: macOS's iCloud daemon does the "
+                    + "syncing. Never a dictation, a capture or a usage count. End-to-end encrypted when Advanced Data "
+                    + "Protection is on for your account."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            HStack {
+                Text(status)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                if controller.syncsThroughICloud {
+                    Button("Sync Now") { Task { await controller.cloud.syncNow() } }
+                        .buttonStyle(.link)
+                        .font(.caption)
+                }
+                Link(
+                    "About Advanced Data Protection",
+                    destination: URL(string: "https://support.apple.com/en-us/102651")!
+                )
+                .font(.caption)
+            }
+        }
+    }
+
+    private var status: String {
+        switch controller.cloud.status {
+        case .off: "Off. Your Library stays on this Mac; Export in the section below is the other way out."
+        case .starting: "Starting…"
+        case .syncing: "Syncing…"
+        case .upToDate(let date):
+            date.map { "Up to date, last fetched \($0.formatted(.relative(presentation: .named)))." }
+                ?? "Up to date."
+        case .unavailable(let reason): reason
         }
     }
 }

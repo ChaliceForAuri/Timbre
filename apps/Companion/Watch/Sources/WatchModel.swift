@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import TimbreCloud
 import TimbreCore
 import TimbreRelay
 import TimbreReminders
@@ -16,6 +17,8 @@ final class WatchModel {
 
     let library: Library
     let reminders = ReminderStore()
+    /// The Library through the user's own iCloud (GDR-0023 decision 1).
+    let cloud: CloudKitLibrarySync
     /// Hands each to-do to the iPhone, which files it (GDR-0029).
     let relay = Relay(queueURL: SharedContainer.directory.appending(path: "pending-todos.json"))
     private(set) var card: WordCard?
@@ -24,12 +27,24 @@ final class WatchModel {
 
     private init() {
         library = Library(fileURL: SharedContainer.libraryURL, device: .watch, legacy: nil)
-        library.didSave = { [weak self] in self?.refresh() }
+        cloud = CloudKitLibrarySync(
+            library: library, stateURL: SharedContainer.directory.appending(path: "library-sync.json"))
+        library.addSaveObserver { [weak self] in self?.refresh() }
         relay.onFiled = { [weak self] item, list in
             self?.lastFiled = TodoPhrasing.confirmation(item.todo, list: list)
             WKInterfaceDevice.current().play(.success)
         }
         relay.activate()
+        if syncsThroughICloud { cloud.start() }
+    }
+
+    /// The toggle (GDR-0010): off by default.
+    var syncsThroughICloud: Bool {
+        get { UserDefaults.standard.bool(forKey: "librarySyncsThroughICloud") }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "librarySyncsThroughICloud")
+            if newValue { cloud.start() } else { cloud.stop() }
+        }
     }
 
     func refresh() {

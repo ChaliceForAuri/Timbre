@@ -24,11 +24,12 @@ let package = Package(
         .package(path: "../TimbreSpeech"),
         .package(path: "../TimbreModel"),
         .package(path: "../TimbreReminders"),
+        .package(path: "../TimbreCloud"),
     ],
     targets: [
         .target(
             name: "TimbreKit",
-            dependencies: ["TimbreCore", "TimbreSpeech", "TimbreModel", "TimbreReminders"],
+            dependencies: ["TimbreCore", "TimbreSpeech", "TimbreModel", "TimbreReminders", "TimbreCloud"],
             swiftSettings: concurrencySettings
         ),
         .executableTarget(

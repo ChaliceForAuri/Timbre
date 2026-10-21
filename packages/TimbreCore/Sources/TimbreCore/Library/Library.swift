@@ -259,9 +259,13 @@ public final class Library {
     }
 
     /// Called after every successful write, so a surface can follow the
-    /// Library without polling — the word of the day reschedules its
-    /// notification here.
-    public var didSave: (@MainActor () -> Void)?
+    /// Library without polling: the word of the day rebuilds its card, the
+    /// sync queues what changed. Several may listen.
+    public func addSaveObserver(_ observer: @escaping @MainActor () -> Void) {
+        saveObservers.append(observer)
+    }
+
+    private var saveObservers: [@MainActor () -> Void] = []
 
     // MARK: - Persistence
 
@@ -279,7 +283,7 @@ public final class Library {
                 at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             try data.write(to: fileURL, options: .atomic)
             lastSaveError = nil
-            didSave?()
+            for observer in saveObservers { observer() }
         } catch {
             lastSaveError = error
         }

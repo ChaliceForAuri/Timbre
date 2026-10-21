@@ -50,6 +50,13 @@ struct WatchRootView: View {
                         model.addHeardWord(word)
                         confirmation = "Banked \(word)."
                     }
+
+                    Toggle(
+                        "Sync through iCloud",
+                        isOn: Binding(
+                            get: { model.syncsThroughICloud }, set: { model.syncsThroughICloud = $0 })
+                    )
+                    .font(.caption)
                 }
             }
             .navigationTitle("Timbre")

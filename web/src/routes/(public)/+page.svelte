@@ -17,7 +17,7 @@
 	const faqs = [
 		{
 			q: 'Does Timbre send my voice anywhere?',
-			a: 'No. Timbre sends nothing about you anywhere. Out of the box it makes no network requests at all; if you turn on update checks, it fetches one small version file from this website, carrying nothing. Speech recognition, text cleanup, read-aloud and the text commands all run on your Mac using Apple’s on-device models. You can verify this yourself with a network monitor such as Little Snitch.'
+			a: 'No. Timbre sends nothing about you anywhere. Out of the box it makes no network requests at all; if you turn on update checks, it fetches one small version file from this website, carrying nothing. Speech recognition, text cleanup, read-aloud and the text commands all run on your Mac using Apple’s on-device models. If you turn on iCloud sync for your Library — the words you teach it, never what you dictate — macOS’s own iCloud daemon moves it between your devices under your account; Timbre still makes no request. You can verify this yourself with a network monitor such as Little Snitch.'
 		},
 		{
 			q: 'Does it work offline?',
@@ -124,7 +124,7 @@
 		name="description"
 		content="Hold a key, speak, release. Cleaned-up text appears wherever you type. Tap another key to hear text read back; hold a third to fix, shorten or explain a selection, or to drop a to-do into Reminders. Speech recognition and AI run entirely on your Mac — zero network requests, no account, free."
 	/>
-	<meta property="og:title" content="Timbre — dictation that never leaves your Mac" />
+	<meta property="og:title" content="Timbre — dictation that never leaves your devices" />
 	<meta property="og:description" content={site.description} />
 	{@html `<script type="application/ld+json">${JSON.stringify(jsonLd)}<\/script>`}
 </svelte:head>
@@ -139,14 +139,16 @@
 			</a>
 
 			<h1 class="max-w-[16ch] text-[3.4rem] sm:text-6xl xl:text-7xl">
-				Dictation that <span class="underline-rainbow">never</span> leaves your Mac.
+				Dictation that <span class="underline-rainbow">never</span> leaves your devices.
 			</h1>
 
 			<p class="text-muted-foreground mt-7 max-w-[54ch] text-lg leading-relaxed">
 				Hold a key and talk. Cleaned-up text lands wherever your cursor is — filler gone,
 				punctuation right, your phrasing intact. Tap another key to hear anything read back. Hold
 				a third on a selection to fix, shorten or explain it, or with nothing selected to drop a
-				to-do into Reminders. All of it runs on your Mac, and none of it goes anywhere else.
+				to-do into Reminders. All of it runs on your Mac, and none of it goes anywhere else. The words
+				you teach it can follow you to your iPhone and Watch through your own iCloud, if you turn
+				that on; what you dictate never does.
 			</p>
 
 			<div class="mt-9 flex flex-wrap items-center gap-3">

@@ -12,11 +12,13 @@
 		BB0000000000000000000113 /* TimbreModel in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000123 /* TimbreModel */; };
 		BB0000000000000000000114 /* TimbreReminders in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000124 /* TimbreReminders */; };
 		BB0000000000000000000117 /* TimbreRelay in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000125 /* TimbreRelay */; };
+		BB0000000000000000000118 /* TimbreCloud in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000126 /* TimbreCloud */; };
 		BB0000000000000000000115 /* TimbreWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000302 /* TimbreWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0000000000000000000116 /* Timbre Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000202 /* Timbre Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0000000000000000000211 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000221 /* TimbreCore */; };
 		BB0000000000000000000212 /* TimbreReminders in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000222 /* TimbreReminders */; };
 		BB0000000000000000000214 /* TimbreRelay in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000223 /* TimbreRelay */; };
+		BB0000000000000000000215 /* TimbreCloud in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000224 /* TimbreCloud */; };
 		BB0000000000000000000213 /* Timbre Watch Widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000402 /* Timbre Watch Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0000000000000000000311 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000321 /* TimbreCore */; };
 		BB0000000000000000000411 /* TimbreCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0000000000000000000421 /* TimbreCore */; };
@@ -136,6 +138,7 @@
 				BB0000000000000000000113 /* TimbreModel in Frameworks */,
 				BB0000000000000000000114 /* TimbreReminders in Frameworks */,
 				BB0000000000000000000117 /* TimbreRelay in Frameworks */,
+				BB0000000000000000000118 /* TimbreCloud in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +149,7 @@
 				BB0000000000000000000211 /* TimbreCore in Frameworks */,
 				BB0000000000000000000212 /* TimbreReminders in Frameworks */,
 				BB0000000000000000000214 /* TimbreRelay in Frameworks */,
+				BB0000000000000000000215 /* TimbreCloud in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +245,7 @@
 				BB0000000000000000000123 /* TimbreModel */,
 				BB0000000000000000000124 /* TimbreReminders */,
 				BB0000000000000000000125 /* TimbreRelay */,
+				BB0000000000000000000126 /* TimbreCloud */,
 			);
 			productName = Timbre;
 			productReference = BB0000000000000000000102 /* Timbre.app */;
@@ -268,6 +273,7 @@
 				BB0000000000000000000221 /* TimbreCore */,
 				BB0000000000000000000222 /* TimbreReminders */,
 				BB0000000000000000000223 /* TimbreRelay */,
+				BB0000000000000000000224 /* TimbreCloud */,
 			);
 			productName = "Timbre Watch App";
 			productReference = BB0000000000000000000202 /* Timbre Watch App.app */;
@@ -343,6 +349,7 @@
 				BB0000000000000000000023 /* XCLocalSwiftPackageReference "../../packages/TimbreModel" */,
 				BB0000000000000000000024 /* XCLocalSwiftPackageReference "../../packages/TimbreReminders" */,
 				BB0000000000000000000025 /* XCLocalSwiftPackageReference "../../packages/TimbreRelay" */,
+				BB0000000000000000000026 /* XCLocalSwiftPackageReference "../../packages/TimbreCloud" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BB0000000000000000000004 /* Products */;
@@ -579,6 +586,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../packages/TimbreRelay;
 		};
+		BB0000000000000000000026 /* XCLocalSwiftPackageReference "../../packages/TimbreCloud" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/TimbreCloud;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -602,6 +613,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TimbreRelay;
 		};
+		BB0000000000000000000126 /* TimbreCloud */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreCloud;
+		};
 		BB0000000000000000000221 /* TimbreCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TimbreCore;
@@ -613,6 +628,10 @@
 		BB0000000000000000000223 /* TimbreRelay */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TimbreRelay;
+		};
+		BB0000000000000000000224 /* TimbreCloud */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TimbreCloud;
 		};
 		BB0000000000000000000321 /* TimbreCore */ = {
 			isa = XCSwiftPackageProductDependency;

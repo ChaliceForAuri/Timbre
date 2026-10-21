@@ -78,5 +78,5 @@
 
 <div class="box good">
 <p class="box-title">In Timbre</p>
-<p><code>LibrarySync</code> is a protocol in <code>TimbreCore</code>; the CloudKit implementation lives where the framework is. Events are immutable records in a custom zone of the private database; merge is a union; edits take the latest; deletions are tombstones. Sync is off by default, described plainly, and syncs the Library and the profile — never a dictation, a capture or a usage count.</p>
+<p><code>TimbreCloud</code> (ADR-0017) is the implementation: <code>CKSyncEngine</code> over one custom zone, three record types — <code>Event</code> named by the event’s id and saved once, <code>Entry</code> replaced whole on edit with the later <code>edited</code> winning, one <code>Profile</code> — and the Library’s own <code>merge</code> doing the merging. A server-changed conflict takes the server’s copy, merges, and sends again over its system fields. The mapping to and from <code>CKRecord</code> is pure and tested offline; the two-device proof is a manual test with <code>nettop</code> open. Sync is off by default, described plainly, and carries the Library and the profile — never a dictation, a capture or a usage count.</p>
 </div>

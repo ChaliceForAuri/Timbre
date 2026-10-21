@@ -115,7 +115,7 @@ That split is a record of its own (an ADR) before the first iOS line.
 |---|---|---|
 | 0 | 0.4.0: icon, disk image, to-dos, plain, live typing. Launch. | Public. |
 | 1 | **The Library on Mac.** One store with kinds; Settings › Dictionary becomes *Library*; explain, fix and define write to it; export to a file. | Every existing list migrates; nothing lost. |
-| 2 | **`TimbreCore` + iCloud sync.** The split, the CloudKit container, sync on two Macs. | Teach on one Mac, see it on the other, `nettop` still empty. |
+| 2 | **`TimbreCore` + iCloud sync.** The split (ADR-0013, ADR-0015), the CloudKit container and schema (ADR-0017), sync on two Macs. | Teach on one Mac, see it on the other, `nettop` still empty. |
 | 3 | **Timbre for iPhone.** The Library, profile, word of the day, Spell it. | On the phone a minute after teaching on the Mac. |
 | 4 | **Practice that listens.** Say it, Explain it, strength and streaks. | A drill corpus the harness can score. |
 | 5 | **Profile-aware explain** on the Mac. | A commands corpus case per industry. |

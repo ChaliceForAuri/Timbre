@@ -263,7 +263,7 @@ struct LibraryTests {
         defer { cleanup() }
         let library = Library(fileURL: file, legacy: defaults)
         var saves = 0
-        library.didSave = { saves += 1 }
+        library.addSaveObserver { saves += 1 }
         library.add("one")
         library.remove("one")
         #expect(saves == 2)
