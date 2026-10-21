@@ -52,10 +52,7 @@ model {
         description 'SelectionReader grabs the selection; SpeechReader speaks it with the best installed voice (GDR-0008).'
       }
       todos = component 'To-dos' {
-        description 'TodoParser reads the date with Apple’s data detector; ReminderStore files it in Reminders (GDR-0016).'
-      }
-      vocabulary = component 'VocabularyStore' {
-        description 'Taught words, corrections, definitions. Three lists in UserDefaults — the Library’s ancestor.'
+        description 'ReminderStore files a spoken to-do in Reminders (GDR-0016); TimbreCore’s parser read its date.'
       }
       updater = component 'SoftwareUpdater' {
         description 'One GET of appcast.json when asked; installs only a notarized build signed by our team (ADR-0010, GDR-0013).'
@@ -80,8 +77,6 @@ model {
       controller -> todos 'a sentence with nothing selected'
       controller -> usage 'counts'
       controller -> log 'captures, opt-in'
-      polisher -> vocabulary 'corrections, vocabulary'
-      commands -> vocabulary 'definitions answer explain first'
       commands -> inserter 'paste over the selection'
       commands -> overlay 'the explanation card'
       todos -> polisher 'cleans the sentence first'
@@ -192,36 +187,39 @@ model {
 
   // ----------------------------------------------------------- the next part
   core = container 'TimbreCore' {
-    #planned
-    description 'Planned: the platform-neutral package the Mac app and the iPhone app both import — the Library, parsing, practice scoring.'
-    technology 'Swift package, macOS + iOS'
-    style {
-      color mustard
-    }
+    description 'The platform-neutral package the Mac, the iPhone and the Watch import: the Library, strength, the daily pick, Spell it’s check, the to-do parser. Foundation and Observation only (ADR-0013).'
+    technology 'Swift package, macOS + iOS + watchOS'
 
     library = store 'The Library' {
-      #planned
-      description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, industry tags, strength, history.'
-      style {
-        color mustard
-      }
+      description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, tags, and the events strength is derived from. One versioned JSON file; merge is a union of events (GDR-0023).'
+    }
+    strength = component 'Strength' {
+      description 'Retrievability from an entry’s events, FSRS-4.5, never stored (ADR-0014).'
+    }
+    pick = component 'The daily pick' {
+      description 'The weakest entry that is due, else a bundled word for the profile; computed from the events before the start of the day (GDR-0027).'
+    }
+    spell = component 'Spell it’s check' {
+      description 'Letters heard against the word, deterministic, with a corpus. Runs on the Watch with no model.'
+    }
+    todoparser = component 'To-do parser' {
+      description 'Apple’s data detector reads the date; no model. Shared by the Mac and the wrist (GDR-0016, GDR-0026).'
     }
     profile = component 'Profile' {
-      #planned
-      description 'Industry, role, first language. Makes explain right for the reader; picks the word-of-the-day lists.'
-      style {
-        color mustard
-      }
+      description 'Industry, role, first language. Picks the word-of-the-day lists; will make explain right for the reader.'
     }
     practice = component 'Practice' {
       #planned
-      description 'Spell it, Say it, Explain it, word of the day. Drills scored like commands, with a corpus.'
+      description 'The drills’ screens, Say it and Explain it with the model-backed judge, streaks and the weekly review. Scored like commands, with a corpus.'
       style {
         color mustard
       }
     }
-    practice -> library 'raises strength'
-    profile -> library 'tags'
+    strength -> library 'replays the events'
+    pick -> strength 'weakest first'
+    pick -> profile 'which lists'
+    practice -> library 'records passes and fails'
+    spell -> library 'a pass or a fail'
   }
 
   iphone = system 'Timbre for iPhone' {
@@ -235,9 +233,11 @@ model {
     -> core 'imports'
   }
 
-  timbre.kit -> core 'imports; VocabularyStore becomes the Library' {
-    #planned
-  }
+  timbre.kit -> core 'imports'
+  timbre.kit.polisher -> core.library 'corrections first, then the taught words'
+  timbre.kit.commands -> core.library 'definitions answer explain first'
+  timbre.kit.controller -> core.library 'marks today’s word met'
+  timbre.kit.todos -> core.todoparser 'the date, read on-device'
   timbre.kit.commands -> core.profile 'explain reads the industry' {
     #planned
   }

@@ -1,4 +1,5 @@
 import Foundation
+import TimbreCore
 
 /// A corpus of dictation samples, loaded from JSON.
 nonisolated public struct DictationCorpus: Codable, Sendable {

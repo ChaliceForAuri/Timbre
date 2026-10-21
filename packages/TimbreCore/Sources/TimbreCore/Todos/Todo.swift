@@ -8,12 +8,18 @@ nonisolated public struct Todo: Equatable, Sendable {
     /// Whether a time of day was said, not just a day. Decides whether the
     /// reminder gets an alarm.
     public let hasTime: Bool
+
+    public init(title: String, due: Date?, hasTime: Bool) {
+        self.title = title
+        self.due = due
+        self.hasTime = hasTime
+    }
 }
 
 /// Turns "remind me to call the dentist Thursday" into a title and a date —
 /// deterministically, with Apple's data detector, no model. The date phrase
 /// leaves the title along with the preposition that introduced it.
-nonisolated enum TodoParser {
+nonisolated public enum TodoParser {
 
     /// Openers people say before the actual to-do.
     private static var openers: Regex<AnyRegexOutput> {
@@ -29,7 +35,7 @@ nonisolated enum TodoParser {
         ).ignoresCase()
     }
 
-    static func parse(_ spoken: String, now: Date = Date()) -> Todo {
+    public static func parse(_ spoken: String, now: Date = Date()) -> Todo {
         var text = spoken.trimmingCharacters(in: .whitespacesAndNewlines)
         text = text.replacing(openers, with: "")
 
@@ -68,15 +74,15 @@ nonisolated enum TodoParser {
 }
 
 /// How to-dos are spoken back and shown in the pill.
-nonisolated enum TodoPhrasing {
+nonisolated public enum TodoPhrasing {
 
-    static func confirmation(_ todo: Todo, list: String, now: Date = Date()) -> String {
+    public static func confirmation(_ todo: Todo, list: String, now: Date = Date()) -> String {
         guard let due = todo.due else { return "Added to \(list): \(todo.title)" }
         return "Added to \(list): \(todo.title) · \(when(due, hasTime: todo.hasTime, now: now))"
     }
 
     /// "Thursday", "tomorrow at 3 PM", "14 Oct".
-    static func when(_ date: Date, hasTime: Bool, now: Date = Date()) -> String {
+    public static func when(_ date: Date, hasTime: Bool, now: Date = Date()) -> String {
         let calendar = Calendar.current
         let day: String
         if calendar.isDate(date, inSameDayAs: now) {
@@ -94,7 +100,7 @@ nonisolated enum TodoPhrasing {
     }
 
     /// The list, read aloud.
-    static func spokenList(_ todos: [Todo], list: String, now: Date = Date()) -> String {
+    public static func spokenList(_ todos: [Todo], list: String, now: Date = Date()) -> String {
         guard !todos.isEmpty else { return "Your \(list) list is empty." }
         let count = todos.count == 1 ? "one to-do" : "\(todos.count) to-dos"
         let items = todos.map { todo -> String in

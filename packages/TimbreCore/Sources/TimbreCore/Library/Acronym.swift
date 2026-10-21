@@ -23,18 +23,18 @@ nonisolated public struct Acronym: Codable, Sendable, Hashable, Identifiable {
 
 /// Finds taught terms in a selection. Whole words, case-sensitive: an
 /// acronym is its capitals.
-nonisolated enum AcronymTable {
+nonisolated public enum AcronymTable {
 
     /// The taught answer when the selection *is* a taught term, give or take
     /// the punctuation and whitespace that came along with it.
-    static func exactAnswer(for selection: String, from acronyms: [Acronym]) -> String? {
+    public static func exactAnswer(for selection: String, from acronyms: [Acronym]) -> String? {
         let bare = selection.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
         guard let match = acronyms.first(where: { $0.term == bare }) else { return nil }
         return "\(match.term) — \(match.meaning)"
     }
 
     /// Taught terms appearing in `text`, in the order they were taught.
-    static func matches(in text: String, from acronyms: [Acronym]) -> [Acronym] {
+    public static func matches(in text: String, from acronyms: [Acronym]) -> [Acronym] {
         acronyms.filter { acronym in
             guard let pattern = pattern(matching: acronym.term) else { return false }
             return text.contains(pattern)

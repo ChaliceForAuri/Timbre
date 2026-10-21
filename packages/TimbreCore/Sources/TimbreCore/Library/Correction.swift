@@ -25,7 +25,7 @@ nonisolated public struct Correction: Codable, Sendable, Hashable, Identifiable 
         self.meant = meant
     }
 
-    static func normalized(_ phrase: String) -> String {
+    public static func normalized(_ phrase: String) -> String {
         phrase.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 }

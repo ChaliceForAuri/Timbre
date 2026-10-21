@@ -41,6 +41,8 @@ Two kinds of records live here. The boundary rule:
 | [0010](adr/0010-self-update-without-sparkle.md) | Self-update: verify by code requirement, swap in place, relaunch; no Sparkle | Accepted |
 | [0011](adr/0011-polisher-decodes-greedily-capitalizes-deterministically.md) | The polisher decodes greedily; sentence capitals are deterministic | Accepted |
 | [0012](adr/0012-silent-bluetooth-input-falls-back.md) | A silent Bluetooth input falls back to the built-in microphone | Accepted |
+| [0013](adr/0013-timbrecore-platform-neutral-package.md) | TimbreCore: the platform-neutral package, and the rule for what goes where | Accepted |
+| [0014](adr/0014-strength-from-events-fsrs.md) | Strength is retrievability, derived from an entry's events with FSRS-4.5 | Accepted |
 
 ### GDRs
 

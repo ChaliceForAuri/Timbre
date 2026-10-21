@@ -1,5 +1,6 @@
 import Foundation
 import FoundationModels
+import TimbreCore
 
 /// The cleanup layer — the part that makes dictation feel like writing.
 ///

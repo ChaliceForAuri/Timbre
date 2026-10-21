@@ -1,4 +1,5 @@
 import Foundation
+import TimbreCore
 import TimbreKit
 
 /// Runs dictation samples through the real polisher and reports which
@@ -34,6 +35,16 @@ struct TimbreEval {
 
         if let path = value(for: "--import", in: arguments) {
             try runImport(path: path, output: value(for: "--out", in: arguments))
+            return
+        }
+
+        if let path = value(for: "--spell", in: arguments) {
+            try runSpell(path: path)
+            return
+        }
+
+        if let path = value(for: "--picks", in: arguments) {
+            try runPicks(path: path)
             return
         }
 
@@ -461,6 +472,36 @@ struct TimbreEval {
 
     // MARK: - Plumbing
 
+    // MARK: - Spell it and the word of the day (TimbreCore corpora)
+
+    /// Deterministic, so one run is the measurement (GDR-0023, decision 5).
+    private static func runSpell(path: String) throws {
+        let outcomes = try SpellCorpus.load(from: URL(filePath: path)).run()
+        print("timbre-eval — Spell it, \(outcomes.count) cases\n")
+        for outcome in outcomes {
+            let mark = outcome.held ? "✔" : "✘"
+            let heard = outcome.verdict.heard.isEmpty ? "nothing" : "\"\(outcome.verdict.heard)\""
+            print("  \(mark) \(outcome.id): heard \(heard) for \"\(outcome.verdict.expected)\"")
+        }
+        let held = outcomes.filter(\.held).count
+        print("\n\(held)/\(outcomes.count) held")
+        if held < outcomes.count { exit(1) }
+    }
+
+    /// A Library's state and a date in, the expected word out (GDR-0027).
+    private static func runPicks(path: String) throws {
+        let outcomes = try PickCorpus.load(from: URL(filePath: path)).run()
+        print("timbre-eval — the word of the day, \(outcomes.count) cases\n")
+        for outcome in outcomes {
+            let mark = outcome.held ? "✔" : "✘"
+            let got = outcome.pick.map { "\($0.term) — \($0.why)" } ?? "nothing"
+            print("  \(mark) \(outcome.id): \(got)")
+        }
+        let held = outcomes.filter(\.held).count
+        print("\n\(held)/\(outcomes.count) held")
+        if held < outcomes.count { exit(1) }
+    }
+
     private static let usage = """
         timbre-eval — measure Timbre's cleanup against a fixed corpus
 
@@ -484,6 +525,10 @@ struct TimbreEval {
                                              case's vocabulary and recall is reported
           timbre-eval --stream <file.aiff>   microphone pace, timed snapshots
           timbre-eval --import <log.jsonl> [--out corpus.json]
+          timbre-eval --spell <spell.json>   Spell it's check against its corpus
+          timbre-eval --picks <picks.json>   the word of the day against its corpus
+                                             (both in packages/TimbreCore/Fixtures;
+                                             deterministic, no model needed)
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.

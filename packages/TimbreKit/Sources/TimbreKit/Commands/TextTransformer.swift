@@ -1,5 +1,6 @@
 import Foundation
 import FoundationModels
+import TimbreCore
 
 /// Runs a command on selected text with the on-device model (GDR-0012).
 ///

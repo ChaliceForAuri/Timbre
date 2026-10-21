@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import Observation
+import TimbreCore
 import os
 
 /// Ties everything together: hotkey → mic → speech model → cleanup → paste,
@@ -26,19 +27,19 @@ public final class DictationController {
 
     /// Words the user has taught the app. Persisted across launches.
     public var vocabulary: [String] {
-        vocabularyStore.terms
+        library.terms
     }
 
     /// Phrases the user has corrected: what Timbre heard, what they meant.
     /// Applied to every transcript before the model (GDR-0011).
     public var corrections: [Correction] {
-        vocabularyStore.corrections
+        library.corrections
     }
 
     /// Terms the user has defined. They answer "explain" before the model
     /// does (GDR-0012).
     public var acronyms: [Acronym] {
-        vocabularyStore.acronyms
+        library.acronyms
     }
 
     // MARK: Usage
@@ -130,7 +131,9 @@ public final class DictationController {
     private let inserter = TextInserter()
     private let hotkey = HotkeyMonitor()
     private let overlay = OverlayController()
-    private let vocabularyStore = VocabularyStore()
+    /// The Library (GDR-0023): the words, corrections and definitions the
+    /// pipeline reads, and what Settings edits. Lives in TimbreCore.
+    public let library = Library(fileURL: Library.defaultFileURL)
     private let dictationLog = DictationLog()
     private let speech = SpeechReader()
     private let transformer = TextTransformer()
@@ -312,7 +315,7 @@ public final class DictationController {
         do {
             try await startCapture(
                 listeningMode: .listening,
-                vocabulary: vocabularyStore.terms,
+                vocabulary: library.terms,
                 pressed: pressed,
                 typingLive: typesAsYouSpeak
             )
@@ -516,10 +519,12 @@ public final class DictationController {
             let cleaned = await polisher.polish(
                 raw,
                 appContext: capturedAppName,
-                vocabulary: vocabularyStore.terms,
-                corrections: vocabularyStore.corrections
+                vocabulary: library.terms,
+                corrections: library.corrections
             )
             let polishDuration = clock.now - polishStarted
+            // Today's word, met in the wild (GDR-0027): only the fact is kept.
+            library.noteMet(in: cleaned, app: capturedAppName)
 
             // Hide BEFORE pasting. If the overlay is still on screen when the
             // synthetic ⌘V fires, the pill flickers over the user's own text —
@@ -676,7 +681,7 @@ public final class DictationController {
         guard gesture == .command else { return }
         // Taught corrections first: a stable mis-hearing of a command is
         // teachable like any other word (GDR-0011).
-        let heard = CorrectionTable.applied(vocabularyStore.corrections, to: text)
+        let heard = CorrectionTable.applied(library.corrections, to: text)
         let decision = commandHold.heard(heard)
         let decided = decision?.rawValue ?? "nothing yet"
         let wordCount = heard.split(separator: " ").count
@@ -706,7 +711,7 @@ public final class DictationController {
 
         let captured = commandIsCapturing
         let spoken = await finishCommandCapture()
-        let heard = CorrectionTable.applied(vocabularyStore.corrections, to: spoken)
+        let heard = CorrectionTable.applied(library.corrections, to: spoken)
 
         // Silence means fix only when the microphone was live to hear it.
         // A headset still waking delivers nothing at all for the length of
@@ -763,9 +768,9 @@ public final class DictationController {
         let outcome = await transformer.run(
             command,
             on: selection,
-            corrections: vocabularyStore.corrections,
-            acronyms: vocabularyStore.acronyms,
-            vocabulary: vocabularyStore.terms,
+            corrections: library.corrections,
+            acronyms: library.acronyms,
+            vocabulary: library.terms,
             onExplanation: { [weak self] partial in self?.showExplanationSoFar(partial) }
         )
         switch outcome {
@@ -804,7 +809,8 @@ public final class DictationController {
         // The polisher removes the "um" and the false start; the terminator's
         // full stop is not part of a to-do.
         let cleaned = await polisher.polish(
-            spoken, vocabulary: vocabularyStore.terms, corrections: vocabularyStore.corrections)
+            spoken, vocabulary: library.terms, corrections: library.corrections)
+        library.noteMet(in: cleaned, app: capturedAppName)
         let todo = TodoParser.parse(cleaned.trimmingCharacters(in: CharacterSet(charactersIn: ".!")))
         do {
             let list = try reminders.add(todo)
@@ -956,31 +962,31 @@ public final class DictationController {
     // MARK: - Vocabulary
 
     public func addToVocabulary(_ term: String) {
-        vocabularyStore.add(term)
+        library.add(term)
     }
 
     public func removeFromVocabulary(_ term: String) {
-        vocabularyStore.remove(term)
+        library.remove(term)
     }
 
     /// Teaches a correction; false when there was nothing to teach.
     @discardableResult
     public func teachCorrection(heard: String, meant: String) -> Bool {
-        vocabularyStore.teach(heard: heard, meant: meant)
+        library.teach(heard: heard, meant: meant)
     }
 
     public func forgetCorrection(_ correction: Correction) {
-        vocabularyStore.forget(correction)
+        library.forget(correction)
     }
 
     /// Defines a term for "explain"; false when there was nothing to define.
     @discardableResult
     public func defineAcronym(term: String, meaning: String) -> Bool {
-        vocabularyStore.define(term: term, meaning: meaning)
+        library.define(term: term, meaning: meaning)
     }
 
     public func forgetAcronym(_ acronym: Acronym) {
-        vocabularyStore.undefine(acronym)
+        library.undefine(acronym)
     }
 
     // MARK: - Helpers
