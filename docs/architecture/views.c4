@@ -26,6 +26,7 @@ views {
     include *
     include apple.*
     include core.library
+    include timbre.speech.*, timbre.model.*, timbre.reminders.*
     exclude apple.icloud
     autoLayout TopBottom
   }

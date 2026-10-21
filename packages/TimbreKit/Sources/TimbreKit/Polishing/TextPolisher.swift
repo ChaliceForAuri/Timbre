@@ -1,6 +1,7 @@
 import Foundation
 import FoundationModels
 import TimbreCore
+import TimbreModel
 
 /// The cleanup layer — the part that makes dictation feel like writing.
 ///
@@ -23,20 +24,7 @@ final class TextPolisher {
 
     /// Whether the on-device model is usable right now, with a
     /// human-readable reason when it isn't.
-    static var availability: (isReady: Bool, reason: String?) {
-        switch SystemLanguageModel.default.availability {
-        case .available:
-            return (true, nil)
-        case .unavailable(.deviceNotEligible):
-            return (false, "This Mac doesn't support Apple Intelligence (Apple Silicon required).")
-        case .unavailable(.appleIntelligenceNotEnabled):
-            return (false, "Turn on Apple Intelligence in System Settings.")
-        case .unavailable(.modelNotReady):
-            return (false, "The on-device model is still downloading. Try again shortly.")
-        case .unavailable:
-            return (false, "The on-device model is unavailable right now.")
-        }
-    }
+    static var availability: (isReady: Bool, reason: String?) { OnDeviceModel.availability }
 
     private static let instructions = """
         You clean up dictated speech so it reads as if the person had typed it.

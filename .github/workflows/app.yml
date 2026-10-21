@@ -40,6 +40,15 @@ jobs:
       - name: Test TimbreCore
         run: swift test --package-path packages/TimbreCore
 
+      - name: Test TimbreSpeech
+        run: swift test --package-path packages/TimbreSpeech
+
+      - name: Test TimbreModel
+        run: swift test --package-path packages/TimbreModel
+
+      - name: Test TimbreReminders
+        run: swift test --package-path packages/TimbreReminders
+
       - name: Test TimbreKit
         run: swift test --package-path packages/TimbreKit
 

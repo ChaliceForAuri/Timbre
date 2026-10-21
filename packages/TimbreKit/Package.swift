@@ -19,12 +19,16 @@ let package = Package(
     dependencies: [
         // The platform-neutral half (ADR-0013): the Library, the to-do parser,
         // strength, the daily pick, the drill checks.
-        .package(path: "../TimbreCore")
+        .package(path: "../TimbreCore"),
+        // The framework-bound packages the companion shares (ADR-0015).
+        .package(path: "../TimbreSpeech"),
+        .package(path: "../TimbreModel"),
+        .package(path: "../TimbreReminders"),
     ],
     targets: [
         .target(
             name: "TimbreKit",
-            dependencies: ["TimbreCore"],
+            dependencies: ["TimbreCore", "TimbreSpeech", "TimbreModel", "TimbreReminders"],
             swiftSettings: concurrencySettings
         ),
         .executableTarget(

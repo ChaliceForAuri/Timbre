@@ -1,4 +1,5 @@
 import Testing
+import TimbreSpeech
 
 @testable import TimbreKit
 

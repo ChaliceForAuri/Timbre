@@ -27,12 +27,6 @@ model {
       controller = component 'DictationController' {
         description 'Consumes hotkey events in one task — that is what serialises press and release. The public surface.'
       }
-      audio = component 'AudioCapture' {
-        description 'Mic tap; converts on the audio thread; emits AnalyzerInput and levels.'
-      }
-      transcriber = component 'Transcriber' {
-        description 'Actor around SpeechAnalyzer. A session is single-use (ADR-0006). Streams confirmed and in-flight words.'
-      }
       polisher = component 'TextPolisher' {
         description 'Corrections → spoken commands → the on-device model, greedy → capital → full stop (ADR-0005, ADR-0011).'
       }
@@ -49,7 +43,10 @@ model {
         description 'CommandHold arms after 350 ms; VoiceCommand fires on the word; TextTransformer does fix, shorten, plain, explain (GDR-0012, 0014, 0015).'
       }
       reader = component 'Read aloud' {
-        description 'SelectionReader grabs the selection; SpeechReader speaks it with the best installed voice (GDR-0008).'
+        description 'SelectionReader grabs the selection; TimbreSpeech speaks it (GDR-0008).'
+      }
+      word = component 'Word of the day' {
+        description 'The card, the menu bar line, the morning notification. Asks TimbreModel for one example sentence, labelled (GDR-0027).'
       }
       todos = component 'To-dos' {
         description 'ReminderStore files a spoken to-do in Reminders (GDR-0016); TimbreCore’s parser read its date.'
@@ -65,9 +62,6 @@ model {
       }
 
       hotkey -> controller 'press, release, read, command'
-      controller -> audio 'opens the mic first'
-      audio -> transcriber 'AnalyzerInput'
-      controller -> transcriber 'start, finish, abandon'
       controller -> overlay 'show, update, hide'
       controller -> live 'confirmed words'
       controller -> polisher 'the transcript'
@@ -82,6 +76,44 @@ model {
       todos -> polisher 'cleans the sentence first'
       app -> updater 'Check for Updates…'
     }
+
+    speech = container 'TimbreSpeech' {
+      description 'Speech in and out, shared by the Mac and the iPhone (ADR-0015): microphone capture converted on the audio thread, SpeechAnalyzer, the best installed voice.'
+      technology 'Swift package, macOS + iOS'
+      audio = component 'AudioCapture' {
+        description 'Mic tap; converts on the audio thread; emits AnalyzerInput and levels. Falls back from a silent Bluetooth input (ADR-0012).'
+      }
+      transcriber = component 'Transcriber' {
+        description 'SpeechAnalyzer, rebuilt per dictation (ADR-0006). Streams finalized and volatile text.'
+      }
+      speaker = component 'SpeechReader' {
+        description 'AVSpeechSynthesizer with the best installed voice; the speed ladder.'
+      }
+      audio -> transcriber 'AnalyzerInput'
+    }
+
+    model = container 'TimbreModel' {
+      description 'Apple’s on-device model where it runs, Mac and iPhone (ADR-0015): one availability answer, the example writer, the drills’ judges next. Every prompt greedy and guarded.'
+      technology 'Swift package, macOS + iOS'
+      writer = component 'ExampleWriter' {
+        description 'One example sentence for today’s word, guarded by ExampleGuardrail, measured by timbre-eval --examples.'
+      }
+    }
+
+    reminders = container 'TimbreReminders' {
+      description 'The Timbre list in Apple’s Reminders, on all three platforms (ADR-0015, GDR-0016).'
+      technology 'Swift package, macOS + iOS + watchOS'
+      store = component 'ReminderStore' {
+        description 'Finds or creates the list; adds a to-do; reads the open ones back, soonest first.'
+      }
+    }
+
+    kit.controller -> speech.audio 'opens the mic first'
+    kit.controller -> speech.transcriber 'start, finish, abandon'
+    kit.reader -> speech.speaker 'speaks'
+    kit.word -> speech.speaker 'reads the card'
+    kit.word -> model.writer 'one example sentence'
+    kit.todos -> reminders.store 'adds; reads back'
 
     eval = container 'timbre-eval' {
       #dev
@@ -124,15 +156,16 @@ model {
     }
   }
 
-  timbre.kit.transcriber -> apple.speech 'streams audio'
+  timbre.speech.transcriber -> apple.speech 'streams audio'
   timbre.kit.polisher -> apple.models 'one greedy generation'
   timbre.kit.commands -> apple.models 'guided fix; plain-text shorten, plain, explain'
   timbre.kit.hotkey -> apple.ax 'needs the grant'
   timbre.kit.live -> apple.ax 'types; reads the run back; selects it'
   timbre.kit.overlay -> apple.ax 'asks where the caret is'
   timbre.kit.inserter -> apple.pasteboard '⌘V'
-  timbre.kit.reader -> apple.synth 'speaks'
-  timbre.kit.todos -> apple.reminders 'adds to the Timbre list'
+  timbre.speech.speaker -> apple.synth 'speaks'
+  timbre.model.writer -> apple.models 'one greedy generation'
+  timbre.reminders.store -> apple.reminders 'adds to the Timbre list'
   apple.reminders -> apple.icloud 'syncs'
   timbre.kit.updater -> apple.gatekeeper 'verifies before replacing'
 
@@ -237,6 +270,7 @@ model {
   timbre.kit.polisher -> core.library 'corrections first, then the taught words'
   timbre.kit.commands -> core.library 'definitions answer explain first'
   timbre.kit.controller -> core.library 'marks today’s word met'
+  timbre.kit.word -> core.pick 'today’s word'
   timbre.kit.todos -> core.todoparser 'the date, read on-device'
   timbre.kit.commands -> core.profile 'explain reads the industry' {
     #planned

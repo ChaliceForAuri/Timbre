@@ -25,7 +25,14 @@ apps/Timbre/          Xcode project. Config/*.xcconfig holds every build
 packages/TimbreCore/  The Library, strength, the daily pick, the drill checks,
                      the to-do parser: Foundation only, so the iPhone and
                      the Watch import it too (ADR-0013). Kit depends on it.
-packages/TimbreKit/   The macOS pipeline + tests. Dictation work happens here.
+packages/TimbreSpeech/ Capture, on-device transcription, reading aloud
+                     (AVFAudio + Speech). Mac and iPhone (ADR-0015).
+packages/TimbreModel/  The on-device model's writers and judges
+                     (FoundationModels). Mac and iPhone.
+packages/TimbreReminders/ The Timbre list in Reminders (EventKit). All three.
+packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
+                     insertion, the polisher, command mode. Depends on the
+                     four above. Dictation work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
 docs/learning/       Timbre University (original, frozen) + historical notes.
@@ -45,6 +52,11 @@ swift test --package-path packages/TimbreKit
 
 # The platform-neutral half: the Library, strength, the daily pick, Spell it.
 swift test --package-path packages/TimbreCore
+
+# The framework packages (ADR-0015); CI runs all five suites:
+swift test --package-path packages/TimbreSpeech
+swift test --package-path packages/TimbreModel
+swift test --package-path packages/TimbreReminders
 
 # Measure the polisher against the fixed corpus (ADR-0004). Decoding is
 # greedy (ADR-0011), so --repeat checks determinism; still never judge a
@@ -157,6 +169,10 @@ TimbreCore's types reach the app through TimbreKit's re-export.
   Pure logic with a right answer lives there; anything that touches the Mac
   stays in TimbreKit. What needs a framework is a protocol in Core and an
   implementation beside the framework.
+- **A package per framework, with that framework's platforms** (ADR-0015).
+  Speech, Model and Reminders each declare exactly where their framework
+  exists; `#if os(macOS)` is for a few lines of device plumbing in
+  TimbreSpeech, never a module. A new framework is a new package.
 - **Strength is never stored** (ADR-0014). The Library keeps events — taught,
   met, passed, failed, forgot — and `Strength` derives retrievability with
   FSRS-4.5; the daily pick is computed from the events before the start of

@@ -1,6 +1,8 @@
 import AVFoundation
 import Foundation
 import TimbreCore
+import TimbreModel
+import TimbreSpeech
 
 /// Development-only entry points for the `timbre-eval` harness.
 ///
