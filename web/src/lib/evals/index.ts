@@ -29,6 +29,7 @@ export interface CommandCase {
 	vocabulary: string[];
 	corrections: { heard: string; meant: string }[];
 	acronyms: { term: string; meaning: string }[];
+	industries: string[];
 }
 
 export interface Totals {

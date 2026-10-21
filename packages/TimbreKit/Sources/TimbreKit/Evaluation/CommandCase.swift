@@ -24,6 +24,8 @@ nonisolated public struct CommandCase: Codable, Sendable, Identifiable {
     public let acronyms: [Acronym]
     /// Words the user has taught; the spelling fallback leaves them alone.
     public let vocabulary: [String]
+    /// The reader's field (product map §3); explain gives that field's meaning first.
+    public let industries: [String]
     /// Phrases the result must contain. A trailing `*` matches a word stem.
     public let required: [String]
     /// Phrases the result must not contain.
@@ -40,6 +42,7 @@ nonisolated public struct CommandCase: Codable, Sendable, Identifiable {
         corrections = try container.decodeIfPresent([Correction].self, forKey: .corrections) ?? []
         acronyms = try container.decodeIfPresent([Acronym].self, forKey: .acronyms) ?? []
         vocabulary = try container.decodeIfPresent([String].self, forKey: .vocabulary) ?? []
+        industries = try container.decodeIfPresent([String].self, forKey: .industries) ?? []
         required = try container.decodeIfPresent([String].self, forKey: .required) ?? []
         forbidden = try container.decodeIfPresent([String].self, forKey: .forbidden) ?? []
         exact = try container.decodeIfPresent(String.self, forKey: .exact)

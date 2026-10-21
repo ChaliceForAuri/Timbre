@@ -1,8 +1,10 @@
 # Timbre, the whole product
 
 *2026-10-11 · Status: the map; its five decisions were taken on 2026-10-14
-and are recorded in GDR-0023; GDR-0026 to GDR-0028 (2026-10-18) extend it
-to the Watch, the word of the day's bar and the bundled words. Constraining
+and are recorded in GDR-0023; GDR-0026 to GDR-0029 (2026-10-18) extend it
+to the Watch, the word of the day's bar, the bundled words, and the wrist's
+to-do key. Phases 1–5 are built (ADR-0013 to ADR-0017; the stack of pull
+requests from #64); their proofs on hardware are the next step. Constraining
 records: GDR-0001, GDR-0006, GDR-0010, GDR-0013. This document is where the product is planned as one
 thing; each piece that lands still gets its own record.*
 

@@ -806,6 +806,7 @@ public final class DictationController {
             corrections: library.corrections,
             acronyms: library.acronyms,
             vocabulary: library.terms,
+            profile: library.profile,
             onExplanation: { [weak self] partial in self?.showExplanationSoFar(partial) }
         )
         switch outcome {

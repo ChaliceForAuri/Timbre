@@ -258,7 +258,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-keeps-meaning",
@@ -279,7 +280,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-taught-correction",
@@ -302,7 +304,8 @@
 						"meant": "TimbreKit"
 					}
 				],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-leaves-clean-text",
@@ -316,7 +319,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "shorten-ramble",
@@ -332,7 +336,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "shorten-keeps-voice",
@@ -352,7 +357,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "shorten-email",
@@ -369,7 +375,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "shorten-post",
@@ -389,7 +396,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "explain-bare-acronym",
@@ -404,7 +412,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "explain-technical-term",
@@ -418,7 +427,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "explain-taught-term",
@@ -437,7 +447,8 @@
 						"term": "ADR",
 						"meaning": "Architecture Decision Record"
 					}
-				]
+				],
+				"industries": []
 			},
 			{
 				"id": "explain-grounded-in-taught-term",
@@ -460,7 +471,8 @@
 						"term": "ADR",
 						"meaning": "Architecture Decision Record"
 					}
-				]
+				],
+				"industries": []
 			},
 			{
 				"id": "fix-slack-literals",
@@ -488,7 +500,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-url-and-email",
@@ -506,7 +519,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-injection",
@@ -523,7 +537,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-single-word-keeps-case",
@@ -537,7 +552,8 @@
 				"exact": "the",
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "shorten-injection",
@@ -553,7 +569,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "plain-synergies",
@@ -574,7 +591,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "plain-tldr",
@@ -594,7 +612,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "plain-launch-post",
@@ -615,7 +634,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "plain-already-plain",
@@ -632,7 +652,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "shorten-with-literals",
@@ -648,7 +669,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "plain-with-literals",
@@ -669,7 +691,8 @@
 				"exact": null,
 				"vocabulary": [],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
 			},
 			{
 				"id": "fix-fallback-keeps-names",
@@ -694,7 +717,46 @@
 					"TimbreKit"
 				],
 				"corrections": [],
-				"acronyms": []
+				"acronyms": [],
+				"industries": []
+			},
+			{
+				"id": "explain-profile-healthcare",
+				"command": "explain",
+				"note": "Phase 5 (product map §3): the reader’s field disambiguates. Ungrounded, PA could be a personal assistant; a nurse’s PA is a physician assistant.",
+				"text": "The PA will see you first.",
+				"required": [
+					"physician assistant"
+				],
+				"forbidden": [
+					"personal assistant"
+				],
+				"exact": null,
+				"vocabulary": [],
+				"corrections": [],
+				"acronyms": [],
+				"industries": [
+					"healthcare"
+				]
+			},
+			{
+				"id": "explain-profile-software",
+				"command": "explain",
+				"note": "Same term, another field: an ER diagram in software is entity-relationship, not the emergency room.",
+				"text": "Update the ER diagram before the review.",
+				"required": [
+					"entity"
+				],
+				"forbidden": [
+					"emergency"
+				],
+				"exact": null,
+				"vocabulary": [],
+				"corrections": [],
+				"acronyms": [],
+				"industries": [
+					"software"
+				]
 			}
 		]
 	},

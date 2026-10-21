@@ -38,11 +38,12 @@ public enum TimbreEvaluation {
         corrections: [Correction] = [],
         acronyms: [Acronym] = [],
         vocabulary: [String] = [],
+        profile: Profile = .empty,
         onExplanation: ((String) -> Void)? = nil
     ) async -> CommandResult {
         let (outcome, diagnostic) = await TextTransformer().runDetailed(
             command, on: text, corrections: corrections, acronyms: acronyms, vocabulary: vocabulary,
-            onExplanation: onExplanation
+            profile: profile, onExplanation: onExplanation
         )
         switch outcome {
         case .replacement(let output): return CommandResult(kind: .replacement, text: output)
