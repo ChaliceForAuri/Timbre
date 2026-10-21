@@ -14,6 +14,8 @@ struct LibrarySettings: View {
             VStack(alignment: .leading, spacing: 26) {
                 WordOfTheDaySection(wordOfTheDay: controller.wordOfTheDay)
                 Divider()
+                PracticeSection(library: controller.library)
+                Divider()
                 EntriesSection(library: controller.library)
                 Divider()
                 ProfileSection(library: controller.library)
@@ -500,6 +502,65 @@ private struct ExportSection: View {
             message = "That file was written by a newer Timbre."
         } catch {
             message = error.localizedDescription
+        }
+    }
+}
+
+// MARK: - Practice, the streak and the week
+
+/// The private kind of game (GDR-0027): a streak of days met or practised,
+/// what this week held, and the five words most worth a minute.
+private struct PracticeSection: View {
+    let library: Library
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Practice")
+                    .font(.headline)
+                Spacer()
+                Button("Practise now…") { PracticeWindow.open(openWindow) }
+            }
+            Text(
+                "Spell it, Say it, Explain it — spoken, scored on this Mac. A word comes up as it fades, and "
+                    + "saying today's word in a dictation counts as meeting it."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            let now = Date()
+            let streak = Streaks.current(in: library.events, on: now)
+            let week = Streaks.week(in: library.events, ending: now)
+            Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 4) {
+                GridRow {
+                    Text("Streak").foregroundStyle(.secondary)
+                    Text(streak == 1 ? "1 day" : "\(streak) days")
+                    Text("best \(Streaks.best(in: library.events))").foregroundStyle(.tertiary)
+                }
+                GridRow {
+                    Text("This week").foregroundStyle(.secondary)
+                    Text("\(week.met) met · \(week.practised) practised")
+                    Text(week.practised == 0 ? "" : "\(week.passed) right").foregroundStyle(.tertiary)
+                }
+            }
+            .font(.callout.monospacedDigit())
+
+            let weakest = Streaks.weakest(among: library.entries, events: library.events, at: now)
+            if !weakest.isEmpty {
+                Text("Most worth a minute")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 4)
+                ForEach(weakest, id: \.entry.id) { item in
+                    HStack {
+                        Text(item.entry.term).font(.callout)
+                        Spacer()
+                        StrengthBar(strength: item.strength)
+                    }
+                }
+            }
         }
     }
 }

@@ -26,6 +26,7 @@ final class CompanionModel {
     private let relay = Relay(queueURL: SharedContainer.directory.appending(path: "pending-todos.json"))
     private let speech = SpokenInput()
     private let writer = ExampleWriter()
+    private let judge = ModelDrillJudge()
 
     private(set) var card: WordCard?
     private(set) var isListening = false
@@ -160,8 +161,47 @@ final class CompanionModel {
         PracticeQueue.next(from: library.entries, events: library.events, at: Date())
     }
 
-    func record(_ verdict: SpellVerdict, for entry: LibraryEntry) {
-        library.record(verdict.passed ? .passed : .failed, for: entry.id, drill: .spellIt)
+    func record(_ verdict: DrillVerdict, drill: Drill, for entry: LibraryEntry) {
+        library.record(verdict.passed ? .passed : .failed, for: entry.id, drill: drill)
+    }
+
+    /// Checks first; the judge only where the words cannot tell
+    /// (GDR-0023, decision 5).
+    func verdict(for drill: Drill, entry: LibraryEntry, spoken: String) async -> DrillVerdict {
+        switch drill {
+        case .spellIt:
+            let check = SpellCheck.check(entry.term, against: spoken)
+            return DrillVerdict(
+                passed: check.passed,
+                reason: check.passed
+                    ? "Spelled it: \(check.heard.uppercased())."
+                    : (check.heard.isEmpty
+                        ? "No letters heard."
+                        : "Heard \(check.heard.uppercased()); it is \(check.expected.uppercased())."))
+        case .sayIt:
+            if let early = SayItGuardrail.verdict(
+                for: SayItGuardrail.failures(in: spoken, for: entry.term), term: entry.term)
+            {
+                return early
+            }
+            if let judged = await judge.judgeSayIt(term: entry.term, meaning: entry.meaning, sentence: spoken)
+            {
+                return judged
+            }
+            return DrillVerdict(passed: false, reason: "The judge could not answer; try again.")
+        case .explainIt:
+            switch ExplainItCheck.check(term: entry.term, meaning: entry.meaning ?? "", explanation: spoken) {
+            case .passed(let verdict), .failed(let verdict):
+                return verdict
+            case .unsure:
+                if let judged = await judge.judgeExplainIt(
+                    term: entry.term, meaning: entry.meaning ?? "", explanation: spoken)
+                {
+                    return judged
+                }
+                return DrillVerdict(passed: false, reason: "It means: \(entry.meaning ?? "")")
+            }
+        }
     }
 
     // MARK: - To-dos (GDR-0016)

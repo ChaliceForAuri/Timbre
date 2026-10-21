@@ -55,6 +55,12 @@ struct TodayView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(card.why).font(.caption).foregroundStyle(.secondary)
+                let streak = Streaks.current(in: model.library.events, on: Date())
+                if streak > 0 {
+                    Text(streak == 1 ? "A 1-day streak." : "A \(streak)-day streak.")
+                        .font(.caption)
+                        .foregroundStyle(Retro.lilac)
+                }
                 HStack(spacing: 8) {
                     if let strength = card.strength { StrengthBar(strength: strength) }
                     Text(card.metToday ? "Met today." : "Not met yet today.")
@@ -76,7 +82,7 @@ struct TodayView: View {
                 Button {
                     selection = .practice
                 } label: {
-                    Label("Spell it", systemImage: "textformat.abc")
+                    Label("Practise", systemImage: "textformat.abc")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)

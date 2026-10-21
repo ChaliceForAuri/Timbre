@@ -99,7 +99,7 @@ app with a microphone bolted on:
 | Capturing a Library entry from use | Mac app | Library (local) | iCloud |
 | Browsing, editing the Library | Mac Settings → *Library*; iPhone | Library | iCloud |
 | Profile | iPhone and Mac, same screen | Library | iCloud |
-| Practice, word of the day | iPhone first; Mac menu later | Library (strength, history) | iCloud |
+| Practice, word of the day | iPhone and Mac (a Practice window); the Watch for Spell it | Library (strength, history) | iCloud |
 | Usage count | Mac app | UserDefaults | never (GDR: this Mac only) |
 | Dictation capture for tuning | Mac app | jsonl on disk | never (GDR-0004) |
 | Releases, decisions, plans, evals, launch, architecture, brand | Backstage | the repo | CI |

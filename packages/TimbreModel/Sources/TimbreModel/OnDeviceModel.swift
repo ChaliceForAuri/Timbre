@@ -2,8 +2,8 @@ import FoundationModels
 
 /// Whether Apple's on-device model can run right now, with a reason when it
 /// cannot. One answer for every writer and judge here, and for the polisher
-/// on the Mac.
-public enum OnDeviceModel {
+/// on the Mac. Nonisolated: a judge asks from wherever it runs.
+nonisolated public enum OnDeviceModel {
 
     public static var availability: (isReady: Bool, reason: String?) {
         switch SystemLanguageModel.default.availability {

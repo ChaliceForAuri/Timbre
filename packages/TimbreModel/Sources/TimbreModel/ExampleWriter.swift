@@ -12,6 +12,10 @@ public final class ExampleWriter {
 
     public init() {}
 
+    /// Why the last draft came back empty, for the harness to show: a model
+    /// that refuses is a case to look at, not a number to shrug at.
+    public private(set) var lastError: String?
+
     @Generable
     nonisolated struct Example {
         @Guide(
@@ -49,8 +53,10 @@ public final class ExampleWriter {
                 includeSchemaInPrompt: false,
                 options: GenerationOptions(sampling: .greedy)
             )
+            lastError = nil
             return response.content.sentence
         } catch {
+            lastError = String(describing: error)
             return nil
         }
     }

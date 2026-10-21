@@ -247,10 +247,25 @@ public enum TimbreEvaluation {
     public static func exampleSentence(
         for term: String, meaning: String?, industry: String?
     ) async -> (draft: String?, failures: [ExampleGuardrail.Failure]) {
-        guard let draft = await ExampleWriter().draft(for: term, meaning: meaning, industry: industry) else {
-            return (nil, [.empty])
+        let writer = ExampleWriter()
+        guard let draft = await writer.draft(for: term, meaning: meaning, industry: industry) else {
+            return (writer.lastError.map { "(\($0))" }, [.empty])
         }
         return (draft, ExampleGuardrail.failures(in: draft, for: term))
+    }
+
+    /// The model's half of a drill (GDR-0023, decision 5): nil when the model
+    /// cannot answer or its verdict was out of shape.
+    public static func judge(_ drill: Drill, term: String, meaning: String?, spoken: String) async
+        -> DrillVerdict?
+    {
+        let judge = ModelDrillJudge()
+        switch drill {
+        case .sayIt: return await judge.judgeSayIt(term: term, meaning: meaning, sentence: spoken)
+        case .explainIt:
+            return await judge.judgeExplainIt(term: term, meaning: meaning ?? "", explanation: spoken)
+        case .spellIt: return nil
+        }
     }
 
     /// Runs commands as if Apple Intelligence were off, so the fallbacks can

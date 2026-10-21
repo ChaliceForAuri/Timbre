@@ -55,9 +55,27 @@ export interface Measured {
 	commands: Totals & { perCase: MeasuredCase[] };
 }
 
+/// The learning corpora (GDR-0023, GDR-0027): one row per case, the input
+/// and what must come of it. Deterministic ones need no measured run.
+export interface LearningCase {
+	id: string;
+	note: string;
+	input: string;
+	expect: string;
+}
+
+export interface LearningCorpus {
+	id: string;
+	title: string;
+	path: string;
+	judged: boolean;
+	cases: LearningCase[];
+}
+
 export const evals = cases as {
 	polisher: { path: string; cases: PolisherCase[] };
 	commands: { path: string; cases: CommandCase[] };
+	learning: LearningCorpus[];
 	audio: { path: string; cases: number };
 };
 

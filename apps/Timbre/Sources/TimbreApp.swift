@@ -34,6 +34,12 @@ struct TimbreApp: App {
         }
         .windowResizability(.contentSize)
         .defaultPosition(.center)
+
+        Window("Practice", id: PracticeWindow.id) {
+            PracticeView(session: controller.practice)
+        }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
     }
 }
 

@@ -23,6 +23,11 @@ turns the section for that version into the release notes shown in the app.
   turn it on.
 - **About you.** Your field, role and first language, in Settings › Library.
   Chooses the word lists; will make explain right for your reader.
+- **Practice.** Spell it, Say it and Explain it, spoken and scored on your
+  Mac: letters checked exactly, a sentence judged by the on-device model
+  inside a guardrail, an explanation checked by its words first. Words come
+  up as they fade. A streak, the week's count and the five words most worth
+  a minute, in Settings › Library. Nothing is ranked or shared.
 
 ### Changed
 - The Library lives in its own package, TimbreCore, which the iPhone and

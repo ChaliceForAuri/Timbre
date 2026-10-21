@@ -142,6 +142,11 @@ public final class DictationController {
     /// notification center either.
     @ObservationIgnored public private(set) lazy var wordOfTheDay = WordOfTheDay(
         library: library, speech: speech)
+
+    /// Practice (GDR-0023, decision 5): Spell it, Say it, Explain it, through
+    /// their own spoken input, so the hotkey pipeline is never borrowed.
+    @ObservationIgnored public private(set) lazy var practice = PracticeSession(
+        library: library, reader: speech)
     private let dictationLog = DictationLog()
     private let speech = SpeechReader()
     private let transformer = TextTransformer()
