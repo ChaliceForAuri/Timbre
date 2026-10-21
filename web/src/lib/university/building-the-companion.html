@@ -1,0 +1,56 @@
+<p>Module 14 said what the other Apple platforms allow. This module is what it took to build on them: Timbre for iPhone and Apple Watch, four targets in one hand-written project, sharing six packages with the Mac (ADR-0016). It is organised by the things that were not obvious, because the obvious parts are in Apple’s templates.</p>
+
+<h3 id="m15-project">A project file by hand</h3>
+
+<p>ADR-0002 rules out project generators, and the Mac project proved a <code>project.pbxproj</code> written by hand with Xcode 16’s <em>synchronized folders</em> is small and stable: each target names a folder, every Swift file in it is compiled, and the file list never drifts. The companion has four targets — the iPhone app, the Watch app, and a WidgetKit extension for each — so the project gains the three things the Mac’s never needed:</p>
+
+<ul>
+<li><strong>Embeds.</strong> The iPhone app carries its extension in <code>PlugIns</code> (a copy-files phase with <code>dstSubfolderSpec = 13</code>) and the Watch app in <code>Watch</code> (<code>dstSubfolderSpec = 16</code>, <code>dstPath = "$(CONTENTS_FOLDER_PATH)/Watch"</code>). The Watch app embeds its own extension the same way.</li>
+<li><strong>Dependencies.</strong> A target that embeds another must build it first: a <code>PBXTargetDependency</code> with a <code>PBXContainerItemProxy</code> pointing at the other target’s id.</li>
+<li><strong>Package products per target.</strong> Each target lists exactly the products its platform may link (ADR-0015): the iPhone five, the Watch three, each widget one. Xcode resolves the graph from the local package references; nothing is dragged into a workspace.</li>
+</ul>
+
+<p>Everything else is a build setting, and every build setting is in an <code>xcconfig</code>. One exception per target where a key cannot say it: a URL scheme and an extension point are dictionaries, so <code>INFOPLIST_FILE</code> names a plist holding only those, and Xcode merges it with the generated keys.</p>
+
+<div class="box map">
+<p class="box-title">Identifiers</p>
+<table style="margin-bottom:0">
+<tr><th>Target</th><th>Bundle identifier</th><th>Why</th></tr>
+<tr><td>Timbre (iPhone)</td><td><code>dev.hugopretorius.Timbre</code></td><td>The Mac’s, so the two could be one purchase one day; the CloudKit container is shared either way</td></tr>
+<tr><td>Timbre Watch App</td><td><code>…Timbre.watchkitapp</code></td><td>Xcode’s convention for a single-target watch app; <code>WKCompanionAppBundleIdentifier</code> points back</td></tr>
+<tr><td>TimbreWidgets</td><td><code>…Timbre.widgets</code></td><td>An extension’s identifier is prefixed by its host’s</td></tr>
+<tr><td>Timbre Watch Widgets</td><td><code>…Timbre.watchkitapp.widgets</code></td><td>Same rule, one level down</td></tr>
+</table>
+</div>
+
+<h3 id="m15-group">One container, and a snapshot for the widgets</h3>
+
+<p>An app and its extensions are separate processes with separate sandboxes. The one place they can both read is an <em>app group</em> container, named in every target’s entitlements. <code>SharedContainer</code> in TimbreCore is the only code that knows the path, and it falls back to the app’s own Application Support when the entitlement is absent — which is what a simulator build without signing is — so the app still runs.</p>
+
+<p>The temptation is to let the widget open the Library and compute today’s word. Two processes writing one JSON document is a race, and a widget that computes is a widget that can disagree with the app. So the app writes a <strong>snapshot</strong> — <code>today.json</code>: the term, one line, why, met, and which day — every time its card rebuilds, then asks WidgetKit to reload. The widget reads the snapshot and shows nothing once the day it names has passed. A copy can be a minute behind; it can never be wrong about the day.</p>
+
+<h3 id="m15-intents">App Intents, and a Control that opens a URL</h3>
+
+<p>One declaration makes a feature reachable from Siri, Shortcuts, Spotlight and the Action Button. Three were enough: add a word, say a to-do, what is my word of the day. Each uses the app’s one shared coordinator, so a word Siri adds is in the list the screen shows.</p>
+
+<p>Two Swift 6 details cost a build each. An intent’s <code>perform()</code> is called by the system from wherever it likes; with default MainActor isolation on the target, the compiler asks you to say whether the method is on the main actor. Marking it <code>@MainActor</code> is the honest answer — it reads the Library — and the framework hops. And the Control in Control Center runs an intent in the <em>extension’s</em> process, which does not have the app’s model; the built-in <code>OpenURLIntent</code> opens the app on <code>timbre://todo</code> instead, and the app’s <code>onOpenURL</code> picks the tab. No shared intent, no shared process.</p>
+
+<h3 id="m15-hold">Hold to talk</h3>
+
+<p>The Mac’s gesture is a held key. On the phone it is a held button: a <code>DragGesture</code> with <code>minimumDistance: 0</code> starts listening on the first change and stops on end, which also fires when the finger slides off. <code>SpokenInput</code> in TimbreSpeech composes <code>AudioCapture</code> and <code>Transcriber</code> exactly as the Mac’s controller does, minus the overlay and the paste; on iOS it also activates the audio session, which the Mac never needed. Live text streams while the finger is down; the release returns the finished transcript; Spell it reads the letters from it.</p>
+
+<h3 id="m15-wrist">The wrist: text input, and a lesson</h3>
+
+<p>watchOS has no <code>SpeechAnalyzer</code> (Module 14), so speech input is the system’s own: <code>TextFieldLink</code> opens the dictation sheet and hands back a <code>String</code>. That is enough for the to-do key, for Spell it and for banking a word you heard, and it needs no permission of ours.</p>
+
+<p>Then the first build against the SDK stopped on <code>saveReminder</code>. EventKit is in the watchOS SDK; its writes are <code>__WATCHOS_PROHIBITED</code>. GDR-0026 had promised a Watch that files its own to-dos, on the strength of a framework folder existing. GDR-0029 is the correction: the wrist parses and queues, the iPhone files. The queue and the message shape live in <code>TimbreRelay</code> — WatchConnectivity is a framework, so it is a package (ADR-0015) — and <code>transferUserInfo</code> carries each to-do when the phone is reachable, launching the iPhone app in the background to receive it. A to-do said in a tunnel is late, not lost.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · crossing actors with a dictionary</p>
+<p>WatchConnectivity delivers <code>[String: Any]</code> on its own queue. Hand that to a <code>Task { @MainActor in … }</code> and Swift 6 refuses: <code>Any</code> is not <code>Sendable</code>, and the compiler cannot prove nobody else holds the dictionary. Parse it <em>before</em> crossing — a <code>UUID</code> and a <code>Todo</code> are <code>Sendable</code> — and pass those. The rule generalises: the boundary between a framework’s callback queue and your actor is where to turn loose data into typed values, not after.</p>
+</div>
+
+<div class="box good">
+<p class="box-title">In Timbre</p>
+<p>One project, four targets, settings in xcconfig; each target links only what its platform allows. The app and its widgets share a container through <code>SharedContainer</code>; the widgets read <code>today.json</code>, never the Library. Three App Intents share one coordinator; the Control opens a URL. Hold to talk is a drag gesture over <code>SpokenInput</code>. The Watch takes text from the system’s dictation, reads the Reminders list, and hands new to-dos to the phone through <code>TimbreRelay</code>. GDR-0029 records the mistake that taught the last part.</p>
+</div>

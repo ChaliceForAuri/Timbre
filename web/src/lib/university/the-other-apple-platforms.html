@@ -34,7 +34,7 @@
 
 <table>
 <tr><th>Framework</th><th>iOS 27</th><th>watchOS 27</th><th>Means for Timbre</th></tr>
-<tr><td>EventKit</td><td>yes</td><td>yes</td><td>The to-do key works on the wrist with no phone</td></tr>
+<tr><td>EventKit</td><td>yes</td><td>read-only</td><td>The wrist reads the list back; <code>saveReminder</code> is <code>__WATCHOS_PROHIBITED</code>, so filing goes through the iPhone (GDR-0029)</td></tr>
 <tr><td>Speech (<code>SpeechAnalyzer</code>)</td><td>yes</td><td><strong>no</strong></td><td>No streaming, no live result, no vocabulary bias on the Watch; its speech input is the system's dictation, which returns text</td></tr>
 <tr><td>FoundationModels</td><td>yes</td><td>in the SDK</td><td>Presence is not eligibility: whether the model answers on a Watch is checked on hardware</td></tr>
 <tr><td>WatchConnectivity</td><td>yes</td><td>yes</td><td>Watch ↔ phone, Apple's transport; no request from our code</td></tr>
@@ -46,7 +46,8 @@
 <p>Gestures: on an Ultra the Action Button can run an App Intent; on a Series 9 or later, <code>.handGestureShortcut(.primaryAction)</code> on a button makes Double Tap press it; everything else is a tap or the Digital Crown. Text input: a SwiftUI <code>TextField</code> on watchOS brings up the system's input — dictation, scribble — and hands you a <code>String</code>. That is enough for the to-do key and for Spell it, and it is all there is.</p>
 
 <div class="box warn">
-<p class="box-title">Trap · SDK presence is not device eligibility</p>
+<p class="box-title">Trap · a framework in the SDK is not an API you can call</p>
+<p>Two ways to be fooled, and Timbre was fooled by both before the first build. EventKit is in the watchOS SDK, so a record said the Watch could file a reminder; the header marks every write <code>__WATCHOS_PROHIBITED</code>, and only reading survives. Check the header, not the folder: <code>grep PROHIBITED</code> in the framework’s headers under the SDK path is a thirty-second habit that would have saved a record (GDR-0029 is the correction). The second way:</p>
 <p>FoundationModels being in the watchOS SDK means code that imports it compiles. It does not mean the model runs on a watch, or on an older iPhone. Ask at runtime, every time, and design the feature to say so:</p>
 <pre><code><span class="c-key">switch</span> <span class="c-typ">SystemLanguageModel</span>.default.availability {
 <span class="c-key">case</span> .available: <span class="c-com">// Say it, an example sentence, a verdict</span>

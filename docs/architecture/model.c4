@@ -256,15 +256,36 @@ model {
   }
 
   iphone = system 'Timbre for iPhone' {
-    #planned
-    description 'Planned: the Library in your pocket. Review, practise, word of the day, add a word you heard. A companion, not a port — iOS cannot dictate into other apps.'
+    description 'The Library in your pocket: today’s word, the Library, Spell it, the to-do key, you. A companion, not a port — iOS cannot dictate into other apps (GDR-0023, ADR-0016).'
     technology 'SwiftUI, iOS 26'
     style {
-      color mustard
       shape mobile
     }
     -> core 'imports'
+    -> timbre.speech 'Spell it and the to-do key listen through'
+    -> timbre.model 'one example sentence'
+    -> timbre.reminders 'files to-dos, its own and the Watch’s'
+    widgets = component 'Widgets and the Control' {
+      description 'Today’s word on the Home and Lock Screens; a Control that opens the to-do key. Read a snapshot the app writes; never open the Library.'
+    }
   }
+
+  watch = system 'Timbre for Apple Watch' {
+    description 'The to-do key on the wrist, today’s word on the face, Spell it, a word you heard. Nothing here needs the model; the system’s dictation hands back text (GDR-0026).'
+    technology 'SwiftUI, watchOS 26'
+    style {
+      shape mobile
+    }
+    -> core 'imports'
+    -> timbre.reminders 'reads the list back; cannot write (GDR-0029)'
+    relay = component 'TimbreRelay' {
+      description 'A to-do said on the wrist, queued and handed to the iPhone over WatchConnectivity, which files it and replies (GDR-0029).'
+    }
+    complication = component 'Complication' {
+      description 'Today’s word on the face, from the Watch’s own snapshot.'
+    }
+  }
+  watch.relay -> iphone 'transferUserInfo, queued until the phone is reachable'
 
   timbre.kit -> core 'imports'
   timbre.kit.polisher -> core.library 'corrections first, then the taught words'
@@ -279,6 +300,7 @@ model {
     #planned
   }
   user -> iphone 'practises; hears the word of the day'
+  user -> watch 'says a to-do; glances at the word'
 
   account = external 'A Timbre account' {
     #open

@@ -19,9 +19,12 @@ Monorepo (ADR-0002): the app logic is a Swift package; the Xcode target is a
 thin shell of scenes and glue views.
 
 ```
-apps/Timbre/          Xcode project. Config/*.xcconfig holds every build
-                     setting; the pbxproj uses synchronized folders and
+apps/Timbre/          The Mac app's Xcode project. Config/*.xcconfig holds every
+                     build setting; the pbxproj uses synchronized folders and
                      should almost never change.
+apps/Companion/      Timbre for iPhone and Apple Watch (ADR-0016): one
+                     project, four targets (the two apps, two widget
+                     extensions), same conventions. Settings in Config/.
 packages/TimbreCore/  The Library, strength, the daily pick, the drill checks,
                      the to-do parser: Foundation only, so the iPhone and
                      the Watch import it too (ADR-0013). Kit depends on it.
@@ -29,7 +32,10 @@ packages/TimbreSpeech/ Capture, on-device transcription, reading aloud
                      (AVFAudio + Speech). Mac and iPhone (ADR-0015).
 packages/TimbreModel/  The on-device model's writers and judges
                      (FoundationModels). Mac and iPhone.
-packages/TimbreReminders/ The Timbre list in Reminders (EventKit). All three.
+packages/TimbreReminders/ The Timbre list in Reminders (EventKit). All three;
+                     read-only on the Watch (GDR-0029).
+packages/TimbreRelay/  Watch to phone over WatchConnectivity: the to-do queue
+                     and the session (GDR-0029). iOS and watchOS only.
 packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
                      insertion, the polisher, command mode. Depends on the
                      four above. Dictation work happens here.
@@ -100,6 +106,13 @@ xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 
 # Full app:
 xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre -destination 'platform=macOS' build
+
+# The companion, all four targets, for the simulator (ADR-0016). TimbreRelay
+# has no macOS, so its tests run there too:
+xcodebuild -project apps/Companion/Companion.xcodeproj -scheme Timbre \
+  -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
+xcodebuild test -scheme TimbreRelay -destination 'platform=iOS Simulator,name=iPhone 17' \
+  CODE_SIGNING_ALLOWED=NO   # from packages/TimbreRelay
 
 # Daily driver: build Release and install to /Applications (grants carry over):
 tools/install.sh
@@ -173,6 +186,13 @@ TimbreCore's types reach the app through TimbreKit's re-export.
   Speech, Model and Reminders each declare exactly where their framework
   exists; `#if os(macOS)` is for a few lines of device plumbing in
   TimbreSpeech, never a module. A new framework is a new package.
+- **A framework in the SDK is not an API you can call** (GDR-0029). EventKit
+  is on watchOS and cannot write there: the Watch parses a to-do and hands
+  it to the iPhone through TimbreRelay, queued until the phone is reachable.
+  Before promising a platform anything, grep its headers for `PROHIBITED`.
+- **Widgets read a snapshot, never the Library** (ADR-0016). The app writes
+  `today.json` to the shared container on every rebuild and reloads the
+  timelines; `SharedContainer` is the one place that knows the paths.
 - **Strength is never stored** (ADR-0014). The Library keeps events — taught,
   met, passed, failed, forgot — and `Strength` derives retrievability with
   FSRS-4.5; the daily pick is computed from the events before the start of

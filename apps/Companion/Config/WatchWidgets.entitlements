@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The app and its widgets share the Library and today's snapshot
+	     through this container (ADR-0016). Nothing else is shared. -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.dev.hugopretorius.Timbre</string>
+	</array>
+</dict>
+</plist>

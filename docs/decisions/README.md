@@ -44,6 +44,7 @@ Two kinds of records live here. The boundary rule:
 | [0013](adr/0013-timbrecore-platform-neutral-package.md) | TimbreCore: the platform-neutral package, and the rule for what goes where | Accepted |
 | [0014](adr/0014-strength-from-events-fsrs.md) | Strength is retrievability, derived from an entry's events with FSRS-4.5 | Accepted |
 | [0015](adr/0015-a-package-per-framework.md) | Framework-bound code lives in a package per framework, with that framework's platforms | Accepted |
+| [0016](adr/0016-the-companion-project.md) | The companion: one project, four targets, a shared container, and widgets that read a snapshot | Accepted |
 
 ### GDRs
 
@@ -74,6 +75,7 @@ Two kinds of records live here. The boundary rule:
 | [0023](gdr/0023-the-library.md) | The Library: one store, five kinds, synced by iCloud, practised by voice | Accepted |
 | [0024](gdr/0024-the-menu-bar-mark.md) | The menu bar shows the bare bars, and the bars carry the state (amends 0021, 0017) | Accepted |
 | [0025](gdr/0025-said-aloud.md) | The lockup says how it is said: /tam·br/ beside the word (amends 0021) | Accepted |
-| [0026](gdr/0026-apple-watch-the-wrist-key.md) | Apple Watch: the to-do key on the wrist, the Library at a glance, and no model needed there (extends 0023) | Accepted · implementation pending |
+| [0026](gdr/0026-apple-watch-the-wrist-key.md) | Apple Watch: the to-do key on the wrist, the Library at a glance, and no model needed there (extends 0023) | Accepted · implementation pending · to-do clause superseded by 0029 |
 | [0027](gdr/0027-word-of-the-day-the-bar.md) | The word of the day: the bar is Vocabulary.com and the widget apps, and the word is yours first | Accepted · implementation pending |
 | [0028](gdr/0028-bundled-word-content-from-wiktionary.md) | Bundled word content comes from a Wiktionary extract, under CC BY-SA; the model writes only examples | Accepted · implementation pending |
+| [0029](gdr/0029-the-wrist-captures-the-iphone-files.md) | The wrist captures a to-do; the iPhone files it (supersedes 0026's to-do clause) | Accepted · implementation pending |

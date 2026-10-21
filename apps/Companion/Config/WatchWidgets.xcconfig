@@ -1,0 +1,16 @@
+// The Watch's complication and Smart Stack card: today's word on the face
+// (GDR-0026). Reads the snapshot the Watch app writes.
+
+SDKROOT = watchos
+WATCHOS_DEPLOYMENT_TARGET = 26.0
+TARGETED_DEVICE_FAMILY = 4
+
+PRODUCT_NAME = Timbre Watch Widgets
+PRODUCT_BUNDLE_IDENTIFIER = dev.hugopretorius.Timbre.watchkitapp.widgets
+INFOPLIST_FILE = Config/WatchWidgets-Info.plist
+INFOPLIST_KEY_CFBundleDisplayName = Timbre
+
+CODE_SIGN_ENTITLEMENTS = Config/WatchWidgets.entitlements
+APPLICATION_EXTENSION_API_ONLY = YES
+SKIP_INSTALL = YES
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks @executable_path/../../Frameworks

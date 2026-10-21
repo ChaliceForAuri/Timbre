@@ -1,7 +1,7 @@
 import Foundation
 
 /// One spoken to-do, parsed (GDR-0016).
-nonisolated public struct Todo: Equatable, Sendable {
+nonisolated public struct Todo: Codable, Equatable, Sendable {
     public let title: String
     /// When it is due, if a date was said.
     public let due: Date?

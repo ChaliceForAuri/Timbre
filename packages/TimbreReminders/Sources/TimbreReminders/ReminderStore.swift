@@ -9,9 +9,20 @@ import TimbreCore
 ///
 /// Full access, because reading the list back needs it; write-only would
 /// do for capture alone.
+///
+/// On watchOS, EventKit reads but never writes — `saveReminder` and
+/// `saveCalendar` are prohibited there — so the wrist reads the list back
+/// and hands a new to-do to the iPhone to file (GDR-0029).
 public final class ReminderStore {
 
     public static let defaultListTitle = "Timbre"
+
+    /// Whether this platform can file a to-do itself. False on the Watch.
+    #if os(watchOS)
+        public static let canAdd = false
+    #else
+        public static let canAdd = true
+    #endif
     private static let listKey = "todoListIdentifier"
 
     public enum Failure: LocalizedError {
@@ -83,44 +94,52 @@ public final class ReminderStore {
             .filter { $0.title == Self.defaultListTitle && $0.allowsContentModifications }
         if let list = existing.first { return list }
 
-        let source =
-            store.defaultCalendarForNewReminders()?.source
-            ?? store.sources.first { $0.sourceType == .calDAV }
-            ?? store.sources.first { $0.sourceType == .local }
-        guard let source else { throw Failure.noWritableSource }
+        #if os(watchOS)
+            // The Watch cannot create the list; the iPhone does on its first to-do.
+            throw Failure.noWritableSource
+        #else
+            let source =
+                store.defaultCalendarForNewReminders()?.source
+                ?? store.sources.first { $0.sourceType == .calDAV }
+                ?? store.sources.first { $0.sourceType == .local }
+            guard let source else { throw Failure.noWritableSource }
 
-        let list = EKCalendar(for: .reminder, eventStore: store)
-        list.title = Self.defaultListTitle
-        list.source = source
-        do {
-            try store.saveCalendar(list, commit: true)
-        } catch {
-            throw Failure.save(error.localizedDescription)
-        }
-        return list
+            let list = EKCalendar(for: .reminder, eventStore: store)
+            list.title = Self.defaultListTitle
+            list.source = source
+            do {
+                try store.saveCalendar(list, commit: true)
+            } catch {
+                throw Failure.save(error.localizedDescription)
+            }
+            return list
+        #endif
     }
 
-    /// Saves one to-do. Returns the name of the list it went to.
-    public func add(_ todo: Todo) throws -> String {
-        guard hasAccess else { throw Failure.noAccess }
-        let list = try resolveList()
+    /// Saves one to-do. Returns the name of the list it went to. Not on the
+    /// Watch, where EventKit cannot write (GDR-0029).
+    #if !os(watchOS)
+        public func add(_ todo: Todo) throws -> String {
+            guard hasAccess else { throw Failure.noAccess }
+            let list = try resolveList()
 
-        let reminder = EKReminder(eventStore: store)
-        reminder.calendar = list
-        reminder.title = todo.title
-        if let due = todo.due {
-            let units: Set<Calendar.Component> =
-                todo.hasTime ? [.year, .month, .day, .hour, .minute] : [.year, .month, .day]
-            reminder.dueDateComponents = Calendar.current.dateComponents(units, from: due)
-            if todo.hasTime { reminder.addAlarm(EKAlarm(absoluteDate: due)) }
+            let reminder = EKReminder(eventStore: store)
+            reminder.calendar = list
+            reminder.title = todo.title
+            if let due = todo.due {
+                let units: Set<Calendar.Component> =
+                    todo.hasTime ? [.year, .month, .day, .hour, .minute] : [.year, .month, .day]
+                reminder.dueDateComponents = Calendar.current.dateComponents(units, from: due)
+                if todo.hasTime { reminder.addAlarm(EKAlarm(absoluteDate: due)) }
+            }
+            do {
+                try store.save(reminder, commit: true)
+            } catch {
+                throw Failure.save(error.localizedDescription)
+            }
+            return list.title
         }
-        do {
-            try store.save(reminder, commit: true)
-        } catch {
-            throw Failure.save(error.localizedDescription)
-        }
-        return list.title
-    }
+    #endif
 
     /// Open to-dos in the chosen list, soonest first, undated last.
     public func openTodos() async throws -> (list: String, todos: [Todo]) {
