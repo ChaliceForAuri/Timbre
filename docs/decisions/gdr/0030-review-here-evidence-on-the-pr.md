@@ -39,8 +39,10 @@ checklist, and the evidence is posted to the pull request.**
    Backstage JSON drift check, the site's check and build — and then has the
    model read the change against `docs/design/review.md` and
    `docs/design/data-inventory.md`. The model is Claude Code in headless
-   mode on this Mac, under the maintainer's own account. No GitHub token,
-   no hosted reviewer, no secret in CI.
+   mode on this Mac, under the maintainer's own account, with Read, Grep
+   and Glob as its only tools, confined to the run directory and the tree,
+   and no project instructions loaded: the checklist is the whole
+   instruction. No GitHub token, no hosted reviewer, no secret in CI.
 2. **The evidence is on the pull request.** One review comment with the
    gates, the compliance answers as fixed fields, the findings, and the
    identities that make it reproducible: the head commit, the model, the
@@ -79,10 +81,9 @@ checklist, and the evidence is posted to the pull request.**
 - The checklist and the inventory are living design documents (they render
   in Backstage with the rest of `docs/design`); their hashes on each review
   are what tie a past verdict to the rules it was judged by.
-- The inventory names its own gaps: no in-app "delete from iCloud", no
-  privacy notice on the site yet, processor agreements to record, the
-  Watch's dictation copy. They are the next items of the roadmap, not
-  footnotes.
+- The inventory names its own gaps, from an in-app "delete from iCloud" to
+  end-to-end encryption of the sync. They are the next items of the
+  roadmap, not footnotes, and the list is kept there, not here.
 
 ## Alternatives considered
 

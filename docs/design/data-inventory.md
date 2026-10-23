@@ -49,7 +49,7 @@ the row says so.*
 | Data | Where | Purpose | Default | Lifetime and erasure | Who can read it |
 |---|---|---|---|---|---|
 | The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Encrypted in transit and at rest under Apple's keys. Not yet end-to-end encrypted: that needs the fields written as CloudKit encrypted values and record names that do not carry the term (gap 6). |
-| Sync state | `~/Library/Application Support/Timbre/library-sync.json` | Where CKSyncEngine left off | Off | Deleted with the file | Never |
+| Sync state | `~/Library/Application Support/Timbre/library-sync.json` on the Mac; `library-sync.json` in the app group container on the iPhone and the Watch | Where CKSyncEngine left off; no personal data | Off | Deleted with the file or the app | Never |
 
 Never synced, by rule: dictations, transcripts, captures, timings
 (GDR-0010). The schema is forever: no field renamed, retyped or removed.
@@ -114,8 +114,10 @@ Known gaps, to be closed before the product takes customers:
    covers only fields stored as CloudKit encrypted values and assets; the
    Library's fields are plain, and the event records' names carry the term.
    Before any user's zone exists: write the fields through `encryptedValues`
-   and name records by an opaque hash, superseding ADR-0017's field list.
-   The copy says "not yet end-to-end encrypted" until then.
+   and name records by an opaque hash, superseding ADR-0017's field list
+   and GDR-0010's clause that the setting says "end-to-end encrypted when
+   Advanced Data Protection is on". The copy says "not yet end-to-end
+   encrypted" until then.
 7. **An unfiled to-do on the Watch has no delete.** `pending-todos.json`
    keeps an item until the iPhone confirms filing; the Watch should show
    the queue and let the user drop an item.

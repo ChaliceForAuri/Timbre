@@ -4,10 +4,11 @@
 #
 #   tools/review.sh <pr> [--dry-run] [--skip-gates] [--skip-judgement] [--no-status] [--model <id>] [--allow-fork]
 #
-# The model runs with the run directory as its project, so the instructions
-# it loads are this checkout's CLAUDE.md and your own settings, never the
-# pull request's; the tree under review is data it may read. A change to
-# CLAUDE.md or .claude/ in the diff is still worth reading yourself.
+# The model runs with the run directory as its project and only your user
+# settings: no project CLAUDE.md is loaded, the checklist is its whole
+# instruction, and its only tools are Read, Grep and Glob, with Read confined
+# to the run directory and the tree. A change to CLAUDE.md or .claude/ in
+# the diff is still worth reading yourself.
 #
 # The gates run the pull request's own build and test code on this Mac, so a
 # pull request from a fork is refused unless --allow-fork is passed and you
@@ -158,6 +159,9 @@ else
         gate "Site type-checks" web-check 'cd web && npx -y pnpm@9 run --silent check'
         gate "Site builds" web-build 'cd web && npx -y pnpm@9 run --silent build'
     fi
+    if touched '^tools/review'; then
+        gate "The pull request's own review tool checks out" review-tool 'bash -n tools/review.sh && python3 -I tools/review-evidence.py --self-test'
+    fi
     [ -s "$GATES" ] || skipped "no gate applies" "nothing under packages, apps, docs or web changed"
 fi
 
@@ -224,7 +228,9 @@ else
         --json-schema "$(cat "$ROOT/tools/review-schema.json")" \
         --append-system-prompt-file "$RUN/system.md" \
         --setting-sources user \
-        --allowedTools "Read,Grep,Glob" \
+        --tools "Read,Grep,Glob" \
+        --allowedTools "Read(//$RUN/**),Grep,Glob" \
+        --disallowedTools "Bash,Edit,Write,NotebookEdit,Agent,WebFetch,WebSearch" \
         --add-dir "$WT" \
         --max-turns 80 \
         ${MODEL:+--model "$MODEL"} \

@@ -70,12 +70,13 @@ def compose(run: str, pr: str) -> int:
 
     gate_failed = any(g[1] == "fail" for g in gates)
     blocking = [f for f in findings if f["severity"] == "blocking"]
+    model_says_no = (out or {}).get("verdict") == "changes-needed"
     if meta.get("judgement") == "skipped":
         verdict = "gates only, judgement skipped" if not gate_failed else "changes needed, judgement skipped"
         state = "failure" if gate_failed else "success"
     elif out is None:
         verdict, state = "model review failed", "error"
-    elif gate_failed or blocking:
+    elif gate_failed or blocking or model_says_no:
         verdict, state = "changes needed", "failure"
     else:
         verdict, state = "pass", "success"
