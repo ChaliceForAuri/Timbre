@@ -32,7 +32,10 @@ def diff_lines(patch: str) -> set[tuple[str, int]]:
     new: int | None = None
     previous = ""
     for line in patch.splitlines():
-        header = line.startswith("+++ ") and previous.startswith("--- ")
+        if line.startswith("diff "):
+            path, new, previous = None, None, line
+            continue
+        header = new is None and line.startswith("+++ ") and previous.startswith("--- ")
         previous = line
         if header:
             target = line[4:].strip()
@@ -222,9 +225,10 @@ def self_test() -> int:
         problems.append("a deleted file has no right-side lines")
     if ("a.swift", 14) in got:
         problems.append("numbering ran past the hunk")
-    inside = FIXTURE + "diff --git a/c.txt b/c.txt\n--- a/c.txt\n+++ b/c.txt\n@@ -1,1 +1,2 @@\n line\n+++ not a header\n"
-    if ("c.txt", 2) not in diff_lines(inside) or any(p.startswith("+") for p, _ in diff_lines(inside)):
-        problems.append("a '+++' line inside a hunk is an added line, not a header")
+    inside = FIXTURE + "diff --git a/c.txt b/c.txt\n--- a/c.txt\n+++ b/c.txt\n@@ -1,2 +1,3 @@\n line\n--- a removed SQL comment\n+++ an added one\n+ and another\n"
+    got_inside = diff_lines(inside)
+    if {("c.txt", 1), ("c.txt", 2), ("c.txt", 3)} - got_inside or any(p.startswith("+") for p, _ in got_inside):
+        problems.append("a '---'/'+++' pair inside a hunk is a removed and an added line, not a header")
 
     ok = [["lint", "pass", "1", "x"]]
     bad = [["lint", "fail", "1", "x"]]

@@ -37,3 +37,6 @@ apps/Timbre/Config/*.provisionprofile
 # The maintainer's own captures, imported for evaluation: never committed
 # (review.md, C5).
 packages/TimbreKit/Fixtures/real-corpus.json
+
+# Python bytecode from tools/review-evidence.py
+__pycache__/

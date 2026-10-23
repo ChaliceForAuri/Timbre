@@ -45,7 +45,7 @@ Two kinds of records live here. The boundary rule:
 | [0014](adr/0014-strength-from-events-fsrs.md) | Strength is retrievability, derived from an entry's events with FSRS-4.5 | Accepted |
 | [0015](adr/0015-a-package-per-framework.md) | Framework-bound code lives in a package per framework, with that framework's platforms | Accepted |
 | [0016](adr/0016-the-companion-project.md) | The companion: one project, four targets, a shared container, and widgets that read a snapshot | Accepted |
-| [0017](adr/0017-the-librarys-cloudkit-schema.md) | The Library's CloudKit schema: events as immutable records, entries by latest edit, one zone | Accepted |
+| [0017](adr/0017-the-librarys-cloudkit-schema.md) | The Library's CloudKit schema: events as immutable records, entries by latest edit, one zone | Accepted · plain fields superseded in part by GDR-0031 |
 
 ### GDRs
 

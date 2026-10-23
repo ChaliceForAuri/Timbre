@@ -27,11 +27,12 @@ the row says so.*
 | The selection, for read-aloud and command mode | Memory | Read it aloud; fix, explain, shorten, plain | Needs Accessibility | Discarded after the command | Never |
 | The explanation card, the overlay, the word-of-the-day card | Memory; the day's example sentence is kept in `UserDefaults` for the day | Show the result | On | The card rebuilds daily | Never |
 | Settings | `UserDefaults` for `dev.hugopretorius.Timbre` | Preferences: reading speed, voice, toggles | On | Until the user resets them | Never |
+| The pre-Library lists: taught words, heard-to-meant corrections and acronym meanings from before 0.5 | `UserDefaults` keys `vocabulary`, `corrections`, `acronyms` | The one-time import source for the Library; left in place so a downgrade still works | Present only on a Mac that ran an earlier Timbre | Until preferences are reset; the import does not remove them yet (gap 8) | Never |
 | The unified log: status lines and timings from the pipeline; a command's heard words only as a `.private` value, which macOS redacts at rest unless the user enables private logging | Apple's log store on the Mac | Diagnostics in Console | On | macOS's log retention | Never |
 | The usage ledger: counts of dictations, words, commands, to-dos and readings, all-time and this week | `UserDefaults`, key `usageLedger` | The usage view in Settings | On | Reset from Settings; never a transcript, only counts | Never |
 | The word-of-the-day notification | The system's notification centre, local | The morning word | Off (GDR-0027) | Delivered and gone; no server | Never |
 | The update check: a `GET` for `appcast.json` on our site, and on Install a `GET` for the release zip from the same site | Vercel's request logs (IP address, user agent, time) on the site's side | Find a newer version; verify and install on request | Off; a menu item, or a daily check the user turns on (GDR-0013); the download only on Install | Vercel's log retention, not ours; no identifier, no query string, no cookie | Yes: these are the only two requests the binary can make, both to our own site |
-| Reminders | The user's Reminders database (Apple), the "Timbre" list | A spoken to-do lands in Reminders (GDR-0016) | Asked for on the first spoken to-do | The user's, in Reminders | To the user's iCloud only if their Reminders sync; not through us |
+| Reminders | The user's Reminders database (Apple), the list chosen in Settings, "Timbre" by default | A spoken to-do lands in Reminders (GDR-0016) | Asked for on the first spoken to-do | The user's, in Reminders | To the user's iCloud only if their Reminders sync; not through us |
 
 ## 2. The iPhone and the Watch
 
@@ -121,3 +122,6 @@ Known gaps, to be closed before the product takes customers:
 7. **An unfiled to-do on the Watch has no delete.** `pending-todos.json`
    keeps an item until the iPhone confirms filing; the Watch should show
    the queue and let the user drop an item.
+8. **The pre-Library lists stay in preferences after import.** The same
+   taught words in a second store with no erasure path of its own; remove
+   them once the import has been saved, and say so in the changelog.

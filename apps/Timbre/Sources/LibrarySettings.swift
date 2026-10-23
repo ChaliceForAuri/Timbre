@@ -608,11 +608,6 @@ private struct CloudSection: View {
                         .buttonStyle(.link)
                         .font(.caption)
                 }
-                Link(
-                    "About Advanced Data Protection",
-                    destination: URL(string: "https://support.apple.com/en-us/102651")!
-                )
-                .font(.caption)
             }
         }
     }
