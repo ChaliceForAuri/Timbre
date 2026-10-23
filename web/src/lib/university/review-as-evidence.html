@@ -1,0 +1,54 @@
+<p>The earlier modules are about building Timbre. This one is about proving it: what an auditor asks for when a company says <em>SOC 2</em>, what a regulator asks for when a user says <em>GDPR</em>, and why a product that keeps everything on the device still has to answer both. It ends with how Timbre's review turns every pull request into the evidence (GDR-0030).</p>
+
+<h3 id="m16-soc2">SOC 2 is evidence, not a badge</h3>
+
+<p>SOC 2 is a report, written by an independent auditor, on the <em>controls</em> an organisation operates, judged against the AICPA's Trust Services Criteria: security (the common criteria, CC1 to CC9), and optionally availability, processing integrity, confidentiality and privacy. A Type I report says the controls were designed properly on a date; a Type II says they operated, every time, over a period, usually six to twelve months. Customers' security teams ask for the Type II.</p>
+
+<p>The word that matters is <em>operated</em>. A policy that says "all changes are reviewed" is worth nothing to an auditor; a list of every change in the period, each with its review, its test results and the name of who merged it, is worth everything. The criteria most relevant to a one-person software product are few:</p>
+
+<ul>
+<li><strong>CC8.1, change management.</strong> Changes are authorised, designed, tested, approved and tracked. Evidence: the pull request, the review on it, the green checks, the merge.</li>
+<li><strong>CC6, logical access.</strong> Who can merge, publish, sign, deploy, and read the lab. Evidence: branch protection, the developer team, the hosting roles — a short list, and a record of when it changed.</li>
+<li><strong>CC7, system operations.</strong> How a release is built and verified, and how a problem would be detected. Evidence: the release script, the notarisation, the update verifier's run.</li>
+<li><strong>The privacy criteria, P1 to P8.</strong> Notice, choice, collection, use and retention, access, disclosure, quality, monitoring. Evidence: a record of what is collected and why, and a way to show each change was held to it.</li>
+</ul>
+
+<p>Nobody audits a free Mac app. But the day a company wants to buy Timbre for its staff, its procurement team sends a questionnaire with these headings, and the honest answer "we have no server, so most of this is not applicable" lands only if the record proves it. The cheapest time to start the record is before the first customer.</p>
+
+<h3 id="m16-gdpr">The GDPR in the small</h3>
+
+<p>The General Data Protection Regulation applies to <em>personal data</em> — anything about an identifiable person, which includes dictated text, a to-do, an email address and an IP address — and to anyone who decides why and how it is processed (a <em>controller</em>) or processes it on their behalf (a <em>processor</em>). Its principles (Article 5) are short enough to keep in your head: lawful and transparent; collected for a stated purpose; the minimum that serves it; accurate; kept no longer than needed; secure. Around them sit the user's rights — to see their data (Article 15), correct it (16), erase it (17), take it elsewhere (20), and object (21) — and three duties on the maker: privacy by design and by default (25), a record of processing activities (30), and appropriate security (32).</p>
+
+<p>Here is the part that is special about a local-only product. If the software never sends the user's data anywhere, the maker is not a controller of it at all: the user holds their own data on their own device, and the regulation's duties fall on the maker only for whatever the maker <em>does</em> receive. For Timbre that is the website's request logs and the lab's single login. The app's data protection is then a design property to be preserved, not a compliance programme to be run — which is exactly why every change has to be checked against it. One analytics call, one crash reporter, one "send feedback with context" button, and the maker becomes a controller of dictated text with every duty above.</p>
+
+<div class="box warn">
+<p class="box-title">Where "local-only" still has edges</p>
+<p>The update check is a real HTTP request, so the site's host logs an IP address (GDR-0013 makes it opt-in and says so). iCloud sync puts the Library in the user's own account, where Apple is the user's provider, not ours (GDR-0010). The Watch's system dictation is Apple's and may use Apple's servers under the user's setting. None of these make us a controller; all of them have to be written down, because a claim that is slightly wrong is worse than one that is plainly bounded.</p>
+</div>
+
+<h3 id="m16-inventory">The record of processing</h3>
+
+<p>Article 30 asks a controller to keep a record of what personal data it processes, for what purpose, who receives it, how long it is kept, and how it is secured. The SOC 2 privacy criteria ask for the same facts under different names. Written once, the record answers both, and it answers the question every review has to ask: <em>does this change touch a row?</em></p>
+
+<p>Timbre's record is <code>docs/design/data-inventory.md</code>, one table per system: the Mac app, the iPhone and the Watch, iCloud sync, the website and Backstage, development and release. Each row has the data, where it lives, its purpose, its default, its lifetime and how it is erased, and whether it leaves the device. The last section lists the rights and how each is met, and then the gaps — no in-app "delete from iCloud", no privacy notice on the site yet — because an inventory that hides its gaps is not a record, it is marketing.</p>
+
+<h3 id="m16-review">The review as the control</h3>
+
+<p>A control is something that runs the same way every time and leaves a trace. Timbre's is a script on the maintainer's Mac (<code>tools/review.sh</code>) with three stages:</p>
+
+<ol>
+<li><strong>Gates.</strong> Lint, the tests of every package the change touches, the Mac and companion builds, the Backstage JSON drift check, the site's type check and build. Deterministic; a gate passes or fails.</li>
+<li><strong>Judgement.</strong> The model — Claude Code in headless mode, on the Mac, under the maintainer's own account — reads the pull request against a written checklist, <code>docs/design/review.md</code>, and the inventory. The checklist has four parts: correctness and conventions, security, privacy and data protection, audit. The model answers the compliance questions as fixed fields (personal data: none, touched, new; network: none, site only, app; rights: unaffected, preserved, weakened; inventory current: yes or no) and returns findings with a severity and a line.</li>
+<li><strong>Evidence.</strong> One review comment on the pull request with the gates, the answers and the findings; inline comments where a finding has a line; a commit status, <code>timbre/review</code>, that branch protection requires. The comment names the head commit, the model, the checklist's hash, the tool's hash, and who ran it when. Change the checklist and every later review says so.</li>
+</ol>
+
+<p>Two design choices carry the weight. <em>The model advises; the human approves.</em> Nothing merges on the model's verdict; the maintainer reads the findings, runs what the description claims was measured, and merges by hand, and GitHub's record of that merge is what an auditor sees. And <em>the checklist is the compliance stance</em>: it is not a separate policy document kept in a drawer; it is the thing every change is held to, so the policy and the practice cannot drift apart.</p>
+
+<h3 id="m16-honest">What is local and what is not</h3>
+
+<p>The gates run on the Mac. The judgement does not: Claude Code sends the diff, and whatever files the model reads, to Anthropic's API. GDR-0030 says this plainly rather than hiding it behind the word "local", and makes it acceptable with one rule the review itself enforces: no real user data is ever in the repository. Corpora are written for the purpose, audio fixtures are generated by <code>say</code>, and the maintainer's own dictation captures are ignored by git. What the model sees is code and documents, which are public anyway. A reviewer running on the device would be truer to the product's spirit; the day the on-device model can read a two-thousand-line diff against a checklist, that clause is superseded and the rest of the record stands.</p>
+
+<div class="box good">
+<p class="box-title">In Timbre</p>
+<p><code>tools/review.sh &lt;pr&gt;</code> runs the gates, hands the checklist and the inventory to the headless model, and posts the review, the inline comments and the <code>timbre/review</code> status; <code>--dry-run</code> writes it all under <code>.review/</code> and posts nothing. The checklist is <code>docs/design/review.md</code>; the record of processing is <code>docs/design/data-inventory.md</code>; both render in Backstage. GDR-0030 records the decision, including the one clause that is not local.</p>
+</div>

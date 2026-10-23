@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "verdict", "compliance", "findings"],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "description": "Three to six sentences: what the change does, what holds up, what must change."
+    },
+    "verdict": { "type": "string", "enum": ["pass", "changes-needed"] },
+    "compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "personal_data", "network", "storage_or_logging", "third_party",
+        "real_data_in_repo", "user_facing_copy", "rights", "inventory_current", "notes"
+      ],
+      "properties": {
+        "personal_data": { "type": "string", "enum": ["none", "touched", "new"] },
+        "network": { "type": "string", "enum": ["none", "site-only", "app"] },
+        "storage_or_logging": { "type": "string", "enum": ["none", "changed", "new"] },
+        "third_party": { "type": "string", "enum": ["none", "changed", "new"] },
+        "real_data_in_repo": { "type": "boolean" },
+        "user_facing_copy": { "type": "string", "enum": ["unchanged", "changed-and-matches", "changed-and-mismatches"] },
+        "rights": { "type": "string", "enum": ["unaffected", "preserved", "weakened"] },
+        "inventory_current": { "type": "boolean" },
+        "notes": { "type": "string", "description": "One to four sentences on the answers above, naming inventory rows." }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "category", "title", "detail", "suggestion", "path", "line"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["blocking", "should-fix", "nit"] },
+          "category": {
+            "type": "string",
+            "enum": ["correctness", "convention", "tests", "records", "security", "privacy", "audit", "docs"]
+          },
+          "title": { "type": "string" },
+          "detail": { "type": "string", "description": "What the code does and why it is a problem; quote it." },
+          "suggestion": { "type": "string", "description": "The fix, or an empty string." },
+          "path": { "type": ["string", "null"], "description": "Repository-relative path of the new file, or null." },
+          "line": { "type": ["integer", "null"], "description": "Line in the new file, or null." }
+        }
+      }
+    }
+  }
+}

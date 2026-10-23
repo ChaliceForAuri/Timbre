@@ -80,3 +80,4 @@ Two kinds of records live here. The boundary rule:
 | [0027](gdr/0027-word-of-the-day-the-bar.md) | The word of the day: the bar is Vocabulary.com and the widget apps, and the word is yours first | Accepted · implementation pending |
 | [0028](gdr/0028-bundled-word-content-from-wiktionary.md) | Bundled word content comes from a Wiktionary extract, under CC BY-SA; the model writes only examples | Accepted · implementation pending |
 | [0029](gdr/0029-the-wrist-captures-the-iphone-files.md) | The wrist captures a to-do; the iPhone files it (supersedes 0026's to-do clause) | Accepted · implementation pending |
+| [0030](gdr/0030-review-here-evidence-on-the-pr.md) | Every change is reviewed here, and the review is evidence (builds on 0006, 0007, 0013) | Accepted |

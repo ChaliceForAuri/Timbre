@@ -29,3 +29,11 @@ web/.env
 
 # Provisioning profiles are fetched per machine (tools/asc.swift); never committed.
 apps/Timbre/Config/*.provisionprofile
+
+# The review's evidence and worktrees (tools/review.sh, GDR-0030); the
+# review itself lives on the pull request.
+.review/
+
+# The maintainer's own captures, imported for evaluation: never committed
+# (review.md, C5).
+packages/TimbreKit/Fixtures/real-corpus.json
