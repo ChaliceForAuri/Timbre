@@ -25,7 +25,7 @@ the row says so.*
 | Microphone audio | Memory, during a hold of the key | On-device transcription with `SpeechAnalyzer` | Granted by the user once | Discarded as it is transcribed; never written | Never |
 | The pasteboard and the focused text field | Memory, during one insertion | Paste the result; replace the live-typed run | Needs Accessibility, granted by the user | Snapshot, set, paste, restore; nothing kept | Never |
 | The selection, for read-aloud and command mode | Memory | Read it aloud; fix, explain, shorten, plain | Needs Accessibility | Discarded after the command | Never |
-| The explanation card, the overlay, the word-of-the-day card | Memory; the day's example sentence is kept for the day | Show the result | On | The card rebuilds daily | Never |
+| The explanation card, the overlay, the word-of-the-day card | Memory; the day's example sentence is kept in `UserDefaults` for the day | Show the result | On | The card rebuilds daily | Never |
 | Settings | `UserDefaults` for `dev.hugopretorius.Timbre` | Preferences: reading speed, voice, toggles | On | Until the user resets them | Never |
 | The word-of-the-day notification | The system's notification centre, local | The morning word | Off (GDR-0027) | Delivered and gone; no server | Never |
 | The update check: one `GET` for `appcast.json` on our site | Vercel's request logs (IP address, user agent, time) on the site's side | Find a newer version; verify and install on request | Off; a menu item, or a daily check the user turns on (GDR-0013) | Vercel's log retention, not ours; no identifier, no query string, no cookie | Yes: this is the only request the binary can make |
@@ -38,7 +38,7 @@ the row says so.*
 | The Library | The app group container `group.dev.hugopretorius.Timbre` | Same as the Mac | On | Same as the Mac: Settings, Export, Forget | Only with iCloud sync on |
 | `today.json`: today's word, its strength and whether it was met | The app group container, read by the widgets | The widget, the Lock Screen, the complication show a word without reading the Library (ADR-0016) | On | Rewritten on every rebuild; deleted with the app | Never |
 | Hold-to-talk audio | Memory | On-device transcription with `SpeechAnalyzer` | Granted once | Discarded as transcribed | Never |
-| The Watch's text input | Apple's system dictation and scribble UI | A spoken to-do on the wrist | Granted once | Apple's | Apple's dictation may use Apple's servers under the user's own Siri & Dictation setting; the Watch app's copy says so. Timbre adds nothing to it. |
+| The Watch's text input | Apple's system dictation and scribble UI | A spoken to-do on the wrist | Granted once | Apple's | Apple's dictation may use Apple's servers under the user's own Siri & Dictation setting; the Watch app does not yet say so (gap 4). Timbre adds nothing to it. |
 | The to-do queue in transit | WatchConnectivity, device to device | The Watch captures, the iPhone files (GDR-0029) | On | Queued on the Watch until the phone is reachable, then dropped | Watch to the user's own iPhone, through Apple's transport, never through us |
 | Reminders | The user's Reminders database | As on the Mac; read-only on the Watch | Asked once | The user's | As on the Mac |
 
@@ -57,27 +57,29 @@ Never synced, by rule: dictations, transcripts, captures, timings
 | Data | Where | Purpose | Lawful basis | Lifetime and erasure | Status |
 |---|---|---|---|---|---|
 | Request logs: IP address, user agent, path, time | Vercel | Serve and secure the site; the same logs receive the app's update check | Legitimate interest in running the site | Vercel's default retention; not exported | In use |
-| Releases, the appcast, the University | Vercel, static files | Distribute the app and the learning material | None needed: nothing is collected | — | In use |
+| Releases and the appcast | Vercel, static files | Distribute the app | None needed: nothing is collected | — | In use |
+| The University | Served behind the lab's login (`web/src/routes/backstage/university`) | The learning material | None needed: nothing is collected | — | In use; a public University is the plan (backstage.md §4) |
 | The Backstage login | Supabase auth: one owner email (the maintainer's) and a session cookie | Gate the lab | The maintainer's own account | Until the maintainer logs out or deletes the account | In use; no public sign-up |
 | Page views: path, referrer, country, time; no identifier, no cookie | Supabase table `page_views` | Know what is read | Legitimate interest; no consent needed because no identifier is set | Design: aggregate after 90 days, delete rows | Designed, not built (backstage.md §9) |
 | Feedback: body, app context, a GitHub issue number | GitHub issues, mirrored to Supabase `feedback` | Hear from users who choose to write | Consent, by submitting the form | Until the issue is closed and the row deleted on request | Designed, not built (backstage.md §8) |
-| Eval runs and results | Supabase `eval_runs`, `eval_results` | Measure the pipeline against synthetic corpora | None needed: no personal data | Kept as the measurement record | Designed, not built |
+| Eval runs and results | Supabase `eval_runs`, `eval_results` | Measure the pipeline against synthetic corpora | None needed: no personal data | Kept as the measurement record | Tables exist by migration (`supabase/migrations/20260824120000_eval_runs.sql`), empty; the publisher is not built |
 | Dictation samples | Supabase `dictation_samples` | The maintainer's own opt-in exports, for evaluation | The maintainer's own data | Deleted by the maintainer | Designed, not built; never anyone else's |
 | Customers: email, Stripe customer id, product, status | Supabase `customers`, Stripe | Sell the product | Contract | Per the customer agreement, to be written | Deferred |
 | LLM traces | Langfuse | Debug the polisher's prompts on synthetic input | None needed | Per Langfuse's retention | Designed, not built |
 
-The site sets no cookie except the lab's session cookie, which is strictly
-necessary for the one person who logs in; there is no consent banner because
-nothing needs one. A privacy notice for the site's logs and the lab's login
+The site sets no cookie for visitors. Behind the lab's login, two cookies
+exist for the one person who logs in: the Supabase session cookie, strictly
+necessary, and a `sidebar_state` preference cookie (seven days) set by the
+lab's sidebar. There is no consent banner because nothing needs one. A privacy notice for the site's logs and the lab's login
 is not yet published; see §6.
 
 ## 5. Development and release
 
 | Data | Where | Purpose | Notes |
 |---|---|---|---|
-| The repository: code, records, design docs, the University, synthetic corpora, `say`-generated audio fixtures | GitHub, public | The product and its book | No real dictation, Library, email or screenshot of real data is ever committed (review C5). `packages/TimbreKit/Fixtures/real-corpus.json`, the import of the maintainer's own capture, is ignored by git. |
+| The repository: code, records, design docs, the University, synthetic corpora, `say`-generated audio fixtures | GitHub, public, under a LICENSE that reserves all rights | The product and its book | No real dictation, Library, email or screenshot of real data is ever committed (review C5). `packages/TimbreKit/Fixtures/real-corpus.json`, the import of the maintainer's own capture, is ignored by git. GDR-0005 still records the repository as private: the fact changed first and the record has not caught up (gap 5). |
 | CI logs | GitHub Actions | Build and test on every pull request | Build output only; no personal data in the corpora |
-| The review evidence | A review comment and a commit status on each pull request; a local copy under `.review/`, ignored by git | GDR-0030 | The diff and the files the model reads go to Anthropic's API under the maintainer's Claude account; no user data is in the repository, so none goes |
+| The review evidence | A review comment and a `timbre/review` status on each pull request; a local copy under `.review/` (the pull request's JSON, the diff, the gate logs, the model's output), ignored by git, kept until the maintainer deletes it | GDR-0030 | The prompt sends the pull request's title, description, file list, gate results and diff to Anthropic's API under the maintainer's Claude account, and the model reads files from the checked-out tree. The public comment carries the head commit, the model and its cost, the maintainer's GitHub login and the time. No user data is in the repository, so none goes. |
 | The release | Apple's notarisation service receives the binary; the signed zip and `appcast.json` are published on the site | Distribute a verified build | The code requirement names the team; changing it strands every installed copy (ADR-0010) |
 | Signing identities and secrets | The maintainer's keychain; Vercel environment; GitHub Secrets | Sign, deploy | Never in the repository (review B4) |
 
@@ -103,3 +105,6 @@ Known gaps, to be closed before the product takes customers:
    terms; record the versions accepted here when customers exist.
 4. **The Watch's copy** should say that the system's dictation is Apple's
    and may use Apple's servers under the user's setting.
+5. **GDR-0005 still says the repository is private.** It is public, under a
+   LICENSE that reserves all rights; a record superseding that one sentence
+   is pending, so the records, the inventory and the site agree.

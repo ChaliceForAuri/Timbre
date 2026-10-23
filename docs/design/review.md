@@ -117,8 +117,8 @@ the record of what exists; the GDPR calls it the record of processing
   Consent that is bundled, pre-ticked or paid for is blocking.
 - **C3 · Retention and erasure.** Anything stored has a way to be deleted by
   the user from the same place it was turned on, and a stated lifetime.
-  Anything synced through the user's iCloud is deletable there too. Article
-  17.
+  Anything synced through the user's iCloud is deletable there too
+  (Article 17).
 - **C4 · Rights are preserved.** The user can still see everything the app
   holds (Article 15), export it in a usable form (Article 20), correct it
   (Article 16) and delete it (Article 17). A change that makes any of these
@@ -181,8 +181,8 @@ change management, and checks that a change does not weaken the others.
 ## 6. What the model returns
 
 A summary; a verdict (*pass* or *changes needed*); the compliance answers as
-fixed values — personal data (none, touched, new), network (none, site only,
-app), storage or logging (none, changed, new), third party (none, changed,
+fixed values — personal data (none, touched, new), network (none, dev side,
+site only, app), storage or logging (none, changed, new), third party (none, changed,
 new), real data in the repo (yes or no), user-facing copy (unchanged,
 changed and matches, changed and mismatches), rights (unaffected, preserved,
 weakened), inventory current (yes or no) — and a short note; then the

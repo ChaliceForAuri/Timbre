@@ -121,7 +121,7 @@ xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 # (GDR-0030): the gates, then the model against docs/design/review.md and
 # docs/design/data-inventory.md, then a review comment, inline comments and
 # the timbre/review commit status. --dry-run writes to .review/ and posts
-# nothing; --skip-gates trusts CI for the gates.
+# nothing; --skip-gates trusts CI for the gates; a fork needs --allow-fork.
 tools/review.sh 73
 
 # Full app:
