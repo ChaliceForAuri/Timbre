@@ -29,7 +29,7 @@ the row says so.*
 | Settings | `UserDefaults` for `dev.hugopretorius.Timbre` | Preferences: reading speed, voice, toggles | On | Until the user resets them | Never |
 | The usage ledger: counts of dictations, words, commands, to-dos and readings, all-time and this week | `UserDefaults`, key `usageLedger` | The usage view in Settings | On | Reset from Settings; never a transcript, only counts | Never |
 | The word-of-the-day notification | The system's notification centre, local | The morning word | Off (GDR-0027) | Delivered and gone; no server | Never |
-| The update check: one `GET` for `appcast.json` on our site | Vercel's request logs (IP address, user agent, time) on the site's side | Find a newer version; verify and install on request | Off; a menu item, or a daily check the user turns on (GDR-0013) | Vercel's log retention, not ours; no identifier, no query string, no cookie | Yes: this is the only request the binary can make |
+| The update check: a `GET` for `appcast.json` on our site, and on Install a `GET` for the release zip from the same site | Vercel's request logs (IP address, user agent, time) on the site's side | Find a newer version; verify and install on request | Off; a menu item, or a daily check the user turns on (GDR-0013); the download only on Install | Vercel's log retention, not ours; no identifier, no query string, no cookie | Yes: these are the only two requests the binary can make, both to our own site |
 | Reminders | The user's Reminders database (Apple), the "Timbre" list | A spoken to-do lands in Reminders (GDR-0016) | Asked for on the first spoken to-do | The user's, in Reminders | To the user's iCloud only if their Reminders sync; not through us |
 
 ## 2. The iPhone and the Watch
@@ -106,7 +106,8 @@ Known gaps, to be closed before the product takes customers:
 3. **Processor agreements** with Vercel and Supabase are their standard
    terms; record the versions accepted here when customers exist.
 4. **The Watch's copy** should say that the system's dictation is Apple's
-   and may use Apple's servers under the user's setting.
+   and may use Apple's servers under the user's setting, and its sync toggle
+   should carry the same plain-words description the Mac's and iPhone's do.
 5. **GDR-0005 still says the repository is private.** It is public, under a
    LICENSE that reserves all rights; a record superseding that one sentence
    is pending, so the records, the inventory and the site agree.

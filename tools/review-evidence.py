@@ -30,8 +30,11 @@ def diff_lines(patch: str) -> set[tuple[str, int]]:
     valid: set[tuple[str, int]] = set()
     path: str | None = None
     new: int | None = None
+    previous = ""
     for line in patch.splitlines():
-        if line.startswith("+++ "):
+        header = line.startswith("+++ ") and previous.startswith("--- ")
+        previous = line
+        if header:
             target = line[4:].strip()
             if target == "/dev/null":
                 path = None
@@ -52,6 +55,30 @@ def diff_lines(patch: str) -> set[tuple[str, int]]:
     return valid
 
 
+def decide(gates, out, meta) -> tuple[str, str]:
+    """The verdict and the commit status from what ran.
+
+    A failed gate or a blocking finding is changes needed; so is the model's
+    own verdict of changes-needed. With the judgement skipped the gates are the
+    review, and if nothing ran at all there is nothing to report: error, never
+    a green status.
+    """
+    ran = [g for g in gates if g[1] in ("pass", "fail")]
+    gate_failed = any(g[1] == "fail" for g in ran)
+    findings = (out or {}).get("findings", [])
+    blocking = any(f["severity"] == "blocking" for f in findings)
+    model_says_no = (out or {}).get("verdict") == "changes-needed"
+    if meta.get("judgement") == "skipped":
+        if not ran:
+            return "nothing reviewed", "error"
+        return ("changes needed, judgement skipped", "failure") if gate_failed else ("gates only, judgement skipped", "success")
+    if out is None:
+        return "model review failed", "error"
+    if gate_failed or blocking or model_says_no:
+        return "changes needed", "failure"
+    return "pass", "success"
+
+
 def compose(run: str, pr: str) -> int:
     pr_json = json.load(open(f"{run}/pr.json"))
     meta = json.load(open(f"{run}/meta.json"))
@@ -68,18 +95,8 @@ def compose(run: str, pr: str) -> int:
     findings = (out or {}).get("findings", [])
     comp = (out or {}).get("compliance", {})
 
-    gate_failed = any(g[1] == "fail" for g in gates)
+    verdict, state = decide(gates, out, meta)
     blocking = [f for f in findings if f["severity"] == "blocking"]
-    model_says_no = (out or {}).get("verdict") == "changes-needed"
-    if meta.get("judgement") == "skipped":
-        verdict = "gates only, judgement skipped" if not gate_failed else "changes needed, judgement skipped"
-        state = "failure" if gate_failed else "success"
-    elif out is None:
-        verdict, state = "model review failed", "error"
-    elif gate_failed or blocking or model_says_no:
-        verdict, state = "changes needed", "failure"
-    else:
-        verdict, state = "pass", "success"
 
     valid = diff_lines(open(f"{run}/diff.patch", encoding="utf-8", errors="replace").read())
 
@@ -205,6 +222,29 @@ def self_test() -> int:
         problems.append("a deleted file has no right-side lines")
     if ("a.swift", 14) in got:
         problems.append("numbering ran past the hunk")
+    inside = FIXTURE + "diff --git a/c.txt b/c.txt\n--- a/c.txt\n+++ b/c.txt\n@@ -1,1 +1,2 @@\n line\n+++ not a header\n"
+    if ("c.txt", 2) not in diff_lines(inside) or any(p.startswith("+") for p, _ in diff_lines(inside)):
+        problems.append("a '+++' line inside a hunk is an added line, not a header")
+
+    ok = [["lint", "pass", "1", "x"]]
+    bad = [["lint", "fail", "1", "x"]]
+    none = [["all gates", "skipped", "0", "flag"]]
+    clean = {"verdict": "pass", "findings": []}
+    cases = [
+        (ok, clean, {}, ("pass", "success")),
+        (bad, clean, {}, ("changes needed", "failure")),
+        (ok, {"verdict": "pass", "findings": [{"severity": "blocking"}]}, {}, ("changes needed", "failure")),
+        (ok, {"verdict": "changes-needed", "findings": []}, {}, ("changes needed", "failure")),
+        (ok, None, {}, ("model review failed", "error")),
+        (ok, None, {"judgement": "skipped"}, ("gates only, judgement skipped", "success")),
+        (bad, None, {"judgement": "skipped"}, ("changes needed, judgement skipped", "failure")),
+        (none, None, {"judgement": "skipped"}, ("nothing reviewed", "error")),
+    ]
+    for gates, out, meta, expected in cases:
+        got = decide(gates, out, meta)
+        if got != expected:
+            problems.append(f"decide({gates[0][1]}, {out and out.get('verdict')}, {meta}) = {got}, expected {expected}")
+
     if problems:
         print("review-evidence self-test FAILED:\n  " + "\n  ".join(problems))
         return 1

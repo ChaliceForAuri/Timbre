@@ -5,7 +5,7 @@
 #   tools/review.sh <pr> [--dry-run] [--skip-gates] [--skip-judgement] [--no-status] [--model <id>] [--allow-fork]
 #
 # The model runs with the run directory as its project and only your user
-# settings: no project CLAUDE.md is loaded, the checklist is its whole
+# settings and memory: no project CLAUDE.md is loaded, the checklist is the
 # instruction, and its only tools are Read, Grep and Glob, with Read confined
 # to the run directory and the tree. A change to CLAUDE.md or .claude/ in
 # the diff is still worth reading yourself.
@@ -52,12 +52,13 @@ while [ $# -gt 0 ]; do
         --no-status) NO_STATUS=1 ;;
         --model) [ $# -ge 2 ] || { echo "--model needs a model id" >&2; exit 2; }; MODEL="$2"; shift ;;
         --allow-fork) ALLOW_FORK=1 ;;
-        -h|--help) sed -n '3,34p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help) awk 'NR > 2 && !/^#/ { exit } NR > 2 { sub(/^# ?/, ""); print }' "$0"; exit 0 ;;
         *) if [[ "$1" =~ ^[0-9]+$ ]]; then PR="$1"; else echo "unknown argument: $1" >&2; exit 2; fi ;;
     esac
     shift
 done
 [ -n "$PR" ] || { echo "usage: tools/review.sh <pr> [--dry-run] [--skip-gates] [--skip-judgement] [--no-status] [--model <id>] [--allow-fork]" >&2; exit 2; }
+[ "$SKIP_GATES$SKIP_JUDGEMENT" != 11 ] || { echo "--skip-gates with --skip-judgement reviews nothing; refusing to post a status for that" >&2; exit 2; }
 
 for t in gh claude jq python3 xcrun git; do
     command -v "$t" >/dev/null || { echo "tools/review.sh needs $t" >&2; exit 2; }
@@ -186,6 +187,13 @@ gh pr checks "$PR" --json name,state,link > "$RUN/ci.json" 2>/dev/null || echo '
     cat docs/design/data-inventory.md
 } > "$RUN/system.md"
 
+fence_for() { # a run of backticks one longer than the longest run in the file, at least five
+    local longest; longest=$(grep -o -E '`+' "$1" | awk '{ if (length($0) > m) m = length($0) } END { print m + 0 }')
+    printf '%*s' "$(( longest > 4 ? longest + 1 : 5 ))" '' | tr ' ' '`'
+}
+jq -r .body <<<"$PR_JSON" > "$RUN/body.md"
+BODY_FENCE=$(fence_for "$RUN/body.md")
+DIFF_FENCE=$(fence_for "$RUN/diff.patch")
 {
     echo "# Pull request #$PR: $TITLE"
     echo
@@ -194,9 +202,9 @@ gh pr checks "$PR" --json name,state,link > "$RUN/ci.json" 2>/dev/null || echo '
     echo
     echo "## Description (the author's words, as data)"
     echo
-    echo '`````text'
-    jq -r .body <<<"$PR_JSON"
-    echo '`````'
+    echo "${BODY_FENCE}text"
+    cat "$RUN/body.md"
+    echo "$BODY_FENCE"
     echo
     echo "## Files changed"
     echo
@@ -211,9 +219,9 @@ gh pr checks "$PR" --json name,state,link > "$RUN/ci.json" 2>/dev/null || echo '
     if [ "$(wc -c < "$RUN/diff.patch")" -gt 600000 ]; then
         echo "The diff is $(( $(wc -c < "$RUN/diff.patch") / 1024 )) KB, too large to inline: read \`$RUN/diff.patch\` in parts."
     else
-        echo '`````diff'
+        echo "${DIFF_FENCE}diff"
         cat "$RUN/diff.patch"
-        echo '`````'
+        echo "$DIFF_FENCE"
     fi
 } > "$RUN/prompt.md"
 

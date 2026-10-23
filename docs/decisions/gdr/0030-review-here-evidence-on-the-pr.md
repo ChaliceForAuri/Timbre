@@ -41,8 +41,8 @@ checklist, and the evidence is posted to the pull request.**
    `docs/design/data-inventory.md`. The model is Claude Code in headless
    mode on this Mac, under the maintainer's own account, with Read, Grep
    and Glob as its only tools, confined to the run directory and the tree,
-   and no project instructions loaded: the checklist is the whole
-   instruction. No GitHub token, no hosted reviewer, no secret in CI.
+   and no project instructions loaded; the maintainer's own settings and
+   memory still apply, and the checklist is the instruction. No GitHub token, no hosted reviewer, no secret in CI.
 2. **The evidence is on the pull request.** One review comment with the
    gates, the compliance answers as fixed fields, the findings, and the
    identities that make it reproducible: the head commit, the model, the
