@@ -27,6 +27,9 @@
 # --dry-run writes everything under .review/<pr>-<sha>/ and posts nothing.
 # --skip-gates trusts CI for the gates (they are recorded as skipped);
 # --skip-judgement runs the gates alone and says so in the evidence.
+# --model picks the reviewer: sonnet by default, opus or claude-fable-5-1 for
+# a change that deserves the slow read. The run is on your Claude plan; the
+# cost the comment records is the list-price equivalent, not a bill.
 #
 # The gates run here. The judgement sends the diff and the files the model
 # reads to Anthropic's API under your own Claude account; nothing else leaves
@@ -44,7 +47,7 @@ ROOT=$(pwd)
 # corrupt that run.
 main() {
 
-PR=""; DRY=0; SKIP_GATES=0; SKIP_JUDGEMENT=0; NO_STATUS=0; MODEL=""; ALLOW_FORK=0
+PR=""; DRY=0; SKIP_GATES=0; SKIP_JUDGEMENT=0; NO_STATUS=0; MODEL="sonnet"; ALLOW_FORK=0
 while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run) DRY=1 ;;
@@ -230,7 +233,7 @@ if [ "$SKIP_JUDGEMENT" = 1 ]; then
     echo "Judgement skipped (--skip-judgement): the gates are the review."
     echo '{}' > "$RUN/model.json"
 else
-    echo "Judgement (${MODEL:-default model}) …"
+    echo "Judgement ($MODEL) …"
     set +e
     ( cd "$RUN" && claude -p \
         --output-format json \
@@ -243,7 +246,7 @@ else
         --disallowedTools "Bash,Edit,Write,NotebookEdit,Agent,WebFetch,WebSearch" \
         --add-dir "$WT" \
         --max-turns 80 \
-        ${MODEL:+--model "$MODEL"} \
+        --model "$MODEL" \
         < "$RUN/prompt.md" > "$RUN/model.json" 2> "$RUN/model.err" )
     MODEL_EXIT=$?
     set -e

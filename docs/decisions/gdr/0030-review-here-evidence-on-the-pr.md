@@ -78,8 +78,9 @@ checklist, and the evidence is posted to the pull request.**
   reads go to Anthropic's API under the maintainer's account; the record
   says so plainly, and decision 5 is what makes it acceptable. A future
   on-device reviewer would supersede this clause, not the rest.
-- Each review costs minutes on the Mac and tokens on the maintainer's plan;
-  the review comment records the cost. `--skip-gates` trusts CI for the
+- Each review costs minutes on the Mac and usage on the maintainer's Claude
+  plan, not a bill; the comment records the list-price equivalent. Sonnet
+  reviews by default; a larger model is a flag for the changes that deserve it. `--skip-gates` trusts CI for the
   gates and says so in the evidence.
 - The checklist and the inventory are living design documents (they render
   in Backstage with the rest of `docs/design`); their hashes on each review

@@ -109,7 +109,7 @@ def compose(run: str, pr: str) -> int:
     tree = "clean tree" if meta.get("clean") else "uncommitted changes"
     L = [f"## Timbre review · {verdict}", "", "| | |", "|---|---|",
          row("Head", f"`{sha}` (`{pr_json['headRefName']}` → `{pr_json['baseRefName']}`)"),
-         row("Model", f"`{model_id}`" + (f" · ${cost:.2f}" if isinstance(cost, (int, float)) else "")),
+         row("Model", f"`{model_id}`" + (f" · ≈ ${cost:.2f} at list price, on the maintainer's plan" if isinstance(cost, (int, float)) else "")),
          row("Checklist", f"`docs/design/review.md` @ {meta['checklist']} · inventory @ {meta['inventory']}"),
          row("Tool", f"`tools/review.sh` @ {meta['tool']}, from commit `{meta.get('commit', '')[:12]}` ({tree})"),
          row("Run", f"{meta['started']} by @{meta['user']}"), ""]

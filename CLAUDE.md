@@ -122,6 +122,7 @@ xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 # docs/design/data-inventory.md, then a review comment, inline comments and
 # the timbre/review commit status. --dry-run writes to .review/ and posts
 # nothing; --skip-gates trusts CI for the gates; a fork needs --allow-fork.
+# Sonnet reviews by default; --model opus for a change that deserves it.
 tools/review.sh 73
 
 # Full app:
