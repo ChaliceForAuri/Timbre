@@ -6,8 +6,9 @@
 #
 # The model runs with the run directory as its project and only your user
 # settings and memory: no project CLAUDE.md is loaded, the checklist is the
-# instruction, and its only tools are Read, Grep and Glob, with Read confined
-# to the run directory and the tree. A change to CLAUDE.md or .claude/ in
+# instruction, and its only tools are Read, Grep and Glob, each confined to
+# the run directory and the tree; no MCP server is loaded, whatever your own
+# configuration connects. A change to CLAUDE.md or .claude/ in
 # the diff is still worth reading yourself.
 #
 # The gates run the pull request's own build and test code on this Mac, so a
@@ -236,8 +237,9 @@ else
         --json-schema "$(cat "$ROOT/tools/review-schema.json")" \
         --append-system-prompt-file "$RUN/system.md" \
         --setting-sources user \
+        --strict-mcp-config \
         --tools "Read,Grep,Glob" \
-        --allowedTools "Read(//$RUN/**),Grep,Glob" \
+        --allowedTools "Read(//$RUN/**),Grep(//$RUN/**),Glob(//$RUN/**)" \
         --disallowedTools "Bash,Edit,Write,NotebookEdit,Agent,WebFetch,WebSearch" \
         --add-dir "$WT" \
         --max-turns 80 \

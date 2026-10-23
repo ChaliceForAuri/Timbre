@@ -42,7 +42,8 @@ checklist, and the evidence is posted to the pull request.**
    mode on this Mac, under the maintainer's own account, with Read, Grep
    and Glob as its only tools, confined to the run directory and the tree,
    and no project instructions loaded; the maintainer's own settings and
-   memory still apply, and the checklist is the instruction. No GitHub token, no hosted reviewer, no secret in CI.
+   memory still apply, and the checklist is the instruction. No token in CI, no hosted reviewer, no secret anywhere but
+   the maintainer's own logins.
 2. **The evidence is on the pull request.** One review comment with the
    gates, the compliance answers as fixed fields, the findings, and the
    identities that make it reproducible: the head commit, the model, the
@@ -69,8 +70,10 @@ checklist, and the evidence is posted to the pull request.**
 ## Consequences
 
 - A fourth required status on `main`: `timbre/review`, beside the three required CI
-  checks. A pull request without a review posted from this Mac does not
-  merge. The branch rule is set in GitHub by hand, once.
+  checks, set in GitHub by hand, once. The status alone is a claim any
+  account with write access could post; the evidence is the review comment
+  with its hashes and the local copy under `.review/`, and the status is
+  what stops a merge without them.
 - The judgement is not local inference. The diff and the files the model
   reads go to Anthropic's API under the maintainer's account; the record
   says so plainly, and decision 5 is what makes it acceptable. A future

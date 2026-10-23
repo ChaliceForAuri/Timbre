@@ -27,6 +27,7 @@ the row says so.*
 | The selection, for read-aloud and command mode | Memory | Read it aloud; fix, explain, shorten, plain | Needs Accessibility | Discarded after the command | Never |
 | The explanation card, the overlay, the word-of-the-day card | Memory; the day's example sentence is kept in `UserDefaults` for the day | Show the result | On | The card rebuilds daily | Never |
 | Settings | `UserDefaults` for `dev.hugopretorius.Timbre` | Preferences: reading speed, voice, toggles | On | Until the user resets them | Never |
+| The unified log: status lines and timings from the pipeline; a command's heard words only as a `.private` value, which macOS redacts at rest unless the user enables private logging | Apple's log store on the Mac | Diagnostics in Console | On | macOS's log retention | Never |
 | The usage ledger: counts of dictations, words, commands, to-dos and readings, all-time and this week | `UserDefaults`, key `usageLedger` | The usage view in Settings | On | Reset from Settings; never a transcript, only counts | Never |
 | The word-of-the-day notification | The system's notification centre, local | The morning word | Off (GDR-0027) | Delivered and gone; no server | Never |
 | The update check: a `GET` for `appcast.json` on our site, and on Install a `GET` for the release zip from the same site | Vercel's request logs (IP address, user agent, time) on the site's side | Find a newer version; verify and install on request | Off; a menu item, or a daily check the user turns on (GDR-0013); the download only on Install | Vercel's log retention, not ours; no identifier, no query string, no cookie | Yes: these are the only two requests the binary can make, both to our own site |
@@ -48,7 +49,7 @@ the row says so.*
 
 | Data | Where | Purpose | Default | Lifetime and erasure | Who can read it |
 |---|---|---|---|---|---|
-| The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Encrypted in transit and at rest under Apple's keys. Not yet end-to-end encrypted: that needs the fields written as CloudKit encrypted values and record names that do not carry the term (gap 6). |
+| The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Encrypted in transit and at rest under Apple's keys. Not yet end-to-end encrypted: that needs the fields written as CloudKit encrypted values and record names that do not carry the term (gap 6, GDR-0031). |
 | Sync state | `~/Library/Application Support/Timbre/library-sync.json` on the Mac; `library-sync.json` in the app group container on the iPhone and the Watch | Where CKSyncEngine left off; no personal data | Off | Deleted with the file or the app | Never |
 
 Never synced, by rule: dictations, transcripts, captures, timings
@@ -113,12 +114,10 @@ Known gaps, to be closed before the product takes customers:
    is pending, so the records, the inventory and the site agree.
 6. **iCloud sync is not yet end-to-end encrypted.** Advanced Data Protection
    covers only fields stored as CloudKit encrypted values and assets; the
-   Library's fields are plain, and the event records' names carry the term.
-   Before any user's zone exists: write the fields through `encryptedValues`
-   and name records by an opaque hash, superseding ADR-0017's field list
-   and GDR-0010's clause that the setting says "end-to-end encrypted when
-   Advanced Data Protection is on". The copy says "not yet end-to-end
-   encrypted" until then.
+   Library's fields are plain, and the event and entry records' names carry
+   the term. GDR-0031 decides the fix, before any user's zone exists: the
+   fields through `encryptedValues`, records named by an opaque hash. The
+   copy says "not yet end-to-end encrypted" until then.
 7. **An unfiled to-do on the Watch has no delete.** `pending-todos.json`
    keeps an item until the iPhone confirms filing; the Watch should show
    the queue and let the user drop an item.
