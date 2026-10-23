@@ -70,7 +70,10 @@ def compose(run: str, pr: str) -> int:
 
     gate_failed = any(g[1] == "fail" for g in gates)
     blocking = [f for f in findings if f["severity"] == "blocking"]
-    if out is None:
+    if meta.get("judgement") == "skipped":
+        verdict = "gates only, judgement skipped" if not gate_failed else "changes needed, judgement skipped"
+        state = "failure" if gate_failed else "success"
+    elif out is None:
         verdict, state = "model review failed", "error"
     elif gate_failed or blocking:
         verdict, state = "changes needed", "failure"
@@ -104,8 +107,10 @@ def compose(run: str, pr: str) -> int:
         if comp.get("notes"):
             L += ["", "> " + comp["notes"].replace("\n", "\n> ")]
     else:
-        L += ["_No answers: the model run did not complete._"]
-    L += ["", "### Summary", "", (out or {}).get("summary", "_No summary: the model run did not complete._")]
+        L += ["_Judgement skipped by flag; the gates are the review._" if meta.get("judgement") == "skipped"
+              else "_No answers: the model run did not complete._"]
+    L += ["", "### Summary", "", (out or {}).get("summary", "_Judgement skipped by flag._" if meta.get("judgement") == "skipped"
+                                                else "_No summary: the model run did not complete._")]
     L += ["", f"### Findings ({len(findings)})", ""]
     if not findings:
         L.append("None.")

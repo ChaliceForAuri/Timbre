@@ -66,7 +66,7 @@ checklist, and the evidence is posted to the pull request.**
 
 ## Consequences
 
-- A fourth required status on `main`: `timbre/review`, beside the three CI
+- A fourth required status on `main`: `timbre/review`, beside the three required CI
   checks. A pull request without a review posted from this Mac does not
   merge. The branch rule is set in GitHub by hand, once.
 - The judgement is not local inference. The diff and the files the model
@@ -96,7 +96,7 @@ checklist, and the evidence is posted to the pull request.**
 - **Gates only, no model.** Keeps everything on the Mac but loses the
   reading that catches a weakened right, a stale inventory or a quiet
   network path. Rejected for now; the gates alone remain a valid
-  `--skip` of the judgement in an emergency, recorded as such.
+  `--skip-judgement` run in an emergency, recorded as such.
 - **The on-device model as the reviewer.** Honest to the product's spirit,
   not yet able to read a two-thousand-line diff against a checklist. Noted
   for later.

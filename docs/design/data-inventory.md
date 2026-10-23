@@ -21,12 +21,13 @@ the row says so.*
 | Data | Where | Purpose | Default | Lifetime and erasure | Leaves the Mac? |
 |---|---|---|---|---|---|
 | The Library: words, acronyms, phrases, spellings, corrections, each with a meaning, an example, provenance, tags, and the events strength is derived from; the profile (field, role, first language) | `~/Library/Application Support/Timbre/library.json`, one document written atomically | Bias transcription, correct the polisher, answer explain, pick and practise the word of the day | On: it is the product | Until the user removes an entry (`forgot` is a tombstone), deletes the file, or uninstalls. Settings › Library shows every entry; Export writes the whole Library as one JSON file; Import merges. | Only if the user turns on iCloud sync (§3) |
-| Dictation capture: the raw transcript, the polished text, the app name, timings | `~/Library/Application Support/Timbre/dictations.jsonl` | The user's own corpus; `timbre-eval --import` turns it into a corpus on the developer's own Mac only | Off (GDR-0004) | Until Delete All, from the same screen that turns it on; Show in Finder reveals the file | Never |
+| Dictation capture: the date, the raw transcript, the polished text, the app name, the focused field's role and whether live typing was replaced, timings | `~/Library/Application Support/Timbre/dictations.jsonl` | The user's own corpus; `timbre-eval --import` turns it into a corpus on the developer's own Mac only | Off (GDR-0004) | Until Delete All, from the same screen that turns it on; Show in Finder reveals the file | Never |
 | Microphone audio | Memory, during a hold of the key | On-device transcription with `SpeechAnalyzer` | Granted by the user once | Discarded as it is transcribed; never written | Never |
 | The pasteboard and the focused text field | Memory, during one insertion | Paste the result; replace the live-typed run | Needs Accessibility, granted by the user | Snapshot, set, paste, restore; nothing kept | Never |
 | The selection, for read-aloud and command mode | Memory | Read it aloud; fix, explain, shorten, plain | Needs Accessibility | Discarded after the command | Never |
 | The explanation card, the overlay, the word-of-the-day card | Memory; the day's example sentence is kept in `UserDefaults` for the day | Show the result | On | The card rebuilds daily | Never |
 | Settings | `UserDefaults` for `dev.hugopretorius.Timbre` | Preferences: reading speed, voice, toggles | On | Until the user resets them | Never |
+| The usage ledger: counts of dictations, words, commands, to-dos and readings, all-time and this week | `UserDefaults`, key `usageLedger` | The usage view in Settings | On | Reset from Settings; never a transcript, only counts | Never |
 | The word-of-the-day notification | The system's notification centre, local | The morning word | Off (GDR-0027) | Delivered and gone; no server | Never |
 | The update check: one `GET` for `appcast.json` on our site | Vercel's request logs (IP address, user agent, time) on the site's side | Find a newer version; verify and install on request | Off; a menu item, or a daily check the user turns on (GDR-0013) | Vercel's log retention, not ours; no identifier, no query string, no cookie | Yes: this is the only request the binary can make |
 | Reminders | The user's Reminders database (Apple), the "Timbre" list | A spoken to-do lands in Reminders (GDR-0016) | Asked for on the first spoken to-do | The user's, in Reminders | To the user's iCloud only if their Reminders sync; not through us |
@@ -39,14 +40,15 @@ the row says so.*
 | `today.json`: today's word, its strength and whether it was met | The app group container, read by the widgets | The widget, the Lock Screen, the complication show a word without reading the Library (ADR-0016) | On | Rewritten on every rebuild; deleted with the app | Never |
 | Hold-to-talk audio | Memory | On-device transcription with `SpeechAnalyzer` | Granted once | Discarded as transcribed | Never |
 | The Watch's text input | Apple's system dictation and scribble UI | A spoken to-do on the wrist | Granted once | Apple's | Apple's dictation may use Apple's servers under the user's own Siri & Dictation setting; the Watch app does not yet say so (gap 4). Timbre adds nothing to it. |
-| The to-do queue in transit | WatchConnectivity, device to device | The Watch captures, the iPhone files (GDR-0029) | On | Queued on the Watch until the phone is reachable, then dropped | Watch to the user's own iPhone, through Apple's transport, never through us |
+| The to-do queue: each captured to-do's text and date | `pending-todos.json` in the app group container on the Watch, then WatchConnectivity to the iPhone | The Watch captures, the iPhone files (GDR-0029) | On | Each item stays in the file until the iPhone confirms it was filed; an item the iPhone never confirms stays until the Watch app is deleted, and there is no in-app way to drop it yet (gap 7) | Watch to the user's own iPhone, through Apple's transport, never through us |
 | Reminders | The user's Reminders database | As on the Mac; read-only on the Watch | Asked once | The user's | As on the Mac |
+| Settings | `UserDefaults` on the iPhone and the Watch: the iCloud toggle (`librarySyncsThroughICloud`); on the iPhone also the day's example sentence (`wordOfTheDayExample`) | Preferences | On | Deleted with the app | Never |
 
 ## 3. iCloud sync of the Library
 
 | Data | Where | Purpose | Default | Lifetime and erasure | Who can read it |
 |---|---|---|---|---|---|
-| The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Advanced Data Protection, when the user turns it on, end-to-end encrypts it. |
+| The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Encrypted in transit and at rest under Apple's keys. Not yet end-to-end encrypted: that needs the fields written as CloudKit encrypted values and record names that do not carry the term (gap 6). |
 | Sync state | `~/Library/Application Support/Timbre/library-sync.json` | Where CKSyncEngine left off | Off | Deleted with the file | Never |
 
 Never synced, by rule: dictations, transcripts, captures, timings
@@ -108,3 +110,12 @@ Known gaps, to be closed before the product takes customers:
 5. **GDR-0005 still says the repository is private.** It is public, under a
    LICENSE that reserves all rights; a record superseding that one sentence
    is pending, so the records, the inventory and the site agree.
+6. **iCloud sync is not yet end-to-end encrypted.** Advanced Data Protection
+   covers only fields stored as CloudKit encrypted values and assets; the
+   Library's fields are plain, and the event records' names carry the term.
+   Before any user's zone exists: write the fields through `encryptedValues`
+   and name records by an opaque hash, superseding ADR-0017's field list.
+   The copy says "not yet end-to-end encrypted" until then.
+7. **An unfiled to-do on the Watch has no delete.** `pending-todos.json`
+   keeps an item until the iPhone confirms filing; the Watch should show
+   the queue and let the user drop an item.
