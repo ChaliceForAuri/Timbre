@@ -80,8 +80,13 @@
     "title": "Building the companion"
   },
   {
-    "slug": "glossary",
+    "slug": "review-as-evidence",
     "number": "16",
+    "title": "Review as evidence: SOC 2, the GDPR and a local-only app"
+  },
+  {
+    "slug": "glossary",
+    "number": "17",
     "title": "Glossary"
   }
 ]

@@ -36,7 +36,7 @@ struct YouView: View {
                     Text("iCloud")
                 } footer: {
                     Text(
-                        "Your words, meanings and practice history in your own iCloud, so your Mac and Watch have the same Library. Timbre sends nothing itself; iOS's iCloud daemon does the syncing. Never a dictation. End-to-end encrypted with Advanced Data Protection."
+                        "Your words, meanings and practice history in your own iCloud, so your Mac and Watch have the same Library. Timbre sends nothing itself; iOS's iCloud daemon does the syncing. Never a dictation. Encrypted in transit and on Apple's servers; not yet end-to-end encrypted."
                     )
                 }
 

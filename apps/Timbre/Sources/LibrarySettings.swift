@@ -592,8 +592,8 @@ private struct CloudSection: View {
             Text(
                 "Your words, meanings and practice history, in your own iCloud account, so your iPhone, Watch and "
                     + "other Macs have the same Library. Timbre sends nothing itself: macOS's iCloud daemon does the "
-                    + "syncing. Never a dictation, a capture or a usage count. End-to-end encrypted when Advanced Data "
-                    + "Protection is on for your account."
+                    + "syncing. Never a dictation, a capture or a usage count. Encrypted in transit and on Apple's "
+                    + "servers; not yet end-to-end encrypted."
             )
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -608,11 +608,6 @@ private struct CloudSection: View {
                         .buttonStyle(.link)
                         .font(.caption)
                 }
-                Link(
-                    "About Advanced Data Protection",
-                    destination: URL(string: "https://support.apple.com/en-us/102651")!
-                )
-                .font(.caption)
             }
         }
     }

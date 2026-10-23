@@ -70,7 +70,7 @@
 
 <h3 id="m13-adp">Advanced Data Protection</h3>
 
-<p>By default Apple holds the keys to most iCloud data, including third-party apps' CloudKit data, so that account recovery is possible. With Advanced Data Protection turned on by the user, that data is end-to-end encrypted and Apple cannot read it. Timbre cannot turn that on for anyone; it can say, in the sync setting, that the Library lives in <em>your</em> iCloud, under <em>your</em> protection setting, and link to Apple's explanation. GDR-0010 asked for exactly that copy.</p>
+<p>By default Apple holds the keys to most iCloud data, including third-party apps' CloudKit data, so that account recovery is possible. With Advanced Data Protection turned on by the user, the fields an app stores as CloudKit <em>encrypted values</em>, and its assets, are end-to-end encrypted and Apple cannot read them; plain fields stay under Apple's keys so the server can index them. Timbre's sync writes plain fields today, and the event and entry records' names carry the term, so the Library is encrypted in transit and at rest but not yet end-to-end; GDR-0031 decides the fix before sync ships, and the data inventory tracks it as gap 6. Timbre cannot turn Advanced Data Protection on for anyone. Once GDR-0031's schema lands, the sync setting can say that the Library lives in <em>your</em> iCloud, under <em>your</em> protection setting, and link to Apple's explanation, which is the copy GDR-0010 asked for; until then it says what is true.</p>
 
 <h3 id="m13-testing">Testing without a server</h3>
 

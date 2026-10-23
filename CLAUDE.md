@@ -46,6 +46,8 @@ packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
                      four above. Dictation work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
+docs/design/         The product map, the Backstage design, the review
+                     checklist and the data inventory (GDR-0030).
 docs/learning/       Timbre University (original, frozen) + historical notes.
                      Living modules: web/src/lib/university, listed in its
                      manifest.json; new modules are written there.
@@ -114,6 +116,14 @@ swift run timbre-eval --examples Fixtures/examples.json --repeat 5
 
 # Lint (config in .swift-format, toolchain-bundled tool):
 xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
+
+# Review a pull request here, on this Mac, and post the evidence to it
+# (GDR-0030): the gates, then the model against docs/design/review.md and
+# docs/design/data-inventory.md, then a review comment, inline comments and
+# the timbre/review commit status. --dry-run writes to .review/ and posts
+# nothing; --skip-gates trusts CI for the gates; a fork needs --allow-fork.
+# Sonnet reviews by default; --model opus for a change that deserves it.
+tools/review.sh 73
 
 # Full app:
 xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre -destination 'platform=macOS' build
@@ -317,6 +327,14 @@ TimbreCore's types reach the app through TimbreKit's re-export.
   `TranscriptAccumulator`, `PolishGuardrail`…) with Swift Testing coverage.
   New behavior follows that pattern: extract the decision, test it.
 - No third-party dependencies — Apple frameworks and toolchain tools only.
+- **Every change is reviewed here, and the review is evidence** (GDR-0030).
+  `tools/review.sh <pr>` runs the gates and the model against
+  `docs/design/review.md`, posts the result to the pull request and sets
+  the `timbre/review` status; the human merges. The data inventory
+  (`docs/design/data-inventory.md`) is the record of what personal data
+  exists: a change that touches a row updates the row in the same pull
+  request, and no real user data is ever committed — fixtures are written
+  or generated for the purpose.
 - Build settings belong in xcconfig files, never edited into the pbxproj.
 
 ## Permissions (already configured in xcconfig)

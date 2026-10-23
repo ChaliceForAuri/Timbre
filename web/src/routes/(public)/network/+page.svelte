@@ -75,8 +75,9 @@
 			<strong class="text-foreground">iCloud, if you turn it on.</strong> Settings › Library › Sync my
 			Library through iCloud is off by default. On, your Library — the words you teach Timbre, their
 			meanings and your practice history, never a dictation — is kept in your own iCloud account and
-			moved between your devices by macOS's iCloud daemon, end-to-end encrypted when Advanced Data
-			Protection is on. Timbre hands the records to the system and makes no request itself.
+			moved between your devices by macOS's iCloud daemon, encrypted in transit and on Apple's servers
+			and not yet end-to-end encrypted. Timbre hands the records to the system and makes no request
+			itself.
 		</li>
 		<li>
 			<strong class="text-foreground">Gatekeeper.</strong> When you first open any app downloaded
