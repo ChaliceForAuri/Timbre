@@ -1,4 +1,5 @@
 import Foundation
+import TimbreCore
 import TimbreKit
 
 /// Runs dictation samples through the real polisher and reports which
@@ -34,6 +35,28 @@ struct TimbreEval {
 
         if let path = value(for: "--import", in: arguments) {
             try runImport(path: path, output: value(for: "--out", in: arguments))
+            return
+        }
+
+        if let path = value(for: "--spell", in: arguments) {
+            try runSpell(path: path)
+            return
+        }
+
+        if let path = value(for: "--picks", in: arguments) {
+            try runPicks(path: path)
+            return
+        }
+
+        if let path = value(for: "--examples", in: arguments) {
+            try await runExamples(
+                path: path, repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1)
+            return
+        }
+
+        if let path = value(for: "--drills", in: arguments) {
+            try await runDrills(
+                path: path, repeats: value(for: "--repeat", in: arguments).flatMap(Int.init) ?? 1)
             return
         }
 
@@ -289,6 +312,7 @@ struct TimbreEval {
                     corrections: testCase.corrections,
                     acronyms: testCase.acronyms,
                     vocabulary: testCase.vocabulary,
+                    profile: Profile(industries: testCase.industries),
                     onExplanation: { partial in
                         guard !sawFirst, !partial.isEmpty else { return }
                         sawFirst = true
@@ -461,6 +485,120 @@ struct TimbreEval {
 
     // MARK: - Plumbing
 
+    // MARK: - The example writer
+
+    /// Every case through the real writer, `repeats` times; a case is solid
+    /// only when every draft passes the guardrail (GDR-0027).
+    private static func runExamples(path: String, repeats: Int) async throws {
+        let corpus = try ExampleCorpus.load(from: URL(filePath: path))
+        let availability = TimbreEvaluation.polisherAvailability
+        print("timbre-eval — example sentences, \(corpus.cases.count) cases × \(repeats)")
+        print("model: \(availability.reason ?? "available")\n")
+        guard availability.isReady else {
+            printErr("The on-device model is unavailable, so nothing would be written.")
+            exit(2)
+        }
+        var solid = 0
+        for testCase in corpus.cases {
+            var passes = 0
+            var lastDraft = ""
+            var lastFailures: [ExampleGuardrail.Failure] = []
+            for _ in 0..<repeats {
+                let result = await TimbreEvaluation.exampleSentence(
+                    for: testCase.term, meaning: testCase.meaning, industry: testCase.industry)
+                lastDraft = result.draft ?? ""
+                lastFailures = result.failures
+                let refused = result.failures == [.empty]
+                if testCase.expectRefusal == true ? refused : result.failures.isEmpty { passes += 1 }
+            }
+            let mark = passes == repeats ? "✔" : "✘"
+            if passes == repeats { solid += 1 }
+            print("  \(mark) \(testCase.id): \(passes)/\(repeats) — \(lastDraft)")
+            if !lastFailures.isEmpty {
+                print("      broke: \(lastFailures.map(\.rawValue).joined(separator: ", "))")
+            }
+        }
+        print("\n\(solid)/\(corpus.cases.count) solid")
+        if solid < corpus.cases.count { exit(1) }
+    }
+
+    // MARK: - The drills
+
+    /// The deterministic half of every case, then the model's half of the
+    /// cases that name a judge's answer, `repeats` times (GDR-0023,
+    /// decision 5). Deterministic cases need one run; the judge needs five.
+    private static func runDrills(path: String, repeats: Int) async throws {
+        let corpus = try DrillCorpus.load(from: URL(filePath: path))
+        print("timbre-eval — the drills, \(corpus.cases.count) cases\n")
+        var held = 0
+        for outcome in corpus.run() {
+            let mark = outcome.held ? "✔" : "✘"
+            if outcome.held { held += 1 }
+            print("  \(mark) \(outcome.id): \(outcome.got) — \(outcome.detail)")
+        }
+        print("\nchecks: \(held)/\(corpus.cases.count) held")
+
+        let judged = corpus.cases.filter { $0.judge != nil }
+        guard !judged.isEmpty else {
+            if held < corpus.cases.count { exit(1) }
+            return
+        }
+        let availability = TimbreEvaluation.polisherAvailability
+        print("\njudge: \(judged.count) cases × \(repeats), model: \(availability.reason ?? "available")\n")
+        guard availability.isReady else {
+            printErr("The on-device model is unavailable, so the judge cannot be measured.")
+            exit(2)
+        }
+        var solid = 0
+        for testCase in judged {
+            var agreed = 0
+            var lastReason = ""
+            for _ in 0..<repeats {
+                let verdict = await TimbreEvaluation.judge(
+                    testCase.drill, term: testCase.term, meaning: testCase.meaning, spoken: testCase.spoken)
+                let got = verdict.map { $0.passed ? "passed" : "failed" } ?? "no verdict"
+                lastReason = verdict?.reason ?? "(out of shape or unavailable)"
+                if got == testCase.judge { agreed += 1 }
+            }
+            let mark = agreed == repeats ? "✔" : "✘"
+            if agreed == repeats { solid += 1 }
+            print(
+                "  \(mark) \(testCase.id): \(agreed)/\(repeats) say \(testCase.judge ?? "") — \(lastReason)")
+        }
+        print("\njudge: \(solid)/\(judged.count) solid")
+        if held < corpus.cases.count || solid < judged.count { exit(1) }
+    }
+
+    // MARK: - Spell it and the word of the day (TimbreCore corpora)
+
+    /// Deterministic, so one run is the measurement (GDR-0023, decision 5).
+    private static func runSpell(path: String) throws {
+        let outcomes = try SpellCorpus.load(from: URL(filePath: path)).run()
+        print("timbre-eval — Spell it, \(outcomes.count) cases\n")
+        for outcome in outcomes {
+            let mark = outcome.held ? "✔" : "✘"
+            let heard = outcome.verdict.heard.isEmpty ? "nothing" : "\"\(outcome.verdict.heard)\""
+            print("  \(mark) \(outcome.id): heard \(heard) for \"\(outcome.verdict.expected)\"")
+        }
+        let held = outcomes.filter(\.held).count
+        print("\n\(held)/\(outcomes.count) held")
+        if held < outcomes.count { exit(1) }
+    }
+
+    /// A Library's state and a date in, the expected word out (GDR-0027).
+    private static func runPicks(path: String) throws {
+        let outcomes = try PickCorpus.load(from: URL(filePath: path)).run()
+        print("timbre-eval — the word of the day, \(outcomes.count) cases\n")
+        for outcome in outcomes {
+            let mark = outcome.held ? "✔" : "✘"
+            let got = outcome.pick.map { "\($0.term) — \($0.why)" } ?? "nothing"
+            print("  \(mark) \(outcome.id): \(got)")
+        }
+        let held = outcomes.filter(\.held).count
+        print("\n\(held)/\(outcomes.count) held")
+        if held < outcomes.count { exit(1) }
+    }
+
     private static let usage = """
         timbre-eval — measure Timbre's cleanup against a fixed corpus
 
@@ -484,6 +622,16 @@ struct TimbreEval {
                                              case's vocabulary and recall is reported
           timbre-eval --stream <file.aiff>   microphone pace, timed snapshots
           timbre-eval --import <log.jsonl> [--out corpus.json]
+          timbre-eval --spell <spell.json>   Spell it's check against its corpus
+          timbre-eval --picks <picks.json>   the word of the day against its corpus
+                                             (both in packages/TimbreCore/Fixtures;
+                                             deterministic, no model needed)
+          timbre-eval --examples <examples.json> [--repeat <n>]
+                                             the card's example sentence, every
+                                             draft against the guardrail
+          timbre-eval --drills <drills.json> [--repeat <n>]
+                                             Spell it, Say it, Explain it: the checks,
+                                             then the judge where a case names its answer
 
         Exits non-zero when a case fails, so it can gate CI once the model is
         available on the runner.

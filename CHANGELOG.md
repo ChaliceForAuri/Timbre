@@ -9,7 +9,45 @@ turns the section for that version into the release notes shown in the app.
 
 ## [Unreleased]
 
+### Added
+- **The Library.** Settings › Dictionary is now Settings › Library: one store
+  for the words the model should prefer, your acronyms, phrases, spellings
+  and corrections, each with a meaning, an example, where it came from and
+  a strength that practice raises and time lowers. Everything you had taught
+  moved over, in order. Export the whole thing as one file; import merges.
+- **A word of the day.** The word in your Library that has faded furthest,
+  chosen at the start of each day: in the menu bar, on a card with its
+  facts labelled by source (your meaning, Apple's dictionary, a sentence
+  written by the on-device model), read aloud on request. Say it in a
+  dictation and it counts as met. A morning notification, off unless you
+  turn it on.
+- **About you.** Your field, role and first language, in Settings › Library.
+  Chooses the word lists; will make explain right for your reader.
+- **Practice.** Spell it, Say it and Explain it, spoken and scored on your
+  Mac: letters checked exactly, a sentence judged by the on-device model
+  inside a guardrail, an explanation checked by its words first. Words come
+  up as they fade. A streak, the week's count and the five words most worth
+  a minute, in Settings › Library. Nothing is ranked or shared.
+
+- **iCloud, if you want it.** Settings › Library › Sync my Library through
+  iCloud: your words, meanings and practice history in your own iCloud
+  account, so your iPhone, Watch and other Macs have the same Library. Off
+  by default. Timbre still sends nothing itself; macOS's iCloud daemon does
+  the syncing. Never a dictation, a capture or a usage count.
+- **Bundled words, when your Library has nothing due.** Seven curated lists —
+  general English, software and product, healthcare, law, finance, design,
+  phrases and idioms — with definitions, pronunciations and origins from
+  Wiktionary (CC BY-SA 4.0, attributed in Settings › Library and on every
+  card). A bundled word you then say in a dictation joins your Library.
+- **Explain knows your field.** With a field in Settings › Library › About
+  you, "explain" gives that field's meaning first: a PA is a physician
+  assistant to a nurse, an ER diagram is entity-relationship to an
+  engineer. Measured on the commands corpus.
 ### Changed
+- The Library lives in its own package, TimbreCore, which the iPhone and
+  Watch apps will share. Your words are in
+  `~/Library/Application Support/Timbre/library.json`; the old lists in
+  preferences are left in place.
 - **The menu bar shows the mark.** The four bars from the icon, without
   the tile, in the menu bar's own colour — and they carry the state: dimmed
   while setting up, in the retro colours while the mic is open, fading

@@ -13,7 +13,7 @@ Everything worth doing that is not on the launch list, in the order it earns its
 4. **Rich text survives fix.** Bold, links and lists in a selection come back with their formatting, the way Tidy does it — read the selection as HTML, correct the text, re-attach runs, paste an HTML fragment. Until then a fix on formatted text flattens it; the GDR says so.
 5. **Rebindable keys.** Some people have no right ⌥ on a compact keyboard, or use right ⌘ for ⌘-Tab. Offer a small set of alternatives per gesture (Fn, Caps Lock via Karabiner-style remap is out) rather than a free binder.
 6. **Per-app tone profiles.** Mail formal, Slack casual, Xcode literal. The app name already reaches the polisher; this is a table and a sentence in the prompt. Roadmap item 3, and a good demo.
-7. **iCloud sync of the dictionary** (GDR-0010, accepted). Vocabulary, corrections, definitions — off by default, key-value store, needs the entitlement and profile.
+7. **iCloud sync of the dictionary** — done: the Library syncs through CloudKit (GDR-0023 decision 1, ADR-0017), off by default. What remains is the two-Mac proof with `nettop` open.
 
 ## Later — worth it, not yet
 

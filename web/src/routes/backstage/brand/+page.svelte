@@ -322,7 +322,7 @@
 				</div>
 
 				<p class="mt-7 text-[2.1rem] leading-[1.08] font-bold tracking-[-0.02em] text-balance">
-					Dictation that never leaves your Mac.
+					Dictation that never leaves your devices.
 				</p>
 				<p class="text-muted-foreground mt-3 text-[15px] leading-relaxed">
 					Hold a key and talk. Cleaned-up text lands wherever your cursor is — filler gone,

@@ -8,7 +8,7 @@ model {
 
   // ---------------------------------------------------------------- the Mac
   timbre = system 'Timbre for Mac' {
-    description 'Dictation that never leaves your Mac. Zero network requests by default; one, opt-in, for updates.'
+    description 'Dictation that never leaves your devices. Zero network requests by default; one, opt-in, for updates.'
     link https://github.com/ChaliceForAuri/Timbre 'Source'
 
     app = container 'Timbre.app' {
@@ -27,12 +27,6 @@ model {
       controller = component 'DictationController' {
         description 'Consumes hotkey events in one task — that is what serialises press and release. The public surface.'
       }
-      audio = component 'AudioCapture' {
-        description 'Mic tap; converts on the audio thread; emits AnalyzerInput and levels.'
-      }
-      transcriber = component 'Transcriber' {
-        description 'Actor around SpeechAnalyzer. A session is single-use (ADR-0006). Streams confirmed and in-flight words.'
-      }
       polisher = component 'TextPolisher' {
         description 'Corrections → spoken commands → the on-device model, greedy → capital → full stop (ADR-0005, ADR-0011).'
       }
@@ -49,13 +43,13 @@ model {
         description 'CommandHold arms after 350 ms; VoiceCommand fires on the word; TextTransformer does fix, shorten, plain, explain (GDR-0012, 0014, 0015).'
       }
       reader = component 'Read aloud' {
-        description 'SelectionReader grabs the selection; SpeechReader speaks it with the best installed voice (GDR-0008).'
+        description 'SelectionReader grabs the selection; TimbreSpeech speaks it (GDR-0008).'
+      }
+      word = component 'Word of the day' {
+        description 'The card, the menu bar line, the morning notification. Asks TimbreModel for one example sentence, labelled (GDR-0027).'
       }
       todos = component 'To-dos' {
-        description 'TodoParser reads the date with Apple’s data detector; ReminderStore files it in Reminders (GDR-0016).'
-      }
-      vocabulary = component 'VocabularyStore' {
-        description 'Taught words, corrections, definitions. Three lists in UserDefaults — the Library’s ancestor.'
+        description 'ReminderStore files a spoken to-do in Reminders (GDR-0016); TimbreCore’s parser read its date.'
       }
       updater = component 'SoftwareUpdater' {
         description 'One GET of appcast.json when asked; installs only a notarized build signed by our team (ADR-0010, GDR-0013).'
@@ -68,9 +62,6 @@ model {
       }
 
       hotkey -> controller 'press, release, read, command'
-      controller -> audio 'opens the mic first'
-      audio -> transcriber 'AnalyzerInput'
-      controller -> transcriber 'start, finish, abandon'
       controller -> overlay 'show, update, hide'
       controller -> live 'confirmed words'
       controller -> polisher 'the transcript'
@@ -80,13 +71,49 @@ model {
       controller -> todos 'a sentence with nothing selected'
       controller -> usage 'counts'
       controller -> log 'captures, opt-in'
-      polisher -> vocabulary 'corrections, vocabulary'
-      commands -> vocabulary 'definitions answer explain first'
       commands -> inserter 'paste over the selection'
       commands -> overlay 'the explanation card'
       todos -> polisher 'cleans the sentence first'
       app -> updater 'Check for Updates…'
     }
+
+    speech = container 'TimbreSpeech' {
+      description 'Speech in and out, shared by the Mac and the iPhone (ADR-0015): microphone capture converted on the audio thread, SpeechAnalyzer, the best installed voice.'
+      technology 'Swift package, macOS + iOS'
+      audio = component 'AudioCapture' {
+        description 'Mic tap; converts on the audio thread; emits AnalyzerInput and levels. Falls back from a silent Bluetooth input (ADR-0012).'
+      }
+      transcriber = component 'Transcriber' {
+        description 'SpeechAnalyzer, rebuilt per dictation (ADR-0006). Streams finalized and volatile text.'
+      }
+      speaker = component 'SpeechReader' {
+        description 'AVSpeechSynthesizer with the best installed voice; the speed ladder.'
+      }
+      audio -> transcriber 'AnalyzerInput'
+    }
+
+    model = container 'TimbreModel' {
+      description 'Apple’s on-device model where it runs, Mac and iPhone (ADR-0015): one availability answer, the example writer, the drills’ judges next. Every prompt greedy and guarded.'
+      technology 'Swift package, macOS + iOS'
+      writer = component 'ExampleWriter' {
+        description 'One example sentence for today’s word, guarded by ExampleGuardrail, measured by timbre-eval --examples.'
+      }
+    }
+
+    reminders = container 'TimbreReminders' {
+      description 'The Timbre list in Apple’s Reminders, on all three platforms (ADR-0015, GDR-0016).'
+      technology 'Swift package, macOS + iOS + watchOS'
+      store = component 'ReminderStore' {
+        description 'Finds or creates the list; adds a to-do; reads the open ones back, soonest first.'
+      }
+    }
+
+    kit.controller -> speech.audio 'opens the mic first'
+    kit.controller -> speech.transcriber 'start, finish, abandon'
+    kit.reader -> speech.speaker 'speaks'
+    kit.word -> speech.speaker 'reads the card'
+    kit.word -> model.writer 'one example sentence'
+    kit.todos -> reminders.store 'adds; reads back'
 
     eval = container 'timbre-eval' {
       #dev
@@ -129,15 +156,16 @@ model {
     }
   }
 
-  timbre.kit.transcriber -> apple.speech 'streams audio'
+  timbre.speech.transcriber -> apple.speech 'streams audio'
   timbre.kit.polisher -> apple.models 'one greedy generation'
   timbre.kit.commands -> apple.models 'guided fix; plain-text shorten, plain, explain'
   timbre.kit.hotkey -> apple.ax 'needs the grant'
   timbre.kit.live -> apple.ax 'types; reads the run back; selects it'
   timbre.kit.overlay -> apple.ax 'asks where the caret is'
   timbre.kit.inserter -> apple.pasteboard '⌘V'
-  timbre.kit.reader -> apple.synth 'speaks'
-  timbre.kit.todos -> apple.reminders 'adds to the Timbre list'
+  timbre.speech.speaker -> apple.synth 'speaks'
+  timbre.model.writer -> apple.models 'one greedy generation'
+  timbre.reminders.store -> apple.reminders 'adds to the Timbre list'
   apple.reminders -> apple.icloud 'syncs'
   timbre.kit.updater -> apple.gatekeeper 'verifies before replacing'
 
@@ -192,52 +220,81 @@ model {
 
   // ----------------------------------------------------------- the next part
   core = container 'TimbreCore' {
-    #planned
-    description 'Planned: the platform-neutral package the Mac app and the iPhone app both import — the Library, parsing, practice scoring.'
-    technology 'Swift package, macOS + iOS'
-    style {
-      color mustard
-    }
+    description 'The platform-neutral package the Mac, the iPhone and the Watch import: the Library, strength, the daily pick, Spell it’s check, the to-do parser. Foundation and Observation only (ADR-0013).'
+    technology 'Swift package, macOS + iOS + watchOS'
 
     library = store 'The Library' {
-      #planned
-      description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, industry tags, strength, history.'
-      style {
-        color mustard
-      }
+      description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, tags, and the events strength is derived from. One versioned JSON file; merge is a union of events (GDR-0023).'
+    }
+    strength = component 'Strength' {
+      description 'Retrievability from an entry’s events, FSRS-4.5, never stored (ADR-0014).'
+    }
+    pick = component 'The daily pick' {
+      description 'The weakest entry that is due, else a bundled word for the profile; computed from the events before the start of the day (GDR-0027).'
+    }
+    spell = component 'Spell it’s check' {
+      description 'Letters heard against the word, deterministic, with a corpus. Runs on the Watch with no model.'
+    }
+    todoparser = component 'To-do parser' {
+      description 'Apple’s data detector reads the date; no model. Shared by the Mac and the wrist (GDR-0016, GDR-0026).'
     }
     profile = component 'Profile' {
-      #planned
-      description 'Industry, role, first language. Makes explain right for the reader; picks the word-of-the-day lists.'
-      style {
-        color mustard
-      }
+      description 'Industry, role, first language. Picks the word-of-the-day lists; will make explain right for the reader.'
     }
     practice = component 'Practice' {
       #planned
-      description 'Spell it, Say it, Explain it, word of the day. Drills scored like commands, with a corpus.'
+      description 'The drills’ screens, Say it and Explain it with the model-backed judge, streaks and the weekly review. Scored like commands, with a corpus.'
       style {
         color mustard
       }
     }
-    practice -> library 'raises strength'
-    profile -> library 'tags'
+    strength -> library 'replays the events'
+    pick -> strength 'weakest first'
+    pick -> profile 'which lists'
+    practice -> library 'records passes and fails'
+    spell -> library 'a pass or a fail'
   }
 
   iphone = system 'Timbre for iPhone' {
-    #planned
-    description 'Planned: the Library in your pocket. Review, practise, word of the day, add a word you heard. A companion, not a port — iOS cannot dictate into other apps.'
+    description 'The Library in your pocket: today’s word, the Library, Spell it, the to-do key, you. A companion, not a port — iOS cannot dictate into other apps (GDR-0023, ADR-0016).'
     technology 'SwiftUI, iOS 26'
     style {
-      color mustard
       shape mobile
     }
     -> core 'imports'
+    -> timbre.speech 'Spell it and the to-do key listen through'
+    -> timbre.model 'one example sentence'
+    -> timbre.reminders 'files to-dos, its own and the Watch’s'
+    widgets = component 'Widgets and the Control' {
+      description 'Today’s word on the Home and Lock Screens; a Control that opens the to-do key. Read a snapshot the app writes; never open the Library.'
+    }
   }
 
-  timbre.kit -> core 'imports; VocabularyStore becomes the Library' {
-    #planned
+  watch = system 'Timbre for Apple Watch' {
+    description 'The to-do key on the wrist, today’s word on the face, Spell it, a word you heard. Nothing here needs the model; the system’s dictation hands back text (GDR-0026).'
+    technology 'SwiftUI, watchOS 26'
+    style {
+      shape mobile
+    }
+    -> core 'imports'
+    -> timbre.reminders 'reads the list back; cannot write (GDR-0029)'
+    relay = component 'TimbreRelay' {
+      description 'A to-do said on the wrist, queued and handed to the iPhone over WatchConnectivity, which files it and replies (GDR-0029).'
+    }
+    complication = component 'Complication' {
+      description 'Today’s word on the face, from the Watch’s own snapshot.'
+    }
   }
+  watch.relay -> iphone 'transferUserInfo, queued until the phone is reachable'
+
+  timbre.kit -> core 'imports'
+  timbre.model -> core 'the drill judge’s protocol and the guardrails'
+  timbre.reminders -> core 'the to-do it files'
+  timbre.kit.polisher -> core.library 'corrections first, then the taught words'
+  timbre.kit.commands -> core.library 'definitions answer explain first'
+  timbre.kit.controller -> core.library 'marks today’s word met'
+  timbre.kit.word -> core.pick 'today’s word'
+  timbre.kit.todos -> core.todoparser 'the date, read on-device'
   timbre.kit.commands -> core.profile 'explain reads the industry' {
     #planned
   }
@@ -245,6 +302,7 @@ model {
     #planned
   }
   user -> iphone 'practises; hears the word of the day'
+  user -> watch 'says a to-do; glances at the word'
 
   account = external 'A Timbre account' {
     #open

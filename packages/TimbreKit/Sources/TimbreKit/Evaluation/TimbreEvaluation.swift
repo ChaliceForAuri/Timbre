@@ -1,5 +1,8 @@
 import AVFoundation
 import Foundation
+import TimbreCore
+import TimbreModel
+import TimbreSpeech
 
 /// Development-only entry points for the `timbre-eval` harness.
 ///
@@ -35,11 +38,12 @@ public enum TimbreEvaluation {
         corrections: [Correction] = [],
         acronyms: [Acronym] = [],
         vocabulary: [String] = [],
+        profile: Profile = .empty,
         onExplanation: ((String) -> Void)? = nil
     ) async -> CommandResult {
         let (outcome, diagnostic) = await TextTransformer().runDetailed(
             command, on: text, corrections: corrections, acronyms: acronyms, vocabulary: vocabulary,
-            onExplanation: onExplanation
+            profile: profile, onExplanation: onExplanation
         )
         switch outcome {
         case .replacement(let output): return CommandResult(kind: .replacement, text: output)
@@ -237,6 +241,32 @@ public enum TimbreEvaluation {
         let verified = try await UpdateInstaller.prepare(release, using: session)
         let installed = try standIn.map { try UpdateInstaller.replace($0, with: verified) }
         return (release, verified, installed)
+    }
+
+    /// One draft of the card's example sentence, and which rules it broke;
+    /// an empty list means the card would show it.
+    public static func exampleSentence(
+        for term: String, meaning: String?, industry: String?
+    ) async -> (draft: String?, failures: [ExampleGuardrail.Failure]) {
+        let writer = ExampleWriter()
+        guard let draft = await writer.draft(for: term, meaning: meaning, industry: industry) else {
+            return (writer.lastError.map { "(\($0))" }, [.empty])
+        }
+        return (draft, ExampleGuardrail.failures(in: draft, for: term))
+    }
+
+    /// The model's half of a drill (GDR-0023, decision 5): nil when the model
+    /// cannot answer or its verdict was out of shape.
+    public static func judge(_ drill: Drill, term: String, meaning: String?, spoken: String) async
+        -> DrillVerdict?
+    {
+        let judge = ModelDrillJudge()
+        switch drill {
+        case .sayIt: return await judge.judgeSayIt(term: term, meaning: meaning, sentence: spoken)
+        case .explainIt:
+            return await judge.judgeExplainIt(term: term, meaning: meaning ?? "", explanation: spoken)
+        case .spellIt: return nil
+        }
     }
 
     /// Runs commands as if Apple Intelligence were off, so the fallbacks can

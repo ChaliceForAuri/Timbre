@@ -27,6 +27,7 @@
 		return sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
 	};
 	const commandMedian = median(latest.commands.perCase.map((m) => m.ms ?? 0).filter(Boolean));
+	const learningCount = evals.learning.reduce((n, corpus) => n + corpus.cases.length, 0);
 
 	// ?case=<id> opens a case, so the command palette and links can land on one.
 	const openId = $derived(page.url.searchParams.get('case'));
@@ -68,6 +69,7 @@
 	<Tabs.List>
 		<Tabs.Trigger value="polisher">Polisher · {evals.polisher.cases.length}</Tabs.Trigger>
 		<Tabs.Trigger value="commands">Commands · {evals.commands.cases.length}</Tabs.Trigger>
+		<Tabs.Trigger value="learning">Learning · {learningCount}</Tabs.Trigger>
 		<Tabs.Trigger value="how">How to run</Tabs.Trigger>
 	</Tabs.List>
 
@@ -150,12 +152,55 @@
 		</div>
 	</Tabs.Content>
 
+	<Tabs.Content value="learning" class="mt-4 space-y-8">
+		<p class="text-muted-foreground max-w-[62ch] text-sm">
+			The Library's corpora (GDR-0023, GDR-0027). Spell it and the word of the day are deterministic: one run is the
+			measurement, and the tests run them on every push. The drills' judge and the example writer use the model
+			and are measured like the polisher, five runs each.
+		</p>
+		{#each evals.learning as corpus (corpus.id)}
+			<div>
+				<div class="mb-3 flex flex-wrap items-baseline justify-between gap-3">
+					<h2 class="text-xl">{corpus.title} · {corpus.cases.length}</h2>
+					<p class="text-muted-foreground font-mono text-xs">{corpus.path}{corpus.judged ? ' · judged by the model' : ' · deterministic'}</p>
+				</div>
+				<div class="bg-card ring-foreground/8 overflow-hidden rounded-2xl ring-1">
+					<Table.Root>
+						<Table.Header>
+							<Table.Row>
+								<Table.Head class="eyebrow">Case</Table.Head>
+								<Table.Head class="eyebrow">Input</Table.Head>
+								<Table.Head class="eyebrow">Must come out</Table.Head>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{#each corpus.cases as c (c.id)}
+								<Table.Row>
+									<Table.Cell class="font-mono text-xs">{c.id}</Table.Cell>
+									<Table.Cell class="max-w-[46ch] text-sm">
+										<span class="block truncate" title={c.input}>{c.input}</span>
+										{#if c.note}<span class="text-muted-foreground block truncate text-xs" title={c.note}>{c.note}</span>{/if}
+									</Table.Cell>
+									<Table.Cell class="text-sm">{c.expect}</Table.Cell>
+								</Table.Row>
+							{/each}
+						</Table.Body>
+					</Table.Root>
+				</div>
+			</div>
+		{/each}
+	</Tabs.Content>
+
 	<Tabs.Content value="how" class="mt-4">
 		<div class="record-prose text-sm">
 			<p>From <code>packages/TimbreKit</code>. The model is stochastic by default and deterministic by decoding (ADR-0009); five repeats is the discipline either way.</p>
 			<pre>swift run timbre-eval Fixtures/corpus.json --repeat 5
 swift run timbre-eval --commands Fixtures/commands.json --repeat 5
-swift run timbre-eval --audio-dir Fixtures/audio --corpus Fixtures/corpus.json</pre>
+swift run timbre-eval --audio-dir Fixtures/audio --corpus Fixtures/corpus.json
+swift run timbre-eval --spell ../TimbreCore/Fixtures/spell.json
+swift run timbre-eval --picks ../TimbreCore/Fixtures/picks.json
+swift run timbre-eval --drills ../TimbreCore/Fixtures/drills.json --repeat 5
+swift run timbre-eval --examples Fixtures/examples.json --repeat 5</pre>
 			<p>To record a run here, from <code>web/</code>:</p>
 			<pre>pnpm run measure        # runs both corpora and writes src/lib/evals/measured.json
 pnpm run sync:evals     # after editing a fixture</pre>

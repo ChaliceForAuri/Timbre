@@ -1,0 +1,17 @@
+// The iPhone's widgets: today's word on the Home and Lock Screens, and the
+// Control that opens the to-do key (GDR-0027). Reads a snapshot the app
+// writes; never opens the Library.
+
+SDKROOT = iphoneos
+IPHONEOS_DEPLOYMENT_TARGET = 26.0
+TARGETED_DEVICE_FAMILY = 1,2
+
+PRODUCT_NAME = TimbreWidgets
+PRODUCT_BUNDLE_IDENTIFIER = dev.hugopretorius.Timbre.widgets
+INFOPLIST_FILE = Config/iOSWidgets-Info.plist
+INFOPLIST_KEY_CFBundleDisplayName = Timbre
+
+CODE_SIGN_ENTITLEMENTS = Config/iOSWidgets.entitlements
+APPLICATION_EXTENSION_API_ONLY = YES
+SKIP_INSTALL = YES
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks @executable_path/../../Frameworks

@@ -1,0 +1,84 @@
+<p>Timbre is about to keep words, not only hear them. The Library (GDR-0023) gives every entry a <em>strength</em> that practice raises and time lowers, and the word of the day picks the weakest. This module is the century of memory research behind that one number, and the three design choices that make it hold up across a Mac, a phone and a watch.</p>
+
+<h3 id="m12-curve">The forgetting curve</h3>
+
+<p>Hermann Ebbinghaus measured his own memory for nonsense syllables in the 1880s and drew the curve everyone still draws: retention falls steeply in the first hours, then flattens. Two findings have survived every replication since. The <strong>spacing effect</strong>: the same number of reviews, spread out, beats them bunched together. The <strong>testing effect</strong>: being made to retrieve something strengthens it more than re-reading it does.</p>
+
+<p>Each successful retrieval also <em>flattens the next curve</em>. The first time you learn a word you may lose it in a day; recall it once and it lasts a few days; recall it again at the right moment and it lasts weeks. A vocabulary trainer's whole job is therefore to estimate, per word, when you are about to forget it, and to ask you then — not before, when the review teaches nothing, and not after, when you have to learn it again.</p>
+
+<div class="box map">
+<p class="box-title">Notation</p>
+<table style="margin-bottom:0">
+<tr><th>Symbol</th><th>Meaning</th><th>In Timbre</th></tr>
+<tr><td><code>t</code></td><td>Days since the last successful recall</td><td>From the entry's history</td></tr>
+<tr><td><code>S</code></td><td><em>Stability</em>: the number of days until the chance of recall falls to 90%</td><td>Derived; grows with each pass</td></tr>
+<tr><td><code>R</code></td><td><em>Retrievability</em>: the probability you can recall the word right now</td><td>The strength bar</td></tr>
+<tr><td><code>D</code></td><td><em>Difficulty</em>: how slowly stability grows for this word</td><td>Derived; per entry</td></tr>
+</table>
+</div>
+
+<h3 id="m12-schedulers">SM-2, then FSRS</h3>
+
+<p>SuperMemo's SM-2 (1987) is the recipe most people have met, usually through Anki. Each card has an <em>ease factor</em> and an <em>interval</em>; a pass multiplies the interval by the ease, a fail resets it, and self-reported grades nudge the ease up or down. It works, and it has a famous failure mode — "ease hell", where a few early fails drive a card's ease to the floor and it is shown far too often forever. The deeper problem is that the recipe is fixed. It does not learn your memory; it applies the same arithmetic to everyone.</p>
+
+<p>FSRS — the Free Spaced Repetition Scheduler, published openly in 2022 and now an option inside Anki — replaces the recipe with a model. Every item carries the three numbers in the table, and retrievability falls with elapsed time as a power law of <code>t / S</code>, with <code>R = 0.9</code> at <code>t = S</code> by definition. A review updates <code>S</code> by an amount that depends on <code>R</code> at the time, on <code>D</code>, and on whether you passed; the constants are fitted to a learner's actual history rather than chosen by hand. It is open, small, and runs anywhere.</p>
+
+<pre><code><span class="c-com">// The shape of it. FSRS-4.5's constants; the engine's ADR pins the version.</span>
+<span class="c-key">nonisolated struct</span> <span class="c-typ">Strength</span> {
+    <span class="c-key">var</span> stability: <span class="c-typ">Double</span>      <span class="c-com">// days</span>
+    <span class="c-key">var</span> difficulty: <span class="c-typ">Double</span>     <span class="c-com">// 1...10</span>
+
+    <span class="c-key">func</span> retrievability(after days: <span class="c-typ">Double</span>) -> <span class="c-typ">Double</span> {
+        <span class="c-key">let</span> factor = <span class="c-num">19.0</span> / <span class="c-num">81.0</span>, decay = -<span class="c-num">0.5</span>
+        <span class="c-key">return</span> pow(<span class="c-num">1</span> + factor * days / stability, decay)
+    }
+}</code></pre>
+
+<p>What matters for Timbre is not the exact formula but its shape: strength is a <em>probability of recall</em>, it decays on its own, and every outcome — pass, fail, or met in the wild — moves the curve. "Weakest first" means: among the entries whose <code>R</code> has fallen below the target, pick the lowest. A brand-new entry has no history and is due today.</p>
+
+<h3 id="m12-events">Events, not numbers</h3>
+
+<p>The first design choice: the Library stores the <em>history</em> of each entry — taught, met, drilled and passed, drilled and failed, each with a date and a device — and derives strength from it. It never stores strength as the truth. Three reasons.</p>
+
+<ul>
+<li><strong>It is deterministic.</strong> The same history and the same date give the same number, on every device, in every test. The harness can hold a corpus of histories and expected picks and fail when a change moves one.</li>
+<li><strong>It merges.</strong> Two devices that each recorded a drill do not have two opinions about a number; they have two lists of events, and the merged entry is the union (Module 13 is how that crosses iCloud). A stored number would have no right answer.</li>
+<li><strong>It can be replayed.</strong> When the formula or its constants change, every strength is recomputed from the history. Nothing is lost to the old formula.</li>
+</ul>
+
+<pre><code><span class="c-key">nonisolated enum</span> <span class="c-typ">LibraryEvent</span>: <span class="c-typ">Codable</span>, <span class="c-typ">Sendable</span> {
+    <span class="c-key">case</span> taught(<span class="c-typ">Date</span>, on: <span class="c-typ">Device</span>)
+    <span class="c-key">case</span> met(<span class="c-typ">Date</span>, in app: <span class="c-typ">String</span>)            <span class="c-com">// never the sentence</span>
+    <span class="c-key">case</span> drilled(<span class="c-typ">Date</span>, <span class="c-typ">Drill</span>, passed: <span class="c-typ">Bool</span>, on: <span class="c-typ">Device</span>)
+}
+
+<span class="c-com">// Pure: history in, strength out. Testable without a store, a model or a date you cannot control.</span>
+<span class="c-key">func</span> strength(of history: [<span class="c-typ">LibraryEvent</span>], at now: <span class="c-typ">Date</span>) -> <span class="c-typ">Double</span></code></pre>
+
+<h3 id="m12-met">Met in the wild</h3>
+
+<p>The second design choice is the one nobody else can make. When today's word turns up in a dictation or a command, Timbre marks it <em>met</em> (GDR-0027). A retrieval you did not plan, in a sentence you needed, is better evidence than any drill, and it costs the user nothing.</p>
+
+<p>The detection is a whole-word, case-insensitive match against the <em>polished</em> text, after the correction table has run (GDR-0011) — so a taught "timber kit" counts as meeting <em>TimbreKit</em> — while that text is still in memory on its way to the paste. The Library records <code>met(date, app)</code>. It never records the sentence; GDR-0004 governs capture, and this is not a capture.</p>
+
+<div class="box warn">
+<p class="box-title">Trap · grading yourself</p>
+<p>Flash-card apps ask you to rate your own answer, and self-grades are noisy: tired people press "good" to get through the deck. A scheduler is only as good as the outcomes it is fed. Timbre's drills produce a verdict the user did not choose — Spell it compares letters, Say it runs a guardrailed judge (GDR-0023) — and <em>met</em> is observed, not reported. That is why the drills exist in the shape they do.</p>
+</div>
+
+<h3 id="m12-population">What Vocabulary.com does, and why Timbre need not</h3>
+
+<p>Vocabulary.com's trainer rates every answer on a twenty-level scale and chooses your next question by comparing you with hundreds of millions of other users' answers: which words people at your level tend to miss, and which question type exposes it. That is a population model — item response theory in practice — and it needs a server with everyone's answers on it.</p>
+
+<p>Timbre has one learner and no server, and does not need the population, because the selection problem the population solves — <em>which words should this person learn?</em> — is already answered by provenance. The words in the Library are the ones you dictated, had explained, misspelled and taught. A bundled list only fills the gaps when nothing of yours is due. Where they are statistically relevant to a million people, Timbre is personally relevant to one. The record says so, and says what we do not have: ten question types and a corpus of real sentences (GDR-0027).</p>
+
+<h3 id="m12-data">Open data, and what share-alike means</h3>
+
+<p>A learner's own entries carry meanings they typed or kept. The bundled lists need real facts — definition, part of speech, pronunciation, origin — for thousands of words, and the on-device model is the wrong place to get them: it invents what it does not know (GDR-0012). The facts come from a curated extract of English Wiktionary (GDR-0028), which is text under <strong>CC BY-SA 4.0</strong>.</p>
+
+<p>Two obligations follow and both are cheap to honour. <em>Attribution</em>: every card that shows extract content names Wiktionary and links to it. <em>Share-alike</em>: the extract we ship, and the scripts that produced it, are published under the same licence. The licence attaches to the data, which is a file the app reads, not to the program that reads it; the app's own code keeps its own terms (GDR-0005). The model is allowed to write the example sentence and the "why today" line, and each is labelled as the model's, so a reader always knows which words on the card are a fact and which are a sketch.</p>
+
+<div class="box good">
+<p class="box-title">In Timbre</p>
+<p>Strength is retrievability, shown as a bar. The Library stores events and derives the number; <code>strength(of:at:)</code> is pure and lives in <code>TimbreCore</code> with a corpus beside it. The word of the day is the lowest-strength entry that is due, else a bundled word for the profile's industry. <em>Met</em> is observed from polished text and recorded without the sentence. Facts come from the extract and say so; sketches come from the model and say so.</p>
+</div>

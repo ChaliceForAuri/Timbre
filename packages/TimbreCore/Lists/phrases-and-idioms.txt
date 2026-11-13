@@ -1,0 +1,60 @@
+# Phrases and idioms: the ones heard in meetings and read in memos
+# (GDR-0027). Multi-word entries exist in Wiktionary; the extract finds them.
+table stakes
+canary in the coal mine
+low-hanging fruit
+move the needle
+boil the ocean
+paradigm shift
+double-edged sword
+elephant in the room
+red herring
+straw man
+devil's advocate
+rule of thumb
+grain of salt
+tip of the iceberg
+back to the drawing board
+on the same page
+get the ball rolling
+hit the ground running
+throw in the towel
+cut corners
+up in the air
+in the pipeline
+in the loop
+out of the loop
+bite the bullet
+burn the midnight oil
+call it a day
+cost an arm and a leg
+go the extra mile
+jump through hoops
+learn the ropes
+miss the boat
+once in a blue moon
+pull the plug
+raise the bar
+read between the lines
+see eye to eye
+sit on the fence
+the ball is in your court
+think outside the box
+under the radar
+up to speed
+blessing in disguise
+slippery slope
+sea change
+quantum leap
+zero-sum game
+chicken-and-egg problem
+Occam's razor
+Hobson's choice
+Pyrrhic victory
+Catch-22
+status quo
+quid pro quo
+ad hoc
+de facto
+per se
+vice versa

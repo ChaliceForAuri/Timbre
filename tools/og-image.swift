@@ -98,7 +98,7 @@ NSGraphicsContext.restoreGraphicsState()
 // The claim, wrapped by hand, with the rainbow under "never".
 let headline = nunito(58, weight: 800)
 draw("Dictation that", at: NSPoint(x: 80, y: 318), font: headline, color: ink, kern: -1)
-draw("never leaves your Mac.", at: NSPoint(x: 80, y: 250), font: headline, color: ink, kern: -1)
+draw("never leaves your devices.", at: NSPoint(x: 80, y: 250), font: headline, color: ink, kern: -1)
 let neverWidth = size(of: "never", font: headline, kern: -1).width
 let band = neverWidth / Double(rainbow.count)
 NSGraphicsContext.saveGraphicsState()

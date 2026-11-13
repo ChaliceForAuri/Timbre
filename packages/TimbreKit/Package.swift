@@ -16,9 +16,20 @@ let package = Package(
         .library(name: "TimbreKit", targets: ["TimbreKit"]),
         .executable(name: "timbre-eval", targets: ["TimbreEval"]),
     ],
+    dependencies: [
+        // The platform-neutral half (ADR-0013): the Library, the to-do parser,
+        // strength, the daily pick, the drill checks.
+        .package(path: "../TimbreCore"),
+        // The framework-bound packages the companion shares (ADR-0015).
+        .package(path: "../TimbreSpeech"),
+        .package(path: "../TimbreModel"),
+        .package(path: "../TimbreReminders"),
+        .package(path: "../TimbreCloud"),
+    ],
     targets: [
         .target(
             name: "TimbreKit",
+            dependencies: ["TimbreCore", "TimbreSpeech", "TimbreModel", "TimbreReminders", "TimbreCloud"],
             swiftSettings: concurrencySettings
         ),
         .executableTarget(
