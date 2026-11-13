@@ -331,6 +331,25 @@ struct LibraryReplaceTests {
         #expect(library.strength(of: fixed.id, at: day.addingTimeInterval(2 * 86_400)) > 0)
     }
 
+    @Test("A rename onto an existing entry is refused and both survive")
+    func collision() throws {
+        let library = Library(
+            fileURL: FileManager.default.temporaryDirectory.appending(path: UUID().uuidString + ".json"),
+            legacy: nil)
+        let source = Provenance(device: .mac, date: Date(), how: .typed)
+        let tacit = try #require(
+            LibraryEntry(kind: .word, term: "tacit", meaning: "unspoken", source: source))
+        let subtle = try #require(
+            LibraryEntry(kind: .word, term: "subtle", meaning: "hard to notice", source: source))
+        library.upsert(tacit)
+        library.upsert(subtle)
+        let renamed = try #require(
+            LibraryEntry(kind: .word, term: "subtle", meaning: "unspoken", source: source))
+        #expect(!library.replace(tacit.id, with: renamed))
+        #expect(library.entry(tacit.id)?.meaning == "unspoken")
+        #expect(library.entry(subtle.id)?.meaning == "hard to notice")
+    }
+
     @Test("An edit that keeps the id is a plain upsert")
     func sameID() throws {
         let library = Library(

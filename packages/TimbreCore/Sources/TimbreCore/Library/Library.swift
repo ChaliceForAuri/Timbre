@@ -163,17 +163,22 @@ public final class Library {
     /// history moves with it: fixing a typo must not reset what was learned.
     /// The old id gets its tombstone; its events are copied to the new id
     /// with their own dates and devices, so the union merge sees them once.
-    public func replace(_ oldID: String, with entry: LibraryEntry, on date: Date = Date()) {
+    /// A rename onto a term the Library already holds is refused: it would
+    /// overwrite that other entry's meaning and example. Returns whether the
+    /// entry was stored.
+    @discardableResult
+    public func replace(_ oldID: String, with entry: LibraryEntry, on date: Date = Date()) -> Bool {
         guard oldID != entry.id, entries.contains(where: { $0.id == oldID }) else {
             upsert(entry, on: date)
-            return
+            return true
         }
+        guard !entries.contains(where: { $0.id == entry.id }) else { return false }
         let carried = history(of: oldID).filter { $0.kind != .forgot }.map {
             LibraryEvent(
                 entry: entry.id, kind: $0.kind, date: $0.date, device: $0.device, app: $0.app, drill: $0.drill
             )
         }
-        entries.removeAll { $0.id == oldID || $0.id == entry.id }
+        entries.removeAll { $0.id == oldID }
         var renamed = entry
         renamed.edited = date
         entries.append(renamed)
@@ -182,6 +187,7 @@ public final class Library {
         }
         if carried.isEmpty { record(.taught, for: entry.id, on: date) }
         record(.forgot, for: oldID, on: date)
+        return true
     }
 
     /// Removes an entry and leaves a tombstone, so the removal outlives a

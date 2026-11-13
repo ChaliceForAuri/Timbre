@@ -26,7 +26,8 @@ func value(for flag: String) -> String? {
     return arguments[index + 1]
 }
 guard let listsPath = value(for: "--lists"), let outPath = value(for: "--out") else {
-    FileHandle.standardError.write(Data("usage: extract-words.swift --lists <dir> --out <file> < dump.jsonl\n".utf8))
+    FileHandle.standardError.write(
+        Data("usage: extract-words.swift --lists <dir> --out <file> < dump.jsonl\n".utf8))
     exit(64)
 }
 
@@ -40,7 +41,8 @@ struct ListSpec: Decodable {
 }
 
 let listsDirectory = URL(filePath: listsPath, directoryHint: .isDirectory)
-let specs = try JSONDecoder().decode([ListSpec].self, from: Data(contentsOf: listsDirectory.appending(path: "lists.json")))
+let specs = try JSONDecoder().decode(
+    [ListSpec].self, from: Data(contentsOf: listsDirectory.appending(path: "lists.json")))
 
 /// Terms per list, in curated order; and every wanted term, lowercased, for the one pass.
 var termsByList: [String: [String]] = [:]
@@ -65,9 +67,16 @@ struct Found {
     var rank: Int
 }
 
-let acceptablePOS: Set<String> = ["noun", "verb", "adj", "adv", "phrase", "prep_phrase", "intj", "prep", "pron"]
-let unwantedTags: Set<String> = ["obsolete", "archaic", "vulgar", "offensive", "dated", "rare", "slang", "dialectal"]
-let posNames = ["adj": "adjective", "adv": "adverb", "intj": "interjection", "prep": "preposition", "prep_phrase": "phrase", "pron": "pronoun"]
+let acceptablePOS: Set<String> = [
+    "noun", "verb", "adj", "adv", "phrase", "prep_phrase", "intj", "prep", "pron",
+]
+let unwantedTags: Set<String> = [
+    "obsolete", "archaic", "vulgar", "offensive", "dated", "rare", "slang", "dialectal",
+]
+let posNames = [
+    "adj": "adjective", "adv": "adverb", "intj": "interjection", "prep": "preposition",
+    "prep_phrase": "phrase", "pron": "pronoun",
+]
 
 var found: [String: Found] = [:]
 var lines = 0
@@ -77,7 +86,9 @@ func sentenceCut(_ text: String, limit: Int) -> String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
     guard trimmed.count > limit else { return trimmed }
     let head = trimmed.prefix(limit)
-    if let end = head.lastIndex(where: { ".;".contains($0) }), head.distance(from: head.startIndex, to: end) > limit / 2 {
+    if let end = head.lastIndex(where: { ".;".contains($0) }),
+        head.distance(from: head.startIndex, to: end) > limit / 2
+    {
         return String(head[...end])
     }
     if let space = head.lastIndex(of: " ") { return String(head[..<space]) + "…" }
@@ -86,14 +97,26 @@ func sentenceCut(_ text: String, limit: Int) -> String {
 
 while let line = readLine(strippingNewline: true) {
     lines += 1
-    // Cheap pre-check before parsing: the word field appears early in each line.
-    guard let wordRange = line.range(of: "\"word\": \"") else { continue }
-    let afterWord = line[wordRange.upperBound...]
-    guard let close = afterWord.firstIndex(of: "\"") else { continue }
-    let word = String(afterWord[..<close])
-    guard wanted.contains(word.lowercased()) else { continue }
+    // Cheap pre-check before parsing: is any wanted term named on this line at
+    // all? The line's first "word" is not the entry's own: key order is not
+    // fixed, and an antonym or a derived term nested in the entry can come
+    // first ("stateful" lists "stateless"). Only the parsed top-level word
+    // decides whose entry this is.
+    var mentionsWanted = false
+    var search = line.startIndex
+    while let hit = line.range(of: "\"word\": \"", range: search..<line.endIndex) {
+        let rest = line[hit.upperBound...]
+        guard let close = rest.firstIndex(of: "\"") else { break }
+        if wanted.contains(rest[..<close].lowercased()) {
+            mentionsWanted = true
+            break
+        }
+        search = close
+    }
+    guard mentionsWanted else { continue }
     guard let data = line.data(using: .utf8),
         let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+        let word = object["word"] as? String, wanted.contains(word.lowercased()),
         (object["lang_code"] as? String) == "en",
         let pos = object["pos"] as? String, acceptablePOS.contains(pos)
     else { continue }
@@ -103,7 +126,9 @@ while let line = readLine(strippingNewline: true) {
     var rank = 2
     for sense in senses {
         let tags = Set((sense["tags"] as? [String]) ?? [])
-        guard let glosses = sense["glosses"] as? [String], let gloss = glosses.last, !gloss.isEmpty else { continue }
+        guard let glosses = sense["glosses"] as? [String], let gloss = glosses.last, !gloss.isEmpty else {
+            continue
+        }
         let unwanted = !tags.isDisjoint(with: unwantedTags)
         let candidateRank = unwanted ? 1 : 0
         if definition == nil || candidateRank < rank {
@@ -127,7 +152,8 @@ while let line = readLine(strippingNewline: true) {
     let origin = (object["etymology_text"] as? String).map { sentenceCut($0, limit: 240) }
     let partOfSpeech = posNames[pos] ?? pos
     let candidate = Found(
-        partOfSpeech: partOfSpeech, pronunciation: pronunciation, definition: sentenceCut(definition, limit: 240),
+        partOfSpeech: partOfSpeech, pronunciation: pronunciation,
+        definition: sentenceCut(definition, limit: 240),
         origin: origin?.isEmpty == true ? nil : origin, rank: rank)
     let key = word.lowercased()
     if let existing = found[key], existing.rank <= candidate.rank {
@@ -189,5 +215,6 @@ encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes
 try encoder.encode(output).write(to: URL(filePath: outPath), options: .atomic)
 print("\(lines) lines read → \(outPath)")
 if !missingReport.isEmpty {
-    FileHandle.standardError.write(Data(("not in the extract:\n  " + missingReport.joined(separator: "\n  ") + "\n").utf8))
+    FileHandle.standardError.write(
+        Data(("not in the extract:\n  " + missingReport.joined(separator: "\n  ") + "\n").utf8))
 }

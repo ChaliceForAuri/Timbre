@@ -351,12 +351,17 @@ private struct EditEntrySheet: View {
             }
             .formStyle(.columns)
             HStack {
+                if collides {
+                    Text("Your Library already has that one.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
                 Button("Cancel") { dismiss() }
                     .keyboardShortcut(.cancelAction)
                 Button("Save") { save() }
                     .keyboardShortcut(.defaultAction)
-                    .disabled(edited == nil)
+                    .disabled(edited == nil || collides)
             }
         }
         .padding(20)
@@ -382,11 +387,16 @@ private struct EditEntrySheet: View {
             example: example.isEmpty ? nil : example, tags: tagList, source: entry.source)
     }
 
+    /// The edited term names a different entry the Library already holds.
+    private var collides: Bool {
+        guard let edited, edited.id != entry.id else { return false }
+        return library.entry(edited.id) != nil
+    }
+
     private func save() {
         guard let updated = edited else { return }
         // A changed term is a changed id; the history moves with the entry.
-        library.replace(entry.id, with: updated)
-        dismiss()
+        if library.replace(entry.id, with: updated) { dismiss() }
     }
 }
 

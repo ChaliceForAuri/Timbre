@@ -41,5 +41,14 @@ struct PendingTodosTests {
         #expect(answer?.id == item.id)
         #expect(answer?.list == "Timbre")
         #expect(RelayMessage.parseReply([:]) == nil)
+
+        let failure = RelayMessage.failure(for: item.id, reason: "Reminders access is off.")
+        #expect(RelayMessage.parseFailure(failure)?.id == item.id)
+        #expect(RelayMessage.parseFailure(failure)?.reason == "Reminders access is off.")
+        #expect(
+            RelayMessage.parseFailure(["failed": item.id.uuidString])?.reason
+                == "The iPhone could not file it.")
+        #expect(RelayMessage.parseFailure(reply) == nil)
+        #expect(RelayMessage.parseReply(failure) == nil)
     }
 }

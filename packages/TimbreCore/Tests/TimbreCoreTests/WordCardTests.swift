@@ -63,4 +63,17 @@ struct BundledListsTests {
         }
         #expect(BundledLists.attribution?.contains("Wiktionary") == true)
     }
+
+    /// The extract once filed entries under a nested antonym's name, so
+    /// "stateless" carried "stateful"'s definition. These pairs are the canary.
+    @Test("A word carries its own definition, not its antonym's")
+    func antonymsAreNotSwapped() throws {
+        let words = Dictionary(
+            BundledLists.all.flatMap(\.words).map { ($0.term, $0.definition.lowercased()) },
+            uniquingKeysWith: { first, _ in first })
+        #expect(try #require(words["stateless"]).contains("not keep"))
+        #expect(try #require(words["stateful"]).contains("supports different states"))
+        #expect(try #require(words["immutable"]).contains("unable to be changed"))
+        #expect(!(try #require(words["mutable"])).contains("unable"))
+    }
 }
