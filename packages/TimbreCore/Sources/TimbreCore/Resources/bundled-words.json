@@ -1,1 +1,3410 @@
-[]
+[
+  {
+    "id" : "general",
+    "industries" : [
+
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "General English",
+    "words" : [
+      {
+        "definition" : "Lasting for a short period of time.",
+        "origin" : "From New Latin ephemerus, from Ancient Greek ἐφήμερος (ephḗmeros), the more common form of ἐφημέριος (ephēmérios, “of, for, or during the day, living or lasting but for a day, short-lived, temporary”), from ἐπί (epí, “on”) + ἡμέρα (hēméra,…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɛˈfɛ.mə.ɹəl/",
+        "term" : "ephemeral"
+      },
+      {
+        "definition" : "Implied, but not made explicit, especially through silence.",
+        "origin" : "Borrowed from late Middle French tacite, or from Latin tacitus (“that is passed over in silence, done without words, assumed as a matter of course, silent”), from tacere (“to be silent”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈtæsɪt/",
+        "term" : "tacit"
+      },
+      {
+        "definition" : "Done only or merely to conform to a minimal standard or to fulfill a protocol or presumptive duty.",
+        "origin" : "From Late Latin perfunctōrius (“careless, negligent”), from the past participial stem of perfungor, perfunct- (“perform, carry through”), from per- + fungor.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/pɚˈfʌŋk.tɚ.i/",
+        "term" : "perfunctory"
+      },
+      {
+        "definition" : "Being everywhere at once: omnipresent.",
+        "origin" : "From ubiquity + -ous, from Medieval Latin ubīquitās, from Latin ubīque (“everywhere”), from ubī̆ (“where”) + -que (“each, ever”). Compare ubiety.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/juˈbɪkwɪtəs/",
+        "term" : "ubiquitous"
+      },
+      {
+        "definition" : "A man of business.",
+        "origin" : "From Middle French pragmatique, from Late Latin pragmaticus (“relating to civil affair; in Latin, as a noun, a person versed in the law who furnished arguments and points to advocates and orators, a kind of attorney”), from Ancient Greek…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɹæɡˈmætɪk/",
+        "term" : "pragmatic"
+      },
+      {
+        "definition" : "A minor distinction.",
+        "origin" : "Borrowed from French nuance (“nuance, shade, hue”). Omitting several steps, from Latin nūbēs. Compare typologically Italian sfumatura (< Latin fūmus).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈnju.ɑns/",
+        "term" : "nuance"
+      },
+      {
+        "definition" : "British and Canada standard spelling of candor.",
+        "partOfSpeech" : "noun",
+        "term" : "candour"
+      },
+      {
+        "definition" : "Simultaneously experiencing or expressing opposing or contradictory feelings, beliefs, motivations, or meanings.",
+        "origin" : "Back-formation from ambivalence, from German Ambivalenz, from Latin ambi- (“in two ways”) + valeō (“be strong”); equivalent to ambi- + -valent. Compare ambivert.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/æmˈbɪv.ə.lənt/",
+        "term" : "ambivalent"
+      },
+      {
+        "definition" : "Compressed into a small area; compact.",
+        "origin" : "The adjective is derived from Late Middle English succinte, succynt (“having one’s waist encircled with something, girdled;",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/sə(k)ˈsɪŋ(k)t/",
+        "term" : "succinct"
+      },
+      {
+        "definition" : "Containing or using more words than necessary; long-winded, wordy.",
+        "origin" : "From Latin verbōsus (“prolix, wordy, verbose”). Verbōsus is derived from verbum (“word”) (ultimately from Proto-Indo-European *werh₁- (“to say, speak”)) + -ōsus (suffix meaning ‘full of, overly, prone to’ forming adjectives from nouns).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/vɚˈboʊs/",
+        "term" : "verbose"
+      },
+      {
+        "definition" : "Characterized by very precise, conscientious attention to details.",
+        "origin" : "Learned borrowing from Latin meticulōsus (“full of fear, timid, fearful, terrible, frightful”), from metus (“fear”) and -culōsus, extracted from perīculōsus (“perilous”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/məˈtɪ.kjə.ləs/",
+        "term" : "meticulous"
+      },
+      {
+        "definition" : "Painstaking and careful not to miss or omit any detail.",
+        "origin" : "From Middle English thoruȝ, þoruȝ, from Old English þuruh, a byform of Old English þurh, whence comes English through. The adjective derives from the preposition and adverb.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈθʌɹoʊ/",
+        "term" : "cursory"
+      },
+      {
+        "definition" : "Composed of inherently different or distinct elements; incongruous.",
+        "origin" : "Etymology tree Proto-Indo-European *dwóh₁ ▲ Proto-Indo-European *trísinflu. Proto-Indo-European *d(w)is- Proto-Italic *dis- Latin dis- Latin parō Latin disparō Latin disparātusder. Middle French desparatbor. ▲ Latin disparātusbor.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈdɪsp(ə)ɹət/",
+        "term" : "disparate"
+      },
+      {
+        "definition" : "Naturally as part or consequence of something.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Italic *en Proto-Italic *en- Latin in- Latin haereō Latin inhaereō Latin inhaerentembor.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪnˈhɪəɹənt/",
+        "term" : "inherent"
+      },
+      {
+        "definition" : "External; separable from the thing itself; inessential.",
+        "origin" : "From French extrinsèque, from Latin extrinsecus (“from without, without, on the outside”), from *extrim, an assumed adverbial form of exter (“outer, outward”) + secus (“by, on the side”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɛksˈtɹɪn.zɪk/",
+        "term" : "intrinsic"
+      },
+      {
+        "definition" : "Seemingly, apparently, on the surface; supposedly, according to representations or implications made by someone (especially when their motives are suspected by others).",
+        "origin" : "Etymology tree English ostensible Proto-Indo-European *leyg-der. Proto-Germanic *līkąder. Proto-Germanic *-līkaz Proto-Germanic *-ê Proto-Germanic *-līkê Proto-West Germanic *-līkē Old English -līċe Middle English -ly English -ly English…",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/ɑˈstɛn.sə.bli/",
+        "term" : "ostensibly"
+      },
+      {
+        "definition" : "A noun or word group that functions as part of a noun phrase.",
+        "origin" : "PIE word *h₁nómn̥ Etymology tree Proto-Indo-European *h₁nómn̥ Proto-Italic *nōmn̥ Latin nōmen Proto-Indo-European *h₂el- Proto-Indo-European *-is Proto-Indo-European *h₂élisder.? Proto-Italic *-ālis Latin -ālis Latin nōminālisder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈnɑ.mɪ.nl̩/",
+        "term" : "nominal"
+      },
+      {
+        "definition" : "Thin in substance or consistency.",
+        "origin" : "Irregularly formed from Latin tenuis (“thin, slight”) + -ous. Compare tenuious.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈtɛn.ju.əs/",
+        "term" : "tenuous"
+      },
+      {
+        "definition" : "Worthy of note; pertinent or relevant.",
+        "origin" : "The heraldic sense “leaping” and the sense “projecting outward” are borrowed from Latin salientem, the accusative form of saliēns (“springing, leaping”) (whence -ent), present participle of saliō (“leap, spring”, verb).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈseɪ.li.ənt/",
+        "term" : "salient"
+      },
+      {
+        "definition" : "A right that attaches to land, in Scots law.",
+        "origin" : "Inherited from Middle English pertinent, borrowed from Old French pertinent and Latin pertinēns, pertinentem.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpɚtɪnənt/",
+        "term" : "pertinent"
+      },
+      {
+        "definition" : "In excess of what is required or sufficient.",
+        "origin" : "From Middle English superfluous, from Latin superfluus (“superfluous”) + -ous, from superfluō (“overflow”), from super (“above, more than, over”) + fluō (“flow”). Compare mellifluous and fluid, also from Latin.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/suˈpɝflu.əs/",
+        "term" : "superfluous"
+      },
+      {
+        "definition" : "Not redundant; not superfluous.",
+        "origin" : "From non- + redundant.",
+        "partOfSpeech" : "adjective",
+        "term" : "redundant"
+      },
+      {
+        "definition" : "On the periphery or boundary.",
+        "origin" : "Etymology tree Proto-Indo-European *per-der. Ancient Greek περί (perí) Ancient Greek περῐ- (perĭ-) Proto-Indo-European *bʰer- Proto-Indo-European *-eti Proto-Indo-European *bʰéreti Proto-Hellenic *pʰérō Ancient Greek φέρω (phérō) Ancient…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/pəˈɹɪf(ə)ɹ(ə)l/",
+        "term" : "peripheral"
+      },
+      {
+        "definition" : "Highest, supreme; also, chief, leading, pre-eminent.",
+        "origin" : "PIE word *h₂éd From Anglo-Norman paramont /paramount (“paramount, pre-eminent; above”), from Old French par /per (“by”) + amont /amunt (“upward”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpæɹəˌmaʊnt/",
+        "term" : "paramount"
+      },
+      {
+        "definition" : "Having relevant and crucial value; having import.",
+        "origin" : "From Middle English important, from Medieval Latin important-, importāns. By surface analysis, import (“to be important”) + -ant. Displaced native Old English hēah and hefiġ.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪmˈpɔɹ.tənt/",
+        "term" : "negligible"
+      },
+      {
+        "definition" : "Of the essence or essential element of a thing.",
+        "origin" : "From Middle English substantif, from Old French substantif.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈsʌbstəntɪv/",
+        "term" : "substantive"
+      },
+      {
+        "definition" : "Open to multiple interpretations.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂ent- Proto-Indo-European *-s Proto-Indo-European *h₂énts? Proto-Indo-European *h₂m̥bʰíder.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/æmˈbɪɡ.ju.əs/",
+        "term" : "ambiguous"
+      },
+      {
+        "definition" : "Having two or more equally applicable meanings; capable of double or multiple interpretation.",
+        "origin" : "Etymology tree Proto-Italic *aikʷos? Old Latin aiquos Latin aequus Latin -i- Proto-Indo-European *wekʷ-der. Proto-Indo-European *wokʷ-der.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪˈkwɪvək(ə)l/",
+        "term" : "equivocal"
+      },
+      {
+        "definition" : "Unambiguous; without equivocation or ambiguity; singularly clear, unmistakable, or unquestionable",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Germanic *un- Proto-West Germanic *un- Old English un- Middle English un- English un- Proto-Italic *aikʷos? Old Latin aiquos Latin aequus Latin -i- Proto-Indo-European…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌʌnɪˈkwɪvəkəl/",
+        "term" : "unequivocal"
+      },
+      {
+        "definition" : "Suggested indirectly, without being directly expressed; Implied.",
+        "origin" : "From Middle French implicite, from Latin implicitus, past participle of implico (“to infold, involve, entangle”); see implicate.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪmˈplɪsɪt/",
+        "term" : "explicit"
+      },
+      {
+        "definition" : "A physical object; something that can be touched.",
+        "origin" : "Borrowed from Middle French tangible, from Late Latin tangibilis, from Latin tangere (“to touch”)",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtæn.d͡ʒə.bəl/",
+        "term" : "tangible"
+      },
+      {
+        "definition" : "Touchable; able to be touched or felt; perceptible by the sense of touch.",
+        "origin" : "Borrowed from Middle French tangible, from Late Latin tangibilis, from Latin tangere (“to touch”)",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈtæn.d͡ʒə.bəl/",
+        "term" : "intangible"
+      },
+      {
+        "definition" : "Seemingly or apparently valid, likely, or acceptable; conceivably true or likely.",
+        "origin" : "From Latin plausibilis (“deserving applause, praiseworthy, acceptable, pleasing”), from the participle stem of plaudere (“to applaud”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈplɑ.zɪ.bəl/",
+        "term" : "plausible"
+      },
+      {
+        "definition" : "Seemingly well-reasoned, plausible or true, but actually fallacious.",
+        "origin" : "From Middle English speciose, specious, from Anglo-Norman specious, Middle French specieux, and their etymon Latin speciōsus (“good-looking”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈspiːʃəs/",
+        "term" : "specious"
+      },
+      {
+        "definition" : "Characterized by fallacy; false or mistaken.",
+        "origin" : "From Old French fallacieux (whence -acious), from Latin fallācia, from fallāx, from fallere.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/fəˈleɪ.ʃəs/",
+        "term" : "fallacious"
+      },
+      {
+        "definition" : "Not making logical sense; not logically connected or consistent.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Italic *n̥- Latin in-bor. Middle English in- English in- Proto-Indo-European *ḱe? Proto-Indo-European *ḱóm Proto-Italic *kom Proto-Italic *kom- Latin con- Latin haereō…",
+        "partOfSpeech" : "adjective",
+        "term" : "coherent"
+      },
+      {
+        "definition" : "Unified; sticking together; making up a whole.",
+        "origin" : "Etymology tree Proto-Indo-European *ḱe? Proto-Indo-European *ḱóm Proto-Italic *kom Proto-Italic *kom- Latin con- Latin haereō Latin cohaereō Latin cohaerēnsder. Middle French coherentder.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/koʊˈhɛɹ.ənt/",
+        "term" : "incoherent"
+      },
+      {
+        "definition" : "Clear; easily understood.",
+        "origin" : "Etymology tree Proto-Indo-European *lewk- Proto-Indo-European *-yeti Proto-Indo-European *-éyeti Proto-Indo-European *lowkéyeti Proto-Italic *loukeō Proto-Indo-European *lewk- Proto-Indo-European *-éh₁ti Proto-Indo-European *-yeti…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈl(j)uːsɪd/",
+        "term" : "lucid"
+      },
+      {
+        "definition" : "To dull or reduce an emotion or a physical state.",
+        "origin" : "From Middle English obtuse, from Latin obtūsus (“blunt, dull; obtuse”), past participle of obtundere, from obtundō (“to batter, beat, strike; to blunt, dull”), from ob- (“against”) (see ob-) + tundō (“to beat, strike;",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/əbˈt(j)us/",
+        "term" : "obtuse"
+      },
+      {
+        "definition" : "Quickly and critically discerning.",
+        "origin" : "From Latin astūtus, from astus (“craft”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əsˈtjuːt/",
+        "term" : "astute"
+      },
+      {
+        "definition" : "Showing clever resourcefulness in practical matters.",
+        "origin" : "From Middle English schrewed (“depraved; wicked”, literally “accursed”), from schrewen (“to curse; beshrew”), from schrewe, schrowe, screwe (“evil or wicked person/thing”), from Old English sċrēawa (“wicked person”, literally “biter”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ʃɹuːd/",
+        "term" : "shrewd"
+      },
+      {
+        "definition" : "Sagacious in adapting means to ends; circumspect in action, or in determining any line of conduct.",
+        "origin" : "Inherited from Middle English prudent, from Old French prudent, from Latin prūdēns, contracted from prōvidēns (“foresight”) (English providence), the present participle of prōvideō (“to forsee; to provide for”). Unrelated to prude.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpɹu.dənt/",
+        "term" : "imprudent"
+      },
+      {
+        "definition" : "Having, characterized by, or done with good judgment or sound thinking.",
+        "origin" : "From French judicieux, ultimately derived from Latin iudico. Related to judge, judicial.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/dʒuˈdɪʃ.əs/",
+        "term" : "judicious"
+      },
+      {
+        "definition" : "Based on individual discretion or judgment; not based on any objective distinction, perhaps even made at random.",
+        "origin" : "Etymology tree Latin arbiter Proto-Indo-European *-eh₂ Proto-Indo-European *-os? Proto-Indo-European *-o- Proto-Indo-European *-so- Proto-Indo-European *-eh₂so- Proto-Indo-European *-yós Proto-Indo-European *-eh₂s(i)yós Proto-Italic…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈɑɹ.bɪˌtɹɛɹ.i/",
+        "term" : "arbitrary"
+      },
+      {
+        "definition" : "Impulsive and unpredictable; determined by chance, impulse, or whim.",
+        "origin" : "Borrowed from Middle French capricieux, from Italian capriccioso, from capriccio. By surface analysis, caprice + -ious.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/kəˈpɹɪʃəs/",
+        "term" : "capricious"
+      },
+      {
+        "definition" : "A rock moved from one location to another, usually by a glacier.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁ers- Proto-Indo-European *-h₂ Proto-Indo-European *-éh₂ Proto-Indo-European *-yéti Proto-Indo-European *-eh₂yéti Proto-Indo-European *h₁erseh₂yéti Proto-Italic *ersāō? Latin errō ▲ Proto-Indo-European…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪˈɹætɪk/",
+        "term" : "erratic"
+      },
+      {
+        "definition" : "Rare and scattered in occurrence.",
+        "origin" : "From Medieval Latin sporadicus (whence also French sporadique, Italian sporadico, Spanish esporádico), from Ancient Greek σποραδικός (sporadikós), from σποράς (sporás, “scattered, dispersed”), from σπορά (sporá), σπόρος (spóros, “a sowing…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/spəˈɹæd.ɪk/",
+        "term" : "sporadic"
+      },
+      {
+        "definition" : "Stopping and starting, occurring, or presenting at intervals; coming after a particular time span.",
+        "origin" : "From Middle French intermittent, from Latin intermittens (“sending between”), from prefix inter- (“among, on”) + mittens (“sending”), from mittere (“to send”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌɪntɚˈmɪtn̩t/",
+        "term" : "intermittent"
+      },
+      {
+        "definition" : "Without pause or stop; not ending, especially to the point of annoyance.",
+        "origin" : "From Late Middle English incessaunte, from Late Latin incessāns, incessantem, from Latin in- + cessāns.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪnˈsɛs.ənt/",
+        "term" : "incessant"
+      },
+      {
+        "definition" : "Lasting or remaining active throughout the year, for multiple years, or all the time.",
+        "origin" : "The adjective is borrowed from Latin perennis (“lasting through the whole year or for several years, perennial; continual, everlasting, perpetual”) + English -al (suffix meaning ‘of or pertaining to’ forming adjectives).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/pəˈɹɛn.j(ə)l/",
+        "term" : "perennial"
+      },
+      {
+        "definition" : "Something that is transient.",
+        "origin" : "From Late Latin transiēnt- (for classical transeunt-), stem of transiēns, present participle of trānsīre (“to go over, to pass”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɹæn.ʃənt/",
+        "term" : "transient"
+      },
+      {
+        "definition" : "Passing quickly; of short duration.",
+        "origin" : "From Middle English fleten (“to float”), from Old English flēotan (“to float”), from Proto-Germanic *fleutaną, from Proto-Indo-European *plewd-. By surface analysis, fleet + -ing.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈfliːtɪŋ/",
+        "term" : "fleeting"
+      },
+      {
+        "definition" : "simple past and past participle of protract",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/pɹoʊˈtɹæk.tɪd/",
+        "term" : "protracted"
+      },
+      {
+        "definition" : "Suitable to effect some desired end or the purpose intended.",
+        "origin" : "From Middle English expedient, from Old French expedient, from Latin expediens (stem expedient-), present participle of expedire (“to bring forward, to dispatch, to expedite; impers.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪkˈspiːdi.ənt/",
+        "term" : "expedient"
+      },
+      {
+        "definition" : "Free of impediment; unimpeded.",
+        "origin" : "From Latin expedītus (“unimpeded, unfettered”), perfect passive participle of expediō (“bring forward, set right”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈɛk.spɪˌdaɪt/",
+        "term" : "expedite"
+      },
+      {
+        "definition" : "Mitigated, alleviated.",
+        "origin" : "From Middle English mitigat(e) (“mitigated”, also used as the past participle of mitigaten and of mitigate in Early Modern English), see -ate (adjective-forming suffix) and Etymology 1 for more.",
+        "partOfSpeech" : "adjective",
+        "term" : "mitigate"
+      },
+      {
+        "definition" : "To make worse (a problem, bad situation, negative feeling, etc.).",
+        "origin" : "First attested in 1660; borrowed from Latin exacerbātus, perfect passive participle of Latin exacerbō (“to provoke”) (see -ate (verb-forming suffix)), from ex- (“out of; thoroughly”) + acerbō (“to embitter, harshen or worsen”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ɪɡˈzæsɚˌbeɪt/",
+        "term" : "exacerbate"
+      },
+      {
+        "definition" : "To make worse; to make inferior in quality or value; to impair.",
+        "origin" : "Learned borrowing from Late Latin dēteriorātus, perfect passive participle of Late Latin dēteriorō (see -ate (verb-forming suffix)), further from Latin dēterior (“worse”). Cognate with French détériorer.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/dɪˈtɪɹ.iə.ɹeɪt/",
+        "term" : "ameliorate"
+      },
+      {
+        "definition" : "To reduce or lessen the severity of a pain or difficulty.",
+        "origin" : "Borrowed from Late Latin alleviatus, past participle of alleviāre (“to lighten; to alleviate”). By surface analysis, al- + Latin lev- + -i- + -ate.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/əˈli.vi.eɪt/",
+        "term" : "alleviate"
+      },
+      {
+        "definition" : "To make something happen suddenly and quickly.",
+        "origin" : "From Latin praecipitātus, perfect passive participle of praecipitō (“throw down, hurl down, throw headlong”) (see -ate (verb-forming suffix) for more), from praeceps (“head foremost, headlong”) (praecipit- in its oblique stem), from prae…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/pɹɪˈsɪpɪteɪt/",
+        "term" : "precipitate"
+      },
+      {
+        "definition" : "To remove the possibility of; to rule out; to prevent or exclude; to render impossible.",
+        "origin" : "Etymology tree Proto-Indo-European *per- Proto-Indo-European *preh₂- Proto-Indo-European *-i Proto-Indo-European *préh₂i? Proto-Italic *prai Proto-Italic *prai- Latin prae- Proto-Indo-European *kleh₂w-der.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/pɹɪˈkluːd/",
+        "term" : "preclude"
+      },
+      {
+        "definition" : "to avoid or get around something; to bypass",
+        "origin" : "Etymology tree Proto-Indo-European *(s)ker-der. Ancient Greek κίρκος (kírkos)bor. Latin circus Latin circum Latin circum- Proto-Indo-European *gʷem- Proto-Indo-European *-yéti Proto-Indo-European *gʷm̥yéti Proto-Italic *gʷəniō Latin veniō…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/səːkəmˈvɛnt/",
+        "term" : "circumvent"
+      },
+      {
+        "definition" : "Synonym of obviative.",
+        "origin" : "Borrowed from Latin obviātus, see Etymology 1, -ate (noun-forming suffix) and -ate (adjective-forming suffix).",
+        "partOfSpeech" : "noun",
+        "term" : "obviate"
+      },
+      {
+        "definition" : "To strengthen, secure, or reinforce by passing a rope, cable, or chain around the underside of an object.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Indo-European *-tér Proto-Indo-European *h₁entér Proto-Indo-European *h₂én Proto-Indo-European *dʰeh₁-? Proto-Indo-European *-dʰi ? Proto-Indo-European *(H)n̥dʰí Proto-Indo-European *-ér…",
+        "partOfSpeech" : "verb",
+        "term" : "undermine"
+      },
+      {
+        "definition" : "A large cushion or pillow, usually cylindrical in shape.",
+        "origin" : "From Middle English bolster, bolstre, from Old English bolster (“pillow”), from Proto-West Germanic *bolstr, from Proto-Germanic *bulstraz (“pillow, cushion”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈboʊlstɚ/",
+        "term" : "bolster"
+      },
+      {
+        "definition" : "To confirm or support something with additional evidence; to attest or vouch for.",
+        "origin" : "First attested in the 1530s; borrowed from Latin corrōborātus (“strengthened”), perfect passive participle of corrōborō (“to support, corroborate”) (see -ate (verb-forming suffix) and -ate (adjective-forming suffix)), from con-…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/kəˈɹɑbəɹeɪ̯t/",
+        "term" : "corroborate"
+      },
+      {
+        "definition" : "To verify something by supplying evidence; to authenticate or corroborate.",
+        "origin" : "From Medieval Latin substantiatus (“given substance”), from the verb substantiare, first used 1657.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/səbˈstænʃiˌeɪt/",
+        "term" : "substantiate"
+      },
+      {
+        "definition" : "To prove (something) to be false or incorrect.",
+        "origin" : "From Latin refūtō (“refute, repudiate”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ɹɪˈfjut/",
+        "term" : "refute"
+      },
+      {
+        "definition" : "To drive back or beat back; to repulse.",
+        "origin" : "Inherited from Middle English rebutten, rebouten, from Old French reboter, rebuter, rebouter, etc., from re- + boter, buter, bouter (“to butt”). Entered English around 1302-1307.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ɹɪˈbʌt/",
+        "term" : "rebut"
+      },
+      {
+        "definition" : "To yield or suffer; to surrender; to grant",
+        "origin" : "From Middle English [Term?], from Old French conceder, from Latin concēdō (“give way, yield”), from con- (“wholly”) + cēdō (“to yield, give way, to go, grant”), from Proto-Indo-European *ked- (“to go, yield”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/kənˈsid/",
+        "term" : "concede"
+      },
+      {
+        "definition" : "To rest satisfied, or apparently satisfied, or to rest without opposition and discontent (usually implying previous opposition or discontent); to accept or consent by silence or by omitting to object.",
+        "origin" : "Borrowed from Middle French acquiescer, from Latin acquiescō; ad + quiescō (“to rest”), from quies (“rest”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˌækwiˈɛs/",
+        "term" : "acquiesce"
+      },
+      {
+        "definition" : "To delay or postpone.",
+        "origin" : "Originally a variant of (and hence a doublet of) differ; from Middle English differren (“to postpone”), from Old French differer, from Latin differō. Doublet of differ and dilate.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/dɪˈfɝ/",
+        "term" : "defer"
+      },
+      {
+        "definition" : "Great respect.",
+        "origin" : "From French déférence. Morphologically defer + -ence.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdɛ.fɚ.əns/",
+        "term" : "deference"
+      },
+      {
+        "definition" : "Unwilling to communicate; keeping one's thoughts and opinions to oneself; reserved or restrained.",
+        "origin" : "Latin reticēns, present participle of reticeō (“to keep silence”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈrɛt ə sənt/",
+        "term" : "reticent"
+      },
+      {
+        "definition" : "Impartial and free from prejudice.",
+        "origin" : "Etymology tree Proto-Indo-European *(s)kend-der. Proto-Italic *kandēō Latin candeō Proto-Indo-European *dʰeh₁-der. Proto-Italic *-iðos Latin -idus Latin candidusbor. English candid Borrowed from Latin candidus (“white”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈkæn.dɪd/",
+        "term" : "candid"
+      },
+      {
+        "definition" : "having no tact; unaware or intentionally inconsiderate of someone else's feelings",
+        "origin" : "Etymology tree English tact Proto-Indo-European *lewh₁- Proto-Indo-European *lewHs-der. Proto-Germanic *leusaną Proto-Germanic *lausaz Proto-Germanic *-lausaz Proto-West Germanic *-laus Old English -lēas Middle English -les English -less…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈtæktləs/",
+        "term" : "tactful"
+      },
+      {
+        "definition" : "Concerning the relationships between the governments of countries.",
+        "origin" : "From French diplomatique and its etymon New Latin diplōmaticus. By surface analysis, diplomat + -ic.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌdɪpləˈmætɪk/",
+        "term" : "diplomatic"
+      },
+      {
+        "definition" : "A state or other armed participant in warfare",
+        "origin" : "From Latin belligerans (“waging war”), present active participle of belligerō (“to wage war”), from belliger (“waging war, warlike”), from bellum (“war”) + -ger (from gerō (“to lead, wage, carry on”)).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/bəˈlɪd͡ʒ.ɚ.ənt/",
+        "term" : "belligerent"
+      },
+      {
+        "definition" : "Engaged in warfare, warring.",
+        "origin" : "From Latin belligerans (“waging war”), present active participle of belligerō (“to wage war”), from belliger (“waging war, warlike”), from bellum (“war”) + -ger (from gerō (“to lead, wage, carry on”)).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/bəˈlɪd͡ʒ.ɚ.ənt/",
+        "term" : "conciliatory"
+      },
+      {
+        "definition" : "Noble and generous in spirit.",
+        "origin" : "From Latin magnanimus, from magnus (“great”) + animus (“soul, mind”). Displaced native Old English miċelmōd (literally “big-minded”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/mæɡˈnæn.ɪ.məs/",
+        "term" : "magnanimous"
+      },
+      {
+        "definition" : "Childishly irritable.",
+        "origin" : "From Middle French, from Latin petulāns, akin to petō (“to ask for”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpɛt͡ʃʊlənt/",
+        "term" : "petulant"
+      },
+      {
+        "definition" : "Showing anger or indignation, especially at something unjust or wrong.",
+        "origin" : "Borrowed from Latin indignāns, present participle of indignor (“to consider as unworthy, be angry or displeased at”), from in- (“privative”) + dignor (“to deem worthy”), from dignus (“worthy”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪnˈdɪɡ.nənt/",
+        "term" : "indignant"
+      },
+      {
+        "definition" : "Uncritically satisfied with oneself or one's achievements; smug.",
+        "origin" : "Borrowed from Latin complacēns (“very pleasing”), present participle of complacēre (“to please at the same time, be very pleasing”), from com- (“together”) + placēre (“to please”); see please and compare complaisant.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/kəmˈpleɪsənt/",
+        "term" : "complacent"
+      },
+      {
+        "definition" : "Lacking self-confidence; timid; modest",
+        "origin" : "From Latin diffīdentem, present participle of diffīdere (“to mistrust”). Doublet of defiant.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈdɪfɪdənt/",
+        "term" : "diffident"
+      },
+      {
+        "definition" : "Showing willingness to take bold risks; recklessly daring.",
+        "origin" : "From Latin audacia (“boldness”) + -ious, from audax (“bold”), from audeō (“to be bold, to dare”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɔˈdeɪ.ʃəs/",
+        "term" : "audacious"
+      },
+      {
+        "definition" : "Clinging to an object or surface; adhesive.",
+        "origin" : "From Latin tenāx (“holding fast, clinging”), from tenēre (“to hold”), + -ious.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/təˈneɪʃəs/",
+        "term" : "tenacious"
+      },
+      {
+        "definition" : "Dangerously insecure or unstable; perilous.",
+        "origin" : "From Latin precārius (“begged for, obtained by entreaty”), from prex, precis (“prayer”). Compare French précaire, Portuguese precário, and Spanish and Italian precario.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/pɹɪˈkɛəɹi.əs/",
+        "term" : "precarious"
+      },
+      {
+        "definition" : "Evaporating or vaporizing readily under normal conditions.",
+        "origin" : "From Middle French volatile, from Latin volātilis (“flying; swift; temporary; volatile”), from volō (“to fly”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈvɑ.lə.təl/",
+        "term" : "volatile"
+      },
+      {
+        "definition" : "A person born under the influence of the planet Mercury; hence, a person having an eloquent, quickwitted, furtive, or volatile character.",
+        "origin" : "Noun sense 1 (“(obsolete) plant known as mercury”) is from Middle English mercurial (“a plant, probably the goosefoot (Chenopodium);",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/mɝˈkjʊ.ɹi.əl/",
+        "term" : "mercurial"
+      },
+      {
+        "definition" : "Proponent of stoicism, a school of thought, from in 300 B.C.E. up to about the time of Marcus Aurelius, who holds that by cultivating an understanding of the logos, or natural law, one can be free of suffering.",
+        "origin" : "From Latin stōicus (noun via Middle English Stoycis pl), from Ancient Greek Στωϊκός (Stōïkós), from Ποικίλη Στοά (Poikílē Stoá, “the Stoa Poikile”, literally “painted portico”), the portico in Athens where Zeno of Citium was teaching.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈstoʊ.ɪk/",
+        "term" : "stoic"
+      },
+      {
+        "definition" : "Full of longing or yearning.",
+        "origin" : "Presumably from *whistful, from whist (“silent”) + -ful, based on older wistly. It is implausible that it derives from wishful, the required sound change being wishful → *wisful → wistful, which could not occur in Modern English,…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈwɪstfəl/",
+        "term" : "wistful"
+      },
+      {
+        "definition" : "Neat; eloquent; applicable; relevant.",
+        "origin" : "From Middle English poynaunt, poynant, borrowed from Anglo-Norman puignant, poynaunt etc., present participle of poindre (“to prick”), from Latin pungō (“prick”). Doublet of pungent.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpɔɪ.njənt/",
+        "term" : "poignant"
+      },
+      {
+        "definition" : "Of or relating to, made up of, or positioned among or within, the viscera (“internal organs of the body, especially those contained within the abdominal and thoracic cavities”).",
+        "origin" : "From Middle French viscéral (modern French viscéral), or from its etymon Medieval Latin viscerālis (“internal”) + English -al (suffix meaning ‘of or pertaining to’ forming adjectives).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈvɪsəɹəl/",
+        "term" : "visceral"
+      },
+      {
+        "definition" : "Harmless; producing no ill effect.",
+        "origin" : "From Latin innocuus (“harmless”) (therefore, no gemination in + nocuous).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪˈnɑkjuəs/",
+        "term" : "innocuous"
+      },
+      {
+        "definition" : "Causing harm in a stealthy, often gradual, manner.",
+        "origin" : "From Middle French insidieux, from Latin īnsidiōsus (“cunning, artful, deceitful”), from īnsidiae (“a lying in wait, an ambush, artifice, stratagem”) + -ōsus, from īnsideō (“to sit in or on”), from in (“in, on”) + sedeō (“to sit”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪnˈsɪdi.əs/",
+        "term" : "insidious"
+      },
+      {
+        "definition" : "Causing much harm in a subtle way.",
+        "origin" : "From Middle English, from Old French pernicios, from Latin perniciōsus (“destructive”), from perniciēs (“destruction”), from per (“through”) + nex (“slaughter, death”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/pɚˈnɪʃəs/",
+        "term" : "pernicious"
+      },
+      {
+        "definition" : "Evil or malignant in disposition, nature, intent or influence.",
+        "origin" : "From Middle English maligne, from Old French maligne, from Latin malignus, from malus (“bad”) + genus (“sort, kind”). Compare benign.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/məˈlaɪn/",
+        "term" : "benign"
+      },
+      {
+        "definition" : "Kind; gentle; mild.",
+        "origin" : "From Middle English benigne, benygne, from Old French benigne, from Latin benignus (“kind, good”), from bene (“well”) + genus (“origin, kind”). Compare malign.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/bɪˈnaɪn/",
+        "term" : "malign"
+      },
+      {
+        "definition" : "Conspicuous, exceptional, outstanding; usually in a negative sense.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁éǵʰ Proto-Indo-European *-s Proto-Indo-European *h₁éǵʰs Proto-Italic *eks Latin ex Latin ex- Latin grex Proto-Indo-European *-(i)yós Proto-Italic *-ijos Proto-Italic *-ios Old Latin -ios Latin -ius…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪˈɡɹiː.d͡ʒəs/",
+        "term" : "egregious"
+      },
+      {
+        "definition" : "Obvious and offensive; blatant; scandalous.",
+        "origin" : "From Middle French flagrant, from Latin flagrantem, present participle of flagrare (“blaze, burn”). More at black.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈfleɪ.ɡɹənt/",
+        "term" : "flagrant"
+      },
+      {
+        "definition" : "Obvious, on show; unashamed; loudly obtrusive or offensive.",
+        "origin" : "Coined by Edmund Spenser in 1596 in \"blatant beast\". Probably a variation of *blatand (Scots blaitand (“bleating”)), present participle of blate, a variation of bleat, equivalent to blate + -ant. See bleat.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈbleɪtənt/",
+        "term" : "blatant"
+      },
+      {
+        "definition" : "Of an action or movement: very delicate or slight, and thus barely noticeable; not obvious; inconspicuous, unintrusive.",
+        "origin" : "The adjective is derived from Middle English sotil, soubtil, subtil (“of a person, the mind, etc.: clever, ingenious, penetrating; cunning, sly; insidious; delicate, fine; not dense, light, thin; finely powdered; narrow, slender; etc.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈsʌtəl/",
+        "term" : "subtle"
+      },
+      {
+        "definition" : "Being or kept hidden.",
+        "origin" : "From Middle English secrette, from Old French secret, from Latin sēcrētus (“separated, hidden”), from ptp of sēcernō (“separate, to set aside, sunder out”), from cernō, from Proto-Indo-European *krey-.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈsiː.kɹɪt/",
+        "term" : "overt"
+      },
+      {
+        "definition" : "Secret, surreptitious, concealed.",
+        "origin" : "From Middle English covert, from Old French covert, past participle of covrir (“to cover”) (corresponding to Latin coopertus); cognate to cover. Not closely related to overt, despite what the most common pronunciation would suggest.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈkoʊvɚt/",
+        "term" : "covert"
+      },
+      {
+        "definition" : "Implied, but not made explicit, especially through silence.",
+        "origin" : "Borrowed from late Middle French tacite, or from Latin tacitus (“that is passed over in silence, done without words, assumed as a matter of course, silent”), from tacere (“to be silent”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈtæsɪt/",
+        "term" : "tacit"
+      },
+      {
+        "definition" : "Capable of being seen, or easily seen; open to view; visible to the eye; within sight or view.",
+        "origin" : "From Middle English apparaunt, aparaunt, from Old French aparent, aparant, in turn from Latin appārēns, appārentis, present participle of appāreō.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əˈpæɹənt/",
+        "term" : "latent"
+      },
+      {
+        "definition" : "A crossbeam or joist.",
+        "origin" : "From Middle English, from Old French, from Latin dormiēns, present participle of dormiō (“to sleep”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdoɹmənt/",
+        "term" : "dormant"
+      },
+      {
+        "definition" : "Approaching death; about to die; moribund.",
+        "origin" : "From die + -ing.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈdaɪ.ɪŋ/",
+        "term" : "nascent"
+      },
+      {
+        "definition" : "In an initial stage; beginning, starting, coming into existence.",
+        "origin" : "Borrowed from Latin incipiēns, present participle of incipiō (“begin”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪnˈsɪp.i.ənt/",
+        "term" : "incipient"
+      },
+      {
+        "definition" : "Of or relating to an embryo.",
+        "origin" : "From New Latin embryonicus.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈɛm.bɹi.ɒn.ɪk/",
+        "term" : "embryonic"
+      },
+      {
+        "definition" : "Of or relating to one or more rudiments; of the nature of an early stage.",
+        "origin" : "Etymology tree Latin rudis Proto-Indo-European *-mn̥ Proto-Indo-European *-mn̥tom Proto-Italic *-mentom Latin -mentum Latin rudīmentumbor.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌɹuːdɪˈmɛntəɹi/",
+        "term" : "rudimentary"
+      },
+      {
+        "definition" : "Relating to the basic, essential or fundamental part of something.",
+        "origin" : "From Middle English elementare, from Latin elementārius (“elementary”), from elementum (“one of the four elements of antiquity; fundamentals”) + -ārius (adjective-forming suffix). Cognate with French élémentaire.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌɛləˈmɛntəɹi/",
+        "term" : "elementary"
+      },
+      {
+        "definition" : "An esoteric doctrine or treatise; esoteric philosophy.",
+        "origin" : "Learned borrowing from Ancient Greek ἐσωτερικός (esōterikós, “belonging to an inner circle”), from ἐσωτέρω (esōtérō, “further inside”), comparative of ἔσω (ésō, “within”), from ἐς (es), εἰς (eis, “into”) (the term esoteric referred…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɛs.əˈtɛɹ.ɪk/",
+        "term" : "esoteric"
+      },
+      {
+        "definition" : "Understood by only a few.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂erk-der. Latin arca Proto-Indo-European *-nós Proto-Italic *-nos Proto-Italic *-ānos Latin -ānus Latin arcānusbor.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɑɹˈkeɪn/",
+        "term" : "arcane"
+      },
+      {
+        "definition" : "Difficult to comprehend or understand; obscure.",
+        "origin" : "PIE word *h₂epó Learned borrowing from Latin abstrūsus (“concealed, hidden; having been concealed”), an adjective use of the perfect passive participle of abstrūdō (“to conceal, hide;",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əbˈstɹus/",
+        "term" : "abstruse"
+      },
+      {
+        "definition" : "Difficult to grasp or understand; abstruse, profound.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈɹɛkənˌdaɪt/",
+        "term" : "recondite"
+      },
+      {
+        "definition" : "Happening every day; daily.",
+        "origin" : "From Anglo-Norman cotidian, cotidien, Middle French cotidian, cotidien, and their source, Latin cottīdiānus, quōtīdiānus (“happening every day”), from adverb cottīdiē, quōtīdiē (“every day, daily”), from an unattested adjective derived…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/kwoʊˈtɪdiən/",
+        "term" : "quotidian"
+      },
+      {
+        "definition" : "Worldly, earthly, profane, vulgar as opposed to heavenly.",
+        "origin" : "From Middle English mondeyne, from Old French mondain, from Late Latin mundānus, from Latin mundus (“world”). Compare Danish mondæn.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "[mʌnˈdeɪn]",
+        "term" : "mundane"
+      },
+      {
+        "definition" : "Common in a boring way, to the point of being predictable; containing nothing new or fresh.",
+        "origin" : "Borrowed from French banal (“held in common, relating to feudal service, by extension commonplace”), from Old French banel, related to Medieval Latin bannālis (“subject to feudal authority”), from Latin bannus (“jurisdiction”), both…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/bəˈnɑːl/",
+        "term" : "banal"
+      },
+      {
+        "definition" : "Pertaining to or having the characteristics of prose.",
+        "origin" : "From Middle French prosaïque, from Medieval Latin prosaicus (“in prose”), from Latin prosa (“prose”), from prorsus (“straightforward, in prose”), from Old Latin provorsus (“straight ahead”), from pro- (“forward”) + vorsus (“turned”), from…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/pɹoʊˈzeɪ.ɪk/",
+        "term" : "prosaic"
+      },
+      {
+        "definition" : "used so many times that it is commonplace, or no longer interesting or effective; worn out, hackneyed.",
+        "origin" : "From Latin trītus (“worn out”), perfect passive participle of terō (“to wear away, wear out”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/tɹaɪt/",
+        "term" : "trite"
+      },
+      {
+        "definition" : "Of speech or writing, a phrase, etc.: uninteresting and unoriginal from being repeated too often.",
+        "origin" : "Etymology tree Middle English hakeney English hackney English -ed English hackneyed From hackney + -ed. Most likely from the fact that hackney carriages have been used so much, that they are extremely commonplace now.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈhæk.nid/",
+        "term" : "hackneyed"
+      },
+      {
+        "definition" : "Peculiar to a specific individual; eccentric.",
+        "origin" : "From idiosyncrasy + -ic. By surface analysis, idio- + syn- + -cratic.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌɪd.i.oʊ.sɪŋˈkɹæt.ɪk/",
+        "term" : "idiosyncratic"
+      },
+      {
+        "definition" : "Deviating from the normal; marked by incongruity or contradiction; aberrant or abnormal.",
+        "origin" : "From Late Latin anōmalos, from Ancient Greek ἀνώμᾰλος (anṓmălos).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əˈnɑmələs/",
+        "term" : "anomalous"
+      },
+      {
+        "definition" : "Differing from the norm.",
+        "origin" : "From Latin aberrāns, present active participle of aberrō (“go astray; err”), from ab (“from”) + errō (“to wander”). See aberr.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əˈbɛɹ.ənt/",
+        "term" : "aberrant"
+      },
+      {
+        "definition" : "A pattern, a way of doing something; especially a pattern of thought, a system of beliefs, a conceptual framework.",
+        "origin" : "From Middle English paradygme, from Late Latin paradīgma, from Ancient Greek παράδειγμα (parádeigma, “pattern”), from παραδείκνυμι (paradeíknumi, “I show [beside] or compare”) + -μα (-ma, suffix forming nouns concerning the results of…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpæɹ.ə.daɪm/",
+        "term" : "paradigm"
+      },
+      {
+        "definition" : "A separation or division into two; a distinction that results in such a division.",
+        "origin" : "From Ancient Greek διχοτομία (dikhotomía, “dichotomy”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/daɪˈkɑtəmi/",
+        "term" : "dichotomy"
+      },
+      {
+        "definition" : "The nearness of objects with little or no delimiter.",
+        "origin" : "Borrowed from French juxtaposition, from Latin iuxtā (“near”) (from Latin iungō (“to join”)) + French position (“position”) (from Latin pōnō (“to place”)).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌd͡ʒʌk.stə.pəˈzɪʃ.ən/",
+        "term" : "juxtaposition"
+      },
+      {
+        "definition" : "A gift beyond what is actually due; an addition or superfluity.",
+        "origin" : "From Middle English, from Late Latin corōllārium (“money paid for a garland; gift, gratuity, corollary; consequence, deduction”), from corōlla (“small garland”), diminutive of corōna (“crown”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkɔɹəˌlɛɹi/",
+        "term" : "corollary"
+      },
+      {
+        "definition" : "A warning.",
+        "origin" : "Learned borrowing from Latin caveat (“may he/she/it beware”), third-person singular present active subjunctive of caveō (“to beware of”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkæviɑt/",
+        "term" : "caveat"
+      },
+      {
+        "definition" : "A difficult question or riddle, especially one using a play on words in the answer.",
+        "origin" : "A word of unknown origin with several variants, gaining popularity for its burlesque imitation of scholastic Latin, as hocus-pocus or panjandrum.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/kəˈnʌn.dɹəm/",
+        "term" : "conundrum"
+      },
+      {
+        "definition" : "A state of not knowing what to decide; a state of difficulty or perplexity; a state of uncertainty, hesitation or puzzlement; a dilemma, a difficult decision or choice.",
+        "origin" : "16th century. Origin unknown; perhaps a dialectal corruption (simulating a word of Latin origin with suffix -ary) of wandreth (“evil, plight, peril, adversity, difficulty”), from Middle English wandreth, from Old Norse vandræði…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkwɑn.də.ɹi/",
+        "term" : "quandary"
+      },
+      {
+        "definition" : "A circumstance in which a choice must be made between two or more alternatives that seem equally undesirable.",
+        "origin" : "PIE word *dwóh₁ First attested 1523, from Late Latin dilemma, from Ancient Greek δίλημμα (dílēmma, “ambiguous proposition”), from δι- (di-, “having two of”) + λῆμμα (lêmma, “premise, proposition”), equivalent to di- + lemma.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/daɪˈlɛmə/",
+        "term" : "dilemma"
+      },
+      {
+        "definition" : "A road with no exit.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Italic *n̥- Latin in-lbor. French im- French passe French impassebor. English impasse Borrowed from French impasse.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɪmpæs/",
+        "term" : "impasse"
+      },
+      {
+        "definition" : "A gap in a series, making it incomplete.",
+        "origin" : "Learned borrowing from Latin hiātus (“opening”) (mid-16th century), from hiō (“stand open, yawn”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/haɪˈeɪtəs/",
+        "term" : "hiatus"
+      },
+      {
+        "definition" : "An intervening episode, etc.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Indo-European *-tér Proto-Indo-European *h₁n̥tér Proto-Italic *n̥ter Latin inter Latin inter- Latin lūdō English interlude From Latin inter- (“between”) + lūdō (“to play”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɪntə(ɹ)luːd/",
+        "term" : "interlude"
+      },
+      {
+        "definition" : "An act in the past which may be used as an example to help decide the outcome of similar instances in the future.",
+        "origin" : "From Middle French, from Old French, from Latin praecēdēns, present participle of praecēdere (“to precede”); See precede.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpɹɛs.ɪ.dənt/",
+        "term" : "precedent"
+      },
+      {
+        "definition" : "Earlier, either in time or in order.",
+        "origin" : "From Middle English antecedent, borrowed from Old French antecedent, from Latin antecēdēns (“going before”), from antecēdō (“to precede; excel; surpass”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌæntɪˈsidənt/",
+        "term" : "antecedent"
+      },
+      {
+        "definition" : "That which precurses: a forerunner, predecessor, or indicator of approaching events.",
+        "origin" : "Inherited from Middle English precursour, from Middle French precurseur or its etymon Latin praecursor (“forerunner”). By surface analysis, precurse + -or.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɹɪˈkɜɹ.səɹ/",
+        "term" : "precursor"
+      },
+      {
+        "definition" : "A person or thing that foreshadows or foretells the coming of someone or something.",
+        "origin" : "Originally, a person sent in advance to arrange lodgings. From Middle English herberjour, herbergeour, from Old French herbergeor (French hébergeur), from herbergier (“to set up camp; to shelter;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhɑɹ.bɪn.d͡ʒəɹ/",
+        "term" : "harbinger"
+      },
+      {
+        "definition" : "A substance that increases the rate of a chemical reaction without being consumed in the process.",
+        "origin" : "Etymology tree English catalysis Proto-Indo-European *-id- Proto-Indo-European *-yéti Proto-Indo-European *-idyéti Proto-Hellenic *-íd͏̌d͏̌ō Ancient Greek -ῐ́ζω (-ĭ́zō) Proto-Hellenic *-tās Ancient Greek -τής (-tḗs) Ancient Greek -ῐστής…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkæt.ə.lɪst/",
+        "term" : "catalyst"
+      },
+      {
+        "definition" : "Anything that impels; a stimulating factor.",
+        "origin" : "Borrowed from Latin impetus (“a rushing upon, an attack, assault, onset”), from impetō (“to rush upon, attack”), from in- (“upon”) + petō (“to seek, fall upon”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɪm.pə.təs/",
+        "term" : "impetus"
+      },
+      {
+        "definition" : "The property of a body that resists any change to its uniform motion; equivalent to its mass.",
+        "origin" : "From Latin inertia (“lack of art or skill, inactivity, indolence”), from iners (“unskilled, inactive”), from in- (“without, not”) + ars (“skill, art”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈɝ.ʃə/",
+        "term" : "inertia"
+      },
+      {
+        "definition" : "Of a body in motion: the tendency of a body to maintain its inertial motion; the product of its mass and velocity, or the vector sum of the products of its masses and velocities.",
+        "origin" : "Etymology tree Proto-Indo-European *m(y)ewh₁- Proto-Indo-European *-yeti Proto-Indo-European *-éyeti Proto-Indo-European *m(y)owh₁éyeti Proto-Italic *moweō Proto-Indo-European *-mn̥ Proto-Indo-European *-mn̥tom Proto-Italic *-məntom…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌmoʊˈmɛntəm/",
+        "term" : "momentum"
+      },
+      {
+        "definition" : "Alternative letter-case form of zeitgeist.",
+        "origin" : "Unadapted borrowing from German Zeitgeist (literally “spirit of the age”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈzaɪtˌɡaɪst/",
+        "term" : "zeitgeist"
+      },
+      {
+        "definition" : "An environment or setting; a medium; environs",
+        "origin" : "PIE word *me Borrowed from French milieu (“physical or social environment; group of people with a common point of view”), from Middle French milieu, meilleu, mileu, from Old French milliu, meillieu, mileu (“middle”), from mi- (prefix…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/mɪlˈju/",
+        "term" : "milieu"
+      },
+      {
+        "definition" : "The character or fundamental values of a person, people, culture, or movement.",
+        "origin" : "From Ancient Greek ἦθος (êthos, “character; custom, habit”). Cognate to Sanskrit स्वधा (svadhā́, “habit, custom”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈiθɑs/",
+        "term" : "ethos"
+      },
+      {
+        "definition" : "An opinion, belief, or principle that is held as absolute truth by someone or especially an organization.",
+        "origin" : "Borrowed from Latin tenet (“he, she, or it holds”), from teneō (“hold; have”). Compare obsolete tenent. See tenable.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɛnɪt/",
+        "term" : "tenet"
+      },
+      {
+        "definition" : "An authoritative principle, belief or statement of opinion, especially one considered to be absolutely true and indisputable, regardless of evidence or without evidence to support it.",
+        "origin" : "From Latin dogma (“philosophical tenet”), from Ancient Greek δόγμα (dógma, “opinion, tenet”), from δοκέω (dokéō, “to seem good, think”). Treated in the 17th and 18th century as Greek, with plural dogmata. Compare decent.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdɔɡ.mə/",
+        "term" : "dogma"
+      },
+      {
+        "definition" : "A doctrine held by a member of a religion at variance or conflict with established religious beliefs.",
+        "origin" : "From Middle English heresie (Middle English her(esie) + -esy), from Old French heresie (modern hérésie), from Latin haeresis, from Ancient Greek αἵρεσις (haíresis, “choice, system of principles”), from αἱρέομαι (hairéomai, “to take for…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhɛɹəsi/",
+        "term" : "heresy"
+      },
+      {
+        "definition" : "Conforming to the accepted, established, or traditional doctrines of a given faith, religion, or ideology.",
+        "origin" : "From Late Middle English orthodoxe, from Middle French orthodoxe and its etymon Late Latin orthodoxus, from Ancient Greek ὀρθόδοξος (orthódoxos), from ὀρθός (orthós, “straight”) + δόξα (dóxa, “opinion”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈɔɹθədɑks/",
+        "term" : "orthodox"
+      },
+      {
+        "definition" : "Domination, influence, or authority over another, especially by one political group over a society or by one nation over others.",
+        "origin" : "From Ancient Greek ἡγεμονία (hēgemonía, “supremacy or leadership, chief command”), from ἡγεμών (hēgemṓn, “a leader, guide, commander, chief”), from ἡγέομαι (hēgéomai, “to lead”). Early 19th-century usage influenced by German Hegemonie.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/hɪˈd͡ʒɛ.mə.ni/",
+        "term" : "hegemony"
+      },
+      {
+        "definition" : "The right or condition of self-government; freedom to act or function independently.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂ew Proto-Indo-European *tó- Proto-Hellenic *autós Proto-Indo-European *h₂ewder. Ancient Greek αὖ (aû) Ancient Greek τόν (tón) Ancient Greek αὐτός (autós) Ancient Greek αὐτο- (auto-) Proto-Indo-European…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɔˈtɑ.nə.mi/",
+        "term" : "autonomy"
+      },
+      {
+        "definition" : "Of a ruler (especially a monarch): supreme authority or dominion over something.",
+        "origin" : "PIE word *upér From Late Middle English sovereynte, souvereynte [and other forms], from Anglo-Norman sovereyneté, soverentee, and Old French soveraineté, souveraineté (modern French souveraineté), from soverain + -té (suffix forming nouns,…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈsɑv(ə)ɹənti/",
+        "term" : "sovereignty"
+      },
+      {
+        "definition" : "The power, right, or authority to interpret and apply the law.",
+        "origin" : "Borrowed from Latin iūrisdictiō.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/d͡ʒʊɹɪsˈdɪkʃən/",
+        "term" : "jurisdiction"
+      }
+    ]
+  },
+  {
+    "id" : "software",
+    "industries" : [
+      "software",
+      "product",
+      "engineering",
+      "technology"
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "Software and product",
+    "words" : [
+      {
+        "definition" : "(said of a function) Such that, when performed multiple times on the same subject, it has no further effect on its subject after the first time it is performed.",
+        "origin" : "From Latin roots idem (“same”) + potent (“having power”), thus “having the same power”. Coined in 1870 by American mathematician Benjamin Peirce in the context of algebra, later generalized to computer science.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌaɪ.dəmˈpoʊ.tənt/",
+        "term" : "idempotent"
+      },
+      {
+        "definition" : "An orthogonal line.",
+        "origin" : "From Middle French orthogonal, in turn from Medieval Latin orthogōnālis and Latin orthogōnius (“right-angled”), ultimately from Ancient Greek ὀρθογώνιος (orthogṓnios, “rectangular”). By surface analysis, ortho- + -gon + -al.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɔɹˈθɑ.ɡə.nəl/",
+        "term" : "orthogonal"
+      },
+      {
+        "definition" : "The formal robes of a priest.",
+        "origin" : "From Middle English canonycal, from Medieval Latin canōnicālis. By surface analysis, canon + -ical.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/kəˈnɑ.nɪ.kəl/",
+        "term" : "canonical"
+      },
+      {
+        "definition" : "That employs a practical method not guaranteed to be optimal or perfect; either not following or derived from any theory, or based on an advisedly oversimplified one.",
+        "origin" : "Irregular formation from Ancient Greek εὑρίσκω (heurískō, “I find, discover”) (compare the proper Greek term εὑρετικός (heuretikós)).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/hjəˈɹɪstɪk/",
+        "term" : "heuristic"
+      },
+      {
+        "definition" : "Of, or relating to determinism.",
+        "origin" : "Etymology tree English determinist Proto-Indo-European *-ikos Proto-Italic *-ikos Latin -icuslbor. Old French -iquebor. Middle English -ik English -ic English deterministic From determinist + -ic.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/dɪˌtɝ.mɪˈnɪs.tɪk/",
+        "term" : "deterministic"
+      },
+      {
+        "definition" : "Exhibiting nondeterminism; involving choices between indistinguishable possibilities.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Germanic *ne Proto-Indo-European *ís? Proto-Indo-European *h₁óynos Proto-Germanic *ainaz Proto-Germanic *nainaz Proto-West Germanic *nain Old English nān Middle English non ▲ Old English nān Old…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/nɑndɪˌtɝmɪnˈɪstik/",
+        "term" : "nondeterministic"
+      },
+      {
+        "definition" : "Not synchronous; occurring at different times.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Hellenic *ə- Ancient Greek ἀ- (a-)der. English a- English synchronous English asynchronous From a- + synchronous.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/eɪˈsɪŋ.kɹə.nəs/",
+        "term" : "synchronous"
+      },
+      {
+        "definition" : "The property or an instance of being concurrent; something that happens at the same time as something else.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/kəŋˈkʌɹənsi/",
+        "term" : "concurrency"
+      },
+      {
+        "definition" : "The state or condition of being parallel; agreement in direction, tendency, or character.",
+        "origin" : "From parallel + -ism and from Late Latin parallelismus.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpaɹəlɛlɪz(ə)m/",
+        "term" : "parallelism"
+      },
+      {
+        "definition" : "The quality of being apparent; apparentness.",
+        "origin" : "From Middle English apparancie, from Latin appārentia. Doublet of apparence and appearance.",
+        "partOfSpeech" : "noun",
+        "term" : "latency"
+      },
+      {
+        "definition" : "The rate at which data is transferred through a system.",
+        "origin" : "From through + put (after input and output).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈθɹu.pʊt/",
+        "term" : "throughput"
+      },
+      {
+        "definition" : "The width, usually measured in hertz, of a frequency band.",
+        "origin" : "From band + width.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbændwɪdθ/",
+        "term" : "bandwidth"
+      },
+      {
+        "definition" : "Misspelling of cachet.",
+        "partOfSpeech" : "noun",
+        "term" : "cache"
+      },
+      {
+        "definition" : "To store (the result of a computation) so that it can be subsequently retrieved without repeating the computation.",
+        "origin" : "Etymology tree English memo Proto-Indo-European *-id- Proto-Indo-European *-yéti Proto-Indo-European *-idyéti Proto-Hellenic *-íd͏̌d͏̌ō Ancient Greek -ῐ́ζω (-ĭ́zō)bor. Late Latin -izōder. Middle French -iserbor.",
+        "partOfSpeech" : "verb",
+        "term" : "memoize"
+      },
+      {
+        "definition" : "Not varying; constant.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Italic *n̥- Latin in-bor. Middle English in- English in- English variant English invariant From in- + variant.",
+        "partOfSpeech" : "adjective",
+        "term" : "invariant"
+      },
+      {
+        "definition" : "Something that cannot be changed.",
+        "origin" : "From Middle English immutable, from Latin immūtābilis (“unchangeable”); im- + mutable.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈmjuːtəbəl/",
+        "term" : "immutable"
+      },
+      {
+        "definition" : "Unable to be changed without exception.",
+        "origin" : "From Middle English immutable, from Latin immūtābilis (“unchangeable”); im- + mutable.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈmjuːtəbəl/",
+        "term" : "mutable"
+      },
+      {
+        "definition" : "Of or relating to atoms; composed of atoms; monatomic.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Hellenic *ə- Ancient Greek ἀ- (a-) Proto-Indo-European *temh₁- Proto-Indo-European *-né- Ancient Greek τέμνω (témnō) Proto-Indo-European *-os Proto-Indo-European *-ós…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əˈtɑː.mɪk/",
+        "term" : "atomic"
+      },
+      {
+        "definition" : "The state of being inconsistent.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɪnkənˈsɪstənsi/",
+        "term" : "consistency"
+      },
+      {
+        "definition" : "Finally resulting or occurring (after a period of time); inevitable.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁éǵʰ Proto-Indo-European *-s Proto-Indo-European *h₁éǵʰs Proto-Italic *eks Latin ex Latin ex- Proto-Indo-European *gʷem- Proto-Indo-European *-yéti Proto-Indo-European *gʷm̥yéti Proto-Italic *gʷəniō…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɪˈvɛn.t͡ʃu.əl/",
+        "term" : "eventual"
+      },
+      {
+        "definition" : "Having several tones.",
+        "origin" : "Etymology tree Proto-Indo-European *pleh₁-der. Proto-Indo-European *polh₁ús Ancient Greek πολῠ́ς (polŭ́s)lbor. English poly- Proto-Indo-European *ten- Proto-Indo-European *-os Proto-Indo-European *tónos Proto-Hellenic *tónos Ancient Greek…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌpɑliˈtɑnɪk/",
+        "term" : "monotonic"
+      },
+      {
+        "definition" : "The number of elements a given set contains.",
+        "origin" : "Etymology tree Latin cardō Proto-Indo-European *h₂el- Proto-Indo-European *-is Proto-Indo-European *h₂élisder.? Proto-Italic *-ālis Latin -ālis Latin cardinālis Latin -tās Latin cardinālitāsder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/kɑɹdɪˈnælɪti/",
+        "term" : "cardinality"
+      },
+      {
+        "definition" : "An outline or image universally applicable to a general conception, under which it is likely to be presented to the mind (for example, a body schema).",
+        "origin" : "Unadapted borrowing from Latin schēma, from Ancient Greek σχῆμα (skhêma, “form, shape”). Doublet of scheme.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈskimə/",
+        "term" : "schema"
+      },
+      {
+        "definition" : "An instance of moving to live in another place for a while.",
+        "origin" : "From Middle French migration and its source, Latin migrātiō, from the participle stem of migrō (“to migrate”). Morphologically migrate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/maɪˈɡɹeɪʃ(ə)n/",
+        "term" : "migration"
+      },
+      {
+        "definition" : "To rewrite existing source code in order to improve its readability, reusability or structure without affecting its meaning or behaviour.",
+        "origin" : "Etymology tree Proto-Italic *wre- Latin re-der. Old French re-bor. Middle English re- English re- Proto-Indo-European *dʰeh₁- Proto-Indo-European *dʰeh₁k- Proto-Indo-European *-yéti Proto-Indo-European *dʰh₁kyéti Proto-Italic *θakjō…",
+        "partOfSpeech" : "verb",
+        "term" : "refactor"
+      },
+      {
+        "definition" : "The act or process of specializing.",
+        "origin" : "Etymology tree Middle English especial English special Proto-Indo-European *-id- Proto-Indo-European *-yéti Proto-Indo-European *-idyéti Proto-Hellenic *-íd͏̌d͏̌ō Ancient Greek -ῐ́ζω (-ĭ́zō)bor. Late Latin -izōder. Middle French -iserbor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "[ˌspɛʃəlɪˈzeɪ̯ʃn̩]",
+        "term" : "abstraction"
+      },
+      {
+        "definition" : "The act of enclosing in a capsule; the growth of a membrane around (any part) so as to enclose it in a capsule.",
+        "origin" : "From en- + capsule + -ation or encapsulate + -ion.",
+        "partOfSpeech" : "noun",
+        "term" : "encapsulation"
+      },
+      {
+        "definition" : "The ability to assume different forms or shapes.",
+        "origin" : "* (object-oriented programming) Coined by British computer scientist Christopher Strachey in 1967. By surface analysis, poly- + -morphism.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɑliˈmɔɹfɪz(ə)m/",
+        "term" : "polymorphism"
+      },
+      {
+        "definition" : "The passing of title to an estate upon death.",
+        "origin" : "Inherited from Middle English enheritaunce, inheritaunce, borrowed from Anglo-Norman, Old French enheritaunce, from enheriter. By surface analysis, inherit + -ance.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈhɛɹɪtəns/",
+        "term" : "inheritance"
+      },
+      {
+        "definition" : "A state of dependence; a refusal to exercise initiative.",
+        "origin" : "From dependent + -cy or dependence + -y or depend + -ency.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/dɪˈpɛndənsi/",
+        "term" : "dependency"
+      },
+      {
+        "definition" : "The act of joining together to form a couple.",
+        "origin" : "From Middle English couplynge; equivalent to couple + -ing.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkʌplɪŋ/",
+        "term" : "coupling"
+      },
+      {
+        "definition" : "The ability of a substance to stick to an unlike substance.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂éd Proto-Italic *ad Proto-Italic *ad- Latin ad- Latin haereō Latin adhaereō Proto-Indo-European *-tis Proto-Indo-European *-Hō Proto-Indo-European *-tiHō Proto-Italic *-tiō Latin -tiō Latin…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌædˈhiː.ʒən/",
+        "term" : "cohesion"
+      },
+      {
+        "definition" : "The property of being modular.",
+        "origin" : "Etymology tree Proto-Indo-European *med- Proto-Indo-European *-os Proto-Indo-European *médos Proto-Italic *medos Latin modus Proto-Indo-European *-lós Proto-Indo-European *-elós Proto-Italic *-elos Latin -ulus Latin moduluslbor.",
+        "partOfSpeech" : "noun",
+        "term" : "modularity"
+      },
+      {
+        "definition" : "To construct an interface for.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Indo-European *-tér Proto-Indo-European *h₁n̥tér Proto-Italic *n̥ter Latin inter Latin inter-bor.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈɪn(t)ɚˌfeɪs/",
+        "term" : "interface"
+      },
+      {
+        "definition" : "To make a protocol of.",
+        "origin" : "Borrowed from Middle French protocolle, protocole (“document, record”), from Late Latin protocollum (“the first sheet of a volume (on which contents and errata were written)”), from Medieval Greek πρωτόκολλον (prōtókollon, “first sheet…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈpɹoʊtəˌkɑl/",
+        "term" : "protocol"
+      },
+      {
+        "definition" : "To change (something) from a smaller form or size to a larger one; to spread out or lay open.",
+        "origin" : "Recorded in Middle English since 1422 (as expanden, expaunden), from Anglo-Norman espaundre, from Latin expandō (“to spread out”), itself from ex- (“out, outwards”) + pandō (“to spread”). Doublet of spawn.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ɪkˈspænd/",
+        "term" : "contract"
+      },
+      {
+        "definition" : "Anything that is provided or furnished by an environment to an organism dwelling within it.",
+        "origin" : "From afford + -ance; coined in 1977 by psychologist James J. Gibson, and adopted in 1988 by Donald Norman in the context of human-machine interaction.",
+        "partOfSpeech" : "noun",
+        "term" : "affordance"
+      },
+      {
+        "definition" : "The science, and associated technology, of the automatic recording and transmission of data from a remote source to a receiving station for analysis.",
+        "origin" : "From tele- + -metry.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/təˈlɛm.əˌtɹi/",
+        "term" : "telemetry"
+      },
+      {
+        "definition" : "The state of being observable.",
+        "origin" : "Etymology tree English observe Proto-Indo-European *-dʰlom Proto-Italic *-ðlom Proto-Italic *-ðlis Latin -bilis Latin -ābilis Latin -tās Latin -abilitas Middle French -abletébor.",
+        "partOfSpeech" : "noun",
+        "term" : "observability"
+      },
+      {
+        "definition" : "The act of using or adapting as an instrument; a series or combination of instruments.",
+        "origin" : "Etymology tree English instrument Proto-Indo-European *-tis Proto-Indo-European *-Hō Proto-Indo-European *-tiHō Proto-Italic *-tiō Latin -tiō Latin -ātiōlbor. Old French -ationbor.",
+        "partOfSpeech" : "noun",
+        "term" : "instrumentation"
+      },
+      {
+        "definition" : "That employs a practical method not guaranteed to be optimal or perfect; either not following or derived from any theory, or based on an advisedly oversimplified one.",
+        "origin" : "Irregular formation from Ancient Greek εὑρίσκω (heurískō, “I find, discover”) (compare the proper Greek term εὑρετικός (heuretikós)).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/hjəˈɹɪstɪk/",
+        "term" : "heuristic"
+      },
+      {
+        "definition" : "A sheet of copper or steel used in the construction of a boiler.",
+        "origin" : "Etymology tree Proto-Indo-European *bew-der.? Proto-Indo-European *bʰel-der.? Latin bulla Proto-Indo-European *-yétider. Latin -iō Latin bulliō Old French boillirbor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbɔɪ.ləɹˌpleɪt/",
+        "term" : "boilerplate"
+      },
+      {
+        "definition" : "A temporary modular system of tubes, bamboo or wood forming a framework used to support people and material in the construction or repair of buildings and other large structures.",
+        "origin" : "Inherited from Middle English scaffaldyng, skaffaldyng, equivalent to scaffold + -ing.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈskæfəldɪŋ/",
+        "term" : "scaffolding"
+      },
+      {
+        "definition" : "To restrict (a program, etc.) by placing it in a sandbox.",
+        "origin" : "Etymology tree substratebor. Proto-Indo-European *sámdʰos? Proto-Germanic *samdaz Proto-West Germanic *samd Old English sand Middle English sond English sand substrateder.? Ancient Greek πῠ́ξος (pŭ́xos) Pre-Greekder.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈsæn(d).bɑks/",
+        "term" : "sandbox"
+      },
+      {
+        "definition" : "present participle and gerund of stage",
+        "origin" : "By surface analysis, stage + -ing.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈsteɪd͡ʒɪŋ/",
+        "term" : "staging"
+      },
+      {
+        "definition" : "present participle and gerund of provision",
+        "partOfSpeech" : "verb",
+        "term" : "provisioning"
+      },
+      {
+        "definition" : "The arrangement of music for performance by an orchestra.",
+        "origin" : "From French orchestration. Equivalent to orchestrate + -ion.",
+        "partOfSpeech" : "noun",
+        "term" : "orchestration"
+      },
+      {
+        "definition" : "The process of containerizing; the use of containers in shipping and transport, especially shipping containers.",
+        "origin" : "Etymology tree Proto-Indo-European *ḱe? Proto-Indo-European *ḱóm Proto-Italic *kom Proto-Italic *kom- Latin con- Proto-Indo-European *ten- Proto-Indo-European *-yéti Proto-Indo-European *tn̥eh₁yéti Proto-Italic *tenēō Latin teneō Latin…",
+        "partOfSpeech" : "noun",
+        "term" : "containerization"
+      },
+      {
+        "definition" : "Based on a cloud computing execution model in which the cloud provider allocates machine resources on demand.",
+        "origin" : "Etymology tree Middle English servere English server Proto-Indo-European *lewh₁- Proto-Indo-European *lewHs-der. Proto-Germanic *leusaną Proto-Germanic *lausaz Proto-Germanic *-lausaz Proto-West Germanic *-laus Old English -lēas Middle…",
+        "partOfSpeech" : "adjective",
+        "term" : "serverless"
+      },
+      {
+        "definition" : "Lasting for a short period of time.",
+        "origin" : "From New Latin ephemerus, from Ancient Greek ἐφήμερος (ephḗmeros), the more common form of ἐφημέριος (ephēmérios, “of, for, or during the day, living or lasting but for a day, short-lived, temporary”), from ἐπί (epí, “on”) + ἡμέρα (hēméra,…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ɛˈfɛ.mə.ɹəl/",
+        "term" : "ephemeral"
+      },
+      {
+        "definition" : "That supports different states, reacting to the same input differently depending on the current state.",
+        "origin" : "From state + -ful. In the computing sense it is intended as an opposite for stateless.",
+        "partOfSpeech" : "adjective",
+        "term" : "stateless"
+      },
+      {
+        "definition" : "Of a system or protocol, such that it does not keep a persistent state between transactions.",
+        "origin" : "Etymology tree Proto-Indo-European *steh₂- Proto-Indo-European *-tus Proto-Indo-European *stéh₂-tu-s ~ *sth₂-téw-s Proto-Italic *status Latin statuslbor. Old French estatbor.",
+        "partOfSpeech" : "adjective",
+        "term" : "stateful"
+      },
+      {
+        "definition" : "A large log to burn at the back of a fire.",
+        "origin" : "From back + log. 1680s; originally a large log at the back of a fire. Figurative sense from 1880s, meaning \"something stored up for later use\". Possibly influenced by logbook as well.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbæk(ˌ)lɔɡ/",
+        "term" : "backlog"
+      },
+      {
+        "definition" : "Alternative form of road map.",
+        "origin" : "From road + map.",
+        "partOfSpeech" : "noun",
+        "term" : "roadmap"
+      },
+      {
+        "definition" : "A stone milepost (or by extension in other materials), one of a series of numbered markers placed along a road at regular intervals, typically at the side of the road or in a median.",
+        "origin" : "From mile + stone. Compare Dutch mijlsteen (“milestone”), German Low German Mielensteen (“milestone”), German Meilenstein (“milestone”), Swedish milsten (“milestone”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈmaɪlˌstoʊn/",
+        "term" : "milestone"
+      },
+      {
+        "definition" : "Able to be delivered.",
+        "origin" : "From deliver + -able.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/dɪˈlɪvɹəbəɫ/",
+        "term" : "deliverable"
+      },
+      {
+        "definition" : "A person holding the stakes of bettors, with the responsibility of delivering the pot to the winner of the bet.",
+        "origin" : "From stake + holder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈsteɪkˌhoʊl.dɚ/",
+        "term" : "stakeholder"
+      },
+      {
+        "definition" : "A recital or a second performance; a repetition.",
+        "origin" : "From Latin iterātiō, from iterō. Morphologically iterate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɪt.əˈɹeɪ.ʃən/",
+        "term" : "iteration"
+      },
+      {
+        "definition" : "A small quantity removed or lost; one of a series of regular subtractions.",
+        "origin" : "Etymology tree Proto-Indo-European *de Proto-Indo-European *-h₁ Proto-Indo-European *déh₁ Proto-Italic *dē Latin dē Latin de- Proto-Indo-European *ḱer- Proto-Indo-European *-sḱéti Proto-Indo-European *ḱreh₁-sḱéti Latin crēscō Latin…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdɛkɹəmənt/",
+        "term" : "increment"
+      },
+      {
+        "definition" : "An exhibition of works from an extended period of an artist's activity.",
+        "origin" : "From retrospect + -ive. From Latin retrōspectus, perfect passive participle of retrōspiciō (“to look back at”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɹɛt.ɹəˈspɛk.tɪv/",
+        "term" : "retrospective"
+      },
+      {
+        "definition" : "A vector quantity that denotes the rate of change of position with respect to time, combining speed with a directional component.",
+        "origin" : "From Middle French vélocité, from Latin vēlōcitās (“speed”), from vēlōx (“fast”), thus a doublet of veloce.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/vəˈlɑsəti/",
+        "term" : "velocity"
+      },
+      {
+        "definition" : "The rate at which data is transferred through a system.",
+        "origin" : "From through + put (after input and output).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈθɹu.pʊt/",
+        "term" : "throughput"
+      },
+      {
+        "definition" : "The narrow portion that forms the pouring spout of a bottle; the neck of a bottle.",
+        "origin" : "Etymology tree Proto-Indo-European *bʰeHw-der. Ancient Greekbor.? Latin buttis Proto-Indo-European *-lós Proto-Indo-European *-elós Proto-Italic *-elos Proto-Italic *-kelos Latin -culus Late Latin butticula Old French boteillebor.",
+        "partOfSpeech" : "noun",
+        "term" : "bottleneck"
+      },
+      {
+        "definition" : "To agitate rapidly and repetitively, or to stir with a rowing or rocking motion; generally applies to liquids, notably cream.",
+        "origin" : "Noun from Middle English chyrne, cherne, kyrne ( > Scots kirn), from Old English ċyrn, ċyrin, ċirin (“churn”), from Proto-Germanic *kirnijǭ (“churn”);",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/t͡ʃɝn/",
+        "term" : "churn"
+      },
+      {
+        "definition" : "The act of retaining or something retained.",
+        "origin" : "From Middle English retencioun, borrowed from Latin retentiō, retentiōnis, from retentus, the perfect passive participle of retineō (“retain”) (from re- (“back, again”) + teneō (“hold, keep”)).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɹɪˈtɛnʃən/",
+        "term" : "retention"
+      },
+      {
+        "definition" : "A group of people supporting the same thing or person.",
+        "origin" : "From Latin cohors (stem cohort-); borrowed into Old English as coorta, but reintroduced into Middle English as cōhort and chōors via Old French cohorte. Doublet of court.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkoʊ̯ˌhɔɹt/",
+        "term" : "cohort"
+      },
+      {
+        "definition" : "To use a funnel.",
+        "origin" : "From Middle English funell, fonel, probably through Old French *founel (compare Middle French fonel, Old Occitan fonilh, enfounilh), from Latin fundibulum, infundibulum (“funnel”), from infundere (“to pour in”);",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈfʌnəl/",
+        "term" : "funnel"
+      },
+      {
+        "definition" : "The process of bringing a new employee on board, incorporating training and orientation.",
+        "origin" : "From on board + -ing, 1970s American management jargon.",
+        "partOfSpeech" : "noun",
+        "term" : "onboarding"
+      },
+      {
+        "definition" : "Making active and effective; bringing into a state of activity.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂eǵ- Proto-Indo-European *-eti Proto-Indo-European *h₂éǵeti Proto-Italic *agō Latin agō Proto-Indo-European *-wós Proto-Indo-European *-iHwósder. Latin -īvus ▲ Ancient Greek ἐνεργητικός (energētikós)sl.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌæktəˈveɪʃən/",
+        "term" : "activation"
+      },
+      {
+        "definition" : "The act or an instance of dividing into segments.",
+        "origin" : "Etymology tree English segment Proto-Indo-European *-tis Proto-Indo-European *-Hō Proto-Indo-European *-tiHō Proto-Italic *-tiō Latin -tiō Latin -ātiōlbor. Old French -ationbor.",
+        "partOfSpeech" : "noun",
+        "term" : "segmentation"
+      },
+      {
+        "definition" : "The act of personalizing something, or adapting it for somebody's needs or tastes.",
+        "origin" : "Etymology tree Middle English personal English personal Proto-Indo-European *-id- Proto-Indo-European *-yéti Proto-Indo-European *-idyéti Proto-Hellenic *-íd͏̌d͏̌ō Ancient Greek -ῐ́ζω (-ĭ́zō)bor. Late Latin -izōder. Middle French -iserbor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌpɝs(ə)nəlaɪˈzeɪʃən/",
+        "term" : "personalization"
+      },
+      {
+        "definition" : "The act of localizing.",
+        "origin" : "From localize + -ation; compare French localisation.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌloʊkəlɪˈzeɪʃən/",
+        "term" : "localization"
+      },
+      {
+        "definition" : "The conversion of something in order to make it international.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Indo-European *-tér Proto-Indo-European *h₁n̥tér Proto-Italic *n̥ter Latin inter Latin inter-bor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪntɚˌnæʃ(ə)n(ə)ləˈzeɪʃən/",
+        "term" : "internationalization"
+      },
+      {
+        "definition" : "The quality of being accessible, or of admitting approach; receptiveness.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂éd Proto-Italic *ad Proto-Italic *ad- Latin ad- Proto-Italic *kezdō Latin cēdō Latin accēdō Proto-Indo-European *-tus Proto-Italic *-tus Latin -tus Latin accessus Late Latin accessibilis Frenchder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/əkˌsɛs.əˈbɪl.ə.ti/",
+        "term" : "accessibility"
+      },
+      {
+        "definition" : "The state or condition of being usable.",
+        "origin" : "From usable + -ity or use + -ability.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌjuːzəˈbɪlɪti/",
+        "term" : "usability"
+      },
+      {
+        "definition" : "The condition of being discoverable",
+        "origin" : "Etymology tree English discover Proto-Indo-European *-dʰlom Proto-Italic *-ðlom Proto-Italic *-ðlis Latin -bilis Latin -ābilis Proto-Indo-European *-teh₂ Proto-Indo-European *-ts Proto-Indo-European *-teh₂ts Proto-Italic *-tāts Latin -tās…",
+        "partOfSpeech" : "noun",
+        "term" : "discoverability"
+      },
+      {
+        "definition" : "The property of being scalable.",
+        "origin" : "From scale + -ability or scalable + -ity.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌskeɪ.ləˈbɪl.ə.ti/",
+        "term" : "scalability"
+      },
+      {
+        "definition" : "The mental ability to recover quickly from depression, illness or misfortune.",
+        "origin" : "Etymology tree Proto-Italic *wre- Latin re- Latin saliō Latin resiliō English -ence English resilience From Latin resiliō (“to spring back”) + English -ence.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɹɪˈzɪl.jəns/",
+        "term" : "resilience"
+      },
+      {
+        "definition" : "The quality or state of being non-redundant.",
+        "origin" : "From non- + redundancy.",
+        "partOfSpeech" : "noun",
+        "term" : "redundancy"
+      },
+      {
+        "definition" : "An automatic switch to a secondary system on failure of the primary system, such as a means for ensuring high availability of some critical resource (such as a computer system), involving a parallel backup system which is kept running at…",
+        "origin" : "Deverbal from fail over.",
+        "partOfSpeech" : "noun",
+        "term" : "failover"
+      },
+      {
+        "definition" : "A return to a prior state by undoing some operation, especially of policy or price changes.",
+        "origin" : "The noun is a deverbal from roll back. The verb is a back-formation from the noun despite being redundant to roll back.",
+        "partOfSpeech" : "noun",
+        "term" : "rollback"
+      },
+      {
+        "definition" : "A cumulative package of one or more files used to address a problem in a software product.",
+        "origin" : "From hot + fix.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhɑːt.fɪks/",
+        "term" : "hotfix"
+      },
+      {
+        "definition" : "To express disapproval of, protest or plead against.",
+        "origin" : "Borrowed from Latin dēprecātus, perfect active participle of dēprecor (“to pray against (a present or impending evil) (see -ate (verb-forming suffix)), pray for, intercede for (that which is in danger), rarely imprecate”), from dē- (“off”)…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈdɛp.rɪˌkeɪt/",
+        "term" : "deprecate"
+      },
+      {
+        "definition" : "To phase out.",
+        "origin" : "From Middle English son-sett, Sonne set, equivalent to sun + set. In Gower's Confessio Amantis, before 1393.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈsʌnˌsɛt/",
+        "term" : "sunset"
+      },
+      {
+        "definition" : "A father of someone's parent.",
+        "origin" : "The noun is derived from Middle English grandfadre, graundfadir, graunfadir, grauntfader, and other forms, from graunt (“big, large; great, important”) + fā̆der (“male parent, father;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɡɹæn(d)ˌfɑðɚ/",
+        "term" : "grandfather"
+      },
+      {
+        "definition" : "An enclosed structure where bicycles may be stored.",
+        "origin" : "From bike + shed. Technical meaning coined by Poul-Henning Kamp in 1999.",
+        "partOfSpeech" : "noun",
+        "term" : "bikeshed"
+      },
+      {
+        "definition" : "Any apparently useless activity which, by allowing one to overcome intermediate difficulties, allows one to solve a larger problem.",
+        "origin" : "Coined by Carlin Vieri in his time at the MIT AI Lab (1993–1998) after viewing a segment at the end of \"The Boy Who Cried Rat!\" (1991), the sixth episode of the first season of The Ren and Stimpy Show.",
+        "partOfSpeech" : "noun",
+        "term" : "yak shaving"
+      },
+      {
+        "definition" : "The implied cost of additional future work caused by choosing an easy but inferior solution originally.",
+        "origin" : "Coined by American computer programmer Ward Cunningham in 1992.",
+        "partOfSpeech" : "noun",
+        "term" : "technical debt"
+      },
+      {
+        "definition" : "A version of a product with just enough features to be usable by early customers who can then provide feedback for future product development.",
+        "partOfSpeech" : "noun",
+        "term" : "minimum viable product"
+      },
+      {
+        "definition" : "A short and/or incomplete realization of a certain method or idea to demonstrate its feasibility.",
+        "partOfSpeech" : "noun",
+        "term" : "proof of concept"
+      }
+    ]
+  },
+  {
+    "id" : "healthcare",
+    "industries" : [
+      "healthcare",
+      "medicine",
+      "nursing",
+      "health"
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "Healthcare",
+    "words" : [
+      {
+        "definition" : "Assessment or sorting according to quality, need, etc., especially to determine how resources will be allocated.",
+        "origin" : "Etymology tree French trier Proto-Indo-European *-h₂ Proto-Indo-European *-éh₂ Proto-Indo-European *-tós Proto-Indo-European *-eh₂tos Proto-Italic *-ātos Latin -ātus Proto-Indo-European *-ikos Proto-Italic *-ikos Latin -icus Latin -āticus…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɹi.ɑʒ/",
+        "term" : "triage"
+      },
+      {
+        "definition" : "A forecast of the future course or outcome of a situation based on what is presently known; a prediction.",
+        "origin" : "Etymology tree Proto-Indo-European *per-der.? Proto-Indo-European *per-der.? Proto-Indo-European *pér Proto-Indo-European *-o Proto-Indo-European *próder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɹɑɡˈnoʊsɪs/",
+        "term" : "prognosis"
+      },
+      {
+        "definition" : "The process of, or an instance of, identification of the nature and cause of a medical condition or illness.",
+        "origin" : "Etymology tree Proto-Indo-European *dwóh₁ ▲ Proto-Indo-European *trísinflu. Proto-Indo-European *dwísder. Ancient Greek διά (diá) Ancient Greek δια- (dia-) Proto-Indo-European *ǵneh₃- Proto-Indo-European *-sḱéti Proto-Indo-European…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/daɪəɡˈnəʊsɪs/",
+        "term" : "diagnosis"
+      },
+      {
+        "definition" : "Of or pertaining to a difference.",
+        "origin" : "Etymology tree Proto-Indo-European *dwóh₁ ▲ Proto-Indo-European *trísinflu. Proto-Indo-European *d(w)is- Proto-Italic *dis- Latin dis- Proto-Indo-European *bʰer- Proto-Indo-European *-eti Proto-Indo-European *bʰéreti Proto-Italic *ferō…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "[dɪfəˈɹənʃəɫ]",
+        "term" : "differential"
+      },
+      {
+        "definition" : "US standard spelling of aetiology.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂ey-der. Ancient Greek αἰτῐ́ᾱ (aitĭ́ā) Proto-Indo-European *leǵ- Proto-Indo-European *-os Proto-Indo-European *lóǵos Proto-Hellenic *lógos Ancient Greek λόγος (lógos) Proto-Indo-European *-h₂…",
+        "partOfSpeech" : "noun",
+        "term" : "etiology"
+      },
+      {
+        "definition" : "The clinical biomedical specialty that provides microscopy and other laboratory services to clinicians (e.g., cytology, histology, cytopathology, histopathology, cytometry).",
+        "origin" : "Etymology tree Ancient Greek πάσχω (páskhō)der. Ancient Greek πᾰ́θος (pắthos) Proto-Indo-European *leǵ- Proto-Indo-European *-os Proto-Indo-European *lóǵos Proto-Hellenic *lógos Ancient Greek λόγος (lógos) Proto-Indo-European *-h₂…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pəˈθɒləd͡ʒi/",
+        "term" : "pathology"
+      },
+      {
+        "definition" : "The presence of one or more disorders (or diseases) in addition to a primary disease or disorder.",
+        "origin" : "From co- + morbidity or comorbid + -ity.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌkoʊmoɹˈbɪdɪti/",
+        "term" : "comorbidity"
+      },
+      {
+        "definition" : "A factor or symptom which makes a certain treatment inadvisable, generally or individually.",
+        "origin" : "Etymology tree Proto-Indo-European *ḱe? Proto-Indo-European *ḱóm Proto-Italic *kom Proto-Italic *kom- Proto-Indo-European *-teros Proto-Italic *-teros Proto-Italic *komterosder. Proto-Italic *komterād Latin contrābor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌkɒntɹə.ɪndɪˈkeɪʃən/",
+        "term" : "contraindication"
+      },
+      {
+        "definition" : "An act of pointing out or indicating.",
+        "origin" : "From Old French indication, from Latin indicātiō (“a showing, indicating the value of something; valuation”), from indicō (“point out, indicate, show; value”); see indicate;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪndɪˈkeɪʃən/",
+        "term" : "indication"
+      },
+      {
+        "definition" : "The prevention of, or the protective treatment for, disease.",
+        "origin" : "From Latin, from Ancient Greek πρό (pró, “before”) + φύλαξις (phúlaxis, “a watching, guarding”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɹɔfɪˈlæksɪs/",
+        "term" : "prophylaxis"
+      },
+      {
+        "definition" : "Serving to palliate; serving to extenuate or mitigate.",
+        "origin" : "From Middle French palliatif, from New Latin *palliātīvus, from Medieval Latin palliō (“to cloak”), from Latin pallium (“a cloak”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpælieɪtɪv/",
+        "term" : "palliative"
+      },
+      {
+        "definition" : "Brief, quick, short.",
+        "origin" : "From Late Middle English acute (“of a disease or fever: starting suddenly and lasting for a short time; of a humour: irritating, sharp”), from Latin acūta, from acūtus (“sharp, sharpened”), perfect passive participle of acuō (“to make…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əˈkjut/",
+        "term" : "acute"
+      },
+      {
+        "definition" : "A condition of extended duration, either continuous or marked by frequent recurrence. Sometimes implies a condition which worsens with each recurrence, though that is not inherent in the term.",
+        "origin" : "Etymology tree Ancient Greek χρόνος (khrónos) Proto-Indo-European *-kos Proto-Hellenic *-kos Ancient Greek -κός (-kós) Ancient Greek -ικός (-ikós) Ancient Greek χρονικός (khronikós)bor. Latin chronicus Old French cronikeder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkɹɑ.nɪk/",
+        "term" : "chronic"
+      },
+      {
+        "definition" : "Of, relating to, or designating a disease or condition having no known cause.",
+        "origin" : "From idio- + -pathic. First appears c. 1669, in the publications of William Simpson.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌɪdioʊˈpæθɪk/",
+        "term" : "idiopathic"
+      },
+      {
+        "definition" : "Induced by the words or actions of the physician or by medical treatment or diagnostic procedure.",
+        "origin" : "From iatro- + -genic.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/aɪˌætɹəˈd͡ʒɛnɪk/",
+        "term" : "iatrogenic"
+      },
+      {
+        "definition" : "Of an infection or its cause: arising from the environment of, or treatment in, a hospital.",
+        "origin" : "Learned borrowing from Late Latin nosocomīum (“hospital, infirmary”) + English -al (suffix meaning ‘of or pertaining to’ forming adjectives).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌnɑ.səˈkoʊ.mi.əl/",
+        "term" : "nosocomial"
+      },
+      {
+        "definition" : "Evil or malignant in disposition, nature, intent or influence.",
+        "origin" : "From Middle English maligne, from Old French maligne, from Latin malignus, from malus (“bad”) + genus (“sort, kind”). Compare benign.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/məˈlaɪn/",
+        "term" : "benign"
+      },
+      {
+        "definition" : "Harmful, malevolent, injurious.",
+        "origin" : "From Middle French malignant, from Late Latin malignans. See malign.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/məˈlɪɡnənt/",
+        "term" : "malignant"
+      },
+      {
+        "definition" : "A change in nature, form, or quality.",
+        "origin" : "Learned borrowing from Late Latin metastasis (“(rhetoric) rapid or sudden transition from one argument, point, or topic to another”), and from its etymons Koine Greek μετάστασις (metástasis, “(rhetoric) rapid or sudden transition from one…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/məˈtæstəsəs/",
+        "term" : "metastasis"
+      },
+      {
+        "definition" : "A pardon of a sin; (chiefly historical, also figuratively) the forgiveness of an offence, or relinquishment of a (legal) claim or a debt.",
+        "origin" : "From Middle English remissioun (“release from duty; freeing of captives; mercy, pardon, respite; forgiveness; release from or reduction of penances; reduction in intensity (of a quality, symptom, etc.); transfer of property, quitclaim;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɹəˈmɪʃ(ə)n/",
+        "term" : "remission"
+      },
+      {
+        "definition" : "To fall back again; to slide or turn back into a former state or practice.",
+        "origin" : "From Latin relapsus, past participle of relabi (“to slide back, fall back”), from re- (“back”) + labi (“to slip, slide, fall”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ɹɪˈlæps/",
+        "term" : "relapse"
+      },
+      {
+        "definition" : "Chiefly in the plural: a condition or disease which follows chronologically after an earlier one, being either partly or wholly caused by it, or made possible by it.",
+        "origin" : "Learned borrowing from Latin sequēla (“aftermath, sequel; consequence, result”), from sequor (“to follow; to come or go after, pursue”) (ultimately from Proto-Indo-European *sekʷ- (“to follow”)) + -ēla (suffix forming abstract nouns from…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/sɪˈkwɛlə/",
+        "term" : "sequela"
+      },
+      {
+        "definition" : "Not exhibiting any symptoms of disease, as for example in a case which is subclinical (“without signs detectable by physical examination or laboratory test”).",
+        "origin" : "PIE word *ḱóm The adjective is derived from a- (prefix meaning ‘not’) + symptomatic. The noun is derived from the adjective.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌeɪˌsɪm(p)təˈmætɪk/",
+        "term" : "asymptomatic"
+      },
+      {
+        "definition" : "Showing symptoms.",
+        "origin" : "Borrowed from French symptomatique, from New Latin symptomaticus, from Ancient Greek συμπτωματικός (sumptōmatikós, “of or pertaining to a chance (or a symptom), casual”), from σύμπτωμα (súmptōma, “a symptom”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌsɪmp.təˈmæt.ɪk/",
+        "term" : "symptomatic"
+      },
+      {
+        "definition" : "Feverish, or having a high temperature.",
+        "origin" : "Borrowed from Medieval Latin febrīlis, from Latin febris (“fever”). By surface analysis, Latin febr- + -ile.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈfi brəl/",
+        "term" : "febrile"
+      },
+      {
+        "definition" : "Having no fever, without a fever.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Hellenic *ə- Ancient Greek ἀ- (a-)der. English a- English febrile English afebrile From a- + febrile.",
+        "partOfSpeech" : "adjective",
+        "term" : "afebrile"
+      },
+      {
+        "definition" : "The disease or disorder of abnormally low blood pressure.",
+        "origin" : "Etymology tree Proto-Indo-European *upó Ancient Greek ῠ̔πό (hŭpó) Ancient Greek ὑπο- (hupo-)der. English hypo- Proto-Indo-European *ten- Proto-Indo-European *tend- Proto-Indo-European *-eti Proto-Indo-European *téndeti Proto-Italic *tendō…",
+        "partOfSpeech" : "noun",
+        "term" : "hypertension"
+      },
+      {
+        "definition" : "A state of abnormally high blood pressure of arterial blood (arterial hypertension) or of the intra-ocular fluid.",
+        "origin" : "Etymology tree Proto-Indo-European *úp Proto-Indo-European *-er Proto-Indo-European *upér Proto-Hellenic *hupér Ancient Greek ῠ̔πέρ (hŭpér) Ancient Greek ῠ̔περ- (hŭper-)der.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌhaɪ.pɚˈtɛn.ʃən/",
+        "term" : "hypotension"
+      },
+      {
+        "definition" : "A rapid resting heart rate, especially one above 100 beats per minute; palpitations.",
+        "origin" : "Learned borrowing from New Latin tachycardia, from Ancient Greek ταχύς (takhús, “swift”) + καρδία (kardía, “heart”). By surface analysis, tachy- + -cardia. Compare French tachycardie.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌtæk.ɪˈkɑɹ.di.ə/",
+        "term" : "tachycardia"
+      },
+      {
+        "definition" : "The condition of having a slow heartbeat, defined as under 60 beats per minute for an adult.",
+        "origin" : "From Ancient Greek βραδύς (bradús, “slow”) + καρδία (kardía, “heart”), equivalent to brady- + -cardia.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/bɹeɪ.dɪˈkɑɹ.di.ə/",
+        "term" : "bradycardia"
+      },
+      {
+        "definition" : "Difficult or laboured breathing.",
+        "origin" : "Variant spelling of dyspnoea, a learned borrowing from Latin dyspnoea (“difficulty breathing”), from Ancient Greek δῠ́σπνοιᾰ (dŭ́spnoiă, “difficulty breathing, shortness of breath”), from δῠ́σπνοος (dŭ́spnoos, “short of breath, breathing with…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdɪsp.ni.ə/",
+        "term" : "dyspnea"
+      },
+      {
+        "definition" : "An excessive accumulation of serum in tissue spaces or a body cavity.",
+        "origin" : "From New Latin oedēma, from Ancient Greek οἴδημα (oídēma, “swelling”), from οἰδέω (oidéō, “I swell”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪˈdiː.mə/",
+        "term" : "edema"
+      },
+      {
+        "definition" : "A wound or injury.",
+        "origin" : "From Middle English lesioun (“physical injuring of the body”), from Old French lesion (“hurt, offense, wrong, injury, wound”), from Latin laesiō (“hurt, harm, injury”) (whence -ion (“noun suffix denoting action, result, process, state,…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈliːʒən/",
+        "term" : "lesion"
+      },
+      {
+        "definition" : "The removal and examination of a sample of tissue, cells, or bodily fluid from a living body for diagnostic purposes.",
+        "origin" : "From French biopsie, from bi- + -opsy.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbaɪɑpsi/",
+        "term" : "biopsy"
+      },
+      {
+        "definition" : "To ascertain the amount of a constituent in a solution (or other mixture) by measuring the volume of a known concentration (the \"standard solution\") needed to complete a reaction.",
+        "origin" : "Modelled after French titrer. Equivalent to French titre (“title, quality, chemical proportion”) + -ate (verb-forming suffix).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈtɪtɹeɪt/",
+        "term" : "titrate"
+      },
+      {
+        "definition" : "A round mass of something, especially of chewed food in the mouth or alimentary canal.",
+        "origin" : "From Late Latin bōlus (“clod of earth, lump”), plural bōlī, from Ancient Greek βῶλος (bôlos, “clod, lump”). Doublet of bole.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbəʊləs/",
+        "term" : "bolus"
+      },
+      {
+        "definition" : "A product consisting of a liquid which has had other ingredients steeped in it to extract useful qualities.",
+        "origin" : "From Middle English infusioun, from Old French infusion, from Latin infusio, infusionem (“a pouring into, a wetting, a dyeing, a flow”), from infundo.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈfjuːʒən/",
+        "term" : "infusion"
+      },
+      {
+        "definition" : "A drug used to reduce and manage pain, especially without inducing a loss of other sensation.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Hellenic *ə- Ancient Greek ἀν- (an-) Proto-Indo-European *h₂leg-der.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌæn.əlˈd͡ʒi.zɪk/",
+        "term" : "analgesic"
+      },
+      {
+        "definition" : "That reduces fever.",
+        "origin" : "From anti- + pyretic.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌæntɪpaɪˈɹɛtɪk/",
+        "term" : "antipyretic"
+      },
+      {
+        "definition" : "A substance that prevents coagulation (stops blood from clotting); especially, any of a group of pharmaceutical drugs that reduce the clotting speed or affinity of the blood by any of several mechanisms (e.g.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂ent- Proto-Indo-European *-s Proto-Indo-European *h₂énts Proto-Indo-European *-i Proto-Indo-European *h₂énti Ancient Greek ᾰ̓ντῐ́ (ăntĭ́) Ancient Greek ἀντι- (anti-)der.",
+        "partOfSpeech" : "noun",
+        "term" : "anticoagulant"
+      },
+      {
+        "definition" : "Of or relating to antibiotics.",
+        "origin" : "Borrowed from French antibiotique; by surface analysis, anti- + -biotic.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌæn.taɪ.baɪˈɑ.tɪk/",
+        "term" : "antibiotic"
+      },
+      {
+        "definition" : "The act of resisting, or the capacity to resist.",
+        "origin" : "From earlier resistence, from Middle English resistence, from Old French resistence, from Latin resistentia. Morphologically resist + -ance.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɹɪˈzɪstəns/",
+        "term" : "resistance"
+      },
+      {
+        "definition" : "A serious medical condition in which the whole body is inflamed, causing injury to its own tissues and organs as a response to infection.",
+        "origin" : "From Ancient Greek σῆψις (sêpsis, “putrefaction”), from σήπω (sḗpō, “to make rotten”), from σήψ (sḗps, “a kind of lizard; also a kind of serpent whose bite was alleged to cause putrefaction”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈsɛpsɪs/",
+        "term" : "sepsis"
+      },
+      {
+        "definition" : "The restoration of blood flow to an organ, after it was cut off (e.g. in an operation).",
+        "origin" : "Etymology tree Proto-Italic *wre- Latin re-der. Old French re-bor. Middle English re- English re- Proto-Indo-European *per-der.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪˈski.mi.ə/",
+        "term" : "ischemia"
+      },
+      {
+        "definition" : "The process which causes an infarct.",
+        "origin" : "Borrowed from Latin infarctiō, equivalent to infarct + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈfɑɹk.ʃən/",
+        "term" : "infarction"
+      },
+      {
+        "definition" : "An obstruction or occlusion of a blood vessel by an embolus, that is by a blood clot, air bubble or other matter that has been transported by the blood stream.",
+        "origin" : "The term was coined in 1848 by Rudolf Virchow. From Old French embolisme (“intercalation of days in a calendar to correct errors”), from Late Latin embolismus, from Ancient Greek ἐμβολισμός (embolismós, “intercalary”), from ἐμβάλλω…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "[ˈɛmbɫ̩ɪzm̩]",
+        "term" : "embolism"
+      },
+      {
+        "definition" : "The formation of thrombi in the blood vessels of a living organism, causing obstruction of the circulation.",
+        "origin" : "From Ancient Greek θρόμβωσις (thrómbōsis, “curdling, clotting”). By surface analysis, thrombus + -osis.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/θɹɑmˈboʊsɪs/",
+        "term" : "thrombosis"
+      },
+      {
+        "definition" : "A heavy release of blood within or from the body.",
+        "origin" : "From Latin haemorrhagia, from Ancient Greek αἱμορραγία (haimorrhagía, “a violent bleeding”), from αἱμορραγής (haimorrhagḗs, “bleeding violently”), from αἷμα (haîma, “blood”) + -ραγία (-ragía), from ῥηγνύναι (rhēgnúnai, “to break, burst”);",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhɛm(ə)ɹɪd͡ʒ/",
+        "term" : "hemorrhage"
+      },
+      {
+        "definition" : "Diagnosis of disorders by listening to the sounds of the internal organs, usually using a stethoscope.",
+        "origin" : "From Latin auscultātio (“act of listening”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɔːskəlˈteɪʃən/",
+        "term" : "auscultation"
+      },
+      {
+        "definition" : "The act of feeling or pushing on various parts of a patient’s body to determine medical condition such as the normality of organs or the presence or absence of tumors, swelling, muscle tension, etc.",
+        "origin" : "Etymology tree English palpate Proto-Indo-European *-tis Proto-Indo-European *-Hō Proto-Indo-European *-tiHō Proto-Italic *-tiō Latin -tiō Latin -ātiōlbor. Old French -ationbor.",
+        "partOfSpeech" : "noun",
+        "term" : "palpation"
+      }
+    ]
+  },
+  {
+    "id" : "law",
+    "industries" : [
+      "law",
+      "legal"
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "Law",
+    "words" : [
+      {
+        "definition" : "A legal principle in the law of equity that prevents a party from asserting otherwise valid legal rights against another party because of conduct by the first party, or circumstances to which the first party has knowingly contributed,…",
+        "origin" : "From Middle English *estoppel (found only as stoppel, stoppell, stopple, etc.), probably from Old French estoupail, estopail, estopaille, a bung made of oakum (étoupe), from Latin stuppa (\"flax, tow\"), from Ancient Greek στύππη (stuppē).",
+        "partOfSpeech" : "noun",
+        "term" : "estoppel"
+      },
+      {
+        "definition" : "An act in the past which may be used as an example to help decide the outcome of similar instances in the future.",
+        "origin" : "From Middle French, from Old French, from Latin praecēdēns, present participle of praecēdere (“to precede”); See precede.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpɹɛs.ɪ.dənt/",
+        "term" : "precedent"
+      },
+      {
+        "definition" : "The power, right, or authority to interpret and apply the law.",
+        "origin" : "Borrowed from Latin iūrisdictiō.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/d͡ʒʊɹɪsˈdɪkʃən/",
+        "term" : "jurisdiction"
+      },
+      {
+        "definition" : "A wrongful act, whether intentional or negligent, regarded as non-criminal and unrelated to a contract, which causes an injury and can be remedied in civil court, usually through the awarding of damages.",
+        "origin" : "From Middle English tort (“(uncountable) wrong; (countable) an injury, a wrong”), from Old French tort (“misdeed, wrong”) (modern French tort (“an error, wrong;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/tɔɹt/",
+        "term" : "tort"
+      },
+      {
+        "definition" : "A thing or quality that has value, especially one that generates cash flows.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂éd Proto-Italic *ad Latin ad Proto-Indo-European *seh₂- Proto-Indo-European *-tis Proto-Indo-European *séh₂tis Proto-Italic [Term?] Latin satis Early Medieval Latin ad satis Old French asez…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈæsɛt/",
+        "term" : "liability"
+      },
+      {
+        "definition" : "Security from damage, loss, or penalty.",
+        "origin" : "From late Middle English indempnite, from Middle French indemnité, from Late Latin indemnitās (“security from damage”), from Latin indemnis (“undamaged”), from in- (“not”) + damnum (“damage”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈdɛmnɪti/",
+        "term" : "indemnity"
+      },
+      {
+        "definition" : "To secure against loss or damage; to insure.",
+        "origin" : "From indemn (“unhurt”) + -ify (forming verbs)",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ɪnˈdɛm.nɪ.faɪ/",
+        "term" : "indemnify"
+      },
+      {
+        "definition" : "A guarantee that a certain outcome or obligation will be fulfilled; security.",
+        "origin" : "From Middle English warantye, warantie, from Anglo-Norman warrantie, an Old Northern French variant of Old French guarantie (Modern French garantie). Doublet of guarantee and guaranty. More at warrant.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈwoɹ.ən.ti/",
+        "term" : "warranty"
+      },
+      {
+        "definition" : "An agreement to do or not do a particular thing.",
+        "origin" : "From Middle English covenaunt, borrowed from Old French covenant (“agreement”), from Latin conveniēns, convenientem (“agreeing, agreeable, suitable, convenient”), present participle of conveniō (“to agree”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkʌv.ən.ənt/",
+        "term" : "covenant"
+      },
+      {
+        "definition" : "The thought process of considering, of taking multiple or specified factors into account (with of being the main corresponding adposition).",
+        "origin" : "From Middle English consideracioun, from Old French consideracion, from Latin cōnsīderātiō. By surface analysis, consider + -ation.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/kənˌsɪd.əˈɹeɪ.ʃən/",
+        "term" : "consideration"
+      },
+      {
+        "definition" : "A gap or opening made by breaking or battering, as in a wall, fortification or levee / embankment; the space between the parts of a solid body rent by violence.",
+        "origin" : "From Middle English breche, from Old English bryċe (“fracture, breach”) and brǣċ (“breach, breaking, destruction”), from Proto-West Germanic *bruki, from Proto-Germanic *brukiz (“breach, fissure”) and *brēkō (“breaking”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbɹit͡ʃ/",
+        "term" : "breach"
+      },
+      {
+        "definition" : "Something that corrects or counteracts.",
+        "origin" : "From Middle English remedie, from Old French *remedie, remede, from Latin remedium (“a remedy, cure”), from re- (“again”) + mederi (“to heal”). Doublet of remeid.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɹɛmədi/",
+        "term" : "remedy"
+      },
+      {
+        "definition" : "The act of enjoining; the act of directing, commanding, or prohibiting.",
+        "origin" : "From Middle English iniunccyon, iniunccion, from Old French injonctïon, from Latin iniūnctiō (“command, injunction”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈd͡ʒʌŋk.ʃən/",
+        "term" : "injunction"
+      },
+      {
+        "definition" : "third-person singular simple present indicative of damage",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈdæmɪd͡ʒɪz/",
+        "term" : "damages"
+      },
+      {
+        "definition" : "The state of being negligent.",
+        "origin" : "From Middle English necligence, negligence, from Old French negligence, from Latin neglegentia.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈnɛɡlɪd͡ʒəns/",
+        "term" : "negligence"
+      },
+      {
+        "definition" : "Appropriate, required, reasonable care or carefulness.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdu ˌdɪl.ɪ.d͡ʒəns/",
+        "term" : "due diligence"
+      },
+      {
+        "definition" : "Relating to an entity that owes to another good faith, accountability and trust, often in the context of trusts and trustees.",
+        "origin" : "From Latin fīdūciārius (“held in trust”), from fīdūcia (“trust”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/fəˈduːʃ.i.eɹ.i/",
+        "term" : "fiduciary"
+      },
+      {
+        "definition" : "A written law or ordinance passed by a legislative body.",
+        "origin" : "From Middle English statut, from Old French statut, from Late Latin statutum (“a statute”), neuter singular of Latin statutus, past participle of statuō (“to set up, establish”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈstæt͡ʃuːt/",
+        "term" : "statute"
+      },
+      {
+        "definition" : "Of, relating to, enacted or regulated by a statute.",
+        "origin" : "Etymology tree Middle English statut English statute Proto-Indo-European *-tōr Proto-Italic *-tōr Latin -tor Proto-Indo-European *-(i)yós Proto-Italic *-ijos Proto-Italic *-ios Old Latin -ios Latin -ius Latin -tōriusder.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈstæt͡ʃəˌtɔɹi/",
+        "term" : "statutory"
+      },
+      {
+        "definition" : "The act of regulating or the condition of being regulated.",
+        "origin" : "From regulate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɹɛɡjʊˈleɪʃən/",
+        "term" : "regulation"
+      },
+      {
+        "definition" : "An infraction or a failure to follow a rule.",
+        "origin" : "Borrowed from Middle French violation, from Latin violātiō (“injury, profanation”), from violō (“to treat with violence; to maltreat; to violate, defile, profane”). Morphologically violate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌvaɪ.əˈleɪ.ʃən/",
+        "term" : "compliance"
+      },
+      {
+        "definition" : "Something discovered.",
+        "origin" : "from discover + -ery, on the pattern of the pair recover, recovery. Displaced native Old English onfundennes.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/dɪˈskʌv.ɹi/",
+        "term" : "discovery"
+      },
+      {
+        "definition" : "A signed document wherein an affiant makes a sworn statement.",
+        "origin" : "From Medieval Latin affidavit (“he has sworn”), the third person singular perfect tense of affido (“swear”), from fīdō, ultimately from Proto-Indo-European *bʰeydʰ- (“to command, to persuade, to trust”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌæfɪˈdeɪvɪt/",
+        "term" : "affidavit"
+      },
+      {
+        "definition" : "A writ (“written order”) requiring someone to appear in court, or at a deposition or some other legal proceeding, as a witness to give testimony (a subpoena ad testificandum) or to produce evidence (subpoena duces tecum), in default of…",
+        "origin" : "Etymology tree Proto-Indo-European *upó Proto-Italic *supo Medieval Latin sub Proto-Indo-European *kʷey- Proto-Indo-European *-nós Proto-Indo-European *kʷoynéh₂ Proto-Hellenic *kʷoinā́ Ancient Greek ποινή (poinḗ)bor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/sə(b)ˈpi.nə/",
+        "term" : "subpoena"
+      },
+      {
+        "definition" : "Statements made by a witness in court.",
+        "origin" : "PIE word *tréyes Inherited from Middle English testimonie, from Old French testimonie, from Latin testimōnium (“testimony”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɛstɪmoʊni/",
+        "term" : "testimony"
+      },
+      {
+        "definition" : "Information that was heard by one person about another that cannot be adequately substantiated.",
+        "origin" : "From Middle English hyere-zigginge (1340), here sey (ca. 1438), from the phrase heren seien (“to hear [people] say”). Compare equally old Middle High German hœrsagen (14th c.), whence modern Hörensagen.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhɪɹˌseɪ/",
+        "term" : "hearsay"
+      },
+      {
+        "definition" : "Capable or deserving to be admitted, accepted or allowed; allowable, permissible, acceptable.",
+        "origin" : "Borrowed from Middle French admissible. Equivalent to admit + -ible",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ədˈmɪsəbəl/",
+        "term" : "admissible"
+      },
+      {
+        "definition" : "That cannot be admitted as evidence at a trial.",
+        "origin" : "From French inadmissible, from Middle French inadmissible. Morphologically in- + admissible.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌɪnədˈmɪsəbəl/",
+        "term" : "inadmissible"
+      },
+      {
+        "definition" : "In civil proceedings, the party responding to the complaint; one who is sued and called upon to make satisfaction for a wrong complained of by another.",
+        "origin" : "From Middle English defendaunt (“defendant in a suit; defender”), borrowed from Old French defendant, nominalisation of defendant; see above.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/dɪˈfɛnd.ənt/",
+        "term" : "plaintiff"
+      },
+      {
+        "definition" : "Serving, or suitable, for defense; defensive, defending.",
+        "origin" : "From Middle English defendaunt (“defending; defending in a suit”), borrowed from Old French defendant, present participle of defendre, from Latin dēfendere.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/dɪˈfɛnd.ənt/",
+        "term" : "defendant"
+      },
+      {
+        "definition" : "Of or relating to appeals; appellate.",
+        "origin" : "From Anglo-Norman, from Old French apelant.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/əˈpɛln̩t/",
+        "term" : "appellant"
+      },
+      {
+        "definition" : "One who responds; one who replies.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɹɪˈspɑn.dənt/",
+        "term" : "respondent"
+      },
+      {
+        "definition" : "The conduct of a lawsuit.",
+        "origin" : "Borrowed from Latin lītigātiō, equivalent to litigate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌlɪtɪˈɡeɪ̯ʃən/",
+        "term" : "litigation"
+      },
+      {
+        "definition" : "The act or process of arbitrating.",
+        "origin" : "Etymology tree Latin arbiter Proto-Indo-European *-h₂ Proto-Indo-European *-éh₂ Proto-Indo-European *-yéti Proto-Indo-European *-eh₂yéti Proto-Indo-European *-h₂tiinflu.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɑɹ.bɪˈtɹeɪ.ʃən/",
+        "term" : "arbitration"
+      },
+      {
+        "definition" : "Negotiation to resolve differences conducted by an impartial party.",
+        "origin" : "From Middle English mediacion, mediacioun, medyacion, medyacyoun from Middle French mediacion and its etymon Late Latin mediātiō, from mediārī (“intervene”), from Latin medius (“middle”). By surface analysis, mediate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌmidiˈeɪʃən/",
+        "term" : "mediation"
+      },
+      {
+        "definition" : "The act of settling.",
+        "origin" : "Etymology tree English settle Proto-Indo-European *-mn̥ Proto-Indo-European *-mn̥tom Proto-Italic *-mentom Latin -mentum Old French -mentbor. Middle English -ment English -ment English settlement From settle + -ment.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈsɛ.təl.mənt/",
+        "term" : "settlement"
+      },
+      {
+        "definition" : "A decision on an issue of fact in a civil or criminal case or an inquest.",
+        "origin" : "From Middle English verdit, from Anglo-Norman verdit (> Medieval Latin veredictum), from veir (“true”) + dit (“saying”); possibly a calque of a Germanic term such as Old English sōþword, sōþsprǣċ, sōþspell, sōþsagu, or sōþcwide, all…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈvɝ.dɪkt/",
+        "term" : "verdict"
+      },
+      {
+        "definition" : "A legal decision that someone is not guilty with which they have been charged, or the formal dismissal of a charge by some other legal process.",
+        "origin" : "Etymology tree English acquit Proto-Indo-European *h₂el- Proto-Indo-European *-is Proto-Indo-European *h₂élisder.? Proto-Italic *-ālis Latin -ālislbor. Old French -albor. ▲ Latin -ālis Old French -elbor. ▲ Latin -ālisbor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/əˈkwɪtəl/",
+        "term" : "acquittal"
+      },
+      {
+        "definition" : "A firmly held belief.",
+        "origin" : "From late Middle English conviction, from Anglo-Norman conviction, from Latin convictiō, from convictus, the past participle of convincō (“to convict”). Equivalent to convict + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/kənˈvɪkʃən/",
+        "term" : "conviction"
+      },
+      {
+        "definition" : "An appeal, petition, urgent prayer or entreaty.",
+        "origin" : "From Middle English ple, from Old French plait, plaid, from Medieval Latin placitum (“a decree, sentence, suit, plea, etc., Latin an opinion, determination, prescription, order;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pliː/",
+        "term" : "plea"
+      },
+      {
+        "definition" : "Security, usually a sum of money, exchanged for the release of an arrested person as a guarantee of that person's appearance for trial.",
+        "origin" : "From Middle English baille, from the Old French verb bailler (“to deliver or hand over”) and noun bail (“lease”), from Latin bāiulāre (“carry or bear”), from baiulus (“porter; steward”) (English: bailiff).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/beɪl/",
+        "term" : "bail"
+      },
+      {
+        "definition" : "Originally, one's oath or word of honour, given as a condition of release from custody; now specifically, describing the release of a former prisoner under certain conditions, especially the promise of good behaviour.",
+        "origin" : "Etymology tree Proto-Indo-European *per- Proto-Indo-European *preh₂- Proto-Hellenic *pərai Ancient Greek πᾰρᾰ́ (părắ) Ancient Greek παρα- (para-) Proto-Indo-European *gʷelH-der.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pəˈɹoʊl/",
+        "term" : "parole"
+      },
+      {
+        "definition" : "A period of time when a person occupies a position only conditionally and may be removed if certain conditions are not met.",
+        "origin" : "Inherited from Middle English probacioun, from Middle French probation, from Old French probacion, from Latin probatio (“a trying, inspection, examination”), from probare, past participle probatus (“to test, examine”);",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌpɹoʊˈbeɪʃən/",
+        "term" : "probation"
+      },
+      {
+        "definition" : "The theoretical study of law.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂ey- Proto-Indo-European *-u Proto-Indo-European *h₂óyu Proto-Indo-European *h₂yew- Proto-Indo-European *-os Proto-Indo-European *h₂yéwos Proto-Italic *jowos Latin iūs Proto-Indo-European *per-der.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈd͡ʒʊəɹɪsˌpɹuːdəns/",
+        "term" : "jurisprudence"
+      },
+      {
+        "definition" : "Fairness, impartiality, or justice as determined in light of \"natural law\" or \"natural right\".",
+        "origin" : "From Middle English equitee, equytee, from Old French equité, from Latin aequitās (“uniformity; impartiality; fairness”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɛk.wɪ.ti/",
+        "term" : "equity"
+      },
+      {
+        "definition" : "Marked by or having equity.",
+        "origin" : "From French équitable, from Old French, from equité (“equity”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈɛk.wɪ.tə.bəl/",
+        "term" : "equitable"
+      },
+      {
+        "definition" : "A right to take possession of a debtor’s property as security until a debt or duty is discharged.",
+        "origin" : "Borrowed from Middle French lien, from Latin ligāmen (“bond”), from ligō (“tie, bind”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/liːn/",
+        "term" : "lien"
+      },
+      {
+        "definition" : "A contractual arrangement whereby money or assets are held in trust by an independent agent by the agreement of the parties, which can only be released to the relevant party once certain contractual conditions have been fulfilled.",
+        "origin" : "Learned borrowing from Law French escrowe, from Old French escroe (“register, note; bit of parchment; piece”), from Frankish *skrōda (“piece”), from Proto-Germanic *skraudō, derivative of Proto-Germanic *skraudaną (“to shred”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɛ.skɹoʊ̯/",
+        "term" : "escrow"
+      },
+      {
+        "definition" : "The quality of being severable.",
+        "origin" : "From sever + -ability.",
+        "partOfSpeech" : "noun",
+        "term" : "severability"
+      },
+      {
+        "definition" : "An overwhelming force.",
+        "origin" : "PIE word *méǵh₂s Borrowed from French force majeure (“an exceptionally strong or superior force; (law) an unavoidable circumstance that prevents someone from fulfilling a legal obligation”), from force (“a force”) (ultimately from Latin…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌfoɹs mɑˈʒɜɹ/",
+        "term" : "force majeure"
+      },
+      {
+        "definition" : "Of an allocation, in proportion to some factor that can be exactly calculated.",
+        "origin" : "From Latin prō (“according to”) + ratus (“calculated”).",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/ˌpɹəʊ ˈɹɑːtə/",
+        "term" : "pro rata"
+      },
+      {
+        "definition" : "In actual use or existence, regardless of official or legal status.",
+        "origin" : "Unadapted borrowing from Latin dē factō (literally “according to fact”), from dē (“according to”) + ablative of factum (“fact, deed, act”).",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/ˌdeɪˈfæktoʊ/",
+        "term" : "de facto"
+      },
+      {
+        "definition" : "By right; in accordance with or as deemed by the statute of the law, particularly as opposed to actual practice.",
+        "origin" : "Unadapted borrowing from Latin dē jūre (literally “according to law”).",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/deɪ ˈd͡ʒʊɹi/",
+        "term" : "de jure"
+      },
+      {
+        "definition" : "In good faith; genuinely, sincerely.",
+        "origin" : "Unadapted borrowing from Latin bonā fidē (“in good faith”).",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/ˈboʊnə.faɪd/",
+        "term" : "bona fide"
+      }
+    ]
+  },
+  {
+    "id" : "finance",
+    "industries" : [
+      "finance",
+      "accounting",
+      "banking"
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "Finance",
+    "words" : [
+      {
+        "definition" : "The reduction of loan principal over a series of payments.",
+        "origin" : "From Middle English amortisen (“to kill, alienate in mortmain”), from Anglo-Norman amorteser, alteration of Old French amortir, from Vulgar Latin *admortire (“to kill”), from Latin ad- and mors, mortem (“death”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌæmɚtəˈzeɪʃən/",
+        "term" : "amortization"
+      },
+      {
+        "definition" : "The act of appreciating.",
+        "origin" : "From French appréciation. By surface analysis, appreciate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/əˌpɹi.ʃiˈeɪ.ʃən/",
+        "term" : "depreciation"
+      },
+      {
+        "definition" : "The state or property of being liquid.",
+        "origin" : "From liquid + -ity, from Latin liquiditas. In their financial and economic senses, this and various associated terms all involve portraying assets figuratively as if they were liquids and solids, dissolving the solids with solvents,…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/lɪkˈwɪdəti/",
+        "term" : "liquidity"
+      },
+      {
+        "definition" : "The condition of being insolvent; the state or condition of a person who is insolvent; the condition of being unable to pay debts as they fall due, or in the usual course of trade and business.",
+        "origin" : "Etymology tree Proto-Indo-European *né Proto-Indo-European *n̥- Proto-Italic *n̥- Latin in-bor. Middle English in- English in- English solvent English insolvent English -cy English insolvency From insolvent + -cy.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "[ɪnˈsɒlvn̩si]",
+        "term" : "solvency"
+      },
+      {
+        "definition" : "A force compounded by means of a lever rotating around a pivot.",
+        "origin" : "From lever + -age. The verb likely comes from martial arts/judo usage, where one would \"use an opponent's leverage (i.e. their weight, height, centre of balance, etc.)\" against them in order to defeat them.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈlɛv.(ə.)ɹɪd͡ʒ/",
+        "term" : "leverage"
+      },
+      {
+        "definition" : "Parallel, in the same vein, side by side.",
+        "origin" : "Recorded since c.1378, from Old French, from Medieval Latin collaterālis, from Latin col- (“together with”) (a form of con-) + the stem of latus (“side”). By surface analysis, col- + lateral.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/kəˈlætəɹəl/",
+        "term" : "collateral"
+      },
+      {
+        "definition" : "Fairness, impartiality, or justice as determined in light of \"natural law\" or \"natural right\".",
+        "origin" : "From Middle English equitee, equytee, from Old French equité, from Latin aequitās (“uniformity; impartiality; fairness”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɛk.wɪ.ti/",
+        "term" : "equity"
+      },
+      {
+        "definition" : "A cash payment of money by a company to its shareholders, usually made periodically (e.g., quarterly or annually).",
+        "origin" : "From Middle French dividende, from Latin dīvidendum (“thing to be divided”), future passive participle of dīvidō (“to divide”), by surface analysis, divide + -end.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈdɪvɪdɛnd/",
+        "term" : "dividend"
+      },
+      {
+        "definition" : "To give as a result or outcome; to produce or render.",
+        "origin" : "From Middle English yielden, yelden, ȝelden (“to yield, pay”), from Old English ġieldan (“to pay”), from Proto-West Germanic *geldan (“to pay”), from Proto-Germanic *geldaną (“to pay”), from Proto-Indo-European *gʰeldʰ- (“to pay”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/jiːld/",
+        "term" : "yield"
+      },
+      {
+        "definition" : "A section of a ticket, showing the holder to be entitled to some specified accommodation or service, as to a passage over a designated line of travel, a particular seat in a theater, a discount, etc.",
+        "origin" : "From French coupon, from couper (“to cut”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkuːˌpɑn/",
+        "term" : "coupon"
+      },
+      {
+        "definition" : "Primary; most important; first level in importance.",
+        "origin" : "From Middle English principal, from Old French principal, from Latin prīncipālis.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpɹɪn.sɪ.pəl/",
+        "term" : "principal"
+      },
+      {
+        "definition" : "A market activity in which a security, commodity, currency or other tradable item is bought in one market and sold simultaneously in another, in order to profit from price differences between the markets.",
+        "origin" : "An unadapted borrowing from French arbitrage, from arbitrer (“to arbitrate”); see arbitrate.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɑɹbɪˌtɹɑʒ/",
+        "term" : "arbitrage"
+      },
+      {
+        "definition" : "A thicket of bushes or other shrubbery, especially one planted as a fence between two portions of land, or to separate the parts of a garden.",
+        "origin" : "From Middle English hegge, from Old English heċġ, from Proto-West Germanic *haggju, from Proto-Germanic *hagjō, from Proto-Indo-European *kagʰyóm (“enclosure”). Cognate with Dutch heg, German Hecke.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhɛd͡ʒ/",
+        "term" : "hedge"
+      },
+      {
+        "definition" : "Obtained by derivation; not radical, original, or fundamental.",
+        "origin" : "From Middle French dérivatif, from Latin dērīvātus, perfect passive participle of dērīvō (“to derive”). Related to derive; by surface analysis, derive + -ative.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/dɪˈɹɪvətɪv/",
+        "term" : "derivative"
+      },
+      {
+        "definition" : "One of a set of choices that can be made.",
+        "origin" : "From French option, from Latin optiō (“choice; option; act of choosing”), from optō (“to choose, select”). Equivalent to opt + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɑpʃən/",
+        "term" : "option"
+      },
+      {
+        "definition" : "plural of future",
+        "origin" : "Shortening of futures contract.",
+        "partOfSpeech" : "noun",
+        "term" : "futures"
+      },
+      {
+        "definition" : "The state of being volatile.",
+        "origin" : "Etymology tree English volatile Proto-Indo-European *-teh₂ Proto-Indo-European *-ts Proto-Indo-European *-teh₂tsder. Latin -itās Old French -itebor. Middle English -ite English -ity English volatility From volatile + -ity.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌvɑ.ləˈtɪl.ə.ti/",
+        "term" : "volatility"
+      },
+      {
+        "definition" : "The act, or the result, of diversifying.",
+        "origin" : "From Medieval Latin diversificatiō, from diversificātus, past participle of diversificō (“diversify”), from Latin diversus (“turned in different ways”) + faciō (“make, do”). By surface analysis, diverse + -ification.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/dɪˌvɝsɪfɪˈkeɪʃən/",
+        "term" : "diversification"
+      },
+      {
+        "definition" : "A case for carrying papers, drawings, photographs, maps and other flat documents.",
+        "origin" : "From Italian portafoglio; cognate with French portefeuille (“folder, wallet”), from Latin portāre (“to carry”) and folium (“sheet”). The meaning \"collection of responsibilities\" came by extension in the 1930s.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/poɹtˈfoʊ.liˌoʊ/",
+        "term" : "portfolio"
+      },
+      {
+        "definition" : "The process or procedure for allocating things, especially money or other resources.",
+        "origin" : "From Middle French allocacion, from Medieval Latin allocātiō. By surface analysis, allocate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌæl.əˈkeɪ.ʃən/",
+        "term" : "allocation"
+      },
+      {
+        "definition" : "A standard by which something is evaluated or measured.",
+        "origin" : "From bench + mark. First use appears c. 1842. Originally a mark cut into a stone by land surveyors to secure a bench (from land surveying jargon in the 19th century, meaning a type of bracket), to mount measuring equipment.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbɛnt͡ʃmɑɹk/",
+        "term" : "benchmark"
+      },
+      {
+        "definition" : "To arrange an index for something, especially a long text.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Italic *en Old Latin en Latin in Proto-Indo-European *deyḱ- Proto-Indo-European *-eti Proto-Indo-European *déyḱeti Proto-Italic *deikō Latin dīcō Proto-Indo-European *-s Latin -s Latin…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈɪndɛks/",
+        "term" : "index"
+      },
+      {
+        "definition" : "An estimation of something's worth.",
+        "origin" : "From Middle French valuation, noun of action from valuer, from Old French valoir.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌvæ.ljuːˈeɪ.ʃən/",
+        "term" : "valuation"
+      },
+      {
+        "definition" : "Characterized by having a small number, greater than two, of (usually equivalent) components.",
+        "origin" : "From Latin paucālis (“few, little”), from paucus, plural paucī (“few, little, a few, the select few, the oligarchs”), from Proto-Indo-European *peh₂w- (“few, little”), + Latin adjective suffix -ālis.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpɔkəl/",
+        "term" : "multiple"
+      },
+      {
+        "definition" : "To add a margin to; to furnish with a margin.",
+        "origin" : "From Middle English margyn, from Latin marginem (possibly via Old French margin), accusative of margō (“edge, brink, border, margin”). Doublet of marge and margo.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈmɑɹ.d͡ʒɪn/",
+        "term" : "margin"
+      },
+      {
+        "definition" : "The percentage or amount by which a seller hikes up their buy-in price when determining their selling price.",
+        "origin" : "Deverbal from mark up.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈmɑː(ɹ)k.ʌp/",
+        "term" : "markup"
+      },
+      {
+        "definition" : "The income returned by an investment.",
+        "origin" : "Recorded in English from 1433, \"income from property or possessions\", from Middle French revenue, from Old French [Term?] (“a return”) (modern French revenu), the prop.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɹɛvənˌju/",
+        "term" : "revenue"
+      },
+      {
+        "definition" : "The amount of money taken as sales transacted in a given period.",
+        "origin" : "Deverbal from turn over.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɝnoʊvɚ/",
+        "term" : "turnover"
+      },
+      {
+        "definition" : "Capable of being received, especially of a debt, from the perspective of the creditor.",
+        "origin" : "Inherited from Middle English receyvable; by surface analysis, receive + -able.",
+        "partOfSpeech" : "adjective",
+        "term" : "receivable"
+      },
+      {
+        "definition" : "Due to be paid.",
+        "origin" : "Etymology tree Proto-Indo-European *peh₂ḱ- Proto-Indo-European *-s Proto-Indo-European *péh₂ḱs Proto-Italic *pāks Latin pāx Proto-Indo-European *-h₂ Proto-Indo-European *-éh₂ Proto-Indo-European *-yéti Proto-Indo-European *-eh₂yéti…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈpeɪəbl̩/",
+        "term" : "payable"
+      },
+      {
+        "definition" : "A book for keeping notes; a record book, a register.",
+        "origin" : "From Middle English liggere, ligger, leger (“large breviary; beam, plank; dweller, inhabitant”), from liggen, leggen, variants of līen (“to lie down; to bow, kneel, prostrate; to die; to be located (somewhere);",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈlɛd͡ʒɚ/",
+        "term" : "ledger"
+      },
+      {
+        "definition" : "Revenge taken for an insult, injury, or other wrong.",
+        "origin" : "From Anglo-Norman vengeaunce, from Old French vengeance, venjance, from vengier (“to avenge”). Analysable as venge + -ance.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈvɛnˌd͡ʒəns/",
+        "term" : "reconciliation"
+      },
+      {
+        "definition" : "Relating to an entity that owes to another good faith, accountability and trust, often in the context of trusts and trustees.",
+        "origin" : "From Latin fīdūciārius (“held in trust”), from fīdūcia (“trust”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/fəˈduːʃ.i.eɹ.i/",
+        "term" : "fiduciary"
+      },
+      {
+        "definition" : "A contractual arrangement whereby money or assets are held in trust by an independent agent by the agreement of the parties, which can only be released to the relevant party once certain contractual conditions have been fulfilled.",
+        "origin" : "Learned borrowing from Law French escrowe, from Old French escroe (“register, note; bit of parchment; piece”), from Frankish *skrōda (“piece”), from Proto-Germanic *skraudō, derivative of Proto-Germanic *skraudaną (“to shred”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɛ.skɹoʊ̯/",
+        "term" : "escrow"
+      },
+      {
+        "definition" : "To write below or under; subscribe.",
+        "origin" : "From Middle English underwriten, from Old English underwrītan (“to write at the foot of, write under, subscribe”). Compare Dutch onderschrijven (“to endorse”), German unterschreiben (“to sign; endorse”), Danish underskrive (“to sign;",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈʌndəɹaɪt/",
+        "term" : "underwrite"
+      },
+      {
+        "definition" : "An agreement to do or not do a particular thing.",
+        "origin" : "From Middle English covenaunt, borrowed from Old French covenant (“agreement”), from Latin conveniēns, convenientem (“agreeing, agreeable, suitable, convenient”), present participle of conveniō (“to agree”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkʌv.ən.ənt/",
+        "term" : "covenant"
+      },
+      {
+        "definition" : "To fail to appear and answer a summons and complaint.",
+        "origin" : "From Middle English defaut, defaute, from Old French defaute (“fault, defect, failure, culpability, lack”), ultimately from Latin de- (“away”) + fallo (“deceive, cheat, escape notice of”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/dɪˈfɔlt/",
+        "term" : "default"
+      },
+      {
+        "definition" : "The state of having enough funds or liquid assets to pay all of one's debts; the state of being solvent.",
+        "origin" : "From solvent + -cy.",
+        "partOfSpeech" : "noun",
+        "term" : "insolvency"
+      },
+      {
+        "definition" : "A legally declared or recognized condition of insolvency of a person or organization.",
+        "origin" : "From bankrupt + -cy, replacing earlier bankruptship.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbæŋkˌɹʌp(t).si/",
+        "term" : "bankruptcy"
+      },
+      {
+        "definition" : "The office and duties of a receiver.",
+        "origin" : "Etymology tree English receiver Proto-Germanic *skapjaną Proto-Germanic *-skapiz Proto-West Germanic *-skapi Old English -sċiepe Middle English -schipe English -ship English receivership From receiver + -ship.",
+        "partOfSpeech" : "noun",
+        "term" : "receivership"
+      },
+      {
+        "definition" : "An act, instance of, or state of expansion or increase in size, especially by injection of a gas or liquid.",
+        "origin" : "Etymology tree Proto-Indo-European *h₁én Proto-Italic *en Proto-Italic *en- Latin in- Proto-Indo-European *bʰel- Proto-Indo-European *-eh₁- Proto-Indo-European *bʰleh₁-der. Proto-Italic *flāōder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪnˈfleɪ.ʃən/",
+        "term" : "deflation"
+      },
+      {
+        "definition" : "The act or an instance of receding or withdrawing.",
+        "origin" : "Borrowed from Latin recessiō, from recēdō (“recede, retreat”), from re- (“back”) + cēdō (“to go”). By surface analysis, recess + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɹɪˈsɛʃn̩/",
+        "term" : "recession"
+      },
+      {
+        "definition" : "Of, pertaining to, or consisting of money.",
+        "origin" : "From Middle French monétaire, from Late Latin monētārius (“pertaining to money”), from Latin monētārius (“of a mint”), from monēta (“mint, coinage”), from the presence—from 273 BC to AD 84—of the chief Roman mint at the Templum Iunonis…",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈmɑnɪˌtɛɹi/",
+        "term" : "monetary"
+      },
+      {
+        "definition" : "Related to the treasury of a country, company, region or city, particularly to government spending and revenue.",
+        "origin" : "From Middle French fiscal, from Latin fiscus (“treasury”) – see fiscus and fisc.",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˈfɪskəl/",
+        "term" : "fiscal"
+      },
+      {
+        "definition" : "A bond (security) issued by such a department, in particular the United States Department of the Treasury.",
+        "origin" : "Ellipsis of Treasury Department (or Department of the Treasury), or of Treasury bond.",
+        "partOfSpeech" : "noun",
+        "term" : "treasury"
+      },
+      {
+        "definition" : "A thing or quality that has value, especially one that generates cash flows.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂éd Proto-Italic *ad Latin ad Proto-Indo-European *seh₂- Proto-Indo-European *-tis Proto-Indo-European *séh₂tis Proto-Italic [Term?] Latin satis Early Medieval Latin ad satis Old French asez…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈæsɛt/",
+        "term" : "liability"
+      }
+    ]
+  },
+  {
+    "id" : "design",
+    "industries" : [
+      "design",
+      "ux",
+      "typography"
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "Design",
+    "words" : [
+      {
+        "definition" : "Anything that is provided or furnished by an environment to an organism dwelling within it.",
+        "origin" : "From afford + -ance; coined in 1977 by psychologist James J. Gibson, and adopted in 1988 by Donald Norman in the context of human-machine interaction.",
+        "partOfSpeech" : "noun",
+        "term" : "affordance"
+      },
+      {
+        "definition" : "A body of authoritative officials organized in nested ranks.",
+        "origin" : "From Middle English ierarchie, jerarchie, from Old French ierarchie, jerarchie, from Late Latin ierarchia, from Latin hierarchia, from Ancient Greek ἱεραρχία (hierarkhía, “rule of a high priest”), from ἱεράρχης (hierárkhēs, “high priest”),…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈhaɪ.ə.ɹɑː(ɹ).ki/",
+        "term" : "hierarchy"
+      },
+      {
+        "definition" : "The art or practice of setting and arranging type; typesetting.",
+        "origin" : "From French typographie from Medieval Latin typographia from Ancient Greek τυπογράφος (tupográphos, “certified copy”) + -ίᾱ (-íā). By surface analysis, type + -o- + -graphy.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/taɪˈpɑɡɹəfi/",
+        "term" : "typography"
+      },
+      {
+        "definition" : "The adjustment of the horizontal space between selected pairs of glyphs in a typeface.",
+        "origin" : "From kern (“part of a letter which extends into the space used by another letter”) + -ing, from French carne (“corner”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkɝnɪŋ/",
+        "term" : "kerning"
+      },
+      {
+        "definition" : "The act or process by which something is tracked.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɹækɪŋ/",
+        "term" : "tracking"
+      },
+      {
+        "definition" : "present participle and gerund of lead",
+        "origin" : "From Middle English ledinge, ledynge, ledand, ledande, ledende, from Old English lǣdende, from Proto-West Germanic *laidijandī, from Proto-Germanic *laidijandz, present participle of Proto-Germanic *laidijaną (“to lead”), equivalent to…",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈlidɪŋ/",
+        "term" : "leading"
+      },
+      {
+        "definition" : "A line that is a base for measurement or for construction.",
+        "origin" : "From base + line.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈbeɪslaɪn/",
+        "term" : "baseline"
+      },
+      {
+        "definition" : "A rectangular array of squares or rectangles of equal size, such as in a crossword puzzle.",
+        "origin" : "Back-formation or clipping of griddle or gridiron.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɡɹɪd/",
+        "term" : "grid"
+      },
+      {
+        "definition" : "To flow or stream; to form gutters.",
+        "origin" : "From Middle English gutter, guttur, goter, from Anglo-Norman guttere, from Old French goutiere (French gouttière), ultimately from Latin gutta (“drop”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈɡʌt.ɚ/",
+        "term" : "gutter"
+      },
+      {
+        "definition" : "To add a margin to; to furnish with a margin.",
+        "origin" : "From Middle English margyn, from Latin marginem (possibly via Old French margin), accusative of margō (“edge, brink, border, margin”). Doublet of marge and margo.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈmɑɹ.d͡ʒɪn/",
+        "term" : "margin"
+      },
+      {
+        "definition" : "Alternative form of white space.",
+        "partOfSpeech" : "noun",
+        "term" : "whitespace"
+      },
+      {
+        "definition" : "The degree of this difference.",
+        "origin" : "From French contraster, from Latin contrāstāre (“to resist\", \"to withstand”), from contrā (“against”) + stō, stāre (“to stand”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkɑnt(ʃ)ɹæst/",
+        "term" : "contrast"
+      },
+      {
+        "definition" : "The characteristic or quality of being illegible; the quality of being difficult or impossible to read.",
+        "partOfSpeech" : "noun",
+        "term" : "legibility"
+      },
+      {
+        "definition" : "The property of being capable of being read; legibility.",
+        "origin" : "From readable + -ity or read + -ability.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɹidəˈbɪləti/",
+        "term" : "readability"
+      },
+      {
+        "definition" : "A short line added to the end of a stroke in traditional typefaces, such as Times New Roman.",
+        "origin" : "From earlier ceriph, seriph, surryph, of obscure derivation. There are two (not directly interrelated) candidates for a possible Dutch origin: 1.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈsɛɹɪf/",
+        "term" : "serif"
+      },
+      {
+        "definition" : "Alternative spelling of sans serif.",
+        "partOfSpeech" : "noun",
+        "term" : "sans-serif"
+      },
+      {
+        "definition" : "A figure carved in relief or incised, especially representing a sound, word, or idea.",
+        "origin" : "First attested in 1727. Borrowed from French glyphe, from Ancient Greek γλυφή (gluphḗ, “carving”), from γλύφω (glúphō, “I carve, engrave”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɡlɪf/",
+        "term" : "glyph"
+      },
+      {
+        "definition" : "The act of tying or binding something.",
+        "origin" : "Etymology tree Proto-Indo-European *leyǵ-der. Latin ligō Proto-Indo-European *-tew-? Proto-Indo-European *-r-eh₂? Latin -tūra Late Latin ligātūrabor. Middle French ligaturebor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈlɪɡət͡ʃɚ/",
+        "term" : "ligature"
+      },
+      {
+        "definition" : "A person or thing that ascends.",
+        "origin" : "Etymology tree English ascend Proto-Indo-European *-eh₂ Proto-Indo-European *-os? Proto-Indo-European *-o- Proto-Indo-European *-so- Proto-Indo-European *-eh₂so- Proto-Indo-European *-yós Proto-Indo-European *-eh₂s(i)yós Proto-Italic…",
+        "partOfSpeech" : "noun",
+        "term" : "ascender"
+      },
+      {
+        "definition" : "A person or thing that descends.",
+        "origin" : "Etymology tree English descend Proto-Indo-European *-eh₂ Proto-Indo-European *-os? Proto-Indo-European *-o- Proto-Indo-European *-so- Proto-Indo-European *-eh₂so- Proto-Indo-European *-yós Proto-Indo-European *-eh₂s(i)yós Proto-Italic…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/dɪˈsɛndə(ɹ)/",
+        "term" : "descender"
+      },
+      {
+        "definition" : "The distance between the baseline and midline in a typeface, typically equal to the height of the lower-case letter x.",
+        "partOfSpeech" : "noun",
+        "term" : "x-height"
+      },
+      {
+        "definition" : "To add weight to something; to make something heavier.",
+        "origin" : "From Middle English weight, weiȝte, weght, wight, from Old English wiht, ġewiht (“weight”), from Proto-Germanic *wihtiz (\"weight\"; compare *weganą (“to move”)), from Proto-Indo-European *weǵʰ- (“to move; pull; draw; drive”).",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/weɪt/",
+        "term" : "weight"
+      },
+      {
+        "definition" : "A typeface in which the letters slant to the right.",
+        "origin" : "Named after the nation of Italy, as it was first used by an Italian printer, Aldo Manuzio, around 1500. Literally Italy + -ic.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɪˈtælɪk/",
+        "term" : "italic"
+      },
+      {
+        "definition" : "Not erect or perpendicular; not parallel to, or at right angles from, the base.",
+        "origin" : "From Middle French oblique, from Latin oblīquus (also spelled oblīcus) (“slanting, sideways, indirect, envious”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/oʊˈbliːk/",
+        "term" : "oblique"
+      },
+      {
+        "definition" : "A thin board on which a painter lays and mixes colours.",
+        "origin" : "Borrowed from French palette. Doublet of pallet.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpælɪt/",
+        "term" : "palette"
+      },
+      {
+        "definition" : "A color, or shade of color; tint; dye.",
+        "origin" : "From Middle English hewe, from Old English hīew (“appearance, form, species, kind; apparition; hue, color; beauty; figure of speech”), from Proto-West Germanic *hiwi, from Proto-Germanic *hiwją (“hue, form, shape, appearance;",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/hju/",
+        "term" : "hue"
+      },
+      {
+        "definition" : "The act of saturating or the process of being saturated.",
+        "origin" : "Borrowed from Late Latin saturatio, saturationem.",
+        "partOfSpeech" : "noun",
+        "term" : "saturation"
+      },
+      {
+        "definition" : "The quality of being luminous.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈluːmɪnəns/",
+        "term" : "luminance"
+      },
+      {
+        "definition" : "A slope or incline.",
+        "origin" : "From Latin gradiēns, present participle of gradior (“to step, to walk”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɡɹeɪdiənt/",
+        "term" : "gradient"
+      },
+      {
+        "definition" : "The feel or shape of a surface or substance; the smoothness, roughness, softness, etc. of something.",
+        "origin" : "Etymology tree Proto-Indo-European *tek- Proto-Indo-European *-sti Proto-Indo-European *téksti Proto-Italic *teksō Latin texō Proto-Indo-European *-tew-? Proto-Indo-European *-r-eh₂? Latin -tūra Latin textūrabor. Middle French texturebor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɛkst͡ʃɚ/",
+        "term" : "texture"
+      },
+      {
+        "definition" : "To bring (items) to an equipoise, as the scales of a balance by adjusting the weights.",
+        "origin" : "Etymology tree Proto-Indo-European *dwóh₁ Proto-Indo-European *dwi- Proto-Italic *dwi- Latin bi- Latin lanx Latin bilanx Vulgar Latin *bilancia Old French balancebor.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈbæləns/",
+        "term" : "balance"
+      },
+      {
+        "definition" : "The variation of strong and weak elements (such as duration, accent) of sounds, notably in speech or music, over time; a beat or meter.",
+        "origin" : "Etymology tree Proto-Indo-European *ser-? Proto-Indo-European *srew- Proto-Indo-European *sru-dʰ-mo-s Proto-Hellenic *hrutʰmós Ancient Greek ῥῠθμός (rhŭthmós)bor. Latin rhythmusder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈɹɪð.əm/",
+        "term" : "rhythm"
+      },
+      {
+        "definition" : "A quantity of something that is part of the whole amount or number.",
+        "origin" : "From Middle English proporcion, from Old French proportion, from Latin prōportiō (“comparative relation, proportion, symmetry, analogy”), from pro (“for, before”) + portio (“share, part”); see portion. By surface analysis, pro- + portion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɹəˈpɔɹʃən/",
+        "term" : "proportion"
+      },
+      {
+        "definition" : "An arrangement of items in a line.",
+        "origin" : "From French alignement, by surface analysis, align + -ment.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/əˈlaɪn.mənt/",
+        "term" : "alignment"
+      },
+      {
+        "definition" : "Closeness; the state of being near in space, time, or relationship.",
+        "origin" : "Etymology tree Proto-Indo-European *prokʷe Proto-Indo-European *prokʷism̥mos Latin proximus Latin -tās Latin proximitāsder. Middle French proximitéder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/pɹɑkˈsɪm.ɪ.ti/",
+        "term" : "proximity"
+      },
+      {
+        "definition" : "A collection of physical, biological, psychological or symbolic elements that creates a whole, unified concept or pattern which is other than the sum of its parts due to the relationships between the parts (of a character, personality,…",
+        "origin" : "Etymology tree Proto-Indo-European *stel-der. Proto-West Germanic *stalljan Old High German stellen Middle High German stellen Middle High German gestalt German Gestaltbor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ɡəˈʃtɔlt/",
+        "term" : "gestalt"
+      },
+      {
+        "definition" : "The incorporation of obsolete or skeuomorphic elements into a design, for familiarity or out of tradition, even though they no longer serve any functional purpose.",
+        "origin" : "From Ancient Greek σκεῦος (skeûos, “implement”) + -morphism, or skeuomorph + -ism.",
+        "partOfSpeech" : "noun",
+        "term" : "skeuomorphism"
+      },
+      {
+        "definition" : "A style of art that emphasises extreme simplicity of form.",
+        "origin" : "Etymology tree Proto-Indo-European *peh₂w- Proto-Indo-European *peh₂urós Proto-Italic *pauros Old Latin parvosder. Latin parvus Latin minimus Latin -um Latin minimumlbor.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈmɪn.ə.məl.ɪz.əm/",
+        "term" : "minimalism"
+      },
+      {
+        "definition" : "Brutal, violent behaviour; savagery.",
+        "origin" : "Etymology tree English brutal Proto-Indo-European *-id- Proto-Indo-European *-yéti Proto-Indo-European *-idyéti Proto-Hellenic *-íd͏̌d͏̌ō Ancient Greek -ῐ́ζω (-ĭ́zō) Proto-Indo-European *-mos Proto-Indo-European *-mós Ancient Greek -μός (-mós)…",
+        "partOfSpeech" : "noun",
+        "term" : "brutalism"
+      },
+      {
+        "definition" : "A visual model of an electronic representation of a three-dimensional object as defined geometrically by line segments.",
+        "origin" : "From wire + frame. The figurative use is extended from the literal (pre-computing and non-computing) concept of a wire frame, a frame made of wire.",
+        "partOfSpeech" : "noun",
+        "term" : "wireframe"
+      },
+      {
+        "definition" : "An original form or object which is a basis for other forms or objects (particularly manufactured items), or for its generalizations and models.",
+        "origin" : "Etymology tree Proto-Indo-European *per-der.? Proto-Indo-European *per-der.? Proto-Indo-European *pér Proto-Indo-European *-o Proto-Indo-European *próder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈpɹoʊtəˌtaɪp/",
+        "term" : "prototype"
+      },
+      {
+        "definition" : "Alternative form of mock-up.",
+        "origin" : "See mock-up.",
+        "partOfSpeech" : "noun",
+        "term" : "mockup"
+      },
+      {
+        "definition" : "A recital or a second performance; a repetition.",
+        "origin" : "From Latin iterātiō, from iterō. Morphologically iterate + -ion.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌɪt.əˈɹeɪ.ʃən/",
+        "term" : "iteration"
+      },
+      {
+        "definition" : "That employs a practical method not guaranteed to be optimal or perfect; either not following or derived from any theory, or based on an advisedly oversimplified one.",
+        "origin" : "Irregular formation from Ancient Greek εὑρίσκω (heurískō, “I find, discover”) (compare the proper Greek term εὑρετικός (heuretikós)).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/hjəˈɹɪstɪk/",
+        "term" : "heuristic"
+      },
+      {
+        "definition" : "The state or condition of being usable.",
+        "origin" : "From usable + -ity or use + -ability.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌjuːzəˈbɪlɪti/",
+        "term" : "usability"
+      },
+      {
+        "definition" : "The quality of being accessible, or of admitting approach; receptiveness.",
+        "origin" : "Etymology tree Proto-Indo-European *h₂éd Proto-Italic *ad Proto-Italic *ad- Latin ad- Proto-Italic *kezdō Latin cēdō Latin accēdō Proto-Indo-European *-tus Proto-Italic *-tus Latin -tus Latin accessus Late Latin accessibilis Frenchder.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/əkˌsɛs.əˈbɪl.ə.ti/",
+        "term" : "accessibility"
+      }
+    ]
+  },
+  {
+    "id" : "phrases",
+    "industries" : [
+
+    ],
+    "licence" : "CC BY-SA 4.0",
+    "source" : "Wiktionary",
+    "title" : "Phrases and idioms",
+    "words" : [
+      {
+        "definition" : "A rule whereby players are only allowed to bet the money they have on the table.",
+        "partOfSpeech" : "noun",
+        "term" : "table stakes"
+      },
+      {
+        "definition" : "Alternative form of canary in a coal mine.",
+        "partOfSpeech" : "noun",
+        "term" : "canary in the coal mine"
+      },
+      {
+        "definition" : "Easily obtained gains; what can be obtained by readily available means.",
+        "partOfSpeech" : "noun",
+        "term" : "low-hanging fruit"
+      },
+      {
+        "definition" : "To change a situation to a noticeable degree; to make an appreciable difference.",
+        "origin" : "From the indicator needle of a measuring instrument such as a speedometer, dial indicator, etc; used both literally and figuratively.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˌmuːv ðə ˈniː.dəl/",
+        "term" : "move the needle"
+      },
+      {
+        "definition" : "To undertake an overwhelmingly difficult task or approach to a problem.",
+        "partOfSpeech" : "verb",
+        "term" : "boil the ocean"
+      },
+      {
+        "definition" : "A radical change in thinking from an accepted point of view to a new one, necessitated when new scientific discoveries produce anomalies in the current paradigm.",
+        "origin" : "Coined by American historian, physicist and philosopher Thomas Kuhn in The Structure of Scientific Revolutions (1962).",
+        "partOfSpeech" : "noun",
+        "term" : "paradigm shift"
+      },
+      {
+        "definition" : "A benefit that is also a liability, especially a benefit that carries some significant but not-so-obvious cost or risk.",
+        "origin" : "From the notion that if two sides of the same blade are sharp, it cuts both ways. The metaphor may have originated from the Arabic expression سَيْفٌ ذُو حَدَّيْنِ (sayfun ḏū ḥaddayni, “double-edged sword”) or from the Hebrew expression חֶרֶב פִּיפִיּוֹת…",
+        "partOfSpeech" : "noun",
+        "term" : "double-edged sword"
+      },
+      {
+        "definition" : "A problem or difficult issue that is very obvious, but is ignored for the convenience or comfort of those involved.",
+        "origin" : "Likely US origin, or possibly from Ivan Andreyevich Krylov's 1814 fable, The Inquisitive Man, which tells of a man going to a museum and noticing all sorts of things apart from an elephant.",
+        "partOfSpeech" : "noun",
+        "term" : "elephant in the room"
+      },
+      {
+        "definition" : "A herring that is cured in smoke and brine strong enough to turn the flesh red; a type of kipper.",
+        "origin" : "(figurative): One possible origin of the idiom was that red herring were used to train dogs to track scents. This was true, but the modern meaning of a false trail may have been popularized in a news story by English journalist William…",
+        "partOfSpeech" : "noun",
+        "term" : "red herring"
+      },
+      {
+        "definition" : "A doll or scarecrow, particularly one stuffed with straw.",
+        "origin" : "From straw + man. Random House Webster's Unabridged Dictionary, 1986 passim, shows first known usages for things insubstantial date to 1585-95. Universal Dictionary of the English Language, 1897, Vol 4, p.",
+        "partOfSpeech" : "noun",
+        "term" : "straw man"
+      },
+      {
+        "definition" : "One who debates from a viewpoint which one may not actually hold, usually to determine its validity or simply for the sake of argument.",
+        "origin" : "Calque of Latin advocātus diabolī (“the devil’s advocate”), a popular title given to the officer dealing with the canonization process in the 16th c.",
+        "partOfSpeech" : "noun",
+        "term" : "devil's advocate"
+      },
+      {
+        "definition" : "A small indication of a larger possibility; the first part encountered of a problem that is much bigger than it seems.",
+        "origin" : "From the fact that floating icebergs typically have about nine tenths of their volume below the surface of the water. Early uses of the term are believed to have been influenced by the sinking of the R.M.S.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈtɪp‿əv ði ˈaɪsbɝɡ/",
+        "term" : "tip of the iceberg"
+      },
+      {
+        "definition" : "Indicates that one must try a different strategy in order to achieve some goal following the failure of a recent attempt.",
+        "origin" : "Coined as “Well, back to the old drawing board,” as the caption of a cartoon by Peter Arno of The New Yorker on March 1, 1941, depicting a delighted engineer walking away from a crashed plane.",
+        "partOfSpeech" : "adverb",
+        "term" : "back to the drawing board"
+      },
+      {
+        "definition" : "In broad agreement or sharing a common general understanding or knowledge (common in office environments).",
+        "partOfSpeech" : "phrase",
+        "term" : "on the same page"
+      },
+      {
+        "definition" : "To begin; to start some action; to set in motion.",
+        "partOfSpeech" : "verb",
+        "term" : "get the ball rolling"
+      },
+      {
+        "definition" : "To begin an activity immediately and with full commitment.",
+        "partOfSpeech" : "verb",
+        "term" : "hit the ground running"
+      },
+      {
+        "definition" : "To quit; to give up.",
+        "origin" : "From the traditional signal from a boxer's support staff of throwing such an item into a boxing ring to indicate that the contestant cannot continue the match and is forfeiting to the opponent.",
+        "partOfSpeech" : "verb",
+        "term" : "throw in the towel"
+      },
+      {
+        "definition" : "To bypass a prescribed route so as to gain competitive advantage or to circumvent traffic signals or other rules of the road.",
+        "partOfSpeech" : "verb",
+        "term" : "cut corners"
+      },
+      {
+        "definition" : "Not yet resolved, finished, answered, decided or certain.",
+        "partOfSpeech" : "adjective",
+        "term" : "up in the air"
+      },
+      {
+        "definition" : "Scheduled to occur in the future.",
+        "partOfSpeech" : "phrase",
+        "term" : "in the pipeline"
+      },
+      {
+        "definition" : "Informed; up to date; having current knowledge; part of the discussion.",
+        "partOfSpeech" : "phrase",
+        "term" : "in the loop"
+      },
+      {
+        "definition" : "Not informed, up-to-date, or current; not included in a process or discussion.",
+        "origin" : "First use appears c. 1973. See cite below. Its use is thought by some to have roots in computer or telephony terminology.",
+        "partOfSpeech" : "phrase",
+        "term" : "out of the loop"
+      },
+      {
+        "definition" : "To accept a negative aspect of a situation in order to proceed.",
+        "origin" : "Possibly from the reported practice of soldiers biting a bullet to avoid crying out in pain, usually during a medical procedure or punishment. See the Wikipedia article Bite the bullet for a further discussion of possible etymologies.",
+        "partOfSpeech" : "verb",
+        "term" : "bite the bullet"
+      },
+      {
+        "definition" : "To work studiously, especially late into the night.",
+        "origin" : "Originally referring to the act of burning lamp oil in oil lamps for light at night. The collocation midnight oil in its literal sense is attested from mid 17th c.",
+        "partOfSpeech" : "verb",
+        "term" : "burn the midnight oil"
+      },
+      {
+        "definition" : "To cease an activity.",
+        "origin" : "From earlier call it half a day, which first appears c. 1834, meaning to leave before the working day was over.",
+        "partOfSpeech" : "verb",
+        "term" : "call it a day"
+      },
+      {
+        "definition" : "To make an extra effort; to do a particularly good job.",
+        "origin" : "* Possibly from the gospel of Matthew ch.5: v.41 *: \"And whosoever shall compel thee to go a mile, go with him twain.\"",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈɡoʊ ði ˈɛk.stɹə ˈmaɪl/",
+        "term" : "go the extra mile"
+      },
+      {
+        "definition" : "To put forth great effort to meet requirements, usually arbitrary, set by someone.",
+        "origin" : "Reminiscent of a circus animal performing tricks by jumping through hoops.",
+        "partOfSpeech" : "verb",
+        "term" : "jump through hoops"
+      },
+      {
+        "definition" : "To learn the basics or master introductory knowledge.",
+        "origin" : "Of nautical origin: in the past, the phrase “he knows the ropes” written on a seaman’s discharge meant that he was inexperienced and familiar only with a ship’s principal ropes.",
+        "partOfSpeech" : "verb",
+        "pronunciation" : "/ˈlɝn ðə ˈɹoʊps/",
+        "term" : "learn the ropes"
+      },
+      {
+        "definition" : "To fail to take advantage of an opportunity; to overlook or be too late to pursue an option or course of action.",
+        "origin" : "Allusion to failing to catch a boat in time, effectively “missing” the boat. Popular since the 1920s.",
+        "partOfSpeech" : "verb",
+        "term" : "miss the boat"
+      },
+      {
+        "definition" : "Very rarely; very infrequently.",
+        "origin" : "See blue moon. First use appears c. 1833. See citation below.",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/wʌns ɪn ə bluː muːn/",
+        "term" : "once in a blue moon"
+      },
+      {
+        "definition" : "To unplug or cut power to a machine.",
+        "partOfSpeech" : "verb",
+        "term" : "pull the plug"
+      },
+      {
+        "definition" : "To raise standards or expectations, especially by creating something to a higher standard.",
+        "partOfSpeech" : "verb",
+        "term" : "raise the bar"
+      },
+      {
+        "definition" : "To infer a meaning that is not stated explicitly.",
+        "origin" : "Probably from glosses and commentaries which were written between the lines and provided the reader with additional information not explicitly stated in the text.",
+        "partOfSpeech" : "verb",
+        "term" : "read between the lines"
+      },
+      {
+        "definition" : "To agree, especially in every respect; to concur; to get along.",
+        "partOfSpeech" : "verb",
+        "term" : "see eye to eye"
+      },
+      {
+        "definition" : "To remain neutral on a certain topic, to not have a stance or opinion.",
+        "partOfSpeech" : "verb",
+        "term" : "sit on the fence"
+      },
+      {
+        "definition" : "Without attracting notice; in an undetected or secretive manner.",
+        "origin" : "An allusion to flying an airplane at an altitude too low for radar detection.",
+        "partOfSpeech" : "phrase",
+        "term" : "under the radar"
+      },
+      {
+        "definition" : "Fully informed; current.",
+        "partOfSpeech" : "phrase",
+        "term" : "up to speed"
+      },
+      {
+        "definition" : "A seeming misfortune that turns out to be for the best.",
+        "partOfSpeech" : "noun",
+        "term" : "blessing in disguise"
+      },
+      {
+        "definition" : "A chain of events that, once initiated, cannot be halted; especially one in which the final outcome is undesirable or precarious.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌslɪ.pə.ɹiˈsləʊp/",
+        "term" : "slippery slope"
+      },
+      {
+        "definition" : "A profound transformation; a metamorphosis.",
+        "origin" : "From Act I, scene ii, of The Tempest (1610–1611) by the English playwright William Shakespeare (1564–1616), spelling modernized: “Full fathom five thy father lies, / Of his bones are coral made: / Those are pearls that were his eyes, /…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈsiːˌt͡ʃeɪnd͡ʒ/",
+        "term" : "sea change"
+      },
+      {
+        "definition" : "The discontinuous change of the state of an electron in an atom or molecule from one energy level to another.",
+        "origin" : "Possibly calque of Danish kvantespring.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˈkwɒntəm liːp/",
+        "term" : "quantum leap"
+      },
+      {
+        "definition" : "A game (or a similar political or economic system) in which the gains of some players must equal the losses of others.",
+        "partOfSpeech" : "noun",
+        "term" : "zero-sum game"
+      },
+      {
+        "definition" : "Alternative form of chicken-or-egg question.",
+        "partOfSpeech" : "noun",
+        "term" : "chicken-and-egg problem"
+      },
+      {
+        "definition" : "A situation where a person is presented with the illusion of a free choice, but in reality there is only one option available: accepting the offer or having nothing at all.",
+        "origin" : "From Hobson + -’s + choice, widely claimed to have been named after Thomas Hobson (c. 1544–1631) of Cambridge, England, who rented horses and had an extensive stable, but is said to have required each customer to take the horse in the…",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌhɑbsənz ˈt͡ʃɔɪs/",
+        "term" : "Hobson's choice"
+      },
+      {
+        "definition" : "A very costly victory, wherein the considerable losses outweigh the gain, so as to render the struggle not worth the cost.",
+        "origin" : "After Greek king Pyrrhus of Epirus, who suffered heavy losses while defeating the Romans.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌpɪɹ.ɪk ˈvɪk.t(ə)ɹ.i/",
+        "term" : "Pyrrhic victory"
+      },
+      {
+        "definition" : "A difficult situation from which there is no escape because it involves mutually conflicting or dependent conditions.",
+        "origin" : "Coined by American writer Joseph Heller in 1961 in his novel Catch-22, in which the main character feigns madness in order to avoid dangerous combat missions, but his desire to avoid them is taken to prove his sanity.",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌkætʃ ˌtwɛnti ˈtuː/",
+        "term" : "Catch-22"
+      },
+      {
+        "definition" : "The state of things; the way things are, as opposed to the way they could be; the existing state of affairs.",
+        "origin" : "From Latin status (“state”) (sometimes used in the ablative statū) + quō (“in which”), the ablative of quī (“which”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌstæt.əs ˈkwoʊ/",
+        "term" : "status quo"
+      },
+      {
+        "definition" : "Something which is understood as something else; an equivocation.",
+        "origin" : "Borrowed from Latin quid prō quō (literally “something for something”).",
+        "partOfSpeech" : "noun",
+        "pronunciation" : "/ˌkwɪd.pɹoʊˈkwoʊ/",
+        "term" : "quid pro quo"
+      },
+      {
+        "definition" : "For a particular purpose.",
+        "origin" : "Learned borrowing from New Latin ad hoc (“to this, for this”).",
+        "partOfSpeech" : "adjective",
+        "pronunciation" : "/ˌæd ˈhɑk/",
+        "term" : "ad hoc"
+      },
+      {
+        "definition" : "In actual use or existence, regardless of official or legal status.",
+        "origin" : "Unadapted borrowing from Latin dē factō (literally “according to fact”), from dē (“according to”) + ablative of factum (“fact, deed, act”).",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/ˌdeɪˈfæktoʊ/",
+        "term" : "de facto"
+      },
+      {
+        "definition" : "Without determination by or involvement of extraneous factors; by its very nature.",
+        "origin" : "Borrowed from Latin per sē (“by itself”), from per (“by, through”) and sē (“itself, himself, herself, themselves”).",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/pɚˈseɪ/",
+        "term" : "per se"
+      },
+      {
+        "definition" : "The same but with the two items mentioned reversed.",
+        "origin" : "Borrowed from Latin ablative absolute vice versā (“the position having been reversed”), from feminine third declension noun vicis (“arrangement, order, position”) + feminine ablative singular of perfect passive participle versus, from…",
+        "partOfSpeech" : "adverb",
+        "pronunciation" : "/ˈvaɪsi ˈvɝsə/",
+        "term" : "vice versa"
+      }
+    ]
+  }
+]

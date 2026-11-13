@@ -382,7 +382,7 @@ renders from it and CI fails on drift.
 The product map's phases 1–5 (`docs/design/product-map.md`) are built as of
 2026-10-18: the Library and the word of the day on the Mac, TimbreCore and
 the framework packages, iCloud sync, the iPhone and Watch companion, the
-three drills, bundled words (the extract still to be run), and explain that
+three drills, bundled words (493 of 518 terms, extracted 2026-11-12), and explain that
 knows the reader's field. What they still need is their proofs on hardware:
 two Macs syncing with `nettop` empty, the Watch on a wrist, TestFlight.
 
@@ -396,6 +396,6 @@ two Macs syncing with `nettop` empty, the Watch on a wrist, TestFlight.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode has four verbs (GDR-0012, GDR-0015) and taught definitions
    answer "explain" first. A fifth verb needs a guardrail that can score it.
-5. Run the Wiktionary extract and commit the bundled words (GDR-0028); ship
+5. Find the 25 list terms the extract missed, mostly idioms (GDR-0028); ship
    the companion through TestFlight; fit FSRS to the user once there is
    history to fit (ADR-0014).
