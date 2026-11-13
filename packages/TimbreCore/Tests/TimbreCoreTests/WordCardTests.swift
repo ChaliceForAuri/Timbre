@@ -15,6 +15,7 @@ struct WordCardTests {
             pick: pick, entry: entry, appleDefinition: ("lasting for a very short time", "əˈfem(ə)rəl"),
             example: "The cache is ephemeral and clears on restart.", metToday: true, strength: 0.7)
         #expect(card.meanings.map(\.source) == [.you, .appleDictionary])
+        #expect(!card.usesWiktionary)
         #expect(card.pronunciation == "əˈfem(ə)rəl")
         #expect(card.example?.source == .model)
         #expect(card.metToday)
@@ -45,6 +46,8 @@ struct WordCardTests {
             pick: pick, entry: nil, example: "The agreement was tacit, and everyone kept to it.")
         #expect(card.meanings == [WordCard.Line("Understood without being said.", source: .wiktionary)])
         #expect(card.origin?.source == .wiktionary)
+        #expect(card.usesWiktionary)
+        #expect(card.wiktionaryURL?.absoluteString == "https://en.wiktionary.org/wiki/tacit")
         #expect(card.partOfSpeech == "adjective")
         #expect(card.strength == nil)
         #expect(card.kind == nil)

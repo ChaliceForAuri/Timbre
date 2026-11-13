@@ -8,7 +8,7 @@ model {
 
   // ---------------------------------------------------------------- the Mac
   timbre = system 'Timbre for Mac' {
-    description 'Dictation that never leaves your Mac. Zero network requests by default; one, opt-in, for updates.'
+    description 'Dictation that never leaves your devices. Zero network requests by default; one, opt-in, for updates.'
     link https://github.com/ChaliceForAuri/Timbre 'Source'
 
     app = container 'Timbre.app' {

@@ -149,7 +149,32 @@ while let line = readLine(strippingNewline: true) {
         }
     }
 
-    let origin = (object["etymology_text"] as? String).map { sentenceCut($0, limit: 240) }
+    // Wiktionary's etymology can open with a rendered "Etymology tree" or a
+    // "PIE word" box, flattened to one node per line; the prose follows it.
+    // When a tree is there, keep only from the first line that reads as a
+    // sentence about the word, and nothing at all if there is none: an
+    // absent origin is honest, a dump of proto-forms is not (GDR-0027).
+    let origin = (object["etymology_text"] as? String).flatMap { text -> String? in
+        var lines = text.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter {
+            !$0.isEmpty
+        }
+        if lines.contains(where: { $0.hasPrefix("Etymology tree") || $0.hasPrefix("PIE word") }) {
+            let openers = [
+                "From ", "Borrowed ", "Learned ", "Inherited ", "Coined ", "Back-formation", "Blend ",
+                "Clipping ",
+                "Compound ", "Derived ", "Equivalent ", "Probably ", "Perhaps ", "Possibly ", "Uncertain",
+                "Unknown",
+                "Ultimately ", "First ", "Attested ", "Originally ", "Unadapted ", "Calque ", "Semantic loan",
+            ]
+            guard let start = lines.firstIndex(where: { line in openers.contains { line.hasPrefix($0) } })
+            else {
+                return nil
+            }
+            lines = Array(lines[start...])
+        }
+        return sentenceCut(lines.joined(separator: " "), limit: 240)
+    }
+
     let partOfSpeech = posNames[pos] ?? pos
     let candidate = Found(
         partOfSpeech: partOfSpeech, pronunciation: pronunciation,
