@@ -148,7 +148,7 @@ else
     if touched '^(packages/|apps/Timbre/)'; then
         gate "Mac app build" build-mac "xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre -destination 'platform=macOS' -derivedDataPath '$DD' build CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=NO"
     fi
-    if touched '^(packages/|apps/Companion/)'; then
+    if touched '^(packages/|apps/Companion/)' && [ -d "$WT/apps/Companion" ]; then
         gate "Companion build" build-companion "xcodebuild -project apps/Companion/Companion.xcodeproj -scheme Timbre -destination 'generic/platform=iOS Simulator' -derivedDataPath '$DD' build CODE_SIGNING_ALLOWED=NO"
     fi
     if touched '^(docs/|CHANGELOG\.md|web/|packages/[^/]+/Fixtures/)'; then
@@ -251,6 +251,13 @@ else
     MODEL_EXIT=$?
     set -e
     [ "$MODEL_EXIT" = 0 ] || echo "  the model run exited $MODEL_EXIT (see $RUN/model.err)"
+    # A run that never reached the model (an expired login, no network) is not
+    # a review: say why and post nothing, rather than an "error" comment.
+    if [ "$(jq -r '.is_error // false' "$RUN/model.json" 2>/dev/null)" = true ] && [ "$(jq -r '.modelUsage | length' "$RUN/model.json")" = 0 ]; then
+        echo "The model was not reached: $(jq -r '.result' "$RUN/model.json")" >&2
+        echo "Nothing posted. If the login expired, run: claude auth login" >&2
+        exit 2
+    fi
 fi
 
 # ---- Evidence ---------------------------------------------------------------
