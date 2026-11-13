@@ -19,13 +19,38 @@ Monorepo (ADR-0002): the app logic is a Swift package; the Xcode target is a
 thin shell of scenes and glue views.
 
 ```
-apps/Timbre/          Xcode project. Config/*.xcconfig holds every build
-                     setting; the pbxproj uses synchronized folders and
+apps/Timbre/          The Mac app's Xcode project. Config/*.xcconfig holds every
+                     build setting; the pbxproj uses synchronized folders and
                      should almost never change.
-packages/TimbreKit/   The entire pipeline + tests. Work happens here.
+apps/Companion/      Timbre for iPhone and Apple Watch (ADR-0016): one
+                     project, four targets (the two apps, two widget
+                     extensions), same conventions. Settings in Config/.
+packages/TimbreCore/  The Library, strength, the daily pick, the drill checks,
+                     the to-do parser: Foundation and Observation only, so
+                     the iPhone and the Watch import it too (ADR-0013).
+                     Lists/ holds the curated term lists;
+                     tools/extract-words.swift turns them plus a Wiktionary
+                     extract into its bundled-words.json (GDR-0028).
+packages/TimbreSpeech/ Capture, on-device transcription, reading aloud
+                     (AVFAudio + Speech). Mac and iPhone (ADR-0015).
+packages/TimbreModel/  The on-device model's writers and judges
+                     (FoundationModels). Mac and iPhone.
+packages/TimbreReminders/ The Timbre list in Reminders (EventKit). All three;
+                     read-only on the Watch (GDR-0029).
+packages/TimbreRelay/  Watch to phone over WatchConnectivity: the to-do queue
+                     and the session (GDR-0029). iOS and watchOS only.
+packages/TimbreCloud/  The Library through the user's iCloud: CKSyncEngine,
+                     events as immutable records (ADR-0017). All three.
+packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
+                     insertion, the polisher, command mode. Depends on the
+                     four above. Dictation work happens here.
 docs/decisions/      ADRs (constrain a file) and GDRs (constrain the
                      product). Immutable; supersede, don't edit.
-docs/learning/       Timbre University + historical planning notes.
+docs/design/         The product map, the Backstage design, the review
+                     checklist and the data inventory (GDR-0030).
+docs/learning/       Timbre University (original, frozen) + historical notes.
+                     Living modules: web/src/lib/university, listed in its
+                     manifest.json; new modules are written there.
 web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
                      (GDR-0007, docs/design/backstage.md). Node toolchain
                      must stay inside web/. The app NEVER phones home —
@@ -37,6 +62,15 @@ web/                 Website + Backstage lab: SvelteKit/Supabase/Vercel
 ```bash
 # Fast loop — the package is where the logic lives:
 swift test --package-path packages/TimbreKit
+
+# The platform-neutral half: the Library, strength, the daily pick, Spell it.
+swift test --package-path packages/TimbreCore
+
+# The framework packages (ADR-0015); CI runs all five suites:
+swift test --package-path packages/TimbreSpeech
+swift test --package-path packages/TimbreModel
+swift test --package-path packages/TimbreReminders
+swift test --package-path packages/TimbreCloud
 
 # Measure the polisher against the fixed corpus (ADR-0004). Decoding is
 # greedy (ADR-0011), so --repeat checks determinism; still never judge a
@@ -70,11 +104,36 @@ swift run timbre-eval --import ~/Library/Application\ Support/Timbre/dictations.
 # See partial results arrive at microphone pace:
 swift run timbre-eval --stream Fixtures/audio/03-run-on.aiff
 
+# Spell it's check and the word of the day against their corpora. Both are
+# deterministic (ADR-0014), so one run is the measurement; no model needed.
+swift run timbre-eval --spell ../TimbreCore/Fixtures/spell.json
+swift run timbre-eval --picks ../TimbreCore/Fixtures/picks.json
+
+# The drills: every check once, then the judge five times where a case names
+# its answer; and the card's example sentence, every draft against the guardrail.
+swift run timbre-eval --drills ../TimbreCore/Fixtures/drills.json --repeat 5
+swift run timbre-eval --examples Fixtures/examples.json --repeat 5
+
 # Lint (config in .swift-format, toolchain-bundled tool):
 xcrun swift-format lint --strict --recursive packages apps/Timbre/Sources
 
+# Review a pull request here, on this Mac, and post the evidence to it
+# (GDR-0030): the gates, then the model against docs/design/review.md and
+# docs/design/data-inventory.md, then a review comment, inline comments and
+# the timbre/review commit status. --dry-run writes to .review/ and posts
+# nothing; --skip-gates trusts CI for the gates; a fork needs --allow-fork.
+# Sonnet reviews by default; --model opus for a change that deserves it.
+tools/review.sh 73
+
 # Full app:
 xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre -destination 'platform=macOS' build
+
+# The companion, all four targets, for the simulator (ADR-0016). TimbreRelay
+# has no macOS, so its tests run there too:
+xcodebuild -project apps/Companion/Companion.xcodeproj -scheme Timbre \
+  -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
+xcodebuild test -scheme TimbreRelay -destination 'platform=iOS Simulator,name=iPhone 17' \
+  CODE_SIGNING_ALLOWED=NO   # from packages/TimbreRelay
 
 # Daily driver: build Release and install to /Applications (grants carry over):
 tools/install.sh
@@ -84,6 +143,13 @@ tools/install.sh
 # notes taken from that version's CHANGELOG section; publishing a release is
 # committing those two files and merging (GDR-0013).
 tools/release.sh
+
+# The bundled words (GDR-0028): the term lists in packages/TimbreCore/Lists plus
+# kaikki.org's English Wiktionary extract (one JSON object per line) → the
+# resource the word of the day falls back on. Run on our side, never in the app.
+swift tools/extract-words.swift --lists packages/TimbreCore/Lists \
+  --out packages/TimbreCore/Sources/TimbreCore/Resources/bundled-words.json \
+  < kaikki.org-dictionary-English.jsonl
 
 # Everything an update does except relaunch: fetch, hash, unpack, verify the
 # signature, and optionally swap into a stand-in app (ADR-0010). Before
@@ -129,10 +195,52 @@ Two gestures work on a selection instead, through the same controller:
 
 Public API surface of TimbreKit is `DictationController` (+ its `Status`)
 and `SoftwareUpdater` (ADR-0010); everything else is internal, apart from
-the evaluation seam (ADR-0004). Keep it that way.
+the evaluation seam (ADR-0004) and TimbreCore's public types, which Kit
+re-exports whole so the app shell imports one module. Keep it that way.
+
+The Library (TimbreCore, GDR-0023) feeds the pipeline: `library.terms` to
+the transcriber and the polisher, `library.corrections` to `CorrectionTable`
+before the model, `library.acronyms` to explain. After every dictation and
+spoken to-do the controller calls `library.noteMet` so today's word is marked
+met (GDR-0027). `DictationController.library` is public for Settings;
+TimbreCore's types reach the app through TimbreKit's re-export.
 
 ## Conventions
 
+- **TimbreCore imports Foundation and Observation, nothing else** (ADR-0013).
+  Pure logic with a right answer lives there; anything that touches the Mac
+  stays in TimbreKit. What needs a framework is a protocol in Core and an
+  implementation beside the framework.
+- **A package per framework, with that framework's platforms** (ADR-0015).
+  Speech, Model and Reminders each declare exactly where their framework
+  exists; `#if os(macOS)` is for a few lines of device plumbing in
+  TimbreSpeech, never a module. A new framework is a new package.
+- **A framework in the SDK is not an API you can call** (GDR-0029). EventKit
+  is on watchOS and cannot write there: the Watch parses a to-do and hands
+  it to the iPhone through TimbreRelay, queued until the phone is reachable.
+  Before promising a platform anything, grep its headers for `PROHIBITED`.
+- **Widgets read a snapshot, never the Library** (ADR-0016). The app writes
+  `today.json` to the shared container on every rebuild and reloads the
+  timelines; `SharedContainer` is the one place that knows the paths.
+- **iCloud sync is a union of events, never a stored number** (ADR-0017).
+  `TimbreCloud` sends events once and entries by latest edit through
+  CKSyncEngine; the Library's own `merge` does the merging. A field is never
+  renamed, retyped or removed: the schema is forever. Off by default; the
+  binary still makes no request.
+- **Strength is never stored** (ADR-0014). The Library keeps events — taught,
+  met, passed, failed, forgot — and `Strength` derives retrievability with
+  FSRS-4.5; the daily pick is computed from the events before the start of
+  the day, so it is the same word all day on every device. Merge is a union
+  of events; `forgot` is a tombstone. `timbre-eval --picks` measures it.
+- **Spell it is deterministic** (`SpellCheck`): the letters heard against the
+  word, tolerant of letter names, "double t", "capital A" and glued tokens.
+  `timbre-eval --spell` is its corpus; add a case before changing a rule.
+- **A drill is checks first, the judge last** (GDR-0023 decision 5). Say
+  it: `SayItGuardrail` before the model and on its verdict; Explain it:
+  `ExplainItCheck` on the words, the model only in the unsure band; the
+  judges are `ModelDrillJudge` in TimbreModel, greedy, one yes-or-no and one
+  line. `DrillPlanner` picks the drill per entry per day; `Streaks` is the
+  private game. `timbre-eval --drills --repeat 5` measures all of it.
 - **Swift 6 language mode, complete concurrency, everywhere** (ADR-0001).
   Default MainActor isolation + approachable-concurrency features, matching
   the Xcode 26 template. Concurrency is opted into (`actor`, `nonisolated`),
@@ -220,6 +328,14 @@ the evaluation seam (ADR-0004). Keep it that way.
   `TranscriptAccumulator`, `PolishGuardrail`…) with Swift Testing coverage.
   New behavior follows that pattern: extract the decision, test it.
 - No third-party dependencies — Apple frameworks and toolchain tools only.
+- **Every change is reviewed here, and the review is evidence** (GDR-0030).
+  `tools/review.sh <pr>` runs the gates and the model against
+  `docs/design/review.md`, posts the result to the pull request and sets
+  the `timbre/review` status; the human merges. The data inventory
+  (`docs/design/data-inventory.md`) is the record of what personal data
+  exists: a change that touches a row updates the row in the same pull
+  request, and no real user data is ever committed — fixtures are written
+  or generated for the purpose.
 - Build settings belong in xcconfig files, never edited into the pbxproj.
 
 ## Permissions (already configured in xcconfig)
@@ -231,6 +347,9 @@ the evaluation seam (ADR-0004). Keep it that way.
   prompt and the app never appears in Privacy & Security › Microphone
 - `INFOPLIST_KEY_*` carries mic, speech and Reminders strings and `LSUIElement`.
   Reminders is asked for on the first spoken to-do (GDR-0016)
+- Notifications are asked for only when the word-of-the-day notification is
+  turned on in Settings › Library (GDR-0027); a local notification needs no
+  usage string
 - Accessibility is granted manually (System Settings, `+` button). Timbre
   polls `AXIsProcessTrusted()` while blocked and retries startup on its own,
   so a relaunch should not be needed — but if the trusted state turns out to
@@ -261,6 +380,13 @@ renders from it and CI fails on drift.
 
 ## Roadmap
 
+The product map's phases 1–5 (`docs/design/product-map.md`) are built as of
+2026-10-18: the Library and the word of the day on the Mac, TimbreCore and
+the framework packages, iCloud sync, the iPhone and Watch companion, the
+three drills, bundled words (510 of 515 terms, extracted 2026-11-12), and explain that
+knows the reader's field. What they still need is their proofs on hardware:
+two Macs syncing with `nettop` empty, the Watch on a wrist, TestFlight.
+
 1. Tune the `TextPolisher` instructions. Highest leverage. Measure with
    `timbre-eval` — see ADR-0004, and never trust a single run.
 2. Auto-learn vocabulary: offer a correction from the user's own edits made
@@ -271,5 +397,6 @@ renders from it and CI fails on drift.
 3. Per-app tone profiles (the app name is already passed to the polisher).
 4. Command mode has four verbs (GDR-0012, GDR-0015) and taught definitions
    answer "explain" first. A fifth verb needs a guardrail that can score it.
-5. Notarize and distribute directly; build Backstage per
-   `docs/design/backstage.md` (phases 1-6, University ships first).
+5. Find the five idioms the extract missed (GDR-0028); ship
+   the companion through TestFlight; fit FSRS to the user once there is
+   history to fit (ADR-0014).

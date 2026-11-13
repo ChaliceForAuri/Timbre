@@ -1,0 +1,21 @@
+{
+  "note": "Spell it's check (GDR-0023, decision 5): the word, what the recogniser returned, and whether it should pass. Deterministic; run by TimbreCoreTests and timbre-eval --spell.",
+  "cases": [
+    { "id": "01-letters-glued", "note": "The recogniser joins quickly spelled letters into one token.", "word": "definitely", "spoken": "definitely DEFINITELY", "passes": true },
+    { "id": "02-letters-spaced", "word": "definitely", "spoken": "Definitely. D E F I N I T E L Y.", "passes": true },
+    { "id": "03-wrong-letter", "note": "The commonest misspelling; the check reports what it heard.", "word": "definitely", "spoken": "definitely d e f i n a t e l y", "passes": false },
+    { "id": "04-doubles", "word": "committee", "spoken": "committee c o double m i double t double e", "passes": true },
+    { "id": "05-letter-names", "note": "Letters said alone come back as words.", "word": "queue", "spoken": "queue cue you ee you ee", "passes": true },
+    { "id": "06-capital-marker", "word": "iPhone", "spoken": "iPhone capital I P H O N E", "passes": true },
+    { "id": "07-double-u", "note": "W is said as double-u; two U's are said as two U's.", "word": "Wiktionary", "spoken": "Wiktionary double u i k t i o n a r y", "passes": true },
+    { "id": "08-two-us", "word": "vacuum", "spoken": "vacuum v a c u u m", "passes": true },
+    { "id": "09-hyphens", "word": "separate", "spoken": "separate. S-E-P-A-R-A-T-E.", "passes": true },
+    { "id": "10-glued-wrong", "word": "separate", "spoken": "separate SEPERATE", "passes": false },
+    { "id": "11-acronym-no-word-first", "note": "An acronym is its letters; there is no word to say first.", "word": "ADR", "spoken": "A D R", "passes": true },
+    { "id": "12-nothing-spelled", "note": "Saying the word is not spelling it.", "word": "necessary", "spoken": "necessary", "passes": false },
+    { "id": "13-missing-letter", "word": "rhythm", "spoken": "rhythm r y t h m", "passes": false },
+    { "id": "14-apostrophe-ignored", "note": "Only letters count; the word's apostrophe is not spelled.", "word": "can't", "spoken": "can't c a n t", "passes": true },
+    { "id": "15-triple", "word": "goddessship", "spoken": "goddessship g o d d e triple s h i p", "passes": true },
+    { "id": "16-acronym-glued", "note": "An acronym is its letters: said as one token it is still spelled.", "word": "ADR", "spoken": "ADR", "passes": true }
+  ]
+}

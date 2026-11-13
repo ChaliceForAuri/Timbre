@@ -1,0 +1,121 @@
+{
+  "note": "The word of the day (GDR-0027): a Library's entries and events, a date, and the pick that state must produce. Deterministic; run by TimbreCoreTests and timbre-eval --picks. Days are in UTC unless a case says otherwise.",
+  "cases": [
+    {
+      "id": "01-weakest-first",
+      "note": "Two words due; the one taught earlier has faded further and wins.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "word", "term": "ephemeral" },
+        { "kind": "word", "term": "tacit" }
+      ],
+      "events": [
+        { "entry": "word:ephemeral", "kind": "taught", "date": "2026-10-10T09:00:00Z", "device": "mac" },
+        { "entry": "word:tacit", "kind": "taught", "date": "2026-10-14T09:00:00Z", "device": "mac" }
+      ],
+      "expect": { "source": "library", "term": "ephemeral" }
+    },
+    {
+      "id": "02-a-pass-defers-a-word",
+      "note": "Ephemeral was practised and passed; tacit, untouched, is now the weaker.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "word", "term": "ephemeral" },
+        { "kind": "word", "term": "tacit" }
+      ],
+      "events": [
+        { "entry": "word:ephemeral", "kind": "taught", "date": "2026-10-10T09:00:00Z", "device": "mac" },
+        { "entry": "word:ephemeral", "kind": "passed", "date": "2026-10-16T09:00:00Z", "device": "iPhone", "drill": "spellIt" },
+        { "entry": "word:tacit", "kind": "taught", "date": "2026-10-14T09:00:00Z", "device": "mac" }
+      ],
+      "expect": { "source": "library", "term": "tacit" }
+    },
+    {
+      "id": "03-a-fail-shortens-the-return",
+      "note": "Failing a drill is a fresh exposure, so the word is not due the next morning; but it comes back sooner than a plain fade. Failed five days ago, the acronym is now weaker than a word taught four days ago.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "word", "term": "ephemeral" },
+        { "kind": "acronym", "term": "ADR", "meaning": "Architecture Decision Record" }
+      ],
+      "events": [
+        { "entry": "word:ephemeral", "kind": "taught", "date": "2026-10-16T09:00:00Z", "device": "mac" },
+        { "entry": "acronym:ADR", "kind": "taught", "date": "2026-09-01T09:00:00Z", "device": "mac" },
+        { "entry": "acronym:ADR", "kind": "passed", "date": "2026-10-01T09:00:00Z", "device": "mac", "drill": "explainIt" },
+        { "entry": "acronym:ADR", "kind": "failed", "date": "2026-10-15T09:00:00Z", "device": "iPhone", "drill": "explainIt" }
+      ],
+      "expect": { "source": "library", "term": "ADR" }
+    },
+    {
+      "id": "04-today-does-not-count",
+      "note": "A word taught this morning does not change today's word; yesterday's state chooses.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "word", "term": "perfunctory" }
+      ],
+      "events": [
+        { "entry": "word:perfunctory", "kind": "taught", "date": "2026-10-20T09:00:00Z", "device": "watch" }
+      ],
+      "expect": { "source": "none" }
+    },
+    {
+      "id": "05-corrections-are-not-words",
+      "note": "A correction is a mis-hearing to repair, never the word of the day.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "correction", "term": "TimbreKit", "heard": "timber kit" }
+      ],
+      "events": [
+        { "entry": "correction:timber kit", "kind": "taught", "date": "2026-10-01T09:00:00Z", "device": "mac" }
+      ],
+      "expect": { "source": "none" }
+    },
+    {
+      "id": "06-bundled-for-the-profile",
+      "note": "Nothing due, so the profile's industry list supplies the word, skipping what the Library already has.",
+      "day": "2026-10-20",
+      "profile": { "industries": ["software"] },
+      "entries": [
+        { "kind": "word", "term": "idempotent" }
+      ],
+      "events": [
+        { "entry": "word:idempotent", "kind": "taught", "date": "2026-10-19T09:00:00Z", "device": "mac" }
+      ],
+      "bundled": [
+        { "id": "software", "title": "Software and product", "industries": ["software"], "source": "Wiktionary", "licence": "CC BY-SA 4.0", "words": [
+          { "term": "idempotent", "definition": "Unchanged by its own repeated application." },
+          { "term": "orthogonal", "definition": "Independent; varying one does not affect the other." }
+        ] },
+        { "id": "general", "title": "General English", "industries": [], "source": "Wiktionary", "licence": "CC BY-SA 4.0", "words": [
+          { "term": "ephemeral", "definition": "Lasting a very short time." }
+        ] }
+      ],
+      "expect": { "source": "bundled", "term": "orthogonal" }
+    },
+    {
+      "id": "07-a-fresh-word-is-not-yet-due",
+      "note": "Taught two days ago: still above the target, so nothing is due and no list is bundled.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "phrase", "term": "table stakes" }
+      ],
+      "events": [
+        { "entry": "phrase:table stakes", "kind": "taught", "date": "2026-10-18T09:00:00Z", "device": "mac" }
+      ],
+      "expect": { "source": "none" }
+    },
+    {
+      "id": "08-forgotten-stays-forgotten",
+      "note": "A tombstone ends a history; an entry still listed by mistake is not picked.",
+      "day": "2026-10-20",
+      "entries": [
+        { "kind": "word", "term": "ephemeral" }
+      ],
+      "events": [
+        { "entry": "word:ephemeral", "kind": "taught", "date": "2026-10-01T09:00:00Z", "device": "mac" },
+        { "entry": "word:ephemeral", "kind": "forgot", "date": "2026-10-15T09:00:00Z", "device": "mac" }
+      ],
+      "expect": { "source": "none" }
+    }
+  ]
+}

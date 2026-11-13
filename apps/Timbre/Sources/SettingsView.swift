@@ -3,7 +3,7 @@ import TimbreKit
 
 /// Settings, in four tabs. It was one tall column until the dictionary grew
 /// a third list; a window taller than a 13-inch screen is not a settings
-/// window.
+/// window. The dictionary became the Library (GDR-0023), in its own file.
 struct SettingsView: View {
     let controller: DictationController
     let updater: SoftwareUpdater
@@ -13,8 +13,8 @@ struct SettingsView: View {
             Tab("General", systemImage: "gearshape") {
                 GeneralSettings(controller: controller, updater: updater)
             }
-            Tab("Dictionary", systemImage: "character.book.closed") {
-                DictionarySettings(controller: controller)
+            Tab("Library", systemImage: "books.vertical") {
+                LibrarySettings(controller: controller)
             }
             Tab("Reading", systemImage: "speaker.wave.2") {
                 ReadingSettings(controller: controller)
@@ -307,193 +307,6 @@ private struct ShortcutRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-    }
-}
-
-// MARK: - Dictionary
-
-/// The personal dictionary: words, corrections, definitions. Shown in full so
-/// nothing rewrites text, or answers a question, in secret.
-private struct DictionarySettings: View {
-    let controller: DictationController
-    @State private var newTerm = ""
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 26) {
-                vocabulary
-
-                DictionarySection(
-                    title: "Corrections",
-                    blurb: "When Timbre keeps hearing a phrase wrong, teach it what you meant. "
-                        + "Applied to every dictation, exactly as written.",
-                    leftPrompt: "Timbre heard",
-                    rightPrompt: "You meant",
-                    actionTitle: "Teach",
-                    rows: controller.corrections.map { Row(id: $0.id, left: $0.heard, right: $0.meant) },
-                    add: { controller.teachCorrection(heard: $0, meant: $1) },
-                    remove: { row in
-                        if let match = controller.corrections.first(where: { $0.id == row.id }) {
-                            controller.forgetCorrection(match)
-                        }
-                    }
-                )
-
-                DictionarySection(
-                    title: "Definitions",
-                    blurb: "Your own acronyms and terms. When you hold right ⌘ and say explain, "
-                        + "these answer first — the on-device model does not know your jargon.",
-                    leftPrompt: "Term, e.g. ADR",
-                    rightPrompt: "What it means",
-                    actionTitle: "Define",
-                    rows: controller.acronyms.map { Row(id: $0.id, left: $0.term, right: $0.meaning) },
-                    add: { controller.defineAcronym(term: $0, meaning: $1) },
-                    remove: { row in
-                        if let match = controller.acronyms.first(where: { $0.id == row.id }) {
-                            controller.forgetAcronym(match)
-                        }
-                    }
-                )
-            }
-            .padding(24)
-        }
-    }
-
-    private var vocabulary: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Vocabulary")
-                .font(.headline)
-            Text("Names, jargon, and product terms the model should prefer. This never leaves your Mac.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            HStack {
-                TextField("Add a term", text: $newTerm)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit(addTerm)
-                Button("Add", action: addTerm)
-                    .disabled(newTerm.trimmingCharacters(in: .whitespaces).isEmpty)
-            }
-
-            RowList(isEmpty: controller.vocabulary.isEmpty) {
-                ForEach(controller.vocabulary, id: \.self) { term in
-                    HStack {
-                        Text(term)
-                        Spacer()
-                        RemoveButton { controller.removeFromVocabulary(term) }
-                    }
-                }
-            }
-        }
-    }
-
-    private func addTerm() {
-        controller.addToVocabulary(newTerm)
-        newTerm = ""
-    }
-}
-
-/// One displayed pair, whatever it is a pair of.
-private struct Row: Identifiable {
-    let id: String
-    let left: String
-    let right: String
-}
-
-private struct DictionarySection: View {
-    let title: String
-    let blurb: String
-    let leftPrompt: String
-    let rightPrompt: String
-    let actionTitle: String
-    let rows: [Row]
-    let add: (String, String) -> Bool
-    let remove: (Row) -> Void
-
-    @State private var left = ""
-    @State private var right = ""
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-            Text(blurb)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            HStack {
-                TextField(leftPrompt, text: $left)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit(submit)
-                Image(systemName: "arrow.right")
-                    .foregroundStyle(.secondary)
-                TextField(rightPrompt, text: $right)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit(submit)
-                Button(actionTitle, action: submit)
-                    .disabled(!canSubmit)
-            }
-
-            RowList(isEmpty: rows.isEmpty) {
-                ForEach(rows) { row in
-                    HStack(spacing: 6) {
-                        Text(row.left)
-                            .foregroundStyle(.secondary)
-                        Image(systemName: "arrow.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                        Text(row.right)
-                        Spacer()
-                        RemoveButton { remove(row) }
-                    }
-                }
-            }
-        }
-    }
-
-    private var canSubmit: Bool {
-        !left.trimmingCharacters(in: .whitespaces).isEmpty
-            && !right.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
-    private func submit() {
-        guard add(left, right) else { return }
-        left = ""
-        right = ""
-    }
-}
-
-/// Rows in a quiet box, or a line saying there are none. Not a `List`: three
-/// scrolling lists inside a scrolling tab fight over the scroll wheel.
-private struct RowList<Content: View>: View {
-    let isEmpty: Bool
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if isEmpty {
-                Text("Nothing here yet.")
-                    .foregroundStyle(.tertiary)
-            } else {
-                content
-            }
-        }
-        .font(.callout)
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
-    }
-}
-
-private struct RemoveButton: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: "minus.circle")
-        }
-        .buttonStyle(.borderless)
     }
 }
 

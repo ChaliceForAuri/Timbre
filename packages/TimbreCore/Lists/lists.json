@@ -1,0 +1,9 @@
+[
+  { "id": "general", "title": "General English", "industries": [], "file": "general-english.txt" },
+  { "id": "software", "title": "Software and product", "industries": ["software", "product", "engineering", "technology"], "file": "software-and-product.txt" },
+  { "id": "healthcare", "title": "Healthcare", "industries": ["healthcare", "medicine", "nursing", "health"], "file": "healthcare.txt" },
+  { "id": "law", "title": "Law", "industries": ["law", "legal"], "file": "law.txt" },
+  { "id": "finance", "title": "Finance", "industries": ["finance", "accounting", "banking"], "file": "finance.txt" },
+  { "id": "design", "title": "Design", "industries": ["design", "ux", "typography"], "file": "design.txt" },
+  { "id": "phrases", "title": "Phrases and idioms", "industries": [], "file": "phrases-and-idioms.txt" }
+]

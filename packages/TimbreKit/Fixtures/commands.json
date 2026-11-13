@@ -353,6 +353,36 @@
         "Pretorian",
         "teh"
       ]
+    },
+    {
+      "id": "explain-profile-healthcare",
+      "command": "explain",
+      "note": "Phase 5 (product map §3): the reader’s field disambiguates. Ungrounded, PA could be a personal assistant; a nurse’s PA is a physician assistant.",
+      "text": "The PA will see you first.",
+      "industries": [
+        "healthcare"
+      ],
+      "required": [
+        "physician assistant"
+      ],
+      "forbidden": [
+        "personal assistant"
+      ]
+    },
+    {
+      "id": "explain-profile-software",
+      "command": "explain",
+      "note": "Same term, another field: an ER diagram in software is entity-relationship, not the emergency room.",
+      "text": "Update the ER diagram before the review.",
+      "industries": [
+        "software"
+      ],
+      "required": [
+        "entity"
+      ],
+      "forbidden": [
+        "emergency"
+      ]
     }
   ]
 }

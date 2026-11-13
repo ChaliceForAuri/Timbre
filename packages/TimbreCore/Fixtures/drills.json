@@ -1,0 +1,17 @@
+{
+  "note": "The drills (GDR-0023, decision 5). expect is what the deterministic half must conclude — passed, failed, or unsure (handed to the judge); judge is what the model should then say. Run by TimbreCoreTests and by timbre-eval --drills.",
+  "cases": [
+    { "id": "01-say-it-good", "drill": "sayIt", "term": "ephemeral", "meaning": "lasting a very short time", "spoken": "The cache is ephemeral, so a restart clears it.", "expect": "unsure", "judge": "passed" },
+    { "id": "02-say-it-wrong-meaning", "note": "Uses the word, but as if it meant permanent.", "drill": "sayIt", "term": "ephemeral", "meaning": "lasting a very short time", "spoken": "Our ephemeral archive keeps every record forever.", "expect": "unsure", "judge": "failed" },
+    { "id": "03-say-it-missing-word", "drill": "sayIt", "term": "ephemeral", "meaning": "lasting a very short time", "spoken": "The cache clears whenever we restart the server.", "expect": "failed", "judge": null },
+    { "id": "04-say-it-too-short", "drill": "sayIt", "term": "tacit", "meaning": "understood without being said", "spoken": "Tacit agreement.", "expect": "failed", "judge": null },
+    { "id": "05-say-it-acronym", "drill": "sayIt", "term": "ADR", "meaning": "Architecture Decision Record", "spoken": "We wrote an ADR before changing the package layout.", "expect": "unsure", "judge": "passed" },
+    { "id": "06-explain-it-exact", "drill": "explainIt", "term": "ADR", "meaning": "Architecture Decision Record", "spoken": "An architecture decision record, one document per choice.", "expect": "passed", "judge": null },
+    { "id": "07-explain-it-paraphrase", "note": "Half the key terms, said differently: the words alone cannot tell.", "drill": "explainIt", "term": "ephemeral", "meaning": "lasting a very short time, soon gone", "spoken": "It is gone quickly, not lasting.", "expect": "unsure", "judge": "passed" },
+    { "id": "08-explain-it-wrong", "drill": "explainIt", "term": "ephemeral", "meaning": "lasting a very short time, soon gone", "spoken": "Something heavy and solid.", "expect": "failed", "judge": null },
+    { "id": "09-explain-it-one-word-meaning", "drill": "explainIt", "term": "tacit", "meaning": "unspoken", "spoken": "It means unspoken.", "expect": "passed", "judge": null },
+    { "id": "10-explain-it-stems", "note": "A stem of a key term counts: records meets recording.", "drill": "explainIt", "term": "ADR", "meaning": "a record of an architecture decision", "spoken": "Recording one architecture decision.", "expect": "passed", "judge": null },
+    { "id": "11-spell-it-pass", "drill": "spellIt", "term": "tacit", "spoken": "tacit t a c i t", "expect": "passed", "judge": null },
+    { "id": "12-spell-it-fail", "drill": "spellIt", "term": "tacit", "spoken": "tacit t a s i t", "expect": "failed", "judge": null }
+  ]
+}

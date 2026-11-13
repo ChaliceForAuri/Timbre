@@ -6,6 +6,7 @@ struct MenuContent: View {
     let updater: SoftwareUpdater
 
     @Environment(\.openSettings) private var openSettings
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Text(controller.statusText)
@@ -16,6 +17,18 @@ struct MenuContent: View {
             Button("Install Timbre \(release.version)…") {
                 UpdatePrompt.offer(release, updater: updater)
             }
+        }
+
+        // Today's word (GDR-0027), and whether it has been met: the one line a
+        // menu bar can give a Library.
+        if let card = controller.wordOfTheDay.card {
+            Button(card.metToday ? "Word of the day: \(card.term) ✓" : "Word of the day: \(card.term)") {
+                WordCardWindow.open(openWindow)
+            }
+        }
+
+        Button("Practice…") {
+            PracticeWindow.open(openWindow)
         }
 
         Divider()

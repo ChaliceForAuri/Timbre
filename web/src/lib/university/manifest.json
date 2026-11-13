@@ -60,8 +60,33 @@
     "title": "The codebase, line by line"
   },
   {
-    "slug": "glossary",
+    "slug": "spaced-repetition-and-the-library",
     "number": "12",
+    "title": "Spaced repetition and the Library"
+  },
+  {
+    "slug": "icloud-and-cloudkit",
+    "number": "13",
+    "title": "iCloud and CloudKit"
+  },
+  {
+    "slug": "the-other-apple-platforms",
+    "number": "14",
+    "title": "The other Apple platforms"
+  },
+  {
+    "slug": "building-the-companion",
+    "number": "15",
+    "title": "Building the companion"
+  },
+  {
+    "slug": "review-as-evidence",
+    "number": "16",
+    "title": "Review as evidence: SOC 2, the GDPR and a local-only app"
+  },
+  {
+    "slug": "glossary",
+    "number": "17",
     "title": "Glossary"
   }
 ]
