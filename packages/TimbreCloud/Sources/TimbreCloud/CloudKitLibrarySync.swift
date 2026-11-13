@@ -88,7 +88,7 @@ public final class CloudKitLibrarySync: NSObject {
         {
             pending.append(.saveRecord(CKRecord.ID(recordName: entry.id, zoneID: CloudRecords.zoneID)))
         }
-        if !state.profilePushed {
+        if state.needsProfilePush(local: library.profile) {
             pending.append(
                 .saveRecord(CKRecord.ID(recordName: CloudRecords.profileName, zoneID: CloudRecords.zoneID)))
         }
@@ -137,7 +137,7 @@ public final class CloudKitLibrarySync: NSObject {
             case CloudRecords.profileType:
                 profile = CloudRecords.profile(from: record)
                 state.systemFields[CloudRecords.profileName] = CloudRecords.systemFields(of: record)
-                state.profilePushed = true
+                state.pushedProfile = profile
             default:
                 break
             }
@@ -209,7 +209,7 @@ extension CloudKitLibrarySync: CKSyncEngineDelegate {
                         state.pushedEntryEdits[name] = record["edited"] as? Date
                         state.systemFields[name] = CloudRecords.systemFields(of: record)
                     case CloudRecords.profileType:
-                        state.profilePushed = true
+                        state.pushedProfile = CloudRecords.profile(from: record)
                         state.systemFields[name] = CloudRecords.systemFields(of: record)
                     default: break
                     }

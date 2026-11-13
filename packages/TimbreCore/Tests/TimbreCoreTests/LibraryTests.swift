@@ -305,3 +305,45 @@ extension LibraryTests {
         #expect(!library.noteMet(in: "tacit again", app: "Mail", bundled: [list]))
     }
 }
+
+@Suite("Renaming an entry")
+@MainActor
+struct LibraryReplaceTests {
+    @Test("Fixing a term's spelling keeps its history and tombstones the old id")
+    func historyMoves() throws {
+        let library = Library(
+            fileURL: FileManager.default.temporaryDirectory.appending(path: UUID().uuidString + ".json"),
+            legacy: nil)
+        let day = Date(timeIntervalSince1970: 1_760_000_000)
+        let old = try #require(
+            LibraryEntry(
+                kind: .word, term: "ephemerel", source: Provenance(device: .mac, date: day, how: .typed)))
+        library.upsert(old, on: day)
+        library.record(.passed, for: old.id, drill: .spellIt, on: day.addingTimeInterval(86_400))
+
+        let fixed = try #require(LibraryEntry(kind: .word, term: "ephemeral", source: old.source))
+        library.replace(old.id, with: fixed, on: day.addingTimeInterval(2 * 86_400))
+
+        #expect(library.entry(old.id) == nil)
+        #expect(library.entry(fixed.id) != nil)
+        #expect(library.history(of: fixed.id).map(\.kind) == [.taught, .passed])
+        #expect(library.history(of: old.id).last?.kind == .forgot)
+        #expect(library.strength(of: fixed.id, at: day.addingTimeInterval(2 * 86_400)) > 0)
+    }
+
+    @Test("An edit that keeps the id is a plain upsert")
+    func sameID() throws {
+        let library = Library(
+            fileURL: FileManager.default.temporaryDirectory.appending(path: UUID().uuidString + ".json"),
+            legacy: nil)
+        let entry = try #require(
+            LibraryEntry(
+                kind: .word, term: "tacit", source: Provenance(device: .mac, date: Date(), how: .typed)))
+        library.upsert(entry)
+        var edited = entry
+        edited.meaning = "understood without being said"
+        library.replace(entry.id, with: edited)
+        #expect(library.entry(entry.id)?.meaning == "understood without being said")
+        #expect(library.history(of: entry.id).map(\.kind) == [.taught])
+    }
+}

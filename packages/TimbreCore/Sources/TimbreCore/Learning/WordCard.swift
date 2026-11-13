@@ -33,6 +33,19 @@ nonisolated public struct WordCard: Equatable, Sendable {
         }
     }
 
+    /// True when any fact on the card is Wiktionary's: the card then owes
+    /// the licence line and the link (GDR-0028, CC BY-SA 4.0).
+    public var usesWiktionary: Bool {
+        (meanings + [origin].compactMap { $0 }).contains { $0.source == .wiktionary }
+    }
+
+    /// Where Wiktionary keeps this entry, for the attribution link.
+    public var wiktionaryURL: URL? {
+        term.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed).flatMap {
+            URL(string: "https://en.wiktionary.org/wiki/" + $0.replacingOccurrences(of: "%20", with: "_"))
+        }
+    }
+
     public let term: String
     public let kind: EntryKind?
     public let pick: DailyPick

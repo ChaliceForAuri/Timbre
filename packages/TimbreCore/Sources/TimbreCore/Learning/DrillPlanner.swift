@@ -21,8 +21,12 @@ nonisolated public enum DrillPlanner {
         }
     }
 
-    /// The drills that can run where there is no model (GDR-0026): the
-    /// ones a judge is not needed for.
+    /// The drills that can run where there is no model (GDR-0026). Say it
+    /// needs the judge, so it becomes Spell it. Explain it stays when the
+    /// meaning has key terms to check the words against: covering most of
+    /// them passes, and anything less is shown the meaning and counted as a
+    /// miss, which is strict but never wrong. A meaning with no key terms
+    /// has nothing to check without the judge, so it becomes Spell it.
     public static func drill(
         for entry: LibraryEntry, on day: Date, withModel: Bool, calendar: Calendar = .current
     ) -> Drill {

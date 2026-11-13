@@ -729,13 +729,6 @@
         "term" : "covert"
       },
       {
-        "definition" : "Implied, but not made explicit, especially through silence.",
-        "origin" : "Borrowed from late Middle French tacite, or from Latin tacitus (“that is passed over in silence, done without words, assumed as a matter of course, silent”), from tacere (“to be silent”).",
-        "partOfSpeech" : "adjective",
-        "pronunciation" : "/ˈtæsɪt/",
-        "term" : "tacit"
-      },
-      {
         "definition" : "Capable of being seen, or easily seen; open to view; visible to the eye; within sight or view.",
         "origin" : "From Middle English apparaunt, aparaunt, from Old French aparent, aparant, in turn from Latin appārēns, appārentis, present participle of appāreō.",
         "partOfSpeech" : "adjective",
@@ -1366,13 +1359,6 @@
         "term" : "instrumentation"
       },
       {
-        "definition" : "That employs a practical method not guaranteed to be optimal or perfect; either not following or derived from any theory, or based on an advisedly oversimplified one.",
-        "origin" : "Irregular formation from Ancient Greek εὑρίσκω (heurískō, “I find, discover”) (compare the proper Greek term εὑρετικός (heuretikós)).",
-        "partOfSpeech" : "adjective",
-        "pronunciation" : "/hjəˈɹɪstɪk/",
-        "term" : "heuristic"
-      },
-      {
         "definition" : "A sheet of copper or steel used in the construction of a boiler.",
         "origin" : "Etymology tree Proto-Indo-European *bew-der.? Proto-Indo-European *bʰel-der.? Latin bulla Proto-Indo-European *-yétider. Latin -iō Latin bulliō Old French boillirbor.",
         "partOfSpeech" : "noun",
@@ -1503,13 +1489,6 @@
         "partOfSpeech" : "noun",
         "pronunciation" : "/vəˈlɑsəti/",
         "term" : "velocity"
-      },
-      {
-        "definition" : "The rate at which data is transferred through a system.",
-        "origin" : "From through + put (after input and output).",
-        "partOfSpeech" : "noun",
-        "pronunciation" : "/ˈθɹu.pʊt/",
-        "term" : "throughput"
       },
       {
         "definition" : "The narrow portion that forms the pouring spout of a bottle; the neck of a bottle.",

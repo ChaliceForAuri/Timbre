@@ -97,4 +97,18 @@ nonisolated public enum RelayMessage {
         guard let raw = userInfo[filedKey] as? String, let id = UUID(uuidString: raw) else { return nil }
         return (id, userInfo[listKey] as? String ?? "Reminders")
     }
+
+    public static let failedKey = "failed"
+    public static let reasonKey = "reason"
+
+    /// The iPhone could not file it. The to-do stays queued on the Watch;
+    /// the reason is for the person, so they know to look at the phone.
+    public static func failure(for id: UUID, reason: String) -> [String: Any] {
+        [failedKey: id.uuidString, reasonKey: reason]
+    }
+
+    public static func parseFailure(_ userInfo: [String: Any]) -> (id: UUID, reason: String)? {
+        guard let raw = userInfo[failedKey] as? String, let id = UUID(uuidString: raw) else { return nil }
+        return (id, userInfo[reasonKey] as? String ?? "The iPhone could not file it.")
+    }
 }

@@ -51,3 +51,16 @@ struct WordCardTests {
         #expect(card.example?.source == .model)
     }
 }
+
+struct BundledListsTests {
+    @Test("The bundled resource loads, and no list repeats a word")
+    func loadsWithoutDuplicates() {
+        #expect(!BundledLists.all.isEmpty)
+        for list in BundledLists.all {
+            let terms = list.words.map { $0.term.lowercased() }
+            #expect(Set(terms).count == terms.count, "\(list.title) repeats a word")
+            #expect(list.licence == "CC BY-SA 4.0")
+        }
+        #expect(BundledLists.attribution?.contains("Wiktionary") == true)
+    }
+}

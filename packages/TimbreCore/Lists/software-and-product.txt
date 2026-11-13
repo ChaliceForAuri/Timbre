@@ -43,7 +43,6 @@ telemetry
 observability
 instrumentation
 regression
-heuristic
 boilerplate
 scaffolding
 sandbox
@@ -64,7 +63,6 @@ iteration
 increment
 retrospective
 velocity
-throughput
 bottleneck
 churn
 retention

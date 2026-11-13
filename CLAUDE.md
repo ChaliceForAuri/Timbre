@@ -26,8 +26,11 @@ apps/Companion/      Timbre for iPhone and Apple Watch (ADR-0016): one
                      project, four targets (the two apps, two widget
                      extensions), same conventions. Settings in Config/.
 packages/TimbreCore/  The Library, strength, the daily pick, the drill checks,
-                     the to-do parser: Foundation only, so the iPhone and
-                     the Watch import it too (ADR-0013). Kit depends on it.
+                     the to-do parser: Foundation and Observation only, so
+                     the iPhone and the Watch import it too (ADR-0013).
+                     Lists/ holds the curated term lists;
+                     tools/extract-words.swift turns them plus a Wiktionary
+                     extract into its bundled-words.json (GDR-0028).
 packages/TimbreSpeech/ Capture, on-device transcription, reading aloud
                      (AVFAudio + Speech). Mac and iPhone (ADR-0015).
 packages/TimbreModel/  The on-device model's writers and judges
@@ -38,9 +41,6 @@ packages/TimbreRelay/  Watch to phone over WatchConnectivity: the to-do queue
                      and the session (GDR-0029). iOS and watchOS only.
 packages/TimbreCloud/  The Library through the user's iCloud: CKSyncEngine,
                      events as immutable records (ADR-0017). All three.
-                     TimbreCore/Lists holds the curated term lists;
-                     tools/extract-words.swift turns them plus a Wiktionary
-                     extract into Core's bundled-words.json (GDR-0028).
 packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
                      insertion, the polisher, command mode. Depends on the
                      four above. Dictation work happens here.
@@ -195,7 +195,8 @@ Two gestures work on a selection instead, through the same controller:
 
 Public API surface of TimbreKit is `DictationController` (+ its `Status`)
 and `SoftwareUpdater` (ADR-0010); everything else is internal, apart from
-the evaluation seam (ADR-0004). Keep it that way.
+the evaluation seam (ADR-0004) and TimbreCore's public types, which Kit
+re-exports whole so the app shell imports one module. Keep it that way.
 
 The Library (TimbreCore, GDR-0023) feeds the pipeline: `library.terms` to
 the transcriber and the polisher, `library.corrections` to `CorrectionTable`
@@ -382,7 +383,7 @@ renders from it and CI fails on drift.
 The product map's phases 1–5 (`docs/design/product-map.md`) are built as of
 2026-10-18: the Library and the word of the day on the Mac, TimbreCore and
 the framework packages, iCloud sync, the iPhone and Watch companion, the
-three drills, bundled words (493 of 518 terms, extracted 2026-11-12), and explain that
+three drills, bundled words (490 of 515 terms, extracted 2026-11-12), and explain that
 knows the reader's field. What they still need is their proofs on hardware:
 two Macs syncing with `nettop` empty, the Watch on a wrist, TestFlight.
 

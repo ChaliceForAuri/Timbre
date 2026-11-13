@@ -57,6 +57,11 @@ struct WatchRootView: View {
                             get: { model.syncsThroughICloud }, set: { model.syncsThroughICloud = $0 })
                     )
                     .font(.caption)
+                    Text(
+                        "Your words in your own iCloud. Timbre sends nothing itself. Not yet end-to-end encrypted."
+                    )
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("Timbre")

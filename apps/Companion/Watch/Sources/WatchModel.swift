@@ -30,6 +30,9 @@ final class WatchModel {
         cloud = CloudKitLibrarySync(
             library: library, stateURL: SharedContainer.directory.appending(path: "library-sync.json"))
         library.addSaveObserver { [weak self] in self?.refresh() }
+        relay.onFailed = { [weak self] _, reason in
+            self?.lastFiled = "Not filed yet: \(reason) Open Timbre on your iPhone."
+        }
         relay.onFiled = { [weak self] item, list in
             self?.lastFiled = TodoPhrasing.confirmation(item.todo, list: list)
             WKInterfaceDevice.current().play(.success)

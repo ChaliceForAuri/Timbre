@@ -19,6 +19,8 @@ public final class Relay: NSObject {
     public var onTodo: (@MainActor (Todo) async throws -> String)?
     /// Watch: the phone filed one.
     public var onFiled: (@MainActor (PendingTodo, String) -> Void)?
+    /// The iPhone said it could not file this one; it stays queued.
+    public var onFailed: (@MainActor (PendingTodo, String) -> Void)?
 
     private let queueURL: URL
 
@@ -60,10 +62,21 @@ public final class Relay: NSObject {
 
     /// Parsed before it crosses onto the main actor: the raw dictionary is not
     /// Sendable, a to-do and an id are.
-    private func received(request: (id: UUID, todo: Todo)?, reply: (id: UUID, list: String)?) async {
+    private func received(
+        request: (id: UUID, todo: Todo)?, reply: (id: UUID, list: String)?,
+        failure: (id: UUID, reason: String)?
+    ) async {
         if let request, let onTodo {
-            guard let list = try? await onTodo(request.todo) else { return }
-            WCSession.default.transferUserInfo(RelayMessage.reply(filed: request.id, list: list))
+            do {
+                let list = try await onTodo(request.todo)
+                WCSession.default.transferUserInfo(RelayMessage.reply(filed: request.id, list: list))
+            } catch {
+                // Never silent: the Watch is told, keeps the to-do and says why.
+                WCSession.default.transferUserInfo(
+                    RelayMessage.failure(for: request.id, reason: error.localizedDescription))
+            }
+        } else if let failure, let item = pending.items.first(where: { $0.id == failure.id }) {
+            onFailed?(item, failure.reason)
         } else if let reply, let item = pending.items.first(where: { $0.id == reply.id }) {
             pending.filed(reply.id)
             try? pending.save(to: queueURL)
@@ -89,7 +102,8 @@ extension Relay: WCSessionDelegate {
     public nonisolated func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
         let request = RelayMessage.parseRequest(userInfo)
         let reply = RelayMessage.parseReply(userInfo)
-        Task { @MainActor in await received(request: request, reply: reply) }
+        let failure = RelayMessage.parseFailure(userInfo)
+        Task { @MainActor in await received(request: request, reply: reply, failure: failure) }
     }
 
     #if os(iOS)

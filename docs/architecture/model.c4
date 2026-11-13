@@ -288,6 +288,8 @@ model {
   watch.relay -> iphone 'transferUserInfo, queued until the phone is reachable'
 
   timbre.kit -> core 'imports'
+  timbre.model -> core 'the drill judge’s protocol and the guardrails'
+  timbre.reminders -> core 'the to-do it files'
   timbre.kit.polisher -> core.library 'corrections first, then the taught words'
   timbre.kit.commands -> core.library 'definitions answer explain first'
   timbre.kit.controller -> core.library 'marks today’s word met'

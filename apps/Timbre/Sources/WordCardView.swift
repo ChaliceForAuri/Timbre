@@ -60,6 +60,11 @@ struct WordCardView: View {
             if let example = card.example {
                 labelled(example, heading: "In a sentence")
             }
+            if card.usesWiktionary, let url = card.wiktionaryURL {
+                // Opens in the browser at the reader's click; the app itself asks for nothing.
+                Link("From Wiktionary, CC BY-SA 4.0", destination: url)
+                    .font(.caption2)
+            }
 
             Divider()
 

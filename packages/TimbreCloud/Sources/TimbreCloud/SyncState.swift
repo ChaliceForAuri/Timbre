@@ -1,9 +1,12 @@
 import Foundation
+import TimbreCore
 
 /// What the sync remembers between launches (ADR-0017): the engine's own
 /// state, which events and entry edits the server has, the server's copy
 /// of each entry's system fields, and when the last fetch finished. One
-/// file beside the Library; nothing in it is a word.
+/// file beside the Library. Its keys are entry and event ids, which carry
+/// the term, so it is as private as the Library itself and is deleted with
+/// it; GDR-0031 replaces them with opaque names.
 nonisolated public struct SyncState: Codable, Equatable, Sendable {
 
     /// `CKSyncEngine.State.Serialization`, as data.
@@ -13,18 +16,20 @@ nonisolated public struct SyncState: Codable, Equatable, Sendable {
     public var pushedEntryEdits: [String: Date]
     /// Entry id or the profile → the server record's system fields.
     public var systemFields: [String: Data]
-    public var profilePushed: Bool
+    /// The profile as the server last had it; nil until the first push or
+    /// fetch. A one-shot flag would never send a later edit.
+    public var pushedProfile: Profile?
     public var lastFetched: Date?
 
     public init(
         engine: Data? = nil, pushedEventIDs: Set<String> = [], pushedEntryEdits: [String: Date] = [:],
-        systemFields: [String: Data] = [:], profilePushed: Bool = false, lastFetched: Date? = nil
+        systemFields: [String: Data] = [:], pushedProfile: Profile? = nil, lastFetched: Date? = nil
     ) {
         self.engine = engine
         self.pushedEventIDs = pushedEventIDs
         self.pushedEntryEdits = pushedEntryEdits
         self.systemFields = systemFields
-        self.profilePushed = profilePushed
+        self.pushedProfile = pushedProfile
         self.lastFetched = lastFetched
     }
 
@@ -49,5 +54,11 @@ nonisolated public struct SyncState: Codable, Equatable, Sendable {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return decoder
+    }
+
+    /// Whether the local profile still has to be sent: never sent, or edited
+    /// since the server's copy.
+    public func needsProfilePush(local: Profile) -> Bool {
+        pushedProfile != local
     }
 }

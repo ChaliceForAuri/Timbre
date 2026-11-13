@@ -64,9 +64,28 @@ struct CloudRecordsTests {
         var state = SyncState()
         state.pushedEventIDs = ["taught|word:a|1|mac||"]
         state.pushedEntryEdits = ["word:a": Date(timeIntervalSince1970: 1_700_000_000)]
-        state.profilePushed = true
+        state.pushedProfile = Profile(industries: ["law"], role: nil, firstLanguage: nil)
         try state.save(to: url)
         #expect(SyncState.load(from: url) == state)
         #expect(SyncState.load(from: directory.appending(path: "missing.json")) == SyncState())
+    }
+}
+
+struct SyncStateProfileTests {
+    private let nurse = Profile(industries: ["healthcare"], role: "nurse", firstLanguage: nil)
+
+    @Test("A profile never sent needs a push; one the server has does not")
+    func firstPush() {
+        var state = SyncState()
+        #expect(state.needsProfilePush(local: nurse))
+        state.pushedProfile = nurse
+        #expect(!state.needsProfilePush(local: nurse))
+    }
+
+    @Test("An edit after the first push is sent again")
+    func laterEdit() {
+        let state = SyncState(pushedProfile: nurse)
+        let edited = Profile(industries: ["healthcare", "law"], role: "nurse", firstLanguage: nil)
+        #expect(state.needsProfilePush(local: edited))
     }
 }

@@ -356,7 +356,7 @@ private struct EditEntrySheet: View {
                     .keyboardShortcut(.cancelAction)
                 Button("Save") { save() }
                     .keyboardShortcut(.defaultAction)
-                    .disabled(term.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(edited == nil)
             }
         }
         .padding(20)
@@ -370,21 +370,22 @@ private struct EditEntrySheet: View {
         }
     }
 
-    private func save() {
+    /// What Save would store, or nil while the fields cannot make an entry of
+    /// this kind: the button is disabled on exactly that.
+    private var edited: LibraryEntry? {
         let tagList = tags.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter {
             !$0.isEmpty
         }
-        guard
-            let updated = LibraryEntry(
-                kind: entry.kind, term: term, heard: heard.isEmpty ? nil : heard,
-                meaning: meaning.isEmpty ? nil : meaning,
-                example: example.isEmpty ? nil : example, tags: tagList, source: entry.source)
-        else { return }
-        if updated.id != entry.id {
-            // The term that names the entry changed: the old one goes, with its tombstone.
-            library.forget(entryID: entry.id)
-        }
-        library.upsert(updated)
+        return LibraryEntry(
+            kind: entry.kind, term: term, heard: heard.isEmpty ? nil : heard,
+            meaning: meaning.isEmpty ? nil : meaning,
+            example: example.isEmpty ? nil : example, tags: tagList, source: entry.source)
+    }
+
+    private func save() {
+        guard let updated = edited else { return }
+        // A changed term is a changed id; the history moves with the entry.
+        library.replace(entry.id, with: updated)
         dismiss()
     }
 }
@@ -425,9 +426,13 @@ private struct ProfileSection: View {
             .font(.callout)
         }
         .onAppear(perform: load)
-        .onChange(of: industries) { _, _ in save() }
-        .onChange(of: role) { _, _ in save() }
-        .onChange(of: language) { _, _ in save() }
+        // Saving rewrites the Library and rebuilds the day's card, so it waits
+        // for a pause in the typing; leaving the tab saves at once.
+        .task(id: [industries, role, language]) {
+            try? await Task.sleep(for: .milliseconds(700))
+            if !Task.isCancelled { save() }
+        }
+        .onDisappear { save() }
     }
 
     private func load() {

@@ -111,7 +111,6 @@ blatant
 subtle
 overt
 covert
-tacit
 latent
 dormant
 nascent
