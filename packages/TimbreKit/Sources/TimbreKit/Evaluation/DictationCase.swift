@@ -40,6 +40,9 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
     /// Corrections the user has taught: applied before the model (GDR-0011).
     public let corrections: [Correction]
 
+    /// Snippets the user has saved: a name said, exact text written (GDR-0032).
+    public let snippets: [Snippet]
+
     /// Phrases that must NOT survive cleanup — fillers, stutters, spoken
     /// formatting commands, or register the polisher shouldn't reach for.
     public let forbidden: [String]
@@ -55,6 +58,10 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
     /// spoken structural commands.
     public let requiresLineBreak: Bool
 
+    /// The whole output, when a case has exactly one right answer: a snippet
+    /// said alone must come back as its text and nothing else (GDR-0032).
+    public let exact: String?
+
     /// What this case is for, shown in the report.
     public let note: String?
 
@@ -65,10 +72,12 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         appContext: String? = nil,
         vocabulary: [String] = [],
         corrections: [Correction] = [],
+        snippets: [Snippet] = [],
         forbidden: [String] = [],
         required: [String] = [],
         requiresPunctuation: Bool = false,
         requiresLineBreak: Bool = false,
+        exact: String? = nil,
         note: String? = nil
     ) {
         self.id = id
@@ -77,10 +86,12 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         self.appContext = appContext
         self.vocabulary = vocabulary
         self.corrections = corrections
+        self.snippets = snippets
         self.forbidden = forbidden
         self.required = required
         self.requiresPunctuation = requiresPunctuation
         self.requiresLineBreak = requiresLineBreak
+        self.exact = exact
         self.note = note
     }
 
@@ -95,12 +106,14 @@ nonisolated public struct DictationCase: Codable, Sendable, Identifiable {
         appContext = try container.decodeIfPresent(String.self, forKey: .appContext)
         vocabulary = try container.decodeIfPresent([String].self, forKey: .vocabulary) ?? []
         corrections = try container.decodeIfPresent([Correction].self, forKey: .corrections) ?? []
+        snippets = try container.decodeIfPresent([Snippet].self, forKey: .snippets) ?? []
         forbidden = try container.decodeIfPresent([String].self, forKey: .forbidden) ?? []
         required = try container.decodeIfPresent([String].self, forKey: .required) ?? []
         requiresPunctuation =
             try container.decodeIfPresent(Bool.self, forKey: .requiresPunctuation) ?? false
         requiresLineBreak =
             try container.decodeIfPresent(Bool.self, forKey: .requiresLineBreak) ?? false
+        exact = try container.decodeIfPresent(String.self, forKey: .exact)
         note = try container.decodeIfPresent(String.self, forKey: .note)
     }
 }
@@ -141,8 +154,13 @@ nonisolated public enum PolishChecks {
         if testCase.requiresPunctuation, !trimmed.contains(where: { ".!?".contains($0) }) {
             failures.append("added no sentence punctuation")
         }
-        // Every case: pasted text starts with a capital (ADR-0011).
-        if !SentenceCapitalizer.isCapitalizedAtStart(trimmed) {
+        if let exact = testCase.exact, trimmed != exact {
+            failures.append("is not exactly \"\(exact)\"")
+        }
+        // Every case: pasted text starts with a capital (ADR-0011) — unless
+        // it starts with a snippet, whose text is never touched (GDR-0032).
+        let startsWithSnippet = testCase.snippets.contains { trimmed.hasPrefix($0.text) }
+        if !startsWithSnippet, !SentenceCapitalizer.isCapitalizedAtStart(trimmed) {
             failures.append("does not start with a capital")
         }
         if testCase.requiresLineBreak, !trimmed.contains("\n") {

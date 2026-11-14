@@ -174,6 +174,78 @@
           "meant": "evals"
         }
       ]
+    },
+    {
+      "id": "12-snippet-alone",
+      "note": "GDR-0032: an utterance that is only a snippet's name is the snippet, verbatim: no capital, no full stop. Deterministic; the model never runs.",
+      "transcript": "My work email.",
+      "snippets": [
+        {
+          "say": "my work email",
+          "text": "ada.lovelace@example.com"
+        },
+        {
+          "say": "status command",
+          "text": "git status --short --branch"
+        }
+      ],
+      "required": [
+        "ada.lovelace@example.com"
+      ],
+      "forbidden": [
+        "work email"
+      ],
+      "exact": "ada.lovelace@example.com"
+    },
+    {
+      "id": "13-snippet-in-a-sentence",
+      "note": "GDR-0032: a name inside a sentence is a placeholder while the model cleans up around it; the text comes back exact and the sentence still gets its capital and stop.",
+      "transcript": "um so you can reach me at my work email and uh I'll reply the same day",
+      "snippets": [
+        {
+          "say": "my work email",
+          "text": "ada.lovelace@example.com"
+        },
+        {
+          "say": "status command",
+          "text": "git status --short --branch"
+        }
+      ],
+      "required": [
+        "ada.lovelace@example.com",
+        "reply"
+      ],
+      "forbidden": [
+        "um",
+        "uh",
+        "SNIP",
+        "work email"
+      ],
+      "requiresPunctuation": true
+    },
+    {
+      "id": "14-snippet-starts-the-sentence",
+      "note": "GDR-0032: a snippet that opens the sentence is not capitalised, and symbols inside it survive.",
+      "transcript": "Status command is what I run first, and then, like, I send it to my work email.",
+      "snippets": [
+        {
+          "say": "my work email",
+          "text": "ada.lovelace@example.com"
+        },
+        {
+          "say": "status command",
+          "text": "git status --short --branch"
+        }
+      ],
+      "required": [
+        "git status --short --branch",
+        "ada.lovelace@example.com"
+      ],
+      "forbidden": [
+        "SNIP",
+        "like,"
+      ],
+      "requiresPunctuation": true
     }
   ]
 }

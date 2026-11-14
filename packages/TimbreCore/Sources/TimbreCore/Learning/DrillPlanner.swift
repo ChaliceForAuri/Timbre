@@ -11,7 +11,7 @@ nonisolated public enum DrillPlanner {
         switch entry.kind {
         case .acronym:
             return entry.meaning == nil ? .spellIt : .explainIt
-        case .spelling, .correction:
+        case .spelling, .correction, .snippet:
             return .spellIt
         case .word, .phrase:
             guard entry.meaning != nil else { return .spellIt }

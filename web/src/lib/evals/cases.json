@@ -231,6 +231,63 @@
 						"meant": "evals"
 					}
 				]
+			},
+			{
+				"id": "12-snippet-alone",
+				"note": "GDR-0032: an utterance that is only a snippet's name is the snippet, verbatim: no capital, no full stop. Deterministic; the model never runs.",
+				"transcript": "My work email.",
+				"spoken": null,
+				"appContext": null,
+				"required": [
+					"ada.lovelace@example.com"
+				],
+				"forbidden": [
+					"work email"
+				],
+				"requiresPunctuation": false,
+				"requiresLineBreak": false,
+				"vocabulary": [],
+				"corrections": []
+			},
+			{
+				"id": "13-snippet-in-a-sentence",
+				"note": "GDR-0032: a name inside a sentence is a placeholder while the model cleans up around it; the text comes back exact and the sentence still gets its capital and stop.",
+				"transcript": "um so you can reach me at my work email and uh I'll reply the same day",
+				"spoken": null,
+				"appContext": null,
+				"required": [
+					"ada.lovelace@example.com",
+					"reply"
+				],
+				"forbidden": [
+					"um",
+					"uh",
+					"SNIP",
+					"work email"
+				],
+				"requiresPunctuation": true,
+				"requiresLineBreak": false,
+				"vocabulary": [],
+				"corrections": []
+			},
+			{
+				"id": "14-snippet-starts-the-sentence",
+				"note": "GDR-0032: a snippet that opens the sentence is not capitalised, and symbols inside it survive.",
+				"transcript": "Status command is what I run first, and then, like, I send it to my work email.",
+				"spoken": null,
+				"appContext": null,
+				"required": [
+					"git status --short --branch",
+					"ada.lovelace@example.com"
+				],
+				"forbidden": [
+					"SNIP",
+					"like,"
+				],
+				"requiresPunctuation": true,
+				"requiresLineBreak": false,
+				"vocabulary": [],
+				"corrections": []
 			}
 		]
 	},
@@ -1060,6 +1117,6 @@
 	],
 	"audio": {
 		"path": "packages/TimbreKit/Fixtures/audio",
-		"cases": 11
+		"cases": 14
 	}
 }

@@ -1,17 +1,21 @@
 import Foundation
 
-/// What kind of thing an entry is. Five, exactly (GDR-0023, decision 3); a
-/// sixth needs a drill that can score it.
+/// What kind of thing an entry is. Five to learn or repair (GDR-0023,
+/// decision 3), and the snippet (GDR-0032), which is neither: a name to
+/// say and the text to write. Another learnable kind still needs a drill
+/// that can score it.
 nonisolated public enum EntryKind: String, Codable, Sendable, CaseIterable {
     case word
     case acronym
     case phrase
     case spelling
     case correction
+    case snippet
 
     /// The kinds practice and the word of the day draw on. A correction is a
-    /// mis-hearing to repair, not a word to learn.
-    public var isLearnable: Bool { self != .correction }
+    /// mis-hearing to repair and a snippet is text to paste; neither is a
+    /// word to learn.
+    public var isLearnable: Bool { self != .correction && self != .snippet }
 }
 
 /// Which of the user's devices did something.
@@ -52,9 +56,9 @@ nonisolated public struct Provenance: Codable, Sendable, Hashable {
 /// is not here — it is derived from the entry's events (ADR-0014).
 ///
 /// `term` is the thing itself: the word, the acronym, the phrase, the correct
-/// spelling, or — for a correction — what the user meant. `heard` is the
-/// other side where there is one: the phrase the transcriber emits, or the
-/// misspelling.
+/// spelling, for a correction what the user meant, for a snippet the text
+/// to write. `heard` is the other side where there is one: the phrase the
+/// transcriber emits, the misspelling, or the snippet's spoken name.
 nonisolated public struct LibraryEntry: Codable, Sendable, Hashable, Identifiable {
 
     public let id: String
@@ -86,6 +90,8 @@ nonisolated public struct LibraryEntry: Codable, Sendable, Hashable, Identifiabl
         switch kind {
         case .correction:
             guard let heard, !heard.isEmpty, heard != term else { return nil }
+        case .snippet:
+            guard let heard, !heard.isEmpty else { return nil }
         case .acronym:
             guard let meaning, !meaning.isEmpty else { return nil }
         case .word, .phrase, .spelling:
@@ -111,6 +117,8 @@ nonisolated public struct LibraryEntry: Codable, Sendable, Hashable, Identifiabl
             return "acronym:" + term.trimmingCharacters(in: .whitespacesAndNewlines)
         case .correction:
             return "correction:" + normalized(heard ?? "")
+        case .snippet:
+            return "snippet:" + normalized(heard ?? "")
         case .word, .phrase, .spelling:
             return kind.rawValue + ":" + normalized(term)
         }

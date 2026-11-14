@@ -71,6 +71,7 @@ extension EntryKind {
         case .phrase: "Phrases"
         case .spelling: "Spellings"
         case .correction: "Corrections"
+        case .snippet: "Snippets"
         }
     }
 }
@@ -83,7 +84,7 @@ struct EntryRow: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    if entry.kind == .correction, let heard = entry.heard {
+                    if entry.kind == .correction || entry.kind == .snippet, let heard = entry.heard {
                         Text(heard).foregroundStyle(.secondary)
                         Image(systemName: "arrow.right").font(.caption).foregroundStyle(.tertiary)
                     }
@@ -114,12 +115,28 @@ struct EntryDetailView: View {
     @State private var example = ""
     @State private var tags = ""
 
+    private var termLabel: String {
+        switch entry.kind {
+        case .correction: "You meant"
+        case .snippet: "Timbre writes"
+        case .word, .acronym, .phrase, .spelling: "Term"
+        }
+    }
+
+    private var heardLabel: String {
+        switch entry.kind {
+        case .correction: "Timbre heard"
+        case .snippet: "You say"
+        case .word, .acronym, .phrase, .spelling: "The misspelling"
+        }
+    }
+
     var body: some View {
         Form {
             Section {
-                TextField(entry.kind == .correction ? "You meant" : "Term", text: $term)
-                if entry.kind == .correction || entry.kind == .spelling {
-                    TextField(entry.kind == .correction ? "Timbre heard" : "The misspelling", text: $heard)
+                TextField(termLabel, text: $term, axis: .vertical)
+                if entry.kind == .correction || entry.kind == .spelling || entry.kind == .snippet {
+                    TextField(heardLabel, text: $heard)
                 }
                 TextField("Meaning", text: $meaning, axis: .vertical)
                 TextField("Example sentence", text: $example, axis: .vertical)
@@ -230,6 +247,7 @@ struct AddEntrySheet: View {
         case .phrase: "A phrase"
         case .spelling: "The misspelling"
         case .correction: "Timbre heard"
+        case .snippet: "You say, e.g. my email"
         }
     }
 
@@ -239,6 +257,7 @@ struct AddEntrySheet: View {
         case .acronym: "What it means"
         case .spelling: "The correct spelling"
         case .correction: "You meant"
+        case .snippet: "Timbre writes"
         }
     }
 
@@ -246,6 +265,7 @@ struct AddEntrySheet: View {
         switch kind {
         case .acronym: "Define"
         case .correction: "Teach"
+        case .snippet: "Save"
         case .word, .phrase, .spelling: "Add"
         }
     }
@@ -255,7 +275,7 @@ struct AddEntrySheet: View {
         let hasRight = !right.trimmingCharacters(in: .whitespaces).isEmpty
         switch kind {
         case .word, .phrase: return hasLeft
-        case .acronym, .spelling, .correction: return hasLeft && hasRight
+        case .acronym, .spelling, .correction, .snippet: return hasLeft && hasRight
         }
     }
 
@@ -266,6 +286,10 @@ struct AddEntrySheet: View {
             library.teach(heard: left, meant: right)
         case .spelling:
             if let entry = LibraryEntry(kind: .spelling, term: right, heard: left, source: source) {
+                library.upsert(entry)
+            }
+        case .snippet:
+            if let entry = LibraryEntry(kind: .snippet, term: right, heard: left, source: source) {
                 library.upsert(entry)
             }
         case .word, .phrase, .acronym:

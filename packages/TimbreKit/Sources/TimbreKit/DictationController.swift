@@ -555,7 +555,8 @@ public final class DictationController {
                 raw,
                 appContext: capturedAppName,
                 vocabulary: library.terms,
-                corrections: library.corrections
+                corrections: library.corrections,
+                snippets: library.snippets
             )
             let polishDuration = clock.now - polishStarted
             // Today's word, met in the wild (GDR-0027): only the fact is kept.

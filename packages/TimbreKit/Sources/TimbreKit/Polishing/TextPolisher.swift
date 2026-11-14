@@ -64,7 +64,8 @@ final class TextPolisher {
         _ raw: String,
         appContext: String? = nil,
         vocabulary: [String] = [],
-        corrections: [Correction] = []
+        corrections: [Correction] = [],
+        snippets: [Snippet] = []
     ) async -> String {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return "" }
@@ -73,18 +74,27 @@ final class TextPolisher {
         // the user meant before anything else looks at the text (GDR-0011).
         let corrected = CorrectionTable.applied(corrections, to: trimmed)
 
+        // An utterance that is only a snippet's name is the snippet: its
+        // exact text, no capital, no full stop (GDR-0032).
+        if let snippet = SnippetTable.whole(snippets, utterance: corrected) { return snippet }
+        // A name inside a sentence becomes a placeholder until the very end,
+        // so nothing below can change the text it stands for.
+        let guarded = SnippetTable.guarded(snippets, in: corrected)
+
         // Structural commands resolve before the model sees the text, so it
         // punctuates around real breaks instead of around the words that named
         // them (GDR-0003). An utterance that was only a command is the break
         // itself: no capital, no full stop.
-        if let breaks = SpokenCommands.onlyCommands(in: corrected) { return breaks }
-        let structured = SpokenCommands.applied(to: corrected)
+        if let breaks = SpokenCommands.onlyCommands(in: guarded.text) { return breaks }
+        let structured = SpokenCommands.applied(to: guarded.text)
 
         // One exit point, so the capital and the full stop hold on every path
         // — including the fallbacks, where the model never ran. ADR-0005,
-        // ADR-0011.
-        let cleaned = await modelCleanup(of: structured, appContext: appContext, vocabulary: vocabulary)
-        return SentenceTerminator.terminated(SentenceCapitalizer.capitalized(cleaned))
+        // ADR-0011. A cleanup that dropped a snippet is not used.
+        var cleaned = await modelCleanup(of: structured, appContext: appContext, vocabulary: vocabulary)
+        if !SnippetTable.keptAll(guarded, in: cleaned) { cleaned = structured }
+        let sentence = SentenceTerminator.terminated(SentenceCapitalizer.capitalized(cleaned))
+        return SnippetTable.restored(sentence, from: guarded)
     }
 
     /// The model half of `polish`. Returns `trimmed` unchanged whenever the

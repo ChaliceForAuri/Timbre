@@ -79,6 +79,13 @@ public final class Library {
         }
     }
 
+    /// Names the user says against the exact text they stand for (GDR-0032).
+    public var snippets: [Snippet] {
+        entries.filter { $0.kind == .snippet }.compactMap {
+            Snippet(say: $0.heard ?? "", text: $0.term)
+        }
+    }
+
     /// Terms with a taught meaning; they answer explain first (GDR-0012).
     public var acronyms: [Acronym] {
         entries.filter { $0.kind == .acronym }.compactMap {
