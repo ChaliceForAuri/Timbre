@@ -145,7 +145,8 @@ struct TimbreEval {
                     testCase.transcript,
                     appContext: testCase.appContext,
                     vocabulary: testCase.vocabulary,
-                    corrections: testCase.corrections
+                    corrections: testCase.corrections,
+                    snippets: testCase.snippets
                 )
                 runs.append(
                     CaseOutcome(

@@ -23,10 +23,12 @@ public enum TimbreEvaluation {
         _ transcript: String,
         appContext: String? = nil,
         vocabulary: [String] = [],
-        corrections: [Correction] = []
+        corrections: [Correction] = [],
+        snippets: [Snippet] = []
     ) async -> String {
         await TextPolisher().polish(
-            transcript, appContext: appContext, vocabulary: vocabulary, corrections: corrections
+            transcript, appContext: appContext, vocabulary: vocabulary, corrections: corrections,
+            snippets: snippets
         )
     }
 

@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// The Library (GDR-0023): one store, five kinds. Words the polisher should
+/// The Library (GDR-0023): one store, six kinds (the sixth is the snippet, GDR-0032). Words the polisher should
 /// prefer, corrections that run before the model (GDR-0011), definitions
 /// that answer explain first (GDR-0012), phrases and spellings to practise —
 /// each an entry with a meaning, an example, where it came from, and a
@@ -76,6 +76,13 @@ public final class Library {
     public var corrections: [Correction] {
         entries.filter { $0.kind == .correction }.compactMap {
             Correction(heard: $0.heard ?? "", meant: $0.term)
+        }
+    }
+
+    /// Names the user says against the exact text they stand for (GDR-0032).
+    public var snippets: [Snippet] {
+        entries.filter { $0.kind == .snippet }.compactMap {
+            Snippet(say: $0.heard ?? "", text: $0.term)
         }
     }
 
