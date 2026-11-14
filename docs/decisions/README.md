@@ -82,5 +82,5 @@ Two kinds of records live here. The boundary rule:
 | [0028](gdr/0028-bundled-word-content-from-wiktionary.md) | Bundled word content comes from a Wiktionary extract, under CC BY-SA; the model writes only examples | Accepted · implementation pending |
 | [0029](gdr/0029-the-wrist-captures-the-iphone-files.md) | The wrist captures a to-do; the iPhone files it (supersedes 0026's to-do clause) | Accepted · implementation pending |
 | [0030](gdr/0030-review-here-evidence-on-the-pr.md) | Every change is reviewed here, and the review is evidence (builds on 0006, 0007, 0013) | Accepted |
-| [0031](gdr/0031-sync-encryption-before-it-ships.md) | The Library's sync is encrypted in transit and at rest today; end-to-end before it ships (supersedes 0010's copy clause and ADR-0017's plain fields in part) | Accepted |
+| [0031](gdr/0031-sync-encryption-before-it-ships.md) | The Library's sync is encrypted in transit and at rest today; end-to-end before it ships (supersedes 0010's copy clause and ADR-0017's plain fields in part) | Accepted · decision 2 done (ADR-0018), decision 3 open |
 | [0032](gdr/0032-snippets-a-name-said-exact-text-written.md) | Snippets: a name said, exact text written; a sixth kind that is not learned (amends 0023 decision 3) | Accepted |
