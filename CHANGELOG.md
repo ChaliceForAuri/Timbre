@@ -43,7 +43,20 @@ turns the section for that version into the release notes shown in the app.
   you, "explain" gives that field's meaning first: a PA is a physician
   assistant to a nurse, an ER diagram is entity-relationship to an
   engineer. Measured on the commands corpus.
+- **Learn.** Select a word or a short phrase anywhere, hold right Command
+  and say "learn": it is saved to your Library and explained on the spot,
+  and it comes back as a word of the day and in practice. Timbre never
+  saves a meaning it guessed; add your own in Settings › Library and
+  explain answers from it first.
+- **Snippets.** Give a short name to text that has to be exact — an email
+  address, a command, a signature — in Settings › Library › Snippets. Say
+  the name while dictating and Timbre writes the text, character for
+  character: alone, or inside a sentence that is cleaned up around it. Not
+  for passwords; a snippet is stored as plain text in your Library.
+
 ### Changed
+- If Timbre ever cannot read your Library file, it keeps a copy beside it
+  as `library.unreadable.json` before writing anything.
 - The Library lives in its own package, TimbreCore, which the iPhone and
   Watch apps will share. Your words are in
   `~/Library/Application Support/Timbre/library.json`; the old lists in
