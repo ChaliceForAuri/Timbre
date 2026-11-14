@@ -16,11 +16,16 @@ cd "$(dirname "$0")/.."
 
 echo "Building Release…"
 # -allowProvisioningUpdates lets Xcode create the Apple Development certificate
-# for the team in Local.xcconfig on first use: a new team, or a new Mac, needs
-# nothing but a signed-in Apple ID in Xcode.
+# and the profile for the team in Local.xcconfig on first use. The iCloud
+# entitlement needs a profile, and a profile lists its Macs, so
+# -allowProvisioningDeviceRegistration adds this Mac to the team the first
+# time: a new team, or a new Mac, needs nothing but a signed-in Apple ID in
+# Xcode.
 xcodebuild -project apps/Timbre/Timbre.xcodeproj -scheme Timbre \
-    -configuration Release -destination 'platform=macOS' \
-    -derivedDataPath build/DerivedData -allowProvisioningUpdates build | grep -E '^\*\* BUILD|error:' || true
+    -configuration Release -destination 'platform=macOS,arch=arm64' \
+    -derivedDataPath build/DerivedData \
+    -allowProvisioningUpdates -allowProvisioningDeviceRegistration \
+    build | grep -E '^\*\* BUILD|error:' || true
 
 APP="build/DerivedData/Build/Products/Release/Timbre.app"
 [ -d "$APP" ] || { echo "Build failed — no app at $APP"; exit 1; }
