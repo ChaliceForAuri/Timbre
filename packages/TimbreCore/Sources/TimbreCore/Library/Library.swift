@@ -49,13 +49,18 @@ public final class Library {
     public init(fileURL: URL, device: Device = .mac, legacy: UserDefaults? = .standard) {
         self.fileURL = fileURL
         self.device = device
-        if let data = try? Data(contentsOf: fileURL),
-            let document = try? Self.makeDecoder().decode(LibraryDocument.self, from: data)
-        {
-            entries = document.entries
-            events = document.events
-            profile = document.profile
-            legacyImported = document.legacyImported
+        if let data = try? Data(contentsOf: fileURL) {
+            if let document = try? Self.makeDecoder().decode(LibraryDocument.self, from: data) {
+                entries = document.entries
+                events = document.events
+                profile = document.profile
+                legacyImported = document.legacyImported
+            } else {
+                // A file this build cannot read — a newer build's kind, or
+                // damage — is the user's Library all the same. It is set
+                // aside before anything is written over it.
+                Self.setAside(data, beside: fileURL)
+            }
         }
         if !legacyImported {
             if let legacy { importLegacy(from: legacy) }
@@ -63,6 +68,18 @@ public final class Library {
         }
         loading = false
         save()
+    }
+
+    /// Where an unreadable Library file is kept: beside the Library, never
+    /// overwritten once it exists, so the first copy set aside survives.
+    public static func unreadableURL(beside fileURL: URL) -> URL {
+        fileURL.deletingLastPathComponent().appending(path: "library.unreadable.json")
+    }
+
+    private static func setAside(_ data: Data, beside fileURL: URL) {
+        let url = unreadableURL(beside: fileURL)
+        guard !FileManager.default.fileExists(atPath: url.path) else { return }
+        try? data.write(to: url, options: .atomic)
     }
 
     // MARK: - The three lists, as the pipeline and Settings read them
@@ -147,6 +164,31 @@ public final class Library {
     }
 
     // MARK: - Entries and events
+
+    /// What `learn` did with a selection (GDR-0033).
+    public enum Learned: Equatable, Sendable {
+        case saved(String)
+        case alreadyKnown(String)
+        case tooLong
+        case nothing
+    }
+
+    /// Saves a selected word or short phrase to be learned. An entry of any
+    /// learnable kind already holding the term is left as it is: its meaning
+    /// and history are the user's.
+    @discardableResult
+    public func learn(_ selection: String, app: String? = nil, on date: Date = Date()) -> Learned {
+        let target = LearnTarget(selection: selection)
+        guard let entry = target.entry(source: provenance(.learned, app: app, on: date)) else {
+            return target == .tooLong ? .tooLong : .nothing
+        }
+        let known = entries.contains {
+            $0.kind.isLearnable && LibraryEntry.normalized($0.term) == LibraryEntry.normalized(entry.term)
+        }
+        if known { return .alreadyKnown(entry.term) }
+        upsert(entry, on: date)
+        return .saved(entry.term)
+    }
 
     public func entry(_ id: String) -> LibraryEntry? {
         entries.first { $0.id == id }

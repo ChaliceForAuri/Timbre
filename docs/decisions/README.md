@@ -84,3 +84,4 @@ Two kinds of records live here. The boundary rule:
 | [0030](gdr/0030-review-here-evidence-on-the-pr.md) | Every change is reviewed here, and the review is evidence (builds on 0006, 0007, 0013) | Accepted |
 | [0031](gdr/0031-sync-encryption-before-it-ships.md) | The Library's sync is encrypted in transit and at rest today; end-to-end before it ships (supersedes 0010's copy clause and ADR-0017's plain fields in part) | Accepted · decision 2 done (ADR-0018), decision 3 open |
 | [0032](gdr/0032-snippets-a-name-said-exact-text-written.md) | Snippets: a name said, exact text written; a sixth kind that is not learned (amends 0023 decision 3) | Accepted |
+| [0033](gdr/0033-learn-select-say-it-and-it-comes-back.md) | Learn: select it, say the word, and it comes back; a fifth command that writes no text (amends 0012, 0015) | Accepted |

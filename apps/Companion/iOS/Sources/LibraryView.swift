@@ -228,6 +228,14 @@ struct AddEntrySheet: View {
                 }
                 TextField(leftPrompt, text: $left)
                 TextField(rightPrompt, text: $right, axis: .vertical)
+                if kind == .snippet {
+                    Text(
+                        "Say the name while dictating on your Mac and Timbre writes the text, exactly. "
+                            + "Not for passwords: a snippet is stored as plain text in your Library."
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                }
             }
             .navigationTitle("Add to the Library")
             .navigationBarTitleDisplayMode(.inline)

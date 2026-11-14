@@ -3,7 +3,8 @@
 A free, fully-local voice interface for macOS. Hold right-Option, speak,
 release — cleaned-up text appears in whatever app you're using. Tap
 left-Option to hear a selection read aloud (GDR-0008). Hold right-Command on
-a selection and say fix, explain, shorten or plain (GDR-0012, GDR-0015) —
+a selection and say fix, explain, shorten, plain or learn (GDR-0012,
+GDR-0015, GDR-0033) —
 or with nothing selected, say a to-do and it lands in Reminders (GDR-0016).
 Everything runs
 on-device: no account, no network, no subscription (GDR-0001).
@@ -301,6 +302,12 @@ TimbreCore's types reach the app through TimbreKit's re-export.
   acronyms it does not know. Right ⌘ is a real shortcut key, so the mode *arms* after
   an uninterrupted 350 ms hold; the key/click watch that detects a shortcut
   exists only during that hold and never looks at the event.
+- **Learn saves first, then explains** (GDR-0033). Right ⌘ on a selection
+  and "learn": `LearnTarget` (one word, or a phrase of two to six) goes into
+  the Library deterministically, then the explain path shows its card. No
+  model-written meaning is ever stored. The entry comes back through the
+  daily pick and practice like any other; there is no second reminder
+  system.
 - **Literals are guarded** (GDR-0015). `LiteralGuard` swaps mentions,
   URLs, emails, dates, times, units, versions and abbreviations for `LIT<n>`
   placeholders before fix, shorten and plain, and puts them back after; fix

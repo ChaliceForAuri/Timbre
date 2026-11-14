@@ -10,7 +10,9 @@ struct TextTransformerPromptTests {
             #expect(TextTransformer.makePrompt(for: command, text: "teh text").contains("teh text"))
             seen.insert(TextTransformer.instructions(for: command))
         }
-        #expect(seen.count == VoiceCommand.allCases.count)
+        // Learn saves, then explains: it has no instructions of its own (GDR-0033).
+        #expect(seen.count == VoiceCommand.allCases.count - 1)
+        #expect(TextTransformer.instructions(for: .learn) == TextTransformer.instructions(for: .explain))
     }
 
     /// The two rules that make each command safe to point at someone's text.

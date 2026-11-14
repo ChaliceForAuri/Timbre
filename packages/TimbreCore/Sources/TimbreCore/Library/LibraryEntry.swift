@@ -33,6 +33,8 @@ nonisolated public struct Provenance: Codable, Sendable, Hashable {
         case dictated
         case typed
         case explained
+        /// Selected and sent here with "learn" (GDR-0033).
+        case learned
         case corrected
         case bundled
         case imported

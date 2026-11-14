@@ -53,4 +53,25 @@ struct PolishChecksTests {
         #expect(only.forbidden.isEmpty)
         #expect(only.requiresPunctuation == false)
     }
+
+    @Test("A case with one right answer fails on anything else (GDR-0032)")
+    func exact() {
+        let alone = DictationCase(
+            id: "alone", transcript: "My email.",
+            snippets: [Snippet(say: "my email", text: "ada@example.com")!],
+            exact: "ada@example.com")
+        #expect(PolishChecks.failures(for: alone, output: "ada@example.com").isEmpty)
+        let wrong = PolishChecks.failures(for: alone, output: "Ada@example.com.")
+        #expect(wrong.contains { $0.contains("is not exactly") })
+    }
+
+    @Test("Output that opens with a snippet's text need not start with a capital; anything else must")
+    func snippetStart() {
+        let opens = DictationCase(
+            id: "opens", transcript: "status command runs first",
+            snippets: [Snippet(say: "status command", text: "git status")!])
+        #expect(PolishChecks.failures(for: opens, output: "git status runs first.").isEmpty)
+        let lower = PolishChecks.failures(for: opens, output: "then git status runs.")
+        #expect(lower.contains { $0.contains("capital") })
+    }
 }

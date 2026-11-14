@@ -780,7 +780,8 @@ public final class DictationController {
             }
             commandSelection = nil
             finishCommand(
-                showing: .error("Heard “\(words)” — say fix, explain, shorten or plain."), for: .seconds(3.5))
+                showing: .error("Heard “\(words)” — say fix, explain, shorten, plain or learn."),
+                for: .seconds(3.5))
         case .run(let command):
             overlay.update(mode: .working(command.progressLabel), text: "")
             await perform(command)
@@ -804,8 +805,26 @@ public final class DictationController {
         status = .polishing
         lastExplanationPush = nil
 
+        // Learn saves first, with no model involved, then explains: the
+        // user asked because they did not know the word (GDR-0033).
+        var learned: Library.Learned?
+        if command == .learn {
+            let result = library.learn(selection, app: capturedAppName)
+            switch result {
+            case .tooLong:
+                finishCommand(
+                    showing: .error("Select one word or a short phrase to learn."), for: .seconds(3))
+                return
+            case .nothing:
+                finishCommand(showing: .error("Select some text first."), for: .seconds(2))
+                return
+            case .saved, .alreadyKnown:
+                learned = result
+            }
+        }
+
         let outcome = await transformer.run(
-            command,
+            command == .learn ? .explain : command,
             on: selection,
             corrections: library.corrections,
             acronyms: library.acronyms,
@@ -825,14 +844,37 @@ public final class DictationController {
         case .explanation(let text, let source):
             usageStore.record(.command)
             finishCommand(
-                showing: .explanation(caption: source.caption),
+                showing: .explanation(caption: Self.caption(source.caption, learned: learned)),
                 text: text,
                 for: ExplanationTiming.displayDuration(for: text)
             )
         case .unchanged(let message):
-            finishCommand(showing: .notice(message), for: .seconds(2))
+            finishCommand(showing: .notice(Self.learnedNotice(learned) ?? message), for: .seconds(2))
         case .failure(let message):
-            finishCommand(showing: .error(message), for: .seconds(3.5))
+            // The word is saved even when it could not be explained.
+            if let notice = Self.learnedNotice(learned) {
+                finishCommand(showing: .notice(notice), for: .seconds(3))
+            } else {
+                finishCommand(showing: .error(message), for: .seconds(3.5))
+            }
+        }
+    }
+
+    /// The explanation card's caption, saying first what learn did.
+    nonisolated static func caption(_ source: String, learned: Library.Learned?) -> String {
+        switch learned {
+        case .saved: "Saved to your Library · \(source)"
+        case .alreadyKnown: "Already in your Library · \(source)"
+        case .tooLong, .nothing, nil: source
+        }
+    }
+
+    /// What the pill says when learn saved a word and there is no card.
+    nonisolated static func learnedNotice(_ learned: Library.Learned?) -> String? {
+        switch learned {
+        case .saved(let term): "Saved “\(term)” to your Library."
+        case .alreadyKnown(let term): "“\(term)” is already in your Library."
+        case .tooLong, .nothing, nil: nil
         }
     }
 

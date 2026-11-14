@@ -239,6 +239,7 @@ private struct EntryRow: View {
         case .dictated: parts.append("Dictated")
         case .typed: parts.append("Added")
         case .explained: parts.append("Explained")
+        case .learned: parts.append("Learned")
         case .corrected: parts.append("Corrected")
         case .bundled: parts.append("From a list")
         case .imported: parts.append("Imported")
