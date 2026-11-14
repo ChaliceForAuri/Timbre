@@ -109,7 +109,7 @@ for (i, color) in rainbow.enumerated() {
 }
 NSGraphicsContext.restoreGraphicsState()
 
-draw("Zero network requests*   ·   No account   ·   Free   ·   Open source", at: NSPoint(x: 82, y: 170), font: mono, color: muted)
+draw("Zero network requests*   ·   No account   ·   Free   ·   Source on GitHub", at: NSPoint(x: 82, y: 170), font: mono, color: muted)
 draw("timbre.hugopretorius.dev", at: NSPoint(x: 82, y: 124), font: mono, color: ink)
 
 NSGraphicsContext.restoreGraphicsState()
