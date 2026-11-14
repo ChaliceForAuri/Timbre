@@ -38,7 +38,9 @@ const polisher = corpus.cases.map((c) => ({
 	requiresPunctuation: c.requiresPunctuation ?? false,
 	requiresLineBreak: c.requiresLineBreak ?? false,
 	vocabulary: c.vocabulary ?? [],
-	corrections: c.corrections ?? []
+	corrections: c.corrections ?? [],
+	snippets: c.snippets ?? [],
+	exact: c.exact ?? null
 }));
 
 const verbs = commands.cases.map((c) => ({

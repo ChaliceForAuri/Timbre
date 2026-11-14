@@ -56,6 +56,34 @@ struct SnippetTableTests {
         #expect(!SnippetTable.keptAll(guarded, in: "Send it to SNIP12."))
     }
 
+    @Test("A name said twice is two placeholders, and losing either is noticed")
+    func saidTwice() {
+        let guarded = SnippetTable.guarded(snippets, in: "give him my email and give her my email too")
+        #expect(guarded.text == "give him SNIP1 and give her SNIP2 too")
+        #expect(guarded.texts == ["ada@example.com", "ada@example.com"])
+        #expect(!SnippetTable.keptAll(guarded, in: "Give him SNIP1 and her too."))
+        #expect(!SnippetTable.keptAll(guarded, in: "Give him SNIP1 and her SNIP1 too."))
+        #expect(
+            SnippetTable.restored("Give him SNIP1 and her SNIP2 too.", from: guarded)
+                == "Give him ada@example.com and her ada@example.com too.")
+    }
+
+    @Test("A snippet whose text looks like a placeholder is written, not expanded again")
+    func placeholderShapedText() {
+        let odd = [Snippet(say: "first thing", text: "SNIP2")!, Snippet(say: "other", text: "two")!]
+        let guarded = SnippetTable.guarded(odd, in: "first thing then other")
+        #expect(SnippetTable.restored(guarded.text, from: guarded) == "SNIP2 then two")
+    }
+
+    @Test("What a snippet wrote is not what the user said")
+    func withoutTexts() {
+        let out = SnippetTable.withoutTexts(
+            snippets, in: "Run git status --short --branch, then email ada@example.com.")
+        #expect(!out.contains("git status"))
+        #expect(!out.contains("ada@example.com"))
+        #expect(out.contains("then email"))
+    }
+
     @Test("A text with regex or replacement characters is written as it is")
     func literalText() {
         let odd = [Snippet(say: "the pattern", text: #"^\d+$ costs $0 \1"#)!]

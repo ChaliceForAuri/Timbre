@@ -20,7 +20,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "02-false-start",
@@ -38,7 +40,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "03-run-on",
@@ -55,7 +59,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "04-spoken-formatting",
@@ -73,7 +79,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": true,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "05-keeps-voice",
@@ -93,7 +101,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "06-vocabulary",
@@ -111,7 +121,9 @@
 				"vocabulary": [
 					"TimbreKit"
 				],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "07-app-context-slack",
@@ -131,7 +143,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "08-no-added-facts",
@@ -152,7 +166,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "09-short",
@@ -167,7 +183,9 @@
 				"requiresPunctuation": false,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "10-punctuation-words",
@@ -183,7 +201,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "11-hard-vocabulary",
@@ -230,7 +250,9 @@
 						"heard": "evils",
 						"meant": "evals"
 					}
-				]
+				],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "12-snippet-alone",
@@ -247,7 +269,18 @@
 				"requiresPunctuation": false,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [
+					{
+						"say": "my work email",
+						"text": "ada.lovelace@example.com"
+					},
+					{
+						"say": "status command",
+						"text": "git status --short --branch"
+					}
+				],
+				"exact": "ada.lovelace@example.com"
 			},
 			{
 				"id": "13-snippet-in-a-sentence",
@@ -268,7 +301,18 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [
+					{
+						"say": "my work email",
+						"text": "ada.lovelace@example.com"
+					},
+					{
+						"say": "status command",
+						"text": "git status --short --branch"
+					}
+				],
+				"exact": null
 			},
 			{
 				"id": "14-snippet-starts-the-sentence",
@@ -287,7 +331,18 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [
+					{
+						"say": "my work email",
+						"text": "ada.lovelace@example.com"
+					},
+					{
+						"say": "status command",
+						"text": "git status --short --branch"
+					}
+				],
+				"exact": null
 			}
 		]
 	},

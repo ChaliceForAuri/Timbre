@@ -56,44 +56,52 @@ nonisolated public enum SnippetTable {
     }
 
     /// Swaps every snippet name in `text` for a placeholder. Longest name
-    /// first, so "my work email" wins over "my email".
+    /// first, so "my work email" wins over "my email". Each occurrence gets
+    /// its own number, so a name said twice is two placeholders and losing
+    /// either is noticed.
     public static func guarded(_ snippets: [Snippet], in text: String) -> Guarded {
         var result = text
         var texts: [String] = []
         for snippet in snippets.sorted(by: { $0.say.count > $1.say.count }) {
-            guard let pattern = CorrectionTable.pattern(matching: snippet.say),
-                result.contains(pattern)
-            else { continue }
-            texts.append(snippet.text)
-            result = result.replacing(pattern, with: placeholder(texts.count))
+            guard let pattern = CorrectionTable.pattern(matching: snippet.say) else { continue }
+            result = result.replacing(pattern) { _ in
+                texts.append(snippet.text)
+                return placeholder(texts.count)
+            }
         }
         return Guarded(text: result, texts: texts)
     }
 
-    /// Whether `text` still holds every placeholder. A cleanup that lost
-    /// one has lost the user's snippet, and is not used.
+    /// Whether `text` still holds every placeholder, once each. A cleanup
+    /// that lost one has lost the user's snippet, and one that repeated one
+    /// has written it twice; neither is used.
     public static func keptAll(_ guarded: Guarded, in text: String) -> Bool {
-        guarded.texts.indices.allSatisfy { index in
-            guard let pattern = placeholderPattern(index + 1) else { return false }
-            return text.contains(pattern)
-        }
+        let found = text.matches(of: anyPlaceholder).compactMap { Int($0.output.1) }
+        return found.sorted() == guarded.texts.indices.map { $0 + 1 }
     }
 
-    /// Puts the snippet texts back. Highest number first, so `SNIP1` does
-    /// not match inside `SNIP12`; case ignored, since a cleanup may
-    /// lowercase a placeholder.
+    /// Puts the snippet texts back, in one pass: a text is never searched
+    /// for placeholders, so a snippet may itself contain "SNIP2". Case is
+    /// ignored, since a cleanup may lowercase a placeholder.
     public static func restored(_ text: String, from guarded: Guarded) -> String {
-        var result = text
-        for index in guarded.texts.indices.reversed() {
-            guard let pattern = placeholderPattern(index + 1) else { continue }
-            let replacement = guarded.texts[index]
-            result = result.replacing(pattern) { _ in replacement }
+        text.replacing(anyPlaceholder) { match in
+            guard let index = Int(match.output.1), guarded.texts.indices.contains(index - 1) else {
+                return String(match.output.0)
+            }
+            return guarded.texts[index - 1]
         }
-        return result
     }
 
-    private static func placeholderPattern(_ index: Int) -> Regex<AnyRegexOutput>? {
-        try? Regex("\\b" + placeholder(index) + "\\b").ignoresCase()
+    /// `text` with every snippet's text taken out: what the user said, as
+    /// opposed to what a snippet wrote for them.
+    public static func withoutTexts(_ snippets: [Snippet], in text: String) -> String {
+        snippets.sorted(by: { $0.text.count > $1.text.count }).reduce(text) {
+            $0.replacingOccurrences(of: $1.text, with: " ")
+        }
+    }
+
+    private static var anyPlaceholder: Regex<(Substring, Substring)> {
+        /\bSNIP(\d+)\b/.ignoresCase()
     }
 
     /// Lowercased words, with the punctuation the transcriber adds around

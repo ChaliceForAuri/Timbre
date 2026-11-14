@@ -2,7 +2,7 @@ import SwiftUI
 import TimbreKit
 import UniformTypeIdentifiers
 
-/// Settings › Library (GDR-0023): one store, five kinds, with a kind filter
+/// Settings › Library (GDR-0023): one store, six kinds, with a kind filter
 /// and a search; the word of the day and its notification; the profile;
 /// export and import. Shown in full, so nothing rewrites text or answers a
 /// question in secret.
@@ -116,7 +116,8 @@ private struct EntriesSection: View {
             Text(
                 "Words the model should prefer, phrases to practise, your own acronyms (they answer explain "
                     + "first), spellings fix corrected, and corrections — what Timbre heard against what you meant, "
-                    + "applied before the model. Nothing here leaves your Mac."
+                    + "applied before the model, and snippets: a name you say for text written exactly. "
+                    + "Nothing here leaves your Mac."
             )
             .font(.caption)
             .foregroundStyle(.secondary)

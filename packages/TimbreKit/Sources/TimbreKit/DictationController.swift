@@ -560,7 +560,10 @@ public final class DictationController {
             )
             let polishDuration = clock.now - polishStarted
             // Today's word, met in the wild (GDR-0027): only the fact is kept.
-            library.noteMet(in: cleaned, app: capturedAppName, bundled: BundledLists.all)
+            // A word a snippet wrote was not said, so it is not met (GDR-0032).
+            library.noteMet(
+                in: SnippetTable.withoutTexts(library.snippets, in: cleaned), app: capturedAppName,
+                bundled: BundledLists.all)
 
             // Hide BEFORE pasting. If the overlay is still on screen when the
             // synthetic ⌘V fires, the pill flickers over the user's own text —
