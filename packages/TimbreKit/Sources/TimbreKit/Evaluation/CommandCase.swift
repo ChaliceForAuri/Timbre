@@ -76,7 +76,8 @@ nonisolated public enum CommandChecks {
         switch (testCase.command, result.kind) {
         case (_, .failure):
             return ["did nothing: \(result.text)"]
-        case (.explain, .explanation), (.fix, .replacement), (.fix, .unchanged), (.shorten, .replacement),
+        case (.explain, .explanation), (.learn, .explanation), (.fix, .replacement), (.fix, .unchanged),
+            (.shorten, .replacement),
             (.plain, .replacement), (.plain, .unchanged):
             break
         default:
