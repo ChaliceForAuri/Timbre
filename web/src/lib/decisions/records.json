@@ -1,5 +1,41 @@
 [
 	{
+		"id": "GDR-0033",
+		"kind": "GDR",
+		"number": "0033",
+		"slug": "learn-select-say-it-and-it-comes-back",
+		"path": "docs/decisions/gdr/0033-learn-select-say-it-and-it-comes-back.md",
+		"title": "Learn: select it, say the word, and it comes back",
+		"status": "Accepted",
+		"statusKind": "accepted",
+		"statusNote": null,
+		"supersededBy": null,
+		"supersedes": [],
+		"date": "2026-11-14",
+		"relations": [
+			{
+				"label": "Amends",
+				"summary": "GDR-0012 and GDR-0015: command mode has a fifth word. The roadmap's rule — a…",
+				"refs": [
+					"GDR-0012",
+					"GDR-0015"
+				]
+			},
+			{
+				"label": "Builds on",
+				"summary": "GDR-0023 (the Library), GDR-0027 (the word of the day), GDR-0014 (commands act…",
+				"refs": [
+					"GDR-0023",
+					"GDR-0027",
+					"GDR-0014"
+				]
+			}
+		],
+		"excerpt": "Timbre's purpose is learning and excelling at work. The moment a word is\nworth learning is the moment it is met: in a message, a document, a pull\nrequest. Until now, getting it into the Library meant opening Settings and\ntyping it. Explain already answers \"what is this?\" on a selection; nothing\nkept the word afterwards.",
+		"plain": "Accepted.\nContext.\nTimbre's purpose is learning and excelling at work. The moment a word is\nworth learning is the moment it is met: in a message, a document, a pull\nrequest. Until now, getting it into the Library meant opening Settings and\ntyping it. Explain already answers \"what is this?\" on a selection; nothing\nkept the word afterwards.\nDecision.\n1. Hold right ⌘ on a selection and say \"learn\". The word or short\n phrase is saved to the Library, and its explanation is shown, as explain\n would show it. The user asked because they did not know it.\n2. Saving is deterministic and comes first. LearnTarget decides: one\n word is a word, two to six words are a phrase, more is refused\n (\"select one word or a short phrase\"), the punctuation at the edges of a\n selection is dropped. No model is involved in what is saved, and no\n model-written meaning is stored: the model invents expansions it does\n not know (GDR-0012), and a stored guess would then answer explain first\n as if the user had taught it. The meaning is the user's to add.\n3. It comes back the way every entry does. The entry gets a taught\n event, so it is in the daily pick, the word-of-the-day notification and\n practice, with strength from its events (ADR-0014). Learn adds no\n second reminder system.\n4. A term already in the Library is left alone. Its meaning and history\n stay; the card says \"already in your Library\" and still explains.\n5. Learn never changes the user's text. Like explain, it shows a card\n and pastes nothing. If the explanation fails, the pill still says the\n word was saved.\n6. The word is \"learn\" (also \"learning\", \"learned\", \"memorize\",\n \"memorise\"). Not \"remember\" or \"save\": with nothing selected, a hold is\n a to-do (GDR-0016), and those words open too many of them. Learn waits\n for the whole word; only explain may fire on a prefix (GDR-0014).\n7. Provenance says how. A new how, learned, with the app the word\n was met in. Never the sentence it was met in (GDR-0004).\nConsequences.\nAn acronym learned this way is a word until the user gives it a\n meaning; then explain answers from it first.\nThe pill's hint has five words. Measured 2026-11-14 with\n timbre-eval --live-commands: \"learn\" in two synthetic voices and \"learn\n this\" were each recognised whole in the first live result, at about\n 970 ms, and the session after the abandon still transcribed. A real\n voice is still the user's test.\nWith nothing selected, \"learn Spanish this week\" is heard as the command\n and asks for a selection, as \"fix the login bug\" already does for fix.\n The to-do is not filed. This is the existing trade of GDR-0014, now one\n word wider.\niPhone: explain and learn on a selection are Mac gestures; the companion\n shows the learned entries through the same Library.\nAlternatives considered.\nStore the model's explanation as the meaning. Rejected, decision 2.\nA separate \"to learn\" list with its own reminders. Rejected: the\n Library, the daily pick and practice are that list.\nLearn a whole sentence. Rejected: there is no drill that can score a\n sentence, and the Library is terms.",
+		"html": "<h2>Context</h2>\n<p>Timbre&#39;s purpose is learning and excelling at work. The moment a word is\nworth learning is the moment it is met: in a message, a document, a pull\nrequest. Until now, getting it into the Library meant opening Settings and\ntyping it. Explain already answers &quot;what is this?&quot; on a selection; nothing\nkept the word afterwards.</p>\n<h2>Decision</h2>\n<ol>\n<li><strong>Hold right ⌘ on a selection and say &quot;learn&quot;.</strong> The word or short\nphrase is saved to the Library, and its explanation is shown, as explain\nwould show it. The user asked because they did not know it.</li>\n<li><strong>Saving is deterministic and comes first.</strong> <code>LearnTarget</code> decides: one\nword is a <code>word</code>, two to six words are a <code>phrase</code>, more is refused\n(&quot;select one word or a short phrase&quot;), the punctuation at the edges of a\nselection is dropped. No model is involved in what is saved, and no\nmodel-written meaning is stored: the model invents expansions it does\nnot know (GDR-0012), and a stored guess would then answer explain first\nas if the user had taught it. The meaning is the user&#39;s to add.</li>\n<li><strong>It comes back the way every entry does.</strong> The entry gets a <code>taught</code>\nevent, so it is in the daily pick, the word-of-the-day notification and\npractice, with strength from its events (ADR-0014). Learn adds no\nsecond reminder system.</li>\n<li><strong>A term already in the Library is left alone.</strong> Its meaning and history\nstay; the card says &quot;already in your Library&quot; and still explains.</li>\n<li><strong>Learn never changes the user&#39;s text.</strong> Like explain, it shows a card\nand pastes nothing. If the explanation fails, the pill still says the\nword was saved.</li>\n<li><strong>The word is &quot;learn&quot;</strong> (also &quot;learning&quot;, &quot;learned&quot;, &quot;memorize&quot;,\n&quot;memorise&quot;). Not &quot;remember&quot; or &quot;save&quot;: with nothing selected, a hold is\na to-do (GDR-0016), and those words open too many of them. Learn waits\nfor the whole word; only explain may fire on a prefix (GDR-0014).</li>\n<li><strong>Provenance says how.</strong> A new <code>how</code>, <code>learned</code>, with the app the word\nwas met in. Never the sentence it was met in (GDR-0004).</li>\n</ol>\n<h2>Consequences</h2>\n<ul>\n<li>An acronym learned this way is a <code>word</code> until the user gives it a\nmeaning; then explain answers from it first.</li>\n<li>The pill&#39;s hint has five words. Measured 2026-11-14 with\n<code>timbre-eval --live-commands</code>: &quot;learn&quot; in two synthetic voices and &quot;learn\nthis&quot; were each recognised whole in the first live result, at about\n970 ms, and the session after the abandon still transcribed. A real\nvoice is still the user&#39;s test.</li>\n<li>With nothing selected, &quot;learn Spanish this week&quot; is heard as the command\nand asks for a selection, as &quot;fix the login bug&quot; already does for fix.\nThe to-do is not filed. This is the existing trade of GDR-0014, now one\nword wider.</li>\n<li>iPhone: explain and learn on a selection are Mac gestures; the companion\nshows the learned entries through the same Library.</li>\n</ul>\n<h2>Alternatives considered</h2>\n<ul>\n<li><strong>Store the model&#39;s explanation as the meaning.</strong> Rejected, decision 2.</li>\n<li><strong>A separate &quot;to learn&quot; list with its own reminders.</strong> Rejected: the\nLibrary, the daily pick and practice are that list.</li>\n<li><strong>Learn a whole sentence.</strong> Rejected: there is no drill that can score a\nsentence, and the Library is terms.</li>\n</ul>\n"
+	},
+	{
 		"id": "ADR-0018",
 		"kind": "ADR",
 		"number": "0018",

@@ -141,6 +141,31 @@ public final class Library {
 
     // MARK: - Entries and events
 
+    /// What `learn` did with a selection (GDR-0033).
+    public enum Learned: Equatable, Sendable {
+        case saved(String)
+        case alreadyKnown(String)
+        case tooLong
+        case nothing
+    }
+
+    /// Saves a selected word or short phrase to be learned. An entry of any
+    /// learnable kind already holding the term is left as it is: its meaning
+    /// and history are the user's.
+    @discardableResult
+    public func learn(_ selection: String, app: String? = nil, on date: Date = Date()) -> Learned {
+        let target = LearnTarget(selection: selection)
+        guard let entry = target.entry(source: provenance(.learned, app: app, on: date)) else {
+            return target == .tooLong ? .tooLong : .nothing
+        }
+        let known = entries.contains {
+            $0.kind.isLearnable && LibraryEntry.normalized($0.term) == LibraryEntry.normalized(entry.term)
+        }
+        if known { return .alreadyKnown(entry.term) }
+        upsert(entry, on: date)
+        return .saved(entry.term)
+    }
+
     public func entry(_ id: String) -> LibraryEntry? {
         entries.first { $0.id == id }
     }

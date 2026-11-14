@@ -159,7 +159,7 @@ final class TextTransformer {
             }
 
             switch command {
-            case .explain:
+            case .explain, .learn:
                 return (.explanation(ExplanationTrimmer.trimmed(result), source: .model), nil)
             case .fix where result == frame.core:
                 return (.unchanged("Looks right already."), nil)
@@ -218,7 +218,7 @@ final class TextTransformer {
         case .shorten, .plain:
             let response = try await session.respond(to: prompt, options: options)
             return OutputCleaner.unwrapped(response.content, original: source)
-        case .explain:
+        case .explain, .learn:
             // Streamed, so the card fills as the model writes; and stopped
             // as soon as the card is full rather than when the model is done.
             var latest = ""
@@ -236,7 +236,7 @@ final class TextTransformer {
         case .fix: "Couldn't fix that safely, so your text is unchanged."
         case .shorten: "Couldn't shorten that safely, so your text is unchanged."
         case .plain: "Couldn't make that plain safely, so your text is unchanged."
-        case .explain: "Couldn't explain that."
+        case .explain, .learn: "Couldn't explain that."
         }
     }
 
@@ -278,7 +278,7 @@ final class TextTransformer {
             facts need, usually shorter, never longer. Do not add anything. Return only the rewritten \
             text.
             """
-        case .explain:
+        case .explain, .learn:
             """
             You explain a word, acronym or passage the user has selected. Answer in one or two short \
             sentences, under forty words. If it is an acronym, start with what it stands for in the \
@@ -328,7 +328,7 @@ final class TextTransformer {
                 Rewrite the text above in plain, direct English. Keep who it is addressed to, every \
                 fact, and every request; drop everything that carries no information.
                 """
-        case .explain:
+        case .explain, .learn:
             // The reader's field first (product map §3): "PA" is a physician
             // assistant to a nurse before it is a personal assistant.
             let field =
