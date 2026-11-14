@@ -50,7 +50,7 @@ the row says so.*
 
 | Data | Where | Purpose | Default | Lifetime and erasure | Who can read it |
 |---|---|---|---|---|---|
-| The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Encrypted in transit and at rest under Apple's keys. Not yet end-to-end encrypted: that needs the fields written as CloudKit encrypted values and record names that do not carry the term (gap 6, GDR-0031). |
+| The Library's events and entries and the profile, as immutable records in the zone "Library" | The user's private CloudKit database in container `iCloud.dev.hugopretorius.Timbre` | The same Library on every device (ADR-0017) | Off (GDR-0010) | Until the user turns sync off and removes the app's data in their iCloud settings (System Settings › iCloud › Manage Storage). An in-app "delete from iCloud" is not built; see §6. | The user's devices only. The private database is not readable by the developer. Encrypted in transit and at rest. Every field is a CloudKit encrypted value and every record is named by a keyed hash, the key itself an encrypted value in the zone (ADR-0018): end to end where the user has Advanced Data Protection on, under Apple's keys otherwise. Still visible to Apple either way: that the zone exists, how many records of each type, their sizes and timestamps. The claim is not made in the product until it is measured on a real zone (gap 6, GDR-0031). |
 | Sync state | `~/Library/Application Support/Timbre/library-sync.json` on the Mac; `library-sync.json` in the app group container on the iPhone and the Watch | Where CKSyncEngine left off. Its keys are entry and event ids, which carry the term, so it is as private as the Library; GDR-0031 replaces them with opaque names | Off | Deleted with the file or the app | Never |
 
 Never synced, by rule: dictations, transcripts, captures, timings
@@ -113,12 +113,12 @@ Known gaps, to be closed before the product takes customers:
 5. **GDR-0005 still says the repository is private.** It is public, under a
    LICENSE that reserves all rights; a record superseding that one sentence
    is pending, so the records, the inventory and the site agree.
-6. **iCloud sync is not yet end-to-end encrypted.** Advanced Data Protection
-   covers only fields stored as CloudKit encrypted values and assets; the
-   Library's fields are plain, and the event and entry records' names carry
-   the term. GDR-0031 decides the fix, before any user's zone exists: the
-   fields through `encryptedValues`, records named by an opaque hash. The
-   copy says "not yet end-to-end encrypted" until then.
+6. **iCloud sync's end-to-end encryption is built and not yet proven.**
+   ADR-0018 writes every field through `encryptedValues` and names records
+   by a keyed hash, as GDR-0031 required. What remains is GDR-0031's
+   decision 3: a record read back from a real zone with the server-side
+   view showing ciphertext. The copy says "not yet end-to-end encrypted"
+   until that measurement is recorded.
 7. **An unfiled to-do on the Watch has no delete.** `pending-todos.json`
    keeps an item until the iPhone confirms filing; the Watch should show
    the queue and let the user drop an item. A filing failure is now reported

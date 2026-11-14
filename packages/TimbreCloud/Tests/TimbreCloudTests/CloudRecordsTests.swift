@@ -9,14 +9,15 @@ struct CloudRecordsTests {
 
     private let source = Provenance(
         device: .iPhone, date: Date(timeIntervalSince1970: 1_700_000_000), how: .dictated, app: "Mail")
+    private let key = Data(repeating: 7, count: 32)
 
     @Test func anEventRoundTrips() {
         let event = LibraryEvent(
             entry: "word:ephemeral", kind: .passed, date: Date(timeIntervalSince1970: 1_700_000_100),
             device: .watch,
             app: nil, drill: .spellIt)
-        let record = CloudRecords.record(for: event)
-        #expect(record.recordID.recordName == event.id)
+        let record = CloudRecords.record(for: event, key: key)
+        #expect(record.recordID.recordName == CloudRecords.name(for: event.id, key: key))
         #expect(record.recordID.zoneID.zoneName == "Library")
         #expect(CloudRecords.event(from: record) == event)
     }
@@ -26,7 +27,7 @@ struct CloudRecordsTests {
             kind: .acronym, term: "ADR", meaning: "Architecture Decision Record", example: "We wrote an ADR.",
             tags: ["software"], source: source)!
         entry.edited = Date(timeIntervalSince1970: 1_700_000_500)
-        let back = CloudRecords.entry(from: CloudRecords.record(for: entry))
+        let back = CloudRecords.entry(from: CloudRecords.record(for: entry, key: key))
         #expect(back == entry)
         #expect(back?.source.app == "Mail")
     }
@@ -62,12 +63,121 @@ struct CloudRecordsTests {
         defer { try? FileManager.default.removeItem(at: directory) }
         let url = directory.appending(path: "library-sync.json")
         var state = SyncState()
-        state.pushedEventIDs = ["taught|word:a|1|mac||"]
-        state.pushedEntryEdits = ["word:a": Date(timeIntervalSince1970: 1_700_000_000)]
+        state.nameKey = Data(repeating: 1, count: 32)
+        state.keyConfirmed = true
+        state.pushedEvents = ["ab12"]
+        state.pushedEntryEdits = ["cd34": Date(timeIntervalSince1970: 1_700_000_000)]
         state.pushedProfile = Profile(industries: ["law"], role: nil, firstLanguage: nil)
         try state.save(to: url)
         #expect(SyncState.load(from: url) == state)
         #expect(SyncState.load(from: directory.appending(path: "missing.json")) == SyncState())
+    }
+
+    @Test("A state file from before ADR-0018 is not read: the sync starts again")
+    func anOldStateFileIsDropped() throws {
+        let directory = URL(filePath: NSTemporaryDirectory()).appending(
+            path: UUID().uuidString, directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = directory.appending(path: "library-sync.json")
+        let old = #"{"pushedEventIDs":["taught|word:a|1|mac||"],"pushedEntryEdits":{},"systemFields":{}}"#
+        try Data(old.utf8).write(to: url)
+        #expect(SyncState.load(from: url) == SyncState())
+    }
+}
+
+/// GDR-0031: nothing the user wrote is readable on the server.
+struct EncryptedSchemaTests {
+
+    private let key = Data(repeating: 7, count: 32)
+    private let source = Provenance(
+        device: .mac, date: Date(timeIntervalSince1970: 1_700_000_000), how: .typed, app: "Notes")
+
+    @Test("No record carries a plain field: every value is an encrypted value")
+    func noPlainFields() {
+        var entry = LibraryEntry(
+            kind: .acronym, term: "ADR", heard: "a d r", meaning: "Architecture Decision Record",
+            example: "We wrote an ADR.", tags: ["software"], source: source)!
+        entry.edited = Date(timeIntervalSince1970: 1_700_000_500)
+        let event = LibraryEvent(
+            entry: entry.id, kind: .passed, date: Date(timeIntervalSince1970: 1_700_000_100), device: .mac,
+            app: "Notes", drill: .sayIt)
+        let profile = Profile(industries: ["software"], role: "engineer", firstLanguage: "Afrikaans")
+        let records = [
+            CloudRecords.record(for: entry, key: key), CloudRecords.record(for: event, key: key),
+            CloudRecords.record(for: profile),
+            CloudRecords.fill(
+                CKRecord(
+                    recordType: CloudRecords.keyType, recordID: CloudRecords.recordID(CloudRecords.keyName)),
+                withNameKey: key),
+        ]
+        for record in records {
+            // `allKeys` lists plain and encrypted keys alike; what is left
+            // after taking the encrypted ones away is what the server reads.
+            let plain = Set(record.allKeys()).subtracting(record.encryptedValues.allKeys())
+            #expect(plain.isEmpty, "\(record.recordType) has plain fields \(plain)")
+            #expect(!record.encryptedValues.allKeys().isEmpty)
+        }
+    }
+
+    @Test("A record's name is a keyed hash: it holds neither the term nor the id")
+    func namesAreOpaque() {
+        let entry = LibraryEntry(kind: .word, term: "ephemeral", source: source)!
+        let name = CloudRecords.record(for: entry, key: key).recordID.recordName
+        #expect(name.count == 64)
+        #expect(name.allSatisfy { $0.isHexDigit })
+        #expect(!name.contains("ephemeral"))
+        // The same id under the same key is the same record on every device…
+        #expect(name == CloudRecords.name(for: entry.id, key: key))
+        // …and under another key it is unrecognisable, so a name cannot be
+        // guessed by hashing a dictionary.
+        #expect(name != CloudRecords.name(for: entry.id, key: Data(repeating: 8, count: 32)))
+    }
+
+    @Test func theNameKeyRoundTripsAndAWrongSizeIsRefused() {
+        let fresh = CloudRecords.newNameKey()
+        #expect(fresh.count == 32)
+        #expect(fresh != CloudRecords.newNameKey())
+        let id = CloudRecords.recordID(CloudRecords.keyName)
+        let record = CloudRecords.fill(
+            CKRecord(recordType: CloudRecords.keyType, recordID: id), withNameKey: fresh)
+        #expect(CloudRecords.nameKey(from: record) == fresh)
+        let short = CloudRecords.fill(
+            CKRecord(recordType: CloudRecords.keyType, recordID: id), withNameKey: Data([1, 2, 3]))
+        #expect(CloudRecords.nameKey(from: short) == nil)
+    }
+}
+
+struct SyncStateKeyTests {
+    private let ours = Data(repeating: 1, count: 32)
+    private let theirs = Data(repeating: 2, count: 32)
+
+    @Test("The server confirming our own key keeps what was pushed")
+    func sameKey() {
+        var state = SyncState(nameKey: ours, pushedEvents: ["a"])
+        let confirmed = state.adopt(nameKey: ours)
+        #expect(confirmed)
+        #expect(state.keyConfirmed)
+        #expect(state.pushedEvents == ["a"])
+        let again = state.adopt(nameKey: ours)
+        #expect(!again)
+    }
+
+    @Test("Losing to another device's key forgets every name made under ours")
+    func anotherKeyWins() {
+        var state = SyncState(
+            nameKey: ours, keyConfirmed: true, pushedEvents: ["a"],
+            pushedEntryEdits: ["b": Date(timeIntervalSince1970: 1)],
+            systemFields: ["b": Data([1]), CloudRecords.keyName: Data([2])],
+            pushedProfile: Profile(industries: ["law"]))
+        let changed = state.adopt(nameKey: theirs)
+        #expect(changed)
+        #expect(state.nameKey == theirs)
+        #expect(state.keyConfirmed)
+        #expect(state.pushedEvents.isEmpty)
+        #expect(state.pushedEntryEdits.isEmpty)
+        #expect(state.systemFields.keys.sorted() == [CloudRecords.keyName])
+        #expect(state.pushedProfile == nil)
     }
 }
 

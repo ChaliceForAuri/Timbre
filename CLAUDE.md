@@ -226,8 +226,10 @@ TimbreCore's types reach the app through TimbreKit's re-export.
 - **iCloud sync is a union of events, never a stored number** (ADR-0017).
   `TimbreCloud` sends events once and entries by latest edit through
   CKSyncEngine; the Library's own `merge` does the merging. A field is never
-  renamed, retyped or removed: the schema is forever. Off by default; the
-  binary still makes no request.
+  renamed, retyped or removed: the schema is forever. Every field is an
+  encrypted value and every record is named by a keyed hash of its id; the
+  key is agreed with the server before anything else is sent (ADR-0018,
+  GDR-0031). Off by default; the binary still makes no request.
 - **Strength is never stored** (ADR-0014). The Library keeps events — taught,
   met, passed, failed, forgot — and `Strength` derives retrievability with
   FSRS-4.5; the daily pick is computed from the events before the start of
