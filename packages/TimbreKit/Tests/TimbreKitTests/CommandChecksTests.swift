@@ -9,6 +9,17 @@ struct CommandChecksTests {
         try JSONDecoder().decode(CommandCase.self, from: Data(json.utf8))
     }
 
+    /// Learn saves, then explains (GDR-0033): an explanation is its right result.
+    @Test func learnProducesAnExplanation() throws {
+        let testCase = try makeCase(#"{"id":"x","command":"learn","text":"idempotent"}"#)
+        #expect(
+            CommandChecks.failures(
+                for: testCase, result: .init(kind: .explanation, text: "Same result each time.")
+            ).isEmpty)
+        let wrong = CommandChecks.failures(for: testCase, result: .init(kind: .replacement, text: "x"))
+        #expect(wrong == ["learn produced a replacement"])
+    }
+
     @Test func aFailureIsReportedAsDoingNothing() throws {
         let testCase = try makeCase(#"{"id":"x","command":"fix","text":"teh"}"#)
         let failures = CommandChecks.failures(
@@ -52,16 +63,5 @@ struct CommandChecksStemTests {
         #expect(CommandChecks.contains("decision*", in: answer))
         #expect(!CommandChecks.contains("architecture", in: answer))
         #expect(!CommandChecks.contains("record*", in: "a log of choices"))
-    }
-
-    /// Learn saves, then explains (GDR-0033): an explanation is its right result.
-    @Test func learnProducesAnExplanation() throws {
-        let testCase = try makeCase(#"{"id":"x","command":"learn","text":"idempotent"}"#)
-        #expect(
-            CommandChecks.failures(
-                for: testCase, result: .init(kind: .explanation, text: "Same result each time.")
-            ).isEmpty)
-        let wrong = CommandChecks.failures(for: testCase, result: .init(kind: .replacement, text: "x"))
-        #expect(wrong == ["learn produced a replacement"])
     }
 }
