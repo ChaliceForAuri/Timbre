@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// The Library (GDR-0023): one store, five kinds. Words the polisher should
+/// The Library (GDR-0023): one store, six kinds (the sixth is the snippet, GDR-0032). Words the polisher should
 /// prefer, corrections that run before the model (GDR-0011), definitions
 /// that answer explain first (GDR-0012), phrases and spellings to practise —
 /// each an entry with a meaning, an example, where it came from, and a
@@ -49,13 +49,18 @@ public final class Library {
     public init(fileURL: URL, device: Device = .mac, legacy: UserDefaults? = .standard) {
         self.fileURL = fileURL
         self.device = device
-        if let data = try? Data(contentsOf: fileURL),
-            let document = try? Self.makeDecoder().decode(LibraryDocument.self, from: data)
-        {
-            entries = document.entries
-            events = document.events
-            profile = document.profile
-            legacyImported = document.legacyImported
+        if let data = try? Data(contentsOf: fileURL) {
+            if let document = try? Self.makeDecoder().decode(LibraryDocument.self, from: data) {
+                entries = document.entries
+                events = document.events
+                profile = document.profile
+                legacyImported = document.legacyImported
+            } else {
+                // A file this build cannot read — a newer build's kind, or
+                // damage — is the user's Library all the same. It is set
+                // aside before anything is written over it.
+                Self.setAside(data, beside: fileURL)
+            }
         }
         if !legacyImported {
             if let legacy { importLegacy(from: legacy) }
@@ -63,6 +68,18 @@ public final class Library {
         }
         loading = false
         save()
+    }
+
+    /// Where an unreadable Library file is kept: beside the Library, never
+    /// overwritten once it exists, so the first copy set aside survives.
+    public static func unreadableURL(beside fileURL: URL) -> URL {
+        fileURL.deletingLastPathComponent().appending(path: "library.unreadable.json")
+    }
+
+    private static func setAside(_ data: Data, beside fileURL: URL) {
+        let url = unreadableURL(beside: fileURL)
+        guard !FileManager.default.fileExists(atPath: url.path) else { return }
+        try? data.write(to: url, options: .atomic)
     }
 
     // MARK: - The three lists, as the pipeline and Settings read them
@@ -76,6 +93,13 @@ public final class Library {
     public var corrections: [Correction] {
         entries.filter { $0.kind == .correction }.compactMap {
             Correction(heard: $0.heard ?? "", meant: $0.term)
+        }
+    }
+
+    /// Names the user says against the exact text they stand for (GDR-0032).
+    public var snippets: [Snippet] {
+        entries.filter { $0.kind == .snippet }.compactMap {
+            Snippet(say: $0.heard ?? "", text: $0.term)
         }
     }
 

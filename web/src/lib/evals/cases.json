@@ -20,7 +20,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "02-false-start",
@@ -38,7 +40,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "03-run-on",
@@ -55,7 +59,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "04-spoken-formatting",
@@ -73,7 +79,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": true,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "05-keeps-voice",
@@ -93,7 +101,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "06-vocabulary",
@@ -111,7 +121,9 @@
 				"vocabulary": [
 					"TimbreKit"
 				],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "07-app-context-slack",
@@ -131,7 +143,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "08-no-added-facts",
@@ -152,7 +166,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "09-short",
@@ -167,7 +183,9 @@
 				"requiresPunctuation": false,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "10-punctuation-words",
@@ -183,7 +201,9 @@
 				"requiresPunctuation": true,
 				"requiresLineBreak": false,
 				"vocabulary": [],
-				"corrections": []
+				"corrections": [],
+				"snippets": [],
+				"exact": null
 			},
 			{
 				"id": "11-hard-vocabulary",
@@ -230,7 +250,99 @@
 						"heard": "evils",
 						"meant": "evals"
 					}
-				]
+				],
+				"snippets": [],
+				"exact": null
+			},
+			{
+				"id": "12-snippet-alone",
+				"note": "GDR-0032: an utterance that is only a snippet's name is the snippet, verbatim: no capital, no full stop. Deterministic; the model never runs.",
+				"transcript": "My work email.",
+				"spoken": null,
+				"appContext": null,
+				"required": [
+					"ada.lovelace@example.com"
+				],
+				"forbidden": [
+					"work email"
+				],
+				"requiresPunctuation": false,
+				"requiresLineBreak": false,
+				"vocabulary": [],
+				"corrections": [],
+				"snippets": [
+					{
+						"say": "my work email",
+						"text": "ada.lovelace@example.com"
+					},
+					{
+						"say": "status command",
+						"text": "git status --short --branch"
+					}
+				],
+				"exact": "ada.lovelace@example.com"
+			},
+			{
+				"id": "13-snippet-in-a-sentence",
+				"note": "GDR-0032: a name inside a sentence is a placeholder while the model cleans up around it; the text comes back exact and the sentence still gets its capital and stop.",
+				"transcript": "um so you can reach me at my work email and uh I'll reply the same day",
+				"spoken": null,
+				"appContext": null,
+				"required": [
+					"ada.lovelace@example.com",
+					"reply"
+				],
+				"forbidden": [
+					"um",
+					"uh",
+					"SNIP",
+					"work email"
+				],
+				"requiresPunctuation": true,
+				"requiresLineBreak": false,
+				"vocabulary": [],
+				"corrections": [],
+				"snippets": [
+					{
+						"say": "my work email",
+						"text": "ada.lovelace@example.com"
+					},
+					{
+						"say": "status command",
+						"text": "git status --short --branch"
+					}
+				],
+				"exact": null
+			},
+			{
+				"id": "14-snippet-starts-the-sentence",
+				"note": "GDR-0032: a snippet that opens the sentence is not capitalised, and symbols inside it survive.",
+				"transcript": "Status command is what I run first, and then, like, I send it to my work email.",
+				"spoken": null,
+				"appContext": null,
+				"required": [
+					"git status --short --branch",
+					"ada.lovelace@example.com"
+				],
+				"forbidden": [
+					"SNIP",
+					"like,"
+				],
+				"requiresPunctuation": true,
+				"requiresLineBreak": false,
+				"vocabulary": [],
+				"corrections": [],
+				"snippets": [
+					{
+						"say": "my work email",
+						"text": "ada.lovelace@example.com"
+					},
+					{
+						"say": "status command",
+						"text": "git status --short --branch"
+					}
+				],
+				"exact": null
 			}
 		]
 	},
@@ -1060,6 +1172,6 @@
 	],
 	"audio": {
 		"path": "packages/TimbreKit/Fixtures/audio",
-		"cases": 11
+		"cases": 14
 	}
 }

@@ -178,8 +178,9 @@ HotkeyMonitor          right ⌥ via device flag bit → AsyncStream<HotkeyEvent
         ├─> Transcriber     actor; SpeechAnalyzer consumes the input stream,
         │                   returns a stream of transcript snapshots
         ├─> OverlayController  non-activating panel near the caret
-        ├─> TextPolisher    corrections → spoken commands → FoundationModels
-        │                   cleanup → terminator. Core product value.
+        ├─> TextPolisher    corrections → snippets → spoken commands →
+        │                   FoundationModels cleanup → terminator. Core
+        │                   product value.
         ├─> LiveTyping      confirmed words → SyntheticText keystrokes while
         │                   the user talks; FocusedField (AX) re-selects the
         │                   typed run on release so the paste replaces it
@@ -287,6 +288,12 @@ TimbreCore's types reach the app through TimbreKit's re-export.
   commands and the model (GDR-0011): whole phrase, case ignored, verbatim,
   never fuzzy. The polisher fixes "timbre kit" but not "timber kit" — one
   letter of phonetic distance — so that class of error lives here.
+- **A snippet's text is never touched** (GDR-0032). `SnippetTable` runs
+  after corrections: an utterance that is only a snippet's name pastes its
+  text with no capital and no full stop, and the model never runs; a name
+  inside a sentence is a `SNIP<n>` placeholder until after the terminator,
+  and a cleanup that drops one is discarded. A snippet is the sixth kind in
+  the Library and is never learned. Corpus cases 12–14 measure it.
 - **Command mode never guesses and never destroys** (GDR-0012). An
   unrecognised word does nothing and says what was heard; any model failure
   leaves the selection untouched — the inverse of the polisher's "always

@@ -224,7 +224,7 @@ model {
     technology 'Swift package, macOS + iOS + watchOS'
 
     library = store 'The Library' {
-      description 'One store, five kinds: word, acronym, phrase, spelling, correction. Meaning, example, source, tags, and the events strength is derived from. One versioned JSON file; merge is a union of events (GDR-0023).'
+      description 'One store, six kinds: word, acronym, phrase, spelling, correction, snippet. Meaning, example, source, tags, and the events strength is derived from. One versioned JSON file; merge is a union of events (GDR-0023).'
     }
     strength = component 'Strength' {
       description 'Retrievability from an entry’s events, FSRS-4.5, never stored (ADR-0014).'

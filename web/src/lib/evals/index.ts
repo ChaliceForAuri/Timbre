@@ -16,6 +16,10 @@ export interface PolisherCase {
 	requiresLineBreak: boolean;
 	vocabulary: string[];
 	corrections: { heard: string; meant: string }[];
+	/** A name said, exact text written (GDR-0032). */
+	snippets: { say: string; text: string }[];
+	/** The whole output, when a case has exactly one right answer. */
+	exact: string | null;
 }
 
 export interface CommandCase {

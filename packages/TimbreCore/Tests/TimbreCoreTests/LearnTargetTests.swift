@@ -79,3 +79,39 @@ struct LibraryLearnTests {
         #expect(library.entries.isEmpty)
     }
 }
+
+/// A file this build cannot read is still the user's Library.
+struct LibraryUnreadableFileTests {
+
+    @Test("An unreadable file is set aside before the Library writes over it, and only the first time")
+    func setAside() throws {
+        let directory = URL(filePath: NSTemporaryDirectory()).appending(path: UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = directory.appending(path: "library.json")
+        // A kind from a newer build: the whole document fails to decode.
+        let newer = #"{"schema":1,"entries":[{"kind":"from-the-future"}],"events":[],"legacyImported":true}"#
+        try Data(newer.utf8).write(to: url)
+
+        let library = Library(fileURL: url, device: .mac, legacy: nil)
+        #expect(library.entries.isEmpty)
+        let aside = Library.unreadableURL(beside: url)
+        #expect(try String(contentsOf: aside, encoding: .utf8) == newer)
+
+        // A second unreadable file does not replace the first copy.
+        try Data("garbage".utf8).write(to: url)
+        _ = Library(fileURL: url, device: .mac, legacy: nil)
+        #expect(try String(contentsOf: aside, encoding: .utf8) == newer)
+    }
+
+    @Test("A readable file sets nothing aside")
+    func readable() {
+        let directory = URL(filePath: NSTemporaryDirectory()).appending(path: UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appending(path: "library.json")
+        Library(fileURL: url, device: .mac, legacy: nil).add("ephemeral")
+        let again = Library(fileURL: url, device: .mac, legacy: nil)
+        #expect(again.terms == ["ephemeral"])
+        #expect(!FileManager.default.fileExists(atPath: Library.unreadableURL(beside: url).path))
+    }
+}
