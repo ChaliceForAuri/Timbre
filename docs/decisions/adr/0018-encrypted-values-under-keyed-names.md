@@ -65,6 +65,10 @@ data inventory says so.
   end-to-end encrypted" until a record is read back from a real zone with
   the server-side view showing ciphertext; that measurement needs two
   signed-in devices and is recorded when it is made.
+- The key agreement is tested as state transitions (`SyncState.nextKeyStep`,
+  `adopt`), not across two devices. The two-device proof that ADR-0017
+  still owes now includes the race: both devices turned on together, one
+  key in the zone afterwards, one Library on both.
 - A development zone written before this record holds plain records under
   plain names. They no longer parse and are ignored, but they stay on the
   server: reset the development environment in the CloudKit console before
