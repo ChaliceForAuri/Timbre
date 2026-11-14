@@ -41,7 +41,9 @@ packages/TimbreReminders/ The Timbre list in Reminders (EventKit). All three;
 packages/TimbreRelay/  Watch to phone over WatchConnectivity: the to-do queue
                      and the session (GDR-0029). iOS and watchOS only.
 packages/TimbreCloud/  The Library through the user's iCloud: CKSyncEngine,
-                     events as immutable records (ADR-0017). All three.
+                     events as immutable records (ADR-0017), every field
+                     an encrypted value under a keyed-hash name (CryptoKit,
+                     ADR-0018). All three.
 packages/TimbreKit/   The macOS pipeline + tests: the hotkey, the overlay,
                      insertion, the polisher, command mode. Depends on the
                      four above. Dictation work happens here.

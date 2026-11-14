@@ -78,11 +78,18 @@ public final class CloudKitLibrarySync: NSObject {
     /// other's fails with the winner attached, which it then adopts.
     private func establishKey() async {
         guard let engine else { return }
+        // The fetch is a shortcut, not the safeguard: if it fails, or returns
+        // before the key it fetched has been taken, this device offers its own
+        // and the save is refused with the server's key attached.
         try? await engine.fetchChanges()
-        guard !state.keyConfirmed else { return }
-        if state.nameKey == nil {
+        switch state.nextKeyStep {
+        case .ready:
+            return
+        case .makeThenOffer:
             state.nameKey = CloudRecords.newNameKey()
             persist()
+        case .offer:
+            break
         }
         engine.state.add(pendingRecordZoneChanges: [.saveRecord(CloudRecords.recordID(CloudRecords.keyName))])
         try? await engine.sendChanges()
