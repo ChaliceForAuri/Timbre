@@ -152,6 +152,19 @@ struct SyncStateKeyTests {
     private let ours = Data(repeating: 1, count: 32)
     private let theirs = Data(repeating: 2, count: 32)
 
+    @Test("A device makes a key, offers it until confirmed, and only then sends anything else")
+    func steps() {
+        var state = SyncState()
+        #expect(state.nextKeyStep == .makeThenOffer)
+        state.nameKey = ours
+        #expect(state.nextKeyStep == .offer)
+        state.keyConfirmed = true
+        #expect(state.nextKeyStep == .ready)
+        // Losing the race is still ready: the winner's key is confirmed by definition.
+        state.adopt(nameKey: theirs)
+        #expect(state.nextKeyStep == .ready)
+    }
+
     @Test("The server confirming our own key keeps what was pushed")
     func sameKey() {
         var state = SyncState(nameKey: ours, pushedEvents: ["a"])

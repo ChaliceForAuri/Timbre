@@ -57,6 +57,22 @@ nonisolated public struct SyncState: Codable, Equatable, Sendable {
         return state
     }
 
+    /// What a device does next to agree the naming key (ADR-0018, decision
+    /// 4), once it has fetched and adopted any key the zone already holds.
+    public enum KeyStep: Equatable, Sendable {
+        /// The server holds this device's key: everything else may be sent.
+        case ready
+        /// A key was made earlier and its save has not been confirmed.
+        case offer
+        /// No key yet: make one, then offer it.
+        case makeThenOffer
+    }
+
+    public var nextKeyStep: KeyStep {
+        if keyConfirmed, nameKey != nil { return .ready }
+        return nameKey == nil ? .makeThenOffer : .offer
+    }
+
     /// Takes the server's key. A different key means every name this device
     /// made is wrong, so what it believed the server holds is forgotten and
     /// sent again under the right names. Returns whether anything changed.
